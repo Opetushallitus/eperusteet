@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -868,7 +869,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     ) {
         String ammattitaitovaatimuksetText = getTextString(docBase, ammattitaitovaatimukset);
         // Ohitetaan jos ammattitaitovaatimuksia ei ole määritelty millään tavoilla
-        if (StringUtils.isEmpty(ammattitaitovaatimuksetText) && ammattitaitovaatimuksetLista.isEmpty() && ammattitaitovaatimukset2019 == null) {
+        if (StringUtils.isEmpty(ammattitaitovaatimuksetText) && CollectionUtils.isEmpty(ammattitaitovaatimuksetLista) && ammattitaitovaatimukset2019 == null) {
             return;
         }
 
@@ -878,6 +879,56 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addTeksti(docBase, ammattitaitovaatimuksetText, "div");
         }
 
+        addAmmattitaitovaatimukset2019(docBase, ammattitaitovaatimukset2019);
+
+        if (ammattitaitovaatimuksetLista != null) {
+            ammattitaitovaatimuksetLista.forEach(ka -> {
+                Element taulukko = docBase.getDocument().createElement("table");
+                taulukko.setAttribute("border", "1");
+                docBase.getBodyElement().appendChild(taulukko);
+                Element tbody = docBase.getDocument().createElement("tbody");
+                taulukko.appendChild(tbody);
+
+                Element tr = docBase.getDocument().createElement("tr");
+                tr.setAttribute("bgcolor", "#EEEEEE");
+                tbody.appendChild(tr);
+
+                Element th = docBase.getDocument().createElement("th");
+                th.appendChild(newBoldElement(docBase.getDocument(),
+                        getTextString(docBase, ka.getOtsikko())));
+                tr.appendChild(th);
+
+                ka.getVaatimuksenKohteet().forEach(kohde -> {
+                    Element kohdeRivi = docBase.getDocument().createElement("tr");
+                    tbody.appendChild(kohdeRivi);
+
+                    Element kohdeSolu = docBase.getDocument().createElement("td");
+                    kohdeSolu.appendChild(newBoldElement(docBase.getDocument(),
+                            getTextString(docBase, kohde.getOtsikko())));
+                    kohdeRivi.appendChild(kohdeSolu);
+
+                    Element kohdeSelite = docBase.getDocument().createElement("p");
+                    kohdeSelite.setTextContent(getTextString(docBase, kohde.getSelite()));
+                    kohdeSolu.appendChild(kohdeSelite);
+
+                    Element vaatimusLista = docBase.getDocument().createElement("ul");
+                    kohdeSolu.appendChild(vaatimusLista);
+                    kohde.getVaatimukset().forEach(vaatimus -> {
+                        String ktaso = getTextString(docBase, vaatimus.getSelite());
+                        if (vaatimus.getAmmattitaitovaatimusKoodi() != null
+                                && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty()) {
+                            ktaso += " (" + vaatimus.getAmmattitaitovaatimusKoodi() + ")";
+                        }
+                        Element vaatimusAlkio = docBase.getDocument().createElement("li");
+                        vaatimusAlkio.setTextContent(ktaso);
+                        vaatimusLista.appendChild(vaatimusAlkio);
+                    });
+                });
+            });
+        }
+    }
+
+    private void addAmmattitaitovaatimukset2019(DokumenttiPeruste docBase, Ammattitaitovaatimukset2019 ammattitaitovaatimukset2019) {
         if (ammattitaitovaatimukset2019 != null) {
             TekstiPalanen kohde = ammattitaitovaatimukset2019.getKohde();
             List<Ammattitaitovaatimus2019> vaatimukset = ammattitaitovaatimukset2019.getVaatimukset();
@@ -911,11 +962,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                     if (!ObjectUtils.isEmpty(alue.getVaatimukset())) {
 
+                        Element kohdeEl = docBase.getDocument().createElement("p");
                         if (kohde != null) {
-                            Element kohdeEl = docBase.getDocument().createElement("p");
                             kohdeEl.setTextContent(getTextString(docBase, kohde));
-                            alueEl.appendChild(kohdeEl);
+                        } else {
+                            kohdeEl.setTextContent(messages.translate("docgen.info.opiskelija", docBase.getKieli()));
                         }
+                        alueEl.appendChild(kohdeEl);
 
                         Element alueListaEl = docBase.getDocument().createElement("ul");
                         alue.getVaatimukset().forEach(vaatimus -> {
@@ -931,50 +984,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 });
             }
         }
-
-        ammattitaitovaatimuksetLista.forEach(ka -> {
-            Element taulukko = docBase.getDocument().createElement("table");
-            taulukko.setAttribute("border", "1");
-            docBase.getBodyElement().appendChild(taulukko);
-            Element tbody = docBase.getDocument().createElement("tbody");
-            taulukko.appendChild(tbody);
-
-            Element tr = docBase.getDocument().createElement("tr");
-            tr.setAttribute("bgcolor", "#EEEEEE");
-            tbody.appendChild(tr);
-
-            Element th = docBase.getDocument().createElement("th");
-            th.appendChild(newBoldElement(docBase.getDocument(),
-                    getTextString(docBase, ka.getOtsikko())));
-            tr.appendChild(th);
-
-            ka.getVaatimuksenKohteet().forEach(kohde -> {
-                Element kohdeRivi = docBase.getDocument().createElement("tr");
-                tbody.appendChild(kohdeRivi);
-
-                Element kohdeSolu = docBase.getDocument().createElement("td");
-                kohdeSolu.appendChild(newBoldElement(docBase.getDocument(),
-                        getTextString(docBase, kohde.getOtsikko())));
-                kohdeRivi.appendChild(kohdeSolu);
-
-                Element kohdeSelite = docBase.getDocument().createElement("p");
-                kohdeSelite.setTextContent(getTextString(docBase, kohde.getSelite()));
-                kohdeSolu.appendChild(kohdeSelite);
-
-                Element vaatimusLista = docBase.getDocument().createElement("ul");
-                kohdeSolu.appendChild(vaatimusLista);
-                kohde.getVaatimukset().forEach(vaatimus -> {
-                    String ktaso = getTextString(docBase, vaatimus.getSelite());
-                    if (vaatimus.getAmmattitaitovaatimusKoodi() != null
-                            && !vaatimus.getAmmattitaitovaatimusKoodi().isEmpty()) {
-                        ktaso += " (" + vaatimus.getAmmattitaitovaatimusKoodi() + ")";
-                    }
-                    Element vaatimusAlkio = docBase.getDocument().createElement("li");
-                    vaatimusAlkio.setTextContent(ktaso);
-                    vaatimusLista.appendChild(vaatimusAlkio);
-                });
-            });
-        });
     }
 
     private void addValmatelmaSisalto(DokumenttiPeruste docBase, ValmaTelmaSisalto valmaTelmaSisalto) {
@@ -1334,6 +1343,27 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                         }
                     }
+
+                    if (osaAlue.getPakollisetOsaamistavoitteet() != null) {
+                        String otsikko = messages.translate("docgen.tutke2.pakolliset_osaamistavoitteet.title", docBase.getKieli())
+                                + getLaajuusSuffiksi(osaAlue.getPakollisetOsaamistavoitteet().getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
+                        addTeksti(docBase, otsikko, "h5");
+
+                        addAmmattitaitovaatimukset2019(docBase, osaAlue.getPakollisetOsaamistavoitteet().getTavoitteet2020());
+
+                    }
+
+                    if (osaAlue.getValinnaisetOsaamistavoitteet() != null) {
+                        String otsikko = messages.translate("docgen.tutke2.valinnaiset_osaamistavoitteet.title", docBase.getKieli())
+                                + getLaajuusSuffiksi(osaAlue.getValinnaisetOsaamistavoitteet().getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
+                        addTeksti(docBase, otsikko, "h5");
+
+                        addAmmattitaitovaatimukset2019(docBase, osaAlue.getPakollisetOsaamistavoitteet().getTavoitteet2020());
+
+                    }
+
+                    addGeneerinenArviointi(docBase, osaAlue.getGeneerinenArviointiasteikko());
+
                 });
     }
 
