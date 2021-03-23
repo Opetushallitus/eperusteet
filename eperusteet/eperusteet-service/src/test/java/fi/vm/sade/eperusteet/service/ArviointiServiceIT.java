@@ -29,6 +29,8 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
+import fi.vm.sade.eperusteet.repository.OsaamistasoRepository;
 import fi.vm.sade.eperusteet.resource.config.MappingModule;
 import fi.vm.sade.eperusteet.service.internal.ArviointiService;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -52,7 +54,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * @author teele1
  */
 @Transactional
@@ -61,6 +62,12 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private ArviointiService arviointiService;
+
+    @Autowired
+    private ArviointiAsteikkoRepository arviointiAsteikkoRepository;
+
+    @Autowired
+    private OsaamistasoRepository osaamistasoRepository;
 
     @PersistenceContext
     private EntityManager em;
@@ -108,13 +115,11 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         em.persist(osaamistasoOtsikko);
 
         Osaamistaso osaamistaso = new Osaamistaso();
-        osaamistaso.setId(1L);
         osaamistaso.setOtsikko(osaamistasoOtsikko);
 
         em.persist(osaamistaso);
 
         ArviointiAsteikko arviointiasteikko = new ArviointiAsteikko();
-        arviointiasteikko.setId(1L);
         arviointiasteikko.setOsaamistasot(Collections.singletonList(osaamistaso));
 
         em.persist(arviointiasteikko);
@@ -125,19 +130,16 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         em.persist(osaamistasoOtsikko3);
 
         osaamistaso = new Osaamistaso();
-        osaamistaso.setId(2L);
         osaamistaso.setOtsikko(osaamistasoOtsikko2);
 
         em.persist(osaamistaso);
 
         Osaamistaso osaamistaso2 = new Osaamistaso();
-        osaamistaso2.setId(3L);
         osaamistaso2.setOtsikko(osaamistasoOtsikko3);
 
         em.persist(osaamistaso2);
 
         arviointiasteikko = new ArviointiAsteikko();
-        arviointiasteikko.setId(2L);
         arviointiasteikko.setOsaamistasot(Arrays.asList(osaamistaso, osaamistaso2));
 
         em.persist(arviointiasteikko);
@@ -149,6 +151,11 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     public void testSaveArviointiFromJson() throws IOException {
         Resource resource = new ClassPathResource("material/valid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+        List<Osaamistaso> osaamistasot = osaamistasoRepository.findAll();
+        List<ArviointiAsteikko> arviointiasteikot = arviointiAsteikkoRepository.findAll();
+
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.setArviointiAsteikko(Reference.of(arviointiasteikot.get(0)))));
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(Reference.of(osaamistasot.get(0).getId())))));
 
         arviointiService.add(dto);
 
@@ -166,6 +173,12 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     public void testSaveInvalidArviointiFromJson() throws IOException {
         Resource resource = new ClassPathResource("material/invalid_arviointi.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+
+        List<Osaamistaso> osaamistasot = osaamistasoRepository.findAll();
+        List<ArviointiAsteikko> arviointiasteikot = arviointiAsteikkoRepository.findAll();
+
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.setArviointiAsteikko(Reference.of(arviointiasteikot.get(0)))));
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(Reference.of(osaamistasot.get(0).getId())))));
         arviointiService.add(dto);
         em.flush();
     }
@@ -176,6 +189,12 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
     public void testSaveInvalidArviointi2FromJson() throws IOException {
         Resource resource = new ClassPathResource("material/invalid_arviointi2.json");
         ArviointiDto dto = objectMapper.readValue(resource.getFile(), ArviointiDto.class);
+
+        List<Osaamistaso> osaamistasot = osaamistasoRepository.findAll();
+        List<ArviointiAsteikko> arviointiasteikot = arviointiAsteikkoRepository.findAll();
+
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.setArviointiAsteikko(Reference.of(arviointiasteikot.get(0)))));
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(Reference.of(osaamistasot.get(0).getId())))));
         arviointiService.add(dto);
         em.flush();
     }

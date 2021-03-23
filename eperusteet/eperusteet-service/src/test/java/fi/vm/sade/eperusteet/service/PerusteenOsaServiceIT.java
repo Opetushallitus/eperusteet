@@ -107,13 +107,11 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         em.persist(osaamistasoOtsikko);
 
         Osaamistaso osaamistaso = new Osaamistaso();
-        osaamistaso.setId(1L);
         osaamistaso.setOtsikko(osaamistasoOtsikko);
 
         em.persist(osaamistaso);
 
         ArviointiAsteikko arviointiasteikko = new ArviointiAsteikko();
-        arviointiasteikko.setId(1L);
         arviointiasteikko.setOsaamistasot(Lists.newArrayList(osaamistaso));
 
         em.persist(arviointiasteikko);

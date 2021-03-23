@@ -21,4 +21,5 @@ public class KoodistoUriArvo {
 
     public static final String OPINTOKOKONAISUUSTAVOITTEET = "opintokokonaisuustavoitteet";
 
+    public static final String ARVIOINTIASTEIKKOAMMATILLINEN = "arviointiasteikkoammatillinen15";
 }
