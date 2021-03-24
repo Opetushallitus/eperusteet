@@ -21,7 +21,10 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Peruste_;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.WithPerusteTila;
+import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
+import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import java.io.Serializable;
 import java.util.List;
@@ -31,12 +34,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 /**
- *
  * @author jhyoty
  */
 @Component
@@ -45,12 +48,16 @@ public class PermissionHelper {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private PerusteprojektiPermissionRepository perusteProjektit;
+
     @Cacheable(value = "tila", unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
     public PerusteTila findPerusteTilaFor(PermissionManager.Target targetType, Serializable id) {
         PerusteTila tila = null;
         switch (targetType) {
             case PERUSTEENOSA:
-                tila = findPerusteTilaFor(PerusteenOsa.class, id);
+                Perusteprojekti projekti = perusteProjektit.findProjektiById((Long) id);
+                tila = CollectionUtils.isNotEmpty(projekti.getPeruste().getJulkaisut()) ? PerusteTila.VALMIS : findPerusteTilaFor(PerusteenOsa.class, id);
                 break;
             case PERUSTE:
                 tila = julkaistuPeruste(id) ? PerusteTila.VALMIS : findPerusteTilaFor(Peruste.class, id);
