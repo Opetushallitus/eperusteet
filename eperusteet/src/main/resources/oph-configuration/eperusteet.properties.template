@@ -65,3 +65,6 @@ web.url.cas=https\://${host.cas}/cas
 sqs.palaute_queue_url={{palaute_queue_url}}
 sqs.aws_region={{aws_region}}
 palaute-service.url=https://${host.virkailija}/palaute
+
+# Käännösten lataaminen
+lokalisointi.service.url=https://${host.virkailija}/lokalisointi/cxf/rest/v1/localisation?
