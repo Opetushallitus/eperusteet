@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
 import lombok.Data;
@@ -32,6 +33,8 @@ public class TiedoteDto {
     private Set<TiedoteJulkaisuPaikka> julkaisupaikat;
     private Set<KoulutusTyyppi> koulutustyypit;
     private Set<PerusteKevytDto> perusteet;
+    private Set<KoodiDto> tutkinnonosat;
+    private Set<KoodiDto> osaamisalat;
     private Date luotu;
     private String luoja;
     @JsonInclude(JsonInclude.Include.NON_NULL)
