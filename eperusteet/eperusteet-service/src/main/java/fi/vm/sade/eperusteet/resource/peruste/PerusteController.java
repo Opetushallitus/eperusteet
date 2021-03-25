@@ -135,6 +135,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
             @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
             @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
+            @ApiImplicitParam(name = "tutkinnonosaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
+            @ApiImplicitParam(name = "osaamisalaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
     })
     public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
