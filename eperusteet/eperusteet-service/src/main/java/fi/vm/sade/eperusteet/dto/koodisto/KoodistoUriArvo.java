@@ -1,7 +1,5 @@
 package fi.vm.sade.eperusteet.dto.koodisto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -22,4 +20,5 @@ public class KoodistoUriArvo {
     public static final String OPINTOKOKONAISUUSTAVOITTEET = "opintokokonaisuustavoitteet";
 
     public static final String ARVIOINTIASTEIKKOAMMATILLINEN = "arviointiasteikkoammatillinen15";
+    public static final String OSAAMISALA = "osaamisala";
 }
