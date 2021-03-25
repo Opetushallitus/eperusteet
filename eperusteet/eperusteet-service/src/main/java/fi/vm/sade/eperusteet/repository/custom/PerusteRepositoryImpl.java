@@ -31,6 +31,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -184,6 +185,23 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.or(preds.toArray(new Predicate[0])));
         }
 
+        if (CollectionUtils.isNotEmpty(pq.getTutkinnonosaKoodit())) {
+            Join<TutkinnonOsa, Koodi> tutkinnonOsaKoodi = root
+                    .join(Peruste_.suoritustavat)
+                    .join(Suoritustapa_.tutkinnonOsat)
+                    .join(TutkinnonOsaViite_.tutkinnonOsa)
+                    .join(TutkinnonOsa_.koodi);
+            Predicate tosanKoodiArvossa = tutkinnonOsaKoodi.get(Koodi_.uri).in(pq.getTutkinnonosaKoodit());
+            pred = cb.and(pred, tosanKoodiArvossa);
+        }
+
+        if (CollectionUtils.isNotEmpty(pq.getOsaamisalaKoodit())) {
+            Join<Peruste, Koodi> osaamisalaKoodit = root
+                    .join(Peruste_.osaamisalat);
+            Predicate tosanKoodiArvossa = osaamisalaKoodit.get(Koodi_.uri).in(pq.getOsaamisalaKoodit());
+            pred = cb.and(pred, tosanKoodiArvossa);
+        }
+        
         if (pq.getKoulutusvienti() != KoulutusVientiEhto.KAIKKI) {
             if (pq.isKoulutusvienti()) {
                 pred = cb.and(pred, cb.isTrue(root.get(Peruste_.koulutusvienti)));

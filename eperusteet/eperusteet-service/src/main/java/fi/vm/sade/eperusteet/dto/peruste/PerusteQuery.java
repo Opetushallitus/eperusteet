@@ -54,6 +54,8 @@ public class PerusteQuery {
     private KoulutusVientiEhto koulutusvienti = KoulutusVientiEhto.FALSE;
     private long nykyinenAika = new Date().getTime();
     private Boolean esikatseltavissa;
+    private List<String> tutkinnonosaKoodit;
+    private List<String> osaamisalaKoodit;
 
     public void setTyyppi(List<String> tyyppi) {
         this.koulutustyyppi = tyyppi;
