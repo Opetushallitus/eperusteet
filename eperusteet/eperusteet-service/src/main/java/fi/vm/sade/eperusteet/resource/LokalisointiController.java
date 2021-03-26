@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,6 +48,13 @@ public class LokalisointiController {
     @RequestMapping(value = "/eperusteet-opintopolku", method = GET)
     public List<LokalisointiDto> getAllKaannokset(@RequestParam(value = "locale", defaultValue = "fi") final String kieli) {
         return lokalisointiService.getAllByCategoryAndLocale("eperusteet-opintopolku", kieli);
+    }
+
+    @RequestMapping(value = "/kaannokset/{palvelu}/{kieli}", method = GET)
+    public List<LokalisointiDto> getPalveluKaannokset(
+            @PathVariable(value = "palvelu", required = true) final String palvelu,
+            @PathVariable(value = "kieli", required = true) final String kieli) {
+        return lokalisointiService.getAllByCategoryAndLocale(palvelu, kieli);
     }
 
     @RequestMapping(value = "/kaannokset", method = GET)

@@ -69,6 +69,7 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     HttpHeaders httpHeaders;
 
     @Override
+    @Cacheable("kategorialokalisoinnit")
     public List<LokalisointiDto> getAllByCategoryAndLocale(String category, String locale) {
         RestTemplate restTemplate = new RestTemplate();
         String url = lokalisointiServiceUrl + "category=" + category + "&locale=" + locale;
