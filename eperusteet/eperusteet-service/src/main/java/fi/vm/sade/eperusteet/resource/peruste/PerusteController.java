@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -415,6 +416,15 @@ public class PerusteController {
             @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
     ) {
         return service.getJulkaisuAikatauluPerusteet(sivu, sivukoko, koulutustyypit);
+    }
+
+    @RequestMapping(value = "/lukumaara", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteiden koulutustyyppikohtaiset lukumäärät")
+    public List<KoulutustyyppiLukumaara> getJulkaistutLukumaarilla(
+            @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
+    ) {
+        return service.getVoimassaolevatJulkaistutPerusteLukumaarat(koulutustyypit);
     }
 
 }

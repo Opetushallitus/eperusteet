@@ -64,6 +64,7 @@ import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
@@ -535,6 +536,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     public Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(Integer sivu, Integer sivukoko, List<String> koulutusTyyppit) {
         return perusteRepository.findAllJulkaisuaikataulullisetPerusteet(koulutusTyyppit, new PageRequest(sivu, Math.min(sivukoko, 20))).map(peruste -> mapper.map(peruste, PerusteBaseDto.class));
+    }
+
+    @Override
+    public List<KoulutustyyppiLukumaara> getVoimassaolevatJulkaistutPerusteLukumaarat(List<String> koulutusTyyppit) {
+        return perusteRepository.findVoimassaolevatJulkaistutPerusteLukumaarat(koulutusTyyppit);
     }
 
     // Julkinen haku kevyemmällä paluuarvolla
