@@ -43,7 +43,7 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
     Set<PerusteenosanProjekti> findAllByPerusteenosa(Long perusteenOsaId);
 
     @Query("SELECT projekti FROM PerusteenosanProjekti pp, Perusteprojekti projekti WHERE projekti.id = pp.perusteProjektiId AND pp.id = ?1")
-    Perusteprojekti findProjektiById(Long perusteenOsaId);
+    List<Perusteprojekti> findProjektiById(Long perusteenOsaId);
 
     /**
      * Etsii perusteprojektit joihin annettu perusteen osa kuuluu ja palauttaa niiden tilan.

@@ -28,6 +28,8 @@ import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionR
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -56,8 +58,7 @@ public class PermissionHelper {
         PerusteTila tila = null;
         switch (targetType) {
             case PERUSTEENOSA:
-                Perusteprojekti projekti = perusteProjektit.findProjektiById((Long) id);
-                tila = CollectionUtils.isNotEmpty(projekti.getPeruste().getJulkaisut()) ? PerusteTila.VALMIS : findPerusteTilaFor(PerusteenOsa.class, id);
+                tila = findProjektiPerusteTilaFor(id);
                 break;
             case PERUSTE:
                 tila = julkaistuPeruste(id) ? PerusteTila.VALMIS : findPerusteTilaFor(Peruste.class, id);
@@ -69,6 +70,14 @@ public class PermissionHelper {
             throw new NotExistsException("Tilaa ei asetettu");
         }
         return tila;
+    }
+
+    private PerusteTila findProjektiPerusteTilaFor(Serializable id) {
+        List<Perusteprojekti> valmiitProjektit = perusteProjektit.findProjektiById((Long) id).stream()
+                .filter(projekti -> CollectionUtils.isNotEmpty(projekti.getPeruste().getJulkaisut()))
+                .collect(Collectors.toList());
+
+        return valmiitProjektit.isEmpty() ? findPerusteTilaFor(PerusteenOsa.class, id) : PerusteTila.VALMIS;
     }
 
     private PerusteTila findPerusteTilaFor(Class<? extends WithPerusteTila> entity, Serializable id) {
