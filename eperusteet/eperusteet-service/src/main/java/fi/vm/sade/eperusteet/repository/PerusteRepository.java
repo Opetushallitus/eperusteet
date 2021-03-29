@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.Date;
@@ -156,4 +157,15 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND p.koulutustyyppi IN(:koulutustyypit) " +
             "AND p.tila = 'LUONNOS' AND (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.id) = 0)")
     Page<Peruste> findAllJulkaisuaikataulullisetPerusteet(@Param("koulutustyypit") List<String> koulutustyypit, Pageable pageable);
+
+    @Query("SELECT p.koulutustyyppi, COUNT(p) AS lukumaara FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "AND p.koulutustyyppi IN(:koulutustyypit) " +
+            "AND p.tyyppi = 'NORMAALI' " +
+            "AND (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
+            "GROUP BY p.koulutustyyppi")
+    List<KoulutustyyppiLukumaara> findVoimassaolevatJulkaistutPerusteLukumaarat(@Param("koulutustyypit") List<String> koulutustyypit);
 }

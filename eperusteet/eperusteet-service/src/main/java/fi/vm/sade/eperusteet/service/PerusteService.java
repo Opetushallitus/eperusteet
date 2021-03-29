@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
@@ -119,6 +120,9 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(Integer sivu, Integer sivukoko, List<String> koulutusTyyppit);
+
+    @PreAuthorize("permitAll()")
+    List<KoulutustyyppiLukumaara> getVoimassaolevatJulkaistutPerusteLukumaarat(List<String> koulutusTyyppit);
 
     @PreAuthorize("isAuthenticated()")
     Page<PerusteHakuInternalDto> findByInternal(PageRequest page, PerusteQuery pquery);
