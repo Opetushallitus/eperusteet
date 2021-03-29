@@ -512,7 +512,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Cacheable("pohjaperusteet")
     public List<PerusteKevytDto> getPohjaperusteet(PerusteTyyppi tyyppi) {
-        return mapper.mapAsList(perusteRepository.findByTilaAndTyyppiAndKoulutusvienti(PerusteTila.VALMIS, tyyppi, false), PerusteKevytDto.class);
+        return mapper.mapAsList(perusteRepository.findValmiitByTyyppi(tyyppi, false), PerusteKevytDto.class);
     }
 
     @Override
