@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
@@ -28,19 +27,21 @@ import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
+import fi.vm.sade.eperusteet.domain.vst.TavoiteAlueTyyppi;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.dto.vst.TavoiteAlueDto;
+import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -52,12 +53,9 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Maps;
 import org.junit.Assert;
 import org.junit.Before;
@@ -283,6 +281,52 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(koulutuksenOsaDto.getTavoitteet()).extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "tavoite1"), Maps.newHashMap(Kieli.FI, "tavoite2"));
     }
 
+    @Test
+    public void testTavoitesisaltoalue() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new TavoitesisaltoalueDto());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
+        TavoitesisaltoalueDto tavoitesisaltoalueDto = (TavoitesisaltoalueDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(tavoitesisaltoalueDto.getId());
+
+        assertThat(tavoitesisaltoalueDto.getId()).isNotNull();
+
+        tavoitesisaltoalueDto.setTeksti(LokalisoituTekstiDto.of("teksti1"));
+        tavoitesisaltoalueDto.setNimiKoodi(KoodiDto.of(KoodistoUriArvo.TAVOITESISALTOALUEENOTSIKKO, "arvi1"));
+        tavoitesisaltoalueDto.setNimi(LokalisoituTekstiDto.of("nimi"));
+        tavoitesisaltoalueDto.setTavoitealueet(Arrays
+                .asList(
+                        TavoiteAlueDto.builder()
+                                .tavoiteAlueTyyppi(TavoiteAlueTyyppi.OTSIKKO)
+                                .otsikko(KoodiDto.of(KoodistoUriArvo.TAVOITEALUEET, "otsikko1"))
+                                .build(),
+                        TavoiteAlueDto.builder()
+                                .tavoiteAlueTyyppi(TavoiteAlueTyyppi.TAVOITESISALTOALUE)
+                                .tavoitteet(Arrays.asList(KoodiDto.of(KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, "tavoite1")))
+                                .keskeisetSisaltoalueet(Arrays.asList(LokalisoituTekstiDto.of("keskeinen1")))
+                                .build()
+                )
+        );
+
+        tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
+
+        assertThat(tavoitesisaltoalueDto.getNimi().get(Kieli.FI)).isEqualTo("nimi");
+        assertThat(tavoitesisaltoalueDto.getTeksti().get(Kieli.FI)).isEqualTo("teksti1");
+        assertThat(tavoitesisaltoalueDto.getNimiKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITESISALTOALUEENOTSIKKO, "arvi1"));
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet()).hasSize(2);
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet()).extracting("tavoiteAlueTyyppi").containsExactly(TavoiteAlueTyyppi.OTSIKKO, TavoiteAlueTyyppi.TAVOITESISALTOALUE);
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet().get(0)).extracting("otsikko").isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITEALUEET, "otsikko1"));
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet())
+                .flatExtracting("tavoitteet").containsExactlyInAnyOrder(KoodiDto.of(KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, "tavoite1"));
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet())
+                .flatExtracting("keskeisetSisaltoalueet").extracting("tekstit").containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "keskeinen1"));
+    }
+
     private KoodiDto koodiDto(String nimi) {
         KoodiDto koodiDto = new KoodiDto();
         koodiDto.setNimi(Maps.newHashMap("fi", nimi));
@@ -308,4 +352,5 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
         return lisatty;
     }
+
 }

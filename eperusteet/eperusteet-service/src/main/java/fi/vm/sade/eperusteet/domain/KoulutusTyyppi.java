@@ -39,6 +39,7 @@ public enum KoulutusTyyppi {
     LUKIOVALMISTAVAKOULUTUS("koulutustyyppi_23"),
     TPO("koulutustyyppi_999907"),
     VAPAASIVISTYSTYO("koulutustyyppi_10"),
+    VAPAASIVISTYSTYOLUKUTAITO("koulutustyyppi_35"),
     TUTKINTOONVALMENTAVA("koulutustyyppi_40");
 
     private final String tyyppi;

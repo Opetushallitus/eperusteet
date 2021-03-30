@@ -9,6 +9,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
+import fi.vm.sade.eperusteet.domain.vst.TavoiteAlueTyyppi;
+import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
@@ -635,6 +637,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             } else if (po instanceof Opintokokonaisuus) {
                 Opintokokonaisuus opintokokonaisuus = (Opintokokonaisuus) po;
                 addOpintokokonaisuus(docBase, opintokokonaisuus, po, lapsi);
+            } else if (po instanceof Tavoitesisaltoalue) {
+                Tavoitesisaltoalue tavoitesisaltoalue = (Tavoitesisaltoalue) po;
+                addTavoitesisaltoalue(docBase, tavoitesisaltoalue, po, lapsi);
             } else if (po instanceof KoulutuksenOsa) {
                 KoulutuksenOsa koulutuksenOsa = (KoulutuksenOsa) po;
                 addKoulutuksenOsa(docBase, koulutuksenOsa, po, lapsi);
@@ -775,6 +780,59 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             arvioinnitEl.appendChild(arviointiEl);
         });
         docBase.getBodyElement().appendChild(arvioinnitEl);
+
+        docBase.getGenerator().increaseDepth();
+        addTekstikappaleet(docBase, lapsi);
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private void addTavoitesisaltoalue(DokumenttiPeruste docBase, Tavoitesisaltoalue tavoitesisaltoalue, PerusteenOsa po,
+                                       PerusteenOsaViite lapsi) {
+
+        // Nimi
+        KoodiDto nimiKoodiDto = mapper.map(tavoitesisaltoalue.getNimiKoodi(), KoodiDto.class);
+        if (nimiKoodiDto != null) {
+            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
+            addHeader(docBase, getTextString(docBase, nimi));
+        } else {
+            addHeader(docBase, messages.translate("docgen.opintokokonaisuus.nimeton-tavoitesisaltoalue", docBase.getKieli()));
+        }
+
+        // Teksti
+        String teksti = getTextString(docBase, tavoitesisaltoalue.getTeksti());
+        if (StringUtils.isNotEmpty(teksti)) {
+            addTeksti(docBase, teksti, "div");
+        }
+
+        addTeksti(docBase, messages.translate("docgen.tavoitteet-ja-keskeiset-sisallot.title", docBase.getKieli()), "h5");
+
+        tavoitesisaltoalue.getTavoitealueet().forEach(tavoitealue -> {
+            if (tavoitealue.getTavoiteAlueTyyppi().equals(TavoiteAlueTyyppi.OTSIKKO)) {
+                KoodiDto otsikko = mapper.map(tavoitealue.getOtsikko(), KoodiDto.class);
+                addTeksti(docBase, getTextString(docBase, otsikko.getNimi()), "tavoitteet-otsikko");
+            }
+
+            if (tavoitealue.getTavoiteAlueTyyppi().equals(TavoiteAlueTyyppi.TAVOITESISALTOALUE)) {
+
+                if (!CollectionUtils.isEmpty(tavoitealue.getTavoitteet())) {
+                    addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h6");
+
+                    tavoitealue.getTavoitteet().forEach(tavoite -> {
+                        KoodiDto tavoiteKoodi = mapper.map(tavoite, KoodiDto.class);
+                        addTeksti(docBase, getTextString(docBase, tavoiteKoodi.getNimi()), "div");
+                    });
+                }
+
+                if (!CollectionUtils.isEmpty(tavoitealue.getKeskeisetSisaltoalueet())) {
+                    addTeksti(docBase, messages.translate("docgen.keskeiset-sisaltoalueet.title", docBase.getKieli()), "h6");
+
+                    tavoitealue.getKeskeisetSisaltoalueet().forEach(keskeinenSisaltoalue -> {
+                        addTeksti(docBase, getTextString(docBase, keskeinenSisaltoalue), "div");
+                    });
+                }
+            }
+        });
 
         docBase.getGenerator().increaseDepth();
         addTekstikappaleet(docBase, lapsi);

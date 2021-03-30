@@ -212,6 +212,7 @@ import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.VAPAASIVISTYSTYO;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO;
 
 /**
  *
@@ -2009,7 +2010,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
             AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();
             peruste.setSisalto(sisalto);
-        } else if (koulutustyyppi == VAPAASIVISTYSTYO) {
+        } else if (koulutustyyppi == VAPAASIVISTYSTYO || koulutustyyppi == VAPAASIVISTYSTYOLUKUTAITO) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
         } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
             peruste.setSisalto(new TutkintoonvalmentavaSisalto());
