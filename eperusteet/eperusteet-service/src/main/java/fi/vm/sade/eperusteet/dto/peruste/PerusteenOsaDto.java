@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
@@ -74,6 +75,7 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),
             @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class),
             @JsonSubTypes.Type(value = OpintokokonaisuusDto.class),
+            @JsonSubTypes.Type(value = TavoitesisaltoalueDto.class),
             @JsonSubTypes.Type(value = KoulutuksenOsaDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto {

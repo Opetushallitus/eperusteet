@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;

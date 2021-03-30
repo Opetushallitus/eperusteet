@@ -30,7 +30,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
-import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
+import fi.vm.sade.eperusteet.domain.vst.TavoiteAlue;
+import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
@@ -41,8 +42,6 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
@@ -57,15 +56,13 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
-import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
+import fi.vm.sade.eperusteet.dto.vst.TavoiteAlueDto;
+import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
-import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.*;
 import ma.glasnost.orika.converter.BidirectionalConverter;
@@ -101,6 +98,9 @@ public class DtoMapperConfig {
 
     @Autowired
     private OpintokokonaisuusMapper opintokokonaisuusMapper;
+
+    @Autowired
+    private TavoitealueMapper tavoitealueMapper;
 
     @Autowired
     public DtoMapperConfig(KoodistoClient koodistoClient) {
@@ -470,7 +470,6 @@ public class DtoMapperConfig {
                         try {
                             koodistoClient.addNimiAndArvo(b);
                         } catch (RestClientException | AccessDeniedException ex) {
-
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
                     }
@@ -559,6 +558,16 @@ public class DtoMapperConfig {
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .customize(opintokokonaisuusMapper)
+                .register();
+
+        factory.classMap(TavoitesisaltoalueDto.class, Tavoitesisaltoalue.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(TavoiteAlueDto.class, TavoiteAlue.class)
+                .byDefault()
+                .customize(tavoitealueMapper)
                 .register();
 
         factory.classMap(KoulutuksenOsaDto.class, KoulutuksenOsa.class)
