@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.WithPerusteTila;
 import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import java.io.Serializable;
@@ -53,6 +54,9 @@ public class PermissionHelper {
     @Autowired
     private PerusteprojektiPermissionRepository perusteProjektit;
 
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
+
     @Cacheable(value = "tila", unless = "#result != T(fi.vm.sade.eperusteet.domain.PerusteTila).VALMIS")
     public PerusteTila findPerusteTilaFor(PermissionManager.Target targetType, Serializable id) {
         PerusteTila tila = null;
@@ -74,7 +78,7 @@ public class PermissionHelper {
 
     private PerusteTila findProjektiPerusteTilaFor(Serializable id) {
         List<Perusteprojekti> valmiitProjektit = perusteProjektit.findProjektiById((Long) id).stream()
-                .filter(projekti -> CollectionUtils.isNotEmpty(projekti.getPeruste().getJulkaisut()))
+                .filter(projekti -> julkaisutRepository.countByPeruste(projekti.getPeruste()) > 0)
                 .collect(Collectors.toList());
 
         return valmiitProjektit.isEmpty() ? findPerusteTilaFor(PerusteenOsa.class, id) : PerusteTila.VALMIS;
