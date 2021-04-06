@@ -46,13 +46,16 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero = ?1")
     List<Peruste> findAllValmiitByDiaarinumero(Diaarinumero diaarinumero);
 
-    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'AMOSAA_YHTEINEN' and p.tila = 'VALMIS'")
+    @Query("SELECT p from Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.tyyppi = 'AMOSAA_YHTEINEN' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) ")
     List<Peruste> findAllAmosaaYhteisetPohjat();
 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero IN (?1)")
     Set<Peruste> findAllByDiaarinumerot(Set<Diaarinumero> diaarinumero);
 
-//    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
+    //    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
     @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and diaari.diaarinumero = ?1")
     Set<Peruste> findAllKorvaavatByDiaarinumero(String diaarinumero);
 

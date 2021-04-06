@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +40,8 @@ public class PerusteKevytDto {
     private PerusteTyyppi tyyppi;
     private String koulutustyyppi;
     private boolean esikatseltavissa;
+    private Date voimassaoloAlkaa;
+    private Date voimassaoloLoppuu;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<SuoritustapaDto> suoritustavat;
