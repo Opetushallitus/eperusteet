@@ -282,10 +282,43 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testTavoitesisaltoalue() {
+    public void testVstLukutaito_Tavoitesisaltoalue() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO.toString());
         });
+        TavoitesisaltoalueDto tavoitesisaltoalueDto = createPerusteWithTavoitesisaltoalue(pp);
+
+        tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
+
+        assertTavoitesisaltoalueData(tavoitesisaltoalueDto);
+    }
+
+    @Test
+    public void testVstKoto_Tavoitesisaltoalue() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString());
+        });
+        TavoitesisaltoalueDto tavoitesisaltoalueDto = createPerusteWithTavoitesisaltoalue(pp);
+
+        tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
+
+        assertTavoitesisaltoalueData(tavoitesisaltoalueDto);
+    }
+
+    private void assertTavoitesisaltoalueData(TavoitesisaltoalueDto tavoitesisaltoalueDto) {
+        assertThat(tavoitesisaltoalueDto.getNimi().get(Kieli.FI)).isEqualTo("nimi");
+        assertThat(tavoitesisaltoalueDto.getTeksti().get(Kieli.FI)).isEqualTo("teksti1");
+        assertThat(tavoitesisaltoalueDto.getNimiKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITESISALTOALUEENOTSIKKO, "arvi1"));
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet()).hasSize(2);
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet()).extracting("tavoiteAlueTyyppi").containsExactly(TavoiteAlueTyyppi.OTSIKKO, TavoiteAlueTyyppi.TAVOITESISALTOALUE);
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet().get(0)).extracting("otsikko").isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITEALUEET, "otsikko1"));
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet())
+                .flatExtracting("tavoitteet").containsExactlyInAnyOrder(KoodiDto.of(KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, "tavoite1"));
+        assertThat(tavoitesisaltoalueDto.getTavoitealueet())
+                .flatExtracting("keskeisetSisaltoalueet").extracting("tekstit").containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "keskeinen1"));
+    }
+
+    private TavoitesisaltoalueDto createPerusteWithTavoitesisaltoalue(PerusteprojektiDto pp) {
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
 
         PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new TavoitesisaltoalueDto());
@@ -312,19 +345,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                                 .build()
                 )
         );
-
-        tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
-
-        assertThat(tavoitesisaltoalueDto.getNimi().get(Kieli.FI)).isEqualTo("nimi");
-        assertThat(tavoitesisaltoalueDto.getTeksti().get(Kieli.FI)).isEqualTo("teksti1");
-        assertThat(tavoitesisaltoalueDto.getNimiKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITESISALTOALUEENOTSIKKO, "arvi1"));
-        assertThat(tavoitesisaltoalueDto.getTavoitealueet()).hasSize(2);
-        assertThat(tavoitesisaltoalueDto.getTavoitealueet()).extracting("tavoiteAlueTyyppi").containsExactly(TavoiteAlueTyyppi.OTSIKKO, TavoiteAlueTyyppi.TAVOITESISALTOALUE);
-        assertThat(tavoitesisaltoalueDto.getTavoitealueet().get(0)).extracting("otsikko").isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITEALUEET, "otsikko1"));
-        assertThat(tavoitesisaltoalueDto.getTavoitealueet())
-                .flatExtracting("tavoitteet").containsExactlyInAnyOrder(KoodiDto.of(KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, "tavoite1"));
-        assertThat(tavoitesisaltoalueDto.getTavoitealueet())
-                .flatExtracting("keskeisetSisaltoalueet").extracting("tekstit").containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "keskeinen1"));
+        return tavoitesisaltoalueDto;
     }
 
     private KoodiDto koodiDto(String nimi) {

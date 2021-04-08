@@ -476,6 +476,7 @@ public class Peruste extends AbstractAuditedEntity
                 }
                 break;
             case VAPAASIVISTYSTYO:
+            case MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS:
             case VAPAASIVISTYSTYOLUKUTAITO:
                 VapaasivistystyoSisalto vstSisalto = this.getVstSisalto();
                 if (vstSisalto != null) {
