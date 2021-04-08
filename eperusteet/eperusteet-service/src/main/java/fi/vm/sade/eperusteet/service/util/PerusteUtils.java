@@ -67,7 +67,7 @@ public class PerusteUtils {
                     return KoulutustyyppiToteutus.LOPS;
                 } else if (kt == KoulutusTyyppi.TPO) {
                     return KoulutustyyppiToteutus.TPO;
-                } else if (kt == KoulutusTyyppi.VAPAASIVISTYSTYO || kt == KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO) {
+                } else if (kt.isVapaaSivistystyo()) {
                     return KoulutustyyppiToteutus.VAPAASIVISTYSTYO;
                 } else if (kt == KoulutusTyyppi.TUTKINTOONVALMENTAVA) {
                     return KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA;
