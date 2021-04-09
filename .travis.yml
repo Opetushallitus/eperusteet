@@ -26,7 +26,7 @@ before_install:
   - nvm install $NODE_VERSION
 
 install:
-  - git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
+  - git clone --recurse-submodules --depth 1 ${EPERUSTEET_UI_BRANCH} https://github.com/Opetushallitus/eperusteet-ui.git
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
   - export ARTIFACT_NAME="eperusteet"

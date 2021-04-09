@@ -34,10 +34,22 @@ public class PalauteController {
         return palauteService.lahetaPalaute(palauteDto);
     }
 
+    @RequestMapping(method = POST, value = "/update")
+    @ResponseBody
+    public PalauteDto updatePalaute(@RequestBody PalauteDto palauteDto) {
+        return palauteService.paivitaPalaute(palauteDto);
+    }
+
     @RequestMapping(method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Object palautteet(@RequestParam(value = "palautekanava", defaultValue = "eperusteet-opintopolku") String palautekanava) throws JsonProcessingException {
         return palauteService.getPalautteet(palautekanava);
+    }
+
+    @RequestMapping(method = GET, value = "/status")
+    @ResponseBody
+    public List<PalauteDto> palauteStatukset(@RequestParam(value = "palautekanava") String palautekanava) throws JsonProcessingException {
+        return palauteService.getPalauteStatus(palautekanava);
     }
 }

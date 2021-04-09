@@ -2,7 +2,6 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import fi.vm.sade.eperusteet.dto.PalauteDto;
-import fi.vm.sade.eperusteet.service.PalauteService;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +12,7 @@ import org.springframework.util.ObjectUtils;
 
 @Profile("local")
 @Service
-public class PalauteServiceLocalImpl implements PalauteService {
+public class PalauteServiceLocalImpl extends AbstractPalauteServiceImpl {
 
     private static List<PalauteDto> palautteet = new ArrayList<>();
     private final static String PALAUTE_KEY = "eperusteet-opintopolku";
