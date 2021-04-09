@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.vm.sade.eperusteet.domain.PalauteStatus;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class PalauteDto {
     private Date createdAt;
     private String key;
     private String data;
+    private PalauteStatus status;
 
     public void setUser_agent(String userAgent) {
         this.userAgent = userAgent;
