@@ -101,6 +101,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -495,9 +496,24 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             Set<Peruste> korvaajat = perusteRepository.findAllKorvaavatByDiaarinumero(haettu.getDiaarinumero());
             List<PerusteInfoDto> korvaajatDto = mapper.mapAsList(korvaajat, PerusteInfoDto.class);
             haettu.setKorvaavatPerusteet(korvaajatDto);
+
+            taytaLaajuus(haettu);
         }
 
         return resultDto;
+    }
+
+    private void taytaLaajuus(PerusteDto peruste) {
+        if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+            peruste.getSuoritustavat().forEach(suoritustapa -> {
+                try {
+                    if (peruste.getLaajuus() == null) {
+                        peruste.setLaajuus(getTutkinnonLaajuus(peruste.getId(), suoritustapa.getSuoritustapakoodi()));
+                    }
+                } catch (Exception ex) {
+                }
+            });
+        }
     }
 
     // Sisäisen haku (palauttaa myös keskeneräisiä)
@@ -591,6 +607,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     dto.setTutkintonimikkeet(getTutkintonimikeKoodit(id));
                 }
             }
+
+            taytaLaajuus(dto);
         }
 
         return dto;
@@ -1169,11 +1187,27 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         RakenneModuuliDto rakenneModuuliDto = mapper.map(rakenne, RakenneModuuliDto.class);
         if (rev != null) {
             rakenneModuuliDto.setVersioId(rev.getNumero());
-        }
-        else {
+        } else {
             rakenneModuuliDto.setVersioId(0);
         }
         return rakenneModuuliDto;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Integer getTutkinnonLaajuus(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
+
+        Long rakenneId = rakenneRepository.getRakenneIdWithPerusteAndSuoritustapa(perusteid, suoritustapakoodi);
+        if (rakenneId == null) {
+            throw new NotExistsException("Rakennetta ei ole olemassa");
+        }
+
+        RakenneModuuli rakenne = rakenneRepository.findOne(rakenneId);
+        if (rakenne.getMuodostumisSaanto() != null && rakenne.getMuodostumisSaanto().getLaajuus() != null && rakenne.getMuodostumisSaanto().getLaajuus().getMinimi() != null) {
+            return rakenne.getMuodostumisSaanto().getLaajuus().getMinimi();
+        }
+
+        return null;
     }
 
     @Override
