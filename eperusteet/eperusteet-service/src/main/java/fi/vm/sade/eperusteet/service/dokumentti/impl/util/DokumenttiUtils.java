@@ -85,6 +85,16 @@ public class DokumenttiUtils {
         }
     }
 
+    public static String tagTeksti(String teksti, String tagi) {
+        if (teksti != null) {
+
+            teksti = unescapeHtml5(teksti);
+            return "<" + tagi + ">" + teksti + "</" + tagi + ">";
+        }
+
+        return "<" + tagi + "></" + tagi + ">";
+    }
+
     public static void addHeader(DokumenttiPeruste docBase, String text) {
         if (text != null) {
             Element header = docBase.getDocument().createElement("h" + docBase.getGenerator().getDepth());
