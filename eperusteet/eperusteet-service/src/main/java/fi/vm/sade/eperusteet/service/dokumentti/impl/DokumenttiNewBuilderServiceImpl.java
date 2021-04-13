@@ -28,6 +28,10 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiRivi;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiRiviBgColor;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiRiviTyyppi;
+import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiTaulukko;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
@@ -807,32 +811,47 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         addTeksti(docBase, messages.translate("docgen.tavoitteet-ja-keskeiset-sisallot.title", docBase.getKieli()), "h5");
 
+        DokumenttiTaulukko tavoitesisaltoalueTaulukko = new DokumenttiTaulukko();
+        tavoitesisaltoalueTaulukko.addOtsikkosarakkeet(
+                messages.translate("docgen.tavoitteet.title", docBase.getKieli()),
+                messages.translate("docgen.keskeiset-sisaltoalueet.title", docBase.getKieli()));
+
         tavoitesisaltoalue.getTavoitealueet().forEach(tavoitealue -> {
+            DokumenttiRivi rivi = new DokumenttiRivi();
+
             if (tavoitealue.getTavoiteAlueTyyppi().equals(TavoiteAlueTyyppi.OTSIKKO)) {
                 KoodiDto otsikko = mapper.map(tavoitealue.getOtsikko(), KoodiDto.class);
-                addTeksti(docBase, getTextString(docBase, otsikko.getNimi()), "tavoitteet-otsikko");
+                rivi.addSarake(getTextString(docBase, otsikko.getNimi()));
+                rivi.setColspan(2);
+                rivi.setTyyppi(DokumenttiRiviTyyppi.SUBHEADER);
             }
 
             if (tavoitealue.getTavoiteAlueTyyppi().equals(TavoiteAlueTyyppi.TAVOITESISALTOALUE)) {
 
                 if (!CollectionUtils.isEmpty(tavoitealue.getTavoitteet())) {
-                    addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h6");
-
+                    StringBuffer sarake = new StringBuffer();
                     tavoitealue.getTavoitteet().forEach(tavoite -> {
                         KoodiDto tavoiteKoodi = mapper.map(tavoite, KoodiDto.class);
-                        addTeksti(docBase, getTextString(docBase, tavoiteKoodi.getNimi()), "div");
+                        sarake.append(tagTeksti(getTextString(docBase, tavoiteKoodi.getNimi()), "div"));
                     });
+
+                    rivi.addSarake(sarake.toString());
                 }
 
                 if (!CollectionUtils.isEmpty(tavoitealue.getKeskeisetSisaltoalueet())) {
-                    addTeksti(docBase, messages.translate("docgen.keskeiset-sisaltoalueet.title", docBase.getKieli()), "h6");
-
+                    StringBuffer sarake = new StringBuffer();
                     tavoitealue.getKeskeisetSisaltoalueet().forEach(keskeinenSisaltoalue -> {
-                        addTeksti(docBase, getTextString(docBase, keskeinenSisaltoalue), "div");
+                        sarake.append(tagTeksti(getTextString(docBase, keskeinenSisaltoalue), "div"));
                     });
+
+                    rivi.addSarake(sarake.toString());
                 }
             }
+
+            tavoitesisaltoalueTaulukko.addRivi(rivi);
         });
+
+        tavoitesisaltoalueTaulukko.addToDokumentti(docBase);
 
         docBase.getGenerator().increaseDepth();
         addTekstikappaleet(docBase, lapsi);

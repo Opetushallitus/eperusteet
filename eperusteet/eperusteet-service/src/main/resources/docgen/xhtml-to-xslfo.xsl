@@ -996,7 +996,30 @@
                     </xsl:choose>
                 </xsl:attribute>
             </xsl:if>
-            <fo:block text-align="center">
+            <xsl:variable name="align">
+                <xsl:choose>
+                    <xsl:when test="@align">
+                        <xsl:choose>
+                            <xsl:when test="@align='start'">
+                                <xsl:text>start</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="@align='right'">
+                                <xsl:text>end</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="@align='justify'">
+                                <xsl:text>justify</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:text>center</xsl:text>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>center</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:variable>
+            <fo:block text-align="{$align}">
                 <xsl:apply-templates select="*|text()"/>
             </fo:block>
         </fo:table-cell>
@@ -1015,6 +1038,11 @@
             <xsl:if test="@bgcolor">
                 <xsl:attribute name="background-color">
                     <xsl:value-of select="@bgcolor"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@fontcolor">
+                <xsl:attribute name="color">
+                    <xsl:value-of select="@fontcolor"/>
                 </xsl:attribute>
             </xsl:if>
             <xsl:choose>
