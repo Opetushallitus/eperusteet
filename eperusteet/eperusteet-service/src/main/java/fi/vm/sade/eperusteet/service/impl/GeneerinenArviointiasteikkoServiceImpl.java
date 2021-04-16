@@ -15,10 +15,13 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +36,9 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
     @Autowired
     @Dto
     private DtoMapper mapper;
+
+    @Autowired
+    private PermissionManager permissionManager;
 
     @Override
     public List<GeneerinenArviointiasteikkoDto> getAll() {
@@ -87,6 +93,14 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
     @Override
     public GeneerinenArviointiasteikkoDto update(Long id, GeneerinenArviointiasteikkoDto asteikkoDto) {
         GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findOne(id);
+
+        if (asteikko.isJulkaistu()) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!permissionManager.hasPermission(authentication, null, PermissionManager.Target.POHJA, PermissionManager.Permission.LUONTI)
+                    || !asteikko.structureEquals(mapper.map(asteikkoDto, GeneerinenArviointiasteikko.class))) {
+                throw new BusinessRuleViolationException("julkaistua-ei-voi-rakenteellisesti-muuttaa");
+            }
+        }
 
         asteikkoDto.setId(id);
         ArviointiAsteikko arviointiAsteikko = asteikko.getArviointiAsteikko();
