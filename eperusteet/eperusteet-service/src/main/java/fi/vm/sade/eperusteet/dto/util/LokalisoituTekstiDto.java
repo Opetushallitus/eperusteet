@@ -135,6 +135,10 @@ public class LokalisoituTekstiDto {
         return concat(dto::get);
     }
 
+    public void add(Kieli kieli, String teksti) {
+        this.tekstit.put(kieli, teksti);
+    }
+
     @JsonIgnore
     public String get(Kieli kieli) {
         return tekstit.get(kieli);

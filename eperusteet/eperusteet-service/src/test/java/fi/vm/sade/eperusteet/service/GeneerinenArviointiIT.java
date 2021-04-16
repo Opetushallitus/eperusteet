@@ -20,10 +20,12 @@ import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 
 import fi.vm.sade.eperusteet.repository.OsaamistasoRepository;
+import java.io.IOException;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 
@@ -99,6 +101,82 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         geneerinen.setJulkaistu(true);
         GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
         assertThat(julkaistu.isJulkaistu()).isTrue();
+    }
+
+    @Test
+    @Rollback
+    public void testJulkaistun_muokkaus() {
+        loginAsUser("testOphAdmin");
+
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
+
+        geneerinen.setJulkaistu(true);
+        GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
+
+        assertThat(julkaistu.getOsaamistasonKriteerit().stream()
+                .noneMatch(osaamistasonKriteeri -> osaamistasonKriteeri.getKriteerit().stream()
+                        .anyMatch(kriteeri -> kriteeri.containsKey(Kieli.SV)))).isTrue();
+
+        julkaistu.setOsaamistasonKriteerit(julkaistu.getOsaamistasonKriteerit().stream().map(osaamistasonKriteeri -> {
+            osaamistasonKriteeri.setKriteerit(osaamistasonKriteeri.getKriteerit().stream().map(kriteeri -> {
+                kriteeri.add(Kieli.SV, "ruotsiksi");
+                return kriteeri;
+            }).collect(Collectors.toList()));
+            return osaamistasonKriteeri;
+        }).collect(Collectors.toSet()));
+
+        GeneerinenArviointiasteikkoDto paivitettyJulkaistu = geneerinenArviointiasteikkoService.update(julkaistu.getId(), julkaistu);
+
+        assertThat(paivitettyJulkaistu.getOsaamistasonKriteerit().stream()
+                .noneMatch(osaamistasonKriteeri -> osaamistasonKriteeri.getKriteerit().stream()
+                        .anyMatch(kriteeri -> kriteeri.containsKey(Kieli.SV)))).isFalse();
+
+        loginAsUser("test");
+
+        assertThatThrownBy(() -> geneerinenArviointiasteikkoService.update(paivitettyJulkaistu.getId(), paivitettyJulkaistu))
+                .hasMessage("julkaistua-ei-voi-rakenteellisesti-muuttaa");
+    }
+
+    @Test
+    @Rollback
+    public void testJulkaistun_muokkaus_rakenneVirhe() {
+        loginAsUser("testOphAdmin");
+
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
+
+        geneerinen.setJulkaistu(true);
+        geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
+
+        {
+            GeneerinenArviointiasteikkoDto virheellinen = geneerinenArviointiasteikkoService.getOne(geneerinen.getId());
+            ArviointiAsteikkoDto arviointiasteikko = addArviointiasteikot();
+            virheellinen.setArviointiAsteikko(Reference.of(arviointiasteikko.getId()));
+
+            assertThatThrownBy(() -> geneerinenArviointiasteikkoService.update(virheellinen.getId(), virheellinen))
+                    .hasMessage("julkaistua-ei-voi-rakenteellisesti-muuttaa");
+        }
+
+        {
+            GeneerinenArviointiasteikkoDto virheellinen = geneerinenArviointiasteikkoService.getOne(geneerinen.getId());
+            virheellinen.setOsaamistasonKriteerit(virheellinen.getOsaamistasonKriteerit().stream().skip(2).collect(Collectors.toSet()));
+
+            assertThatThrownBy(() -> geneerinenArviointiasteikkoService.update(virheellinen.getId(), virheellinen))
+                    .hasMessage("julkaistua-ei-voi-rakenteellisesti-muuttaa");
+        }
+
+        {
+            GeneerinenArviointiasteikkoDto virheellinen = geneerinenArviointiasteikkoService.getOne(geneerinen.getId());
+            virheellinen.setOsaamistasonKriteerit(virheellinen.getOsaamistasonKriteerit().stream().map(osaamistasonKriteeri -> {
+                osaamistasonKriteeri.setKriteerit(osaamistasonKriteeri.getKriteerit().stream().skip(2).collect(Collectors.toList()));
+                return osaamistasonKriteeri;
+            }).collect(Collectors.toSet()));
+
+            assertThatThrownBy(() -> geneerinenArviointiasteikkoService.update(virheellinen.getId(), virheellinen))
+                    .hasMessage("julkaistua-ei-voi-rakenteellisesti-muuttaa");
+        }
+
     }
 
     @Test

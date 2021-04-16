@@ -123,6 +123,8 @@
                 <security:user name="test6" password="test" authorities="ROLE_USER"/>
                 <security:user name="test7" password="test" authorities="ROLE_USER"/>
                 <security:user name="test8" password="test" authorities="ROLE_USER"/>
+                <security:user name="testOphAdmin" password="test"
+                               authorities="ROLE_ADMIN, ROLE_USER, ROLE_APP_EPERUSTEET, ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_CRUD, ROLE_APP_EPERUSTEET_READ_UPDATE, ROLE_APP_EPERUSTEET_READ_UPDATE_1.2.246.562.10.00000000001 ,ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"/>
             </security:user-service>
         </security:authentication-provider>
     </security:authentication-manager>
