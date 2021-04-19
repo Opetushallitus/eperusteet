@@ -22,10 +22,14 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.domain.vst.KotoTaitotaso;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoTaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
@@ -76,7 +80,9 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class),
             @JsonSubTypes.Type(value = OpintokokonaisuusDto.class),
             @JsonSubTypes.Type(value = TavoitesisaltoalueDto.class),
-            @JsonSubTypes.Type(value = KoulutuksenOsaDto.class)
+            @JsonSubTypes.Type(value = KoulutuksenOsaDto.class),
+            @JsonSubTypes.Type(value = KotoKielitaitotasoDto.class),
+            @JsonSubTypes.Type(value = KotoOpintoDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto {
         public abstract String getOsanTyyppi();

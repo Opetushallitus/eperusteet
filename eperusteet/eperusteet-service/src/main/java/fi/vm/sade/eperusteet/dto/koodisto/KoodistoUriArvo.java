@@ -24,5 +24,6 @@ public class KoodistoUriArvo {
     public static final String TAVOITESISALTOALUEENOTSIKKO = "tavoitesisaltoalueenotsikko";
     public static final String TAVOITEALUEET = "tavoitealueet";
     public static final String TAVOITTEETLUKUTAIDOT = "tavoitteetlukutaidot";
+    public static final String KOTOUTUMISKOULUTUSTAVOITTEET = "kotoutumiskoulutustavoitteet";
 
 }

@@ -29,6 +29,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
+import fi.vm.sade.eperusteet.domain.vst.KotoKielitaitotaso;
+import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.vst.TavoiteAlue;
 import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
@@ -55,6 +57,8 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoiteAlueDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
@@ -571,6 +575,16 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(KoulutuksenOsaDto.class, KoulutuksenOsa.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KotoKielitaitotasoDto.class, KotoKielitaitotaso.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KotoOpintoDto.class, KotoOpinto.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();

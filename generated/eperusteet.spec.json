@@ -9691,6 +9691,75 @@
         }
       }
     },
+    "KotoKielitaitotasoDto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "nimiKoodi" : {
+            "$ref" : "#/definitions/KoodiDto"
+          },
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "taitotasot" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KotoTaitotasoDto"
+            }
+          }
+        }
+      } ]
+    },
+    "KotoOpintoDto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "nimiKoodi" : {
+            "$ref" : "#/definitions/KoodiDto"
+          },
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "taitotasot" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KotoTaitotasoDto"
+            }
+          }
+        }
+      } ]
+    },
+    "KotoTaitotasoDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "tavoitteet" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "kielenkayttotarkoitus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "aihealueet" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "viestintataidot" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "opiskelijantaidot" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
     "KoulutuksenOsaDto" : {
       "allOf" : [ {
         "$ref" : "#/definitions/Laaja"
@@ -9817,12 +9886,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -10540,7 +10609,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koulutuksenosa" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koulutuksenosa" ]
         },
         "luotu" : {
           "type" : "string",
@@ -10593,7 +10662,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koulutuksenosa" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koulutuksenosa" ]
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
@@ -11485,15 +11554,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11525,15 +11594,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11565,15 +11634,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11605,15 +11674,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11645,15 +11714,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11685,15 +11754,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11725,15 +11794,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11765,15 +11834,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11805,15 +11874,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11845,15 +11914,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11885,15 +11954,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -11925,15 +11994,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -12336,6 +12405,10 @@
         },
         "vstSisalto" : {
           "$ref" : "#/definitions/VapaasivistystyoSisaltoKevytDto"
+        },
+        "laajuus" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -12484,6 +12557,10 @@
         },
         "vstSisalto" : {
           "$ref" : "#/definitions/VapaasivistystyoSisaltoKevytDto"
+        },
+        "laajuus" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "tutkintonimikeKoodit" : {
           "type" : "array",
@@ -12656,6 +12733,10 @@
         },
         "vstSisalto" : {
           "$ref" : "#/definitions/VapaasivistystyoSisaltoKevytDto"
+        },
+        "laajuus" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "tutkintonimikeKoodit" : {
           "type" : "array",
