@@ -8,6 +8,9 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
+import fi.vm.sade.eperusteet.domain.vst.KotoKielitaitotaso;
+import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
+import fi.vm.sade.eperusteet.domain.vst.KotoSisalto;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.vst.TavoiteAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
@@ -647,6 +650,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             } else if (po instanceof KoulutuksenOsa) {
                 KoulutuksenOsa koulutuksenOsa = (KoulutuksenOsa) po;
                 addKoulutuksenOsa(docBase, koulutuksenOsa, po, lapsi);
+            } else if (po instanceof KotoKielitaitotaso) {
+                KotoKielitaitotaso kotoKielitaitotaso = (KotoKielitaitotaso) po;
+                addKotoSisalto(docBase, kotoKielitaitotaso, po, lapsi);
+            } else if (po instanceof KotoOpinto) {
+                KotoOpinto kotoOpinto = (KotoOpinto) po;
+                addKotoSisalto(docBase, kotoOpinto, po, lapsi);
             } else if (po instanceof TekstiKappale) {
                 TekstiKappale tk = (TekstiKappale) po;
                 addTekstikappale(docBase, tk, po, lapsi);
@@ -915,6 +924,68 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addTeksti(docBase, messages.translate("docgen.arviointi.title", docBase.getKieli()), "h5");
             addTeksti(docBase, arvioinninKuvaus, "div");
         }
+
+        docBase.getGenerator().increaseDepth();
+        addTekstikappaleet(docBase, lapsi);
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private void addKotoSisalto(DokumenttiPeruste docBase, KotoSisalto kotoSisalto, PerusteenOsa po,
+                                PerusteenOsaViite lapsi) {
+
+        KoodiDto nimiKoodi = mapper.map(kotoSisalto.getNimiKoodi(), KoodiDto.class);
+        addHeader(docBase, getTextString(docBase, nimiKoodi.getNimi()));
+
+        String kuvaus = getTextString(docBase, kotoSisalto.getKuvaus());
+        if (StringUtils.isNotEmpty(kuvaus)) {
+            addTeksti(docBase, kuvaus, "div");
+        }
+
+        kotoSisalto.getTaitotasot().forEach(taitotaso -> {
+
+            KoodiDto taitotasoNimi = mapper.map(taitotaso.getNimi(), KoodiDto.class);
+            addTeksti(docBase, getTextString(docBase, taitotasoNimi.getNimi()), "h5");
+
+            String tavoitteet = getTextString(docBase, taitotaso.getTavoitteet());
+            if (StringUtils.isNotEmpty(tavoitteet)) {
+                addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h6");
+                addTeksti(docBase, tavoitteet, "div");
+            }
+
+            String kielenkayttotarkoitus = getTextString(docBase, taitotaso.getKielenkayttotarkoitus());
+            String aihealueet = getTextString(docBase, taitotaso.getAihealueet());
+            String viestintataidot = getTextString(docBase, taitotaso.getViestintataidot());
+            String opiskelijantaidot = getTextString(docBase, taitotaso.getOpiskelijantaidot());
+
+            if (StringUtils.isNotEmpty(kielenkayttotarkoitus)
+                    || StringUtils.isNotEmpty(aihealueet)
+                    || StringUtils.isNotEmpty(viestintataidot)
+                    || StringUtils.isNotEmpty(opiskelijantaidot)) {
+                addTeksti(docBase, messages.translate("docgen.keskeiset-sisallot.title", docBase.getKieli()), "h5");
+            }
+
+            if (StringUtils.isNotEmpty(kielenkayttotarkoitus)) {
+                addTeksti(docBase, messages.translate("docgen.kielenkayttotarkoitus.title", docBase.getKieli()), "h6");
+                addTeksti(docBase, kielenkayttotarkoitus, "div");
+            }
+
+            if (StringUtils.isNotEmpty(aihealueet)) {
+                addTeksti(docBase, messages.translate("docgen.aihealueet.title", docBase.getKieli()), "h6");
+                addTeksti(docBase, aihealueet, "div");
+            }
+
+            if (StringUtils.isNotEmpty(viestintataidot)) {
+                addTeksti(docBase, messages.translate("docgen.viestintataidot.title", docBase.getKieli()), "h6");
+                addTeksti(docBase, viestintataidot, "div");
+            }
+
+            if (StringUtils.isNotEmpty(opiskelijantaidot)) {
+                addTeksti(docBase, messages.translate("docgen.opiskelijantaidot.title", docBase.getKieli()), "h6");
+                addTeksti(docBase, opiskelijantaidot, "div");
+            }
+
+        });
 
         docBase.getGenerator().increaseDepth();
         addTekstikappaleet(docBase, lapsi);

@@ -4,7 +4,9 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -28,39 +31,41 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
-@Table(name = "tavoitesisaltoalue")
+@Table(name = "koto_kielitaitotaso")
 @Audited
 @Getter
 @Setter
-public class Tavoitesisaltoalue extends PerusteenOsa implements Serializable {
+public class KotoKielitaitotaso extends PerusteenOsa implements Serializable, KotoSisalto {
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidKoodisto(koodisto = KoodistoUriArvo.TAVOITESISALTOALUEENOTSIKKO)
     private Koodi nimiKoodi;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen teksti;
+    private TekstiPalanen kuvaus;
 
     @OrderColumn
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "tavoitesisaltoalue_tavoitealueet",
-            joinColumns = @JoinColumn(name = "tavoitesisaltoalue_id"),
-            inverseJoinColumns = @JoinColumn(name = "tavoitealue_id"))
-    private List<TavoiteAlue> tavoitealueet = new ArrayList<>();
+    @JoinTable(name = "koto_kielitaitotaso_taitotasot",
+            joinColumns = @JoinColumn(name = "koto_kielitaitotaso_id"),
+            inverseJoinColumns = @JoinColumn(name = "taitotaso_id"))
+    private List<KotoTaitotaso> taitotasot = new ArrayList<>();
 
-    public Tavoitesisaltoalue() {
+    public KotoKielitaitotaso() {
 
     }
 
-    public Tavoitesisaltoalue(Tavoitesisaltoalue other) {
+    public KotoKielitaitotaso(KotoKielitaitotaso other) {
         copyState(other);
     }
 
     @Override
-    public Tavoitesisaltoalue copy() {
-        return new Tavoitesisaltoalue(this);
+    public KotoKielitaitotaso copy() {
+        return new KotoKielitaitotaso(this);
     }
 
     @Override
@@ -71,23 +76,23 @@ public class Tavoitesisaltoalue extends PerusteenOsa implements Serializable {
     @Override
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
-        if (perusteenOsa instanceof Tavoitesisaltoalue) {
-            copyState((Tavoitesisaltoalue) perusteenOsa);
+        if (perusteenOsa instanceof KotoKielitaitotaso) {
+            copyState((KotoKielitaitotaso) perusteenOsa);
         }
     }
 
     @Override
     public boolean structureEquals(PerusteenOsa updated) {
         boolean result = false;
-        if (updated instanceof Tavoitesisaltoalue) {
-            Tavoitesisaltoalue that = (Tavoitesisaltoalue) updated;
+        if (updated instanceof KotoKielitaitotaso) {
+            KotoKielitaitotaso that = (KotoKielitaitotaso) updated;
             result = super.structureEquals(that);
-            result &= getTeksti() == null || refXnor(getTeksti(), that.getTeksti());
+            result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
             result &= Objects.equals(getNimiKoodi(), that.getNimiKoodi());
 
-            if (result && getTavoitealueet() != null) {
-                Iterator<TavoiteAlue> i = getTavoitealueet().iterator();
-                Iterator<TavoiteAlue> j = that.getTavoitealueet().iterator();
+            if (result && getTaitotasot() != null) {
+                Iterator<KotoTaitotaso> i = getTaitotasot().iterator();
+                Iterator<KotoTaitotaso> j = that.getTaitotasot().iterator();
                 while (result && i.hasNext() && j.hasNext()) {
                     result &= Objects.equals(i.next(), j.next());
                 }
@@ -99,22 +104,24 @@ public class Tavoitesisaltoalue extends PerusteenOsa implements Serializable {
         return result;
     }
 
-    private void copyState(Tavoitesisaltoalue other) {
+    private void copyState(KotoKielitaitotaso other) {
         if (other == null) {
             return;
         }
 
         setNimi(other.getNimi());
         setNimiKoodi(other.getNimiKoodi());
-        setTeksti(other.getTeksti());
+        setKuvaus(other.getKuvaus());
 
-        this.tavoitealueet = new ArrayList<>();
-        setTavoitealueet(other.getTavoitealueet());
+        this.taitotasot = new ArrayList<>();
+        for (KotoTaitotaso taitotaso : other.getTaitotasot()) {
+            this.taitotasot.add(taitotaso);
+        }
+
     }
 
     @Override
     public NavigationType getNavigationType() {
-        return NavigationType.tavoitesisaltoalue;
+        return NavigationType.koto_kielitaitotaso;
     }
-
 }
