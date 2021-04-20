@@ -190,13 +190,13 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             if (nimi.getTekstit().containsKey(Kieli.FI)) {
                 Element perusteNimiEl = docBase.getDocument().createElement("strong");
                 p.appendChild(perusteNimiEl);
-                perusteNimiEl.appendChild(DokumenttiUtils.newItalicElement(docBase.getDocument(), nimi.get(Kieli.FI)));
+                perusteNimiEl.appendChild(DokumenttiUtils.newItalicElement(docBase, nimi.get(Kieli.FI)));
                 Element br = docBase.getDocument().createElement("br");
                 p.appendChild(br);
             }
 
             if (nimi.getTekstit().containsKey(Kieli.SV)) {
-                p.appendChild(DokumenttiUtils.newItalicElement(docBase.getDocument(),
+                p.appendChild(DokumenttiUtils.newItalicElement(docBase,
                         nimi.get(Kieli.SV)));
             }
         }
@@ -221,7 +221,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
             voimaantulopaivaJaDiaari.append(")");
         }
 
-        td.appendChild(DokumenttiUtils.newItalicElement(docBase.getDocument(),
+        td.appendChild(DokumenttiUtils.newItalicElement(docBase,
                 voimaantulopaivaJaDiaari.toString()));
     }
 
@@ -266,7 +266,7 @@ public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
                 td.appendChild(p);
                 Element perusteNimiEl = docBase.getDocument().createElement("strong");
                 p.appendChild(perusteNimiEl);
-                perusteNimiEl.appendChild(DokumenttiUtils.newItalicElement(docBase.getDocument(),
+                perusteNimiEl.appendChild(DokumenttiUtils.newItalicElement(docBase,
                         kvLiiteJulkinenDto.getNimi().get(docBase.getKieli())));
 
                 td.appendChild(br);

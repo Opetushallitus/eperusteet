@@ -446,7 +446,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             td.appendChild(p);
             p.setTextContent(nimi);
             if (StringUtils.isNotEmpty(kuvaus)) {
-                td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
+                td.appendChild(newItalicElement(docBase, kuvaus));
             }
 
             if (rakenneOsa.getPakollinen() != null && rakenneOsa.getPakollinen()) {
@@ -493,7 +493,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 th.appendChild(p);
                 p.appendChild(newBoldElement(docBase.getDocument(), nimi.toUpperCase()));
                 if (StringUtils.isNotEmpty(kuvaus)) {
-                    th.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
+                    th.appendChild(newItalicElement(docBase, kuvaus));
                 }
 
                 break;
@@ -505,7 +505,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 td.appendChild(p);
                 p.appendChild(newBoldElement(docBase.getDocument(), nimi));
                 if (StringUtils.isNotEmpty(kuvaus)) {
-                    td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
+                    td.appendChild(newItalicElement(docBase, kuvaus));
                 }
 
                 break;
@@ -515,7 +515,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 td.appendChild(p);
                 p.appendChild(newBoldElement(docBase.getDocument(), nimi));
                 if (StringUtils.isNotEmpty(kuvaus)) {
-                    td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
+                    td.appendChild(newItalicElement(docBase, kuvaus));
                 }
 
                 break;
@@ -525,7 +525,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 td.appendChild(p);
                 p.appendChild(newBoldElement(docBase.getDocument(), nimi));
                 if (StringUtils.isNotEmpty(kuvaus)) {
-                    td.appendChild(newItalicElement(docBase.getDocument(), kuvaus));
+                    td.appendChild(newItalicElement(docBase, kuvaus));
                 }
 
                 break;
