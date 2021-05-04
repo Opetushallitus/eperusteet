@@ -1506,7 +1506,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                                 + getLaajuusSuffiksi(osaAlue.getValinnaisetOsaamistavoitteet().getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
                         addTeksti(docBase, otsikko, "h5");
 
-                        addAmmattitaitovaatimukset2019(docBase, osaAlue.getPakollisetOsaamistavoitteet().getTavoitteet2020());
+                        addAmmattitaitovaatimukset2019(docBase, osaAlue.getValinnaisetOsaamistavoitteet().getTavoitteet2020());
 
                     }
 
