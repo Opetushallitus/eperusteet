@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.validation.ValidMaxLengthValidator;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -369,6 +370,24 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             }
             return vaatimus;
         }).collect(Collectors.toList());
+    }
+
+    @Test
+    public void testMaxLength() {
+        ValidMaxLengthValidator validator = new ValidMaxLengthValidator();
+        TekstiPalanen a = TekstiPalanen.of(Kieli.FI, null);
+        TekstiPalanen b = TekstiPalanen.of(Kieli.FI, "");
+        String size257 = "aabccdbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd";
+        assertThat(size257).hasSize(257);
+        TekstiPalanen c = TekstiPalanen.of(Kieli.FI, size257);
+        TekstiPalanen d = TekstiPalanen.of(Kieli.FI, size257.substring(256));
+
+        assertThat(validator.isValid(null, null)).isEqualTo(true);
+        assertThat(validator.isValid(null, null)).isEqualTo(true);
+        assertThat(validator.isValid(a, null)).isEqualTo(true);
+        assertThat(validator.isValid(b, null)).isEqualTo(true);
+        assertThat(validator.isValid(c, null)).isEqualTo(false);
+        assertThat(validator.isValid(d, null)).isEqualTo(true);
     }
 
 }
