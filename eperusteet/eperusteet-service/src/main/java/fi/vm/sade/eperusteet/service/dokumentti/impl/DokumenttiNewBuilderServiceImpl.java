@@ -48,6 +48,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.imageio.IIOImage;
@@ -166,11 +167,49 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Tekstikappaleet
         addTekstikappaleet(docBase);
 
+        // Alaviitteet
+        addFootnotes(docBase);
+
         // Käsitteet
         addKasitteet(docBase);
 
         // Kuvat
         buildImages(docBase);
+    }
+
+    private void addFootnotes(DokumenttiPeruste docBase) {
+        XPathFactory xPathfactory = XPathFactory.newInstance();
+        XPath xpath = xPathfactory.newXPath();
+        try {
+            XPathExpression expression = xpath.compile("//abbr");
+            NodeList list = (NodeList) expression.evaluate(docBase.getDocument(), XPathConstants.NODESET);
+
+            int noteNumber = 1;
+            for (int i = 0; i < list.getLength(); i++) {
+                Element element = (Element) list.item(i);
+                Node node = list.item(i);
+                if (node.getAttributes() != null & node.getAttributes().getNamedItem("data-viite") != null) {
+                    String avain = node.getAttributes().getNamedItem("data-viite").getNodeValue();
+
+                    if (docBase.getPeruste() != null && docBase.getPeruste().getId() != null) {
+                        Termi termi = termistoRepository.findByPerusteIdAndAvain(docBase.getPeruste().getId(), avain);
+
+                        if (termi != null && termi.isAlaviite() && termi.getSelitys() != null) {
+                            element.setAttribute("number", String.valueOf(noteNumber));
+
+                            TekstiPalanen tekstiDto = termi.getSelitys();
+                            String selitys = getTextString(docBase, tekstiDto)
+                                    .replaceAll("<[^>]+>", "");
+                            element.setAttribute("text", selitys);
+                            noteNumber++;
+                        }
+                    }
+                }
+            }
+
+        } catch (XPathExpressionException e) {
+            log.error(e.getLocalizedMessage());
+        }
     }
 
     private void addMetaPages(DokumenttiPeruste docBase) {
