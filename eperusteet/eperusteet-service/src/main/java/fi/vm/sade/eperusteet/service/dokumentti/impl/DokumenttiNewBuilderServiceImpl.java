@@ -170,9 +170,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Alaviitteet
         addFootnotes(docBase);
 
-        // Käsitteet
-        addKasitteet(docBase);
-
         // Kuvat
         buildImages(docBase);
     }
@@ -187,6 +184,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             int noteNumber = 1;
             for (int i = 0; i < list.getLength(); i++) {
                 Element element = (Element) list.item(i);
+                element.setAttribute("text", element.getTextContent());
+                
                 Node node = list.item(i);
                 if (node.getAttributes() != null & node.getAttributes().getNamedItem("data-viite") != null) {
                     String avain = node.getAttributes().getNamedItem("data-viite").getNodeValue();
@@ -199,8 +198,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
                             TekstiPalanen tekstiDto = termi.getSelitys();
                             String selitys = getTextString(docBase, tekstiDto)
-                                    .replaceAll("<[^>]+>", "");
-                            element.setAttribute("text", selitys);
+                                    .replaceAll("<(?!\\/?(a)(>|\\s))[^<]+?>", "");
+                            addTeksti(docBase, selitys, "attrfootnote", element);
                             noteNumber++;
                         }
                     }
@@ -1772,6 +1771,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
+    @Deprecated
     private void addKasitteet(DokumenttiPeruste docBase) {
         List<Termi> termit = termistoRepository.findByPerusteId(docBase.getPeruste().getId());
         if (termit.size() == 0) {

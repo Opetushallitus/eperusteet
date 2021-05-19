@@ -736,7 +736,7 @@
 
     <xsl:template match="abbr">
 
-        <xsl:value-of select="."/>
+        <xsl:value-of select="@text"/>
 
         <!-- Show endnotes bottom of the page -->
         <fo:footnote>
@@ -745,7 +745,6 @@
             </fo:inline>
             <fo:footnote-body>
                 <fo:block font-size="8pt" line-height="10pt" start-indent="0" text-align="left" color="black">
-
                     <fo:table table-layout="fixed" width="100%">
                         <fo:table-column column-width="10mm"/>
                         <fo:table-column column-width="proportional-column-width(1)"/>
@@ -758,7 +757,7 @@
                                 </fo:table-cell>
                                 <fo:table-cell>
                                     <fo:block>
-                                        <xsl:value-of select="@text"/>
+                                        <xsl:apply-templates select="attrfootnote"/>
                                     </fo:block>
                                 </fo:table-cell>
                             </fo:table-row>
