@@ -577,8 +577,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
 
         Set<TutkinnonOsaViite> osat = new TreeSet<>((o1, o2) -> {
-            String nimi1 = getTextString(docBase, o1.getTutkinnonOsa().getNimi());
-            String nimi2 = getTextString(docBase, o2.getTutkinnonOsa().getNimi());
+            String nimi1 = getTextString(docBase, mapper.map(o1.getTutkinnonOsa(), TutkinnonOsaDto.class).getNimi());
+            String nimi2 = getTextString(docBase, mapper.map(o2.getTutkinnonOsa(), TutkinnonOsaDto.class).getNimi());
 
             // Ensisijaisesti järjestysnumeron mukaan
             int o1i = o1.getJarjestys() != null ? o1.getJarjestys() : Integer.MAX_VALUE;
@@ -1851,7 +1851,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     private String getOtsikko(DokumenttiPeruste docBase, TutkinnonOsaViite viite, boolean withKoodi) {
         TutkinnonOsa osa = viite.getTutkinnonOsa();
         StringBuilder otsikkoBuilder = new StringBuilder();
-        otsikkoBuilder.append(getTextString(docBase, osa.getNimi()));
+        otsikkoBuilder.append(getTextString(docBase, mapper.map(osa, TutkinnonOsaDto.class).getNimi()));
 
         BigDecimal laajuusMaksimi = viite.getLaajuusMaksimi();
         if (laajuusMaksimi != null) {

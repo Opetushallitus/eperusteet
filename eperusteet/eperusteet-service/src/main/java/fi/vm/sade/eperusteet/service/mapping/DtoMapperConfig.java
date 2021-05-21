@@ -346,7 +346,19 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
-                .fieldBToA("tutkinnonOsa.nimi", "nimi")
+                .customize(new CustomMapper<TutkinnonOsaViiteDto, TutkinnonOsaViite>() {
+                    @Override
+                    public void mapBtoA(TutkinnonOsaViite source, TutkinnonOsaViiteDto target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                        if (source.getTutkinnonOsa().getKoodi() != null) {
+                            KoodiDto koodiDto = new KoodiDto();
+                            koodiDto.setUri(source.getTutkinnonOsa().getKoodi().getUri());
+                            koodiDto.setKoodisto(source.getTutkinnonOsa().getKoodi().getKoodisto());
+                            koodistoClient.addNimiAndArvo(koodiDto);
+                            target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
+                        }
+                    }
+                })
                 .fieldBToA("tutkinnonOsa.tyyppi", "tyyppi")
                 .byDefault()
                 .register();

@@ -34,6 +34,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 /**
  *
@@ -88,6 +89,15 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
             return koodi.getArvo();
         } else {
             return koodiArvo;
+        }
+    }
+
+    @Override
+    public LokalisoituTekstiDto getNimi() {
+        if (koodi != null && !CollectionUtils.isEmpty(koodi.getNimi())) {
+            return new LokalisoituTekstiDto(koodi.getNimi());
+        } else {
+            return super.getNimi();
         }
     }
 }
