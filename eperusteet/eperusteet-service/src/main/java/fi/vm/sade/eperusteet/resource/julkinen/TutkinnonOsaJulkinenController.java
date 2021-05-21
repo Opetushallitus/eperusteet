@@ -54,6 +54,7 @@ public class TutkinnonOsaJulkinenController {
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "perusteId", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "vanhentuneet", dataType = "boolean", paramType = "query"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query"),
     })
     public Page<TutkinnonOsaViiteKontekstiDto> getAllTutkinnonOsatBy(@ApiIgnore TutkinnonOsaQueryDto pquery) {
         return service.findAllTutkinnonOsatBy(pquery);
