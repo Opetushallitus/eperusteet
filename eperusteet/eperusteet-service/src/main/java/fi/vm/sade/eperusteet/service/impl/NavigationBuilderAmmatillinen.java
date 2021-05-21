@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -55,7 +56,7 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViite tosa) {
         NavigationNodeDto result = NavigationNodeDto.of(
                 NavigationType.tutkinnonosaviite,
-                mapper.map(tosa.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class),
+                mapper.map(tosa.getTutkinnonOsa(), TutkinnonOsaDto.class).getNimi(),
                 tosa.getId())
                 .meta("koodi", mapper.map(tosa.getTutkinnonOsa().getKoodi(), KoodiDto.class))
                 .meta("laajuus", tosa.getLaajuus());
