@@ -1,8 +1,10 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
@@ -39,11 +41,11 @@ public class NavigationBuilderDefault implements NavigationBuilder {
         NavigationType type = NavigationType.viite;
         PerusteenOsa po = sisalto.getPerusteenOsa();
         if (po != null) {
-            if (po instanceof TekstiKappale) {
+            if (po instanceof Liitteellinen && ((Liitteellinen) po).isLiite()) {
+                type = NavigationType.liite;
+            } else if (po instanceof TekstiKappale) {
                 TekstiKappale tk = (TekstiKappale) po;
-                if (tk.isLiite()) {
-                    type = NavigationType.liite;
-                } else if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
+                if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
                     type = NavigationType.muodostuminen;
                 }
             } else {
@@ -53,9 +55,7 @@ public class NavigationBuilderDefault implements NavigationBuilder {
 
         NavigationNodeDto result = NavigationNodeDto
                 .of(type, sisalto.getPerusteenOsa() != null
-                                ? mapper.map(
-                        sisalto.getPerusteenOsa().getNimi(),
-                        LokalisoituTekstiDto.class)
+                                ? mapper.map(sisalto.getPerusteenOsa(), PerusteenOsaDto.class).getNimi()
                                 : null,
                         sisalto.getId())
                 .addAll(sisalto.getLapset().stream()

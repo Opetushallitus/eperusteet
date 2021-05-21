@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 
@@ -35,24 +36,23 @@ import java.util.Objects;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
-/**
- *
- * @author jhyoty
- */
-@Entity
-@Table(name = "tekstikappale")
-@Audited
-public class TekstiKappale extends PerusteenOsa implements Serializable {
+ /**
+  * @author jhyoty
+  */
+ @Entity
+ @Table(name = "tekstikappale")
+ @Audited
+ public class TekstiKappale extends PerusteenOsa implements Serializable, Liitteellinen {
 
-    @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen teksti;
+     @ValidHtml
+     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+     private TekstiPalanen teksti;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @Getter
-    @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+     @Getter
+     @Setter
+     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi osaamisala;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})

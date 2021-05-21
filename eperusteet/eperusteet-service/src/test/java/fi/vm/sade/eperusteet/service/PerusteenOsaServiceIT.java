@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
+import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
@@ -282,6 +283,32 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(koulutuksenOsaDto.getArvioinninKuvaus().get(Kieli.FI)).isEqualTo("arvioinninkuvaus");
         assertThat(koulutuksenOsaDto.getTavoitteet()).hasSize(2);
         assertThat(koulutuksenOsaDto.getTavoitteet()).extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "tavoite1"), Maps.newHashMap(Kieli.FI, "tavoite2"));
+    }
+
+    @Test
+    public void testTuvaLaajaAlainenOsaaminen() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString());
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new TuvaLaajaAlainenOsaaminenDto());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
+        TuvaLaajaAlainenOsaaminenDto tuvaLaajaAlainenOsaaminenDto = (TuvaLaajaAlainenOsaaminenDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(tuvaLaajaAlainenOsaaminenDto.getId());
+
+        assertThat(tuvaLaajaAlainenOsaaminenDto.getId()).isNotNull();
+
+        tuvaLaajaAlainenOsaaminenDto.setTeksti(LokalisoituTekstiDto.of("teksti"));
+        tuvaLaajaAlainenOsaaminenDto.setNimiKoodi(KoodiDto.of(KoodistoUriArvo.TUTKINTOKOULUTUKSEEN_VALMENTAVAKOULUTUS_LAAJAALAINENOSAAMINEN, "arvi1"));
+        tuvaLaajaAlainenOsaaminenDto.setLiite(true);
+
+        tuvaLaajaAlainenOsaaminenDto = perusteenOsaService.update(tuvaLaajaAlainenOsaaminenDto);
+
+        assertThat(tuvaLaajaAlainenOsaaminenDto.getNimiKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.TUTKINTOKOULUTUKSEEN_VALMENTAVAKOULUTUS_LAAJAALAINENOSAAMINEN, "arvi1"));
+        assertThat(tuvaLaajaAlainenOsaaminenDto.getTeksti().get(Kieli.FI)).isEqualTo("teksti");
+        assertThat(tuvaLaajaAlainenOsaaminenDto.getLiite()).isTrue();
     }
 
     @Test

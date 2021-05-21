@@ -16,5 +16,5 @@ public enum NavigationType {
     taiteenosa,
     termi,
     opintokokonaisuus, tavoitesisaltoalue, koto_kielitaitotaso, koto_opinto,
-    koulutuksenosa;
+    koulutuksenosa, laajaalainenosaaminen;
 }

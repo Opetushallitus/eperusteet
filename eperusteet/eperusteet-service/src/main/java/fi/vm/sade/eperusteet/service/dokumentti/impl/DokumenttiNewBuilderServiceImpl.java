@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
+import fi.vm.sade.eperusteet.domain.tuva.TuvaLaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.vst.KotoKielitaitotaso;
 import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
 import fi.vm.sade.eperusteet.domain.vst.KotoSisalto;
@@ -688,6 +689,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             } else if (po instanceof KoulutuksenOsa) {
                 KoulutuksenOsa koulutuksenOsa = (KoulutuksenOsa) po;
                 addKoulutuksenOsa(docBase, koulutuksenOsa, po, lapsi);
+            } else if (po instanceof TuvaLaajaAlainenOsaaminen) {
+                TuvaLaajaAlainenOsaaminen tuvaLaajaAlainenOsaaminen = (TuvaLaajaAlainenOsaaminen) po;
+                addTuvaLaajaAlainenOsaaminen(docBase, tuvaLaajaAlainenOsaaminen, po, lapsi);
             } else if (po instanceof KotoKielitaitotaso) {
                 KotoKielitaitotaso kotoKielitaitotaso = (KotoKielitaitotaso) po;
                 addKotoSisalto(docBase, kotoKielitaitotaso, po, lapsi);
@@ -701,12 +705,34 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
     }
 
+    private void addTuvaLaajaAlainenOsaaminen(DokumenttiPeruste docBase, TuvaLaajaAlainenOsaaminen tuvaLaajaAlainenOsaaminen, PerusteenOsa po, PerusteenOsaViite lapsi) {
+
+        KoodiDto nimiKoodiDto = mapper.map(tuvaLaajaAlainenOsaaminen.getNimiKoodi(), KoodiDto.class);
+        if (nimiKoodiDto != null) {
+            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
+            addHeader(docBase, getTextString(docBase, nimi));
+        } else {
+            addHeader(docBase, messages.translate("docgen.nimeton.laaja_alainenosaaminen", docBase.getKieli()));
+        }
+
+        String teksti = getTextString(docBase, tuvaLaajaAlainenOsaaminen.getTeksti());
+        addTeksti(docBase, teksti, "div");
+
+        docBase.getGenerator().increaseDepth();
+
+        // Rekursiivisesti
+        addTekstikappaleet(docBase, lapsi);
+
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
     private void addTekstikappale(DokumenttiPeruste docBase, TekstiKappale tk, PerusteenOsa po,
                                   PerusteenOsaViite lapsi) {
         PerusteenOsaTunniste tunniste = po.getTunniste();
         if (tunniste != PerusteenOsaTunniste.NORMAALI
                 && tunniste != PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
-                && tunniste!= PerusteenOsaTunniste.RAKENNE) {
+                && tunniste != PerusteenOsaTunniste.RAKENNE) {
             String nimi = getTextString(docBase, tk.getNimi());
             addHeader(docBase, nimi);
 
