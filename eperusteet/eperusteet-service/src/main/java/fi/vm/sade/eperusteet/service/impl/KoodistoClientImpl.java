@@ -218,10 +218,12 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public void addNimiAndArvo(KoodiDto koodi) {
-        KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
-        if (koodistoKoodi != null) {
-            koodi.setArvo(koodistoKoodi.getKoodiArvo());
-            koodi.setNimi(metadataToLocalized(koodistoKoodi));
+        if (!koodi.isTemporary()) {
+            KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
+            if (koodistoKoodi != null) {
+                koodi.setArvo(koodistoKoodi.getKoodiArvo());
+                koodi.setNimi(new LokalisoituTekstiDto(metadataToLocalized(koodistoKoodi)));
+            }
         }
     }
 

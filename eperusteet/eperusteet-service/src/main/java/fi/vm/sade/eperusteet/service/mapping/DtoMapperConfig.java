@@ -69,6 +69,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.*;
 import ma.glasnost.orika.converter.BidirectionalConverter;
@@ -88,6 +89,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 
 import java.time.Instant;
@@ -357,7 +359,7 @@ public class DtoMapperConfig {
                             koodiDto.setUri(source.getTutkinnonOsa().getKoodi().getUri());
                             koodiDto.setKoodisto(source.getTutkinnonOsa().getKoodi().getKoodisto());
                             koodistoClient.addNimiAndArvo(koodiDto);
-                            target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
+                            target.setNimi(koodiDto.getNimi());
                         }
                     }
                 })
@@ -454,7 +456,7 @@ public class DtoMapperConfig {
                             koodiDto.setUri(target.getKoulutuskoodiUri());
                             koodiDto.setKoodisto("koulutus");
                             koodistoClient.addNimiAndArvo(koodiDto);
-                            target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
+                            target.setNimi(koodiDto.getNimi());
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.error(ex.getLocalizedMessage());
                         }
@@ -467,14 +469,16 @@ public class DtoMapperConfig {
                 .customize(new CustomMapper<TutkintonimikeKoodi, TutkintonimikeKoodiDto>() {
                     @Override
                     public void mapAtoB(TutkintonimikeKoodi source, TutkintonimikeKoodiDto target, MappingContext context) {
-                        try {
-                            KoodiDto koodiDto = new KoodiDto();
-                            koodiDto.setUri(target.getTutkintonimikeUri());
-                            koodiDto.setKoodisto("tutkintonimikkeet");
-                            koodistoClient.addNimiAndArvo(koodiDto);
-                            target.setNimi(koodiDto.getNimi());
-                        } catch (RestClientException | AccessDeniedException ex) {
-                            logger.error(ex.getLocalizedMessage());
+                        if (!source.getTutkintonimikeUri().contains("temporary")) {
+                            try {
+                                KoodiDto koodiDto = new KoodiDto();
+                                koodiDto.setUri(target.getTutkintonimikeUri());
+                                koodiDto.setKoodisto("tutkintonimikkeet");
+                                koodistoClient.addNimiAndArvo(koodiDto);
+                                target.setNimi(koodiDto.getNimi());
+                            } catch (RestClientException | AccessDeniedException ex) {
+                                logger.error(ex.getLocalizedMessage());
+                            }
                         }
                     }
                 })
@@ -485,10 +489,23 @@ public class DtoMapperConfig {
                 .customize(new CustomMapper<Koodi, KoodiDto>() {
                     @Override
                     public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
+                        super.mapAtoB(a, b, context);
                         try {
                             koodistoClient.addNimiAndArvo(b);
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(KoodiDto b, Koodi a, MappingContext context) {
+                        super.mapBtoA(b, a, context);
+                        if (StringUtils.isEmpty(b.getUri())) {
+                            a.setKoodisto("temporary");
+                            a.setUri("temporary_" + UUID.randomUUID().toString());
+                        }
+                        if (!b.isTemporary()) {
+                            a.setNimi(null);
                         }
                     }
                 })
@@ -501,7 +518,7 @@ public class DtoMapperConfig {
                     public void mapAtoB(Ammattitaitovaatimus2019 source, Ammattitaitovaatimus2019Dto target, MappingContext context) {
                         super.mapAtoB(source, target, context);
                         if (target.getKoodi() != null) {
-                            target.setVaatimus(new LokalisoituTekstiDto(target.getKoodi().getNimi()));
+                            target.setVaatimus(target.getKoodi().getNimi());
                         }
                     }
 
@@ -519,18 +536,22 @@ public class DtoMapperConfig {
                     @Override
                     public void mapBtoA(OsaamisalaDto osaamisalaDto, Koodi koodi, MappingContext context) {
                         super.mapBtoA(osaamisalaDto, koodi, context);
-                        koodi.setKoodisto("osaamisala");
-                        koodi.setUri(osaamisalaDto.getOsaamisalakoodiUri());
+                        if (!osaamisalaDto.getOsaamisalakoodiUri().contains("temporary")) {
+                            koodi.setKoodisto("osaamisala");
+                            koodi.setUri(osaamisalaDto.getOsaamisalakoodiUri());
+                        }
                     }
 
                     @Override
                     public void mapAtoB(Koodi a, OsaamisalaDto b, MappingContext context) {
                         try {
                             super.mapAtoB(a, b, context);
-                            KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
-                            if (koodi != null) {
-                                b.setNimi(koodi.getNimi());
-                                b.setOsaamisalakoodiArvo(koodi.getArvo());
+                            if (!a.isTemporary()) {
+                                KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
+                                if (koodi != null) {
+                                    b.setNimi(koodi.getNimi());
+                                    b.setOsaamisalakoodiArvo(koodi.getArvo());
+                                }
                             }
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));

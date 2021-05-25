@@ -456,7 +456,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     private KoodiDto koodiDto(String nimi) {
         KoodiDto koodiDto = new KoodiDto();
-        koodiDto.setNimi(Maps.newHashMap("fi", nimi));
+        koodiDto.setNimi(LokalisoituTekstiDto.of(Kieli.FI, nimi));
 
         return koodiDto;
     }

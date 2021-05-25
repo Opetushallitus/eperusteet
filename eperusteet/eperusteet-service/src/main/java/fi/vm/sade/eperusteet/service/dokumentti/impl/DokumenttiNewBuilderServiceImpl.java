@@ -709,8 +709,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         KoodiDto nimiKoodiDto = mapper.map(tuvaLaajaAlainenOsaaminen.getNimiKoodi(), KoodiDto.class);
         if (nimiKoodiDto != null) {
-            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
-            addHeader(docBase, getTextString(docBase, nimi));
+            addHeader(docBase, getTextString(docBase, nimiKoodiDto.getNimi()));
         } else {
             addHeader(docBase, messages.translate("docgen.nimeton.laaja_alainenosaaminen", docBase.getKieli()));
         }
@@ -814,9 +813,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Nimi
         KoodiDto nimiKoodiDto = mapper.map(opintokokonaisuus.getNimiKoodi(), KoodiDto.class);
         if (nimiKoodiDto != null) {
-            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
             String laajuusSuffix = ", " + opintokokonaisuus.getMinimilaajuus() + " " + messages.translate("docgen.laajuus.op", docBase.getKieli());
-            addHeader(docBase, getTextString(docBase, nimi) + laajuusSuffix);
+            addHeader(docBase, getTextString(docBase, nimiKoodiDto.getNimi()) + laajuusSuffix);
         } else {
             addHeader(docBase, messages.translate("docgen.opintokokonaisuus.nimeton-opintokokonaisuus", docBase.getKieli()));
         }
@@ -870,8 +868,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Nimi
         KoodiDto nimiKoodiDto = mapper.map(tavoitesisaltoalue.getNimiKoodi(), KoodiDto.class);
         if (nimiKoodiDto != null) {
-            LokalisoituTekstiDto nimi = new LokalisoituTekstiDto(nimiKoodiDto.getNimi());
-            addHeader(docBase, getTextString(docBase, nimi));
+            addHeader(docBase, getTextString(docBase, nimiKoodiDto.getNimi()));
         } else {
             addHeader(docBase, messages.translate("docgen.opintokokonaisuus.nimeton-tavoitesisaltoalue", docBase.getKieli()));
         }

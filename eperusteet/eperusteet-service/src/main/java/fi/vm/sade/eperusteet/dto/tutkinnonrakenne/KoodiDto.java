@@ -17,7 +17,11 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import java.util.HashMap;
 import lombok.*;
 
 import java.util.Map;
@@ -34,7 +38,8 @@ import java.util.Map;
 @NoArgsConstructor
 @Builder
 public class KoodiDto {
-    private Map<String, String> nimi;
+    private Long id;
+    private LokalisoituTekstiDto nimi;
     private String arvo;
     private String uri;
     private String koodisto;
@@ -47,4 +52,9 @@ public class KoodiDto {
         result.setArvo(arvo);
         return result;
     }
+
+    public boolean isTemporary() {
+        return uri != null && uri.startsWith("temporary_");
+    }
+
 }

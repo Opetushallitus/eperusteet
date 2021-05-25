@@ -22,8 +22,8 @@ public class TuvaLaajaAlainenOsaaminenDto extends PerusteenOsaDto.Laaja {
 
     @Override
     public LokalisoituTekstiDto getNimi() {
-        if (nimiKoodi != null && !CollectionUtils.isEmpty(nimiKoodi.getNimi())) {
-            return new LokalisoituTekstiDto(nimiKoodi.getNimi());
+        if (nimiKoodi != null && nimiKoodi.getNimi() != null && !CollectionUtils.isEmpty(nimiKoodi.getNimi().getTekstit())) {
+            return nimiKoodi.getNimi();
         } else {
             return super.getNimi();
         }

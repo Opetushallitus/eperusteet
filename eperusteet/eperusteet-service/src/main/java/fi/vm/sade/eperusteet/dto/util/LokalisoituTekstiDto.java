@@ -103,7 +103,7 @@ public class LokalisoituTekstiDto {
         this.id = tmpId;
         this.tekstit = tmpValues;
     }
-
+    
     @JsonValue
     public Map<String, String> asMap() {
         HashMap<String, String> map = new HashMap<>();

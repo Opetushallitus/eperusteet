@@ -521,4 +521,64 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
 
     }
 
+    @Test
+    @Rollback
+    public void testTemporaryTutkintonimike() {
+
+        perusteService.updateTutkintonimikkeet(peruste.getId(), Arrays.asList(
+                TutkintonimikeKoodiDto.builder()
+                        .tutkintonimikeUri("temporary_1111-1111")
+                        .nimi(LokalisoituTekstiDto.of("tutkintonimike1")).build(),
+                TutkintonimikeKoodiDto.builder()
+                        .tutkintonimikeUri("temporary_2222-2222")
+                        .nimi(LokalisoituTekstiDto.of("tutkintonimike2")).build()
+        ));
+
+        RakenneModuuliDto rakenneDto = getRakenneDto();
+        rakenneDto.setOsat(Arrays.asList(
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.builder().uri("temporary_1111-1111").koodisto("temporary").build())
+                        .build(),
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.builder().uri("temporary_2222-2222").koodisto("temporary").build())
+                        .build()));
+        RakenneModuuliDto rakenne = update(rakenneDto);
+
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(0)).getNimi().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("tutkintonimike1").getTekstit());
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(0)).getTutkintonimike().getUri()).isEqualTo("temporary_1111-1111");
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(1)).getNimi().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("tutkintonimike2").getTekstit());
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(1)).getTutkintonimike().getUri()).isEqualTo("temporary_2222-2222");
+
+    }
+
+    @Test
+    @Rollback
+    public void testTemporaryOsaamisala() {
+
+        perusteService.updateOsaamisalat(peruste.getId(), Arrays.asList(
+                KoodiDto.builder().uri("temporary_1111-1111").koodisto("temporary").nimi(LokalisoituTekstiDto.of("osaamisala1")).build(),
+                KoodiDto.builder().uri("temporary_2222-2222").koodisto("temporary").nimi(LokalisoituTekstiDto.of("osaamisala2")).build()
+        ).stream().collect(Collectors.toSet()));
+
+        RakenneModuuliDto rakenneDto = getRakenneDto();
+        rakenneDto.setOsat(Arrays.asList(
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.OSAAMISALA)
+                        .osaamisala(OsaamisalaDto.builder().osaamisalakoodiUri("temporary_1111-1111").build())
+                        .build(),
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.OSAAMISALA)
+                        .osaamisala(OsaamisalaDto.builder().osaamisalakoodiUri("temporary_2222-2222").build())
+                        .build()));
+        RakenneModuuliDto rakenne = update(rakenneDto);
+
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(0)).getNimi().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("osaamisala1").getTekstit());
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(0)).getOsaamisala().getOsaamisalakoodiUri()).isEqualTo("temporary_1111-1111");
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(1)).getNimi().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("osaamisala2").getTekstit());
+        assertThat(((RakenneModuuliDto) rakenne.getOsat().get(1)).getOsaamisala().getOsaamisalakoodiUri()).isEqualTo("temporary_2222-2222");
+
+    }
+
 }
