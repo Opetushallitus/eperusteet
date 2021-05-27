@@ -48,7 +48,10 @@ public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
                 navigationNodeDto.addAll(taiteenaladto.getOsaavainMap().keySet().stream().map(alaosa -> {
                     KevytTekstiKappaleDto tekstikappale = taiteenaladto.getOsaavainMap().get(alaosa);
                     if (tekstikappale != null) {
-                        return NavigationNodeDto.of(NavigationType.taiteenosa, tekstikappale.getNimi()).meta("alaosa", alaosa);
+                        return NavigationNodeDto.of(NavigationType.taiteenosa,
+                                tekstikappale.getNimi())
+                                .meta("alaosa", alaosa)
+                                .meta("viiteId", navigationNodeDto.getId());
                     } else {
                         return null;
                     }
