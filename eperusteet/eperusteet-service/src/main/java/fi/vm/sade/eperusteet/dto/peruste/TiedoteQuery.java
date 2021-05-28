@@ -38,4 +38,5 @@ public class TiedoteQuery {
     private List<Long> perusteIds;
     private String jarjestys;
     private Boolean jarjestysNouseva;
+    private Boolean koulutustyypiton;
 }

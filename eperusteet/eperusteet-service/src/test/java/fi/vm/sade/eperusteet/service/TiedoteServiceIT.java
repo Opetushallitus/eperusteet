@@ -308,4 +308,14 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         assertEquals(1, tiedoteDto.getPeruste().getSuoritustavat().size());
     }
+
+    @Test
+    public void testKoulutustyypiton() {
+        TiedoteQuery tq = new TiedoteQuery();
+        tq.setKoulutusTyyppi(Arrays.asList(KoulutusTyyppi.PERUSTUTKINTO.toString(), KoulutusTyyppi.LUKIOKOULUTUS.toString()));
+        tq.setKoulutustyypiton(true);
+        Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
+        assertEquals(2, tiedotteet.getTotalElements());
+    }
+
 }

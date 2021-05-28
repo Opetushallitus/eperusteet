@@ -536,6 +536,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.mapAsList(perusteRepository.findVoimassaolevatJulkaistutPerusteet(), PerusteKevytDto.class);
     }
 
+    @Override
+    @Cacheable("julkaistutkoulutustyypit")
+    public List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli) {
+        return perusteRepository.findJulkaistutDistinctKoulutustyyppiByKieli(kieli).stream()
+                .filter(koulutustyyppi -> koulutustyyppi != null)
+                .map(KoulutusTyyppi::of)
+                .collect(Collectors.toList());
+    }
+
     // Julkinen haku
     @Override
     @Transactional(readOnly = true)
