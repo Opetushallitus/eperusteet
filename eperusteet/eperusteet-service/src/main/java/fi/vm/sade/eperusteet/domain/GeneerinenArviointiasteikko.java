@@ -91,6 +91,7 @@ public class GeneerinenArviointiasteikko extends AbstractAuditedReferenceableEnt
 
     public boolean structureEquals(GeneerinenArviointiasteikko updated) {
         boolean result = Objects.equals(getArviointiAsteikko().getId(), updated.getArviointiAsteikko().getId());
+        result &= updated.julkaistu != isJulkaistu();
 
         if (result && getOsaamistasonKriteerit() != null) {
             Iterator<GeneerisenOsaamistasonKriteeri> alkup_osKriteerit = getOsaamistasonKriteerit()
