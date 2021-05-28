@@ -302,4 +302,6 @@ public interface PerusteService {
 
     @PreAuthorize("isAuthenticated()")
     List<PerusteKevytDto> getJulkaistutPerusteet();
+    
+    List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli);
 }

@@ -349,4 +349,9 @@
            eternal="false"
            timeToLiveSeconds="600"
            overflowToDisk="false"/>
+    <cache name="julkaistutkoulutustyypit"
+           maxElementsInMemory="1"
+           eternal="false"
+           timeToLiveSeconds="600"
+           overflowToDisk="false"/>
 </ehcache>

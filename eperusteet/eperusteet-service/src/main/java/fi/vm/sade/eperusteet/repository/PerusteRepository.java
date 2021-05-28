@@ -171,4 +171,15 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
             "GROUP BY p.koulutustyyppi")
     List<KoulutustyyppiLukumaara> findVoimassaolevatJulkaistutPerusteLukumaarat(@Param("koulutustyypit") List<String> koulutustyypit);
+
+    @Query("SELECT DISTINCT p.koulutustyyppi " +
+            "FROM Peruste p " +
+            "LEFT JOIN p.kielet k " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "AND p.tyyppi = 'NORMAALI' " +
+            "AND (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
+            "AND k = :kieli")
+    List<String> findJulkaistutDistinctKoulutustyyppiByKieli(@Param("kieli") Kieli kieli);
 }

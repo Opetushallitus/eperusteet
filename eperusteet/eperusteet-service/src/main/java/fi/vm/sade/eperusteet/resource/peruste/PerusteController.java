@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
@@ -425,6 +426,13 @@ public class PerusteController {
             @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
     ) {
         return service.getVoimassaolevatJulkaistutPerusteLukumaarat(koulutustyypit);
+    }
+
+    @RequestMapping(value = "/julkaistutkoulutustyypit", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
+    public List<KoulutusTyyppi> getJulkaistutKoulutustyypit(@RequestParam(defaultValue = "fi") String kieli) {
+        return service.getJulkaistutKoulutustyyppit(Kieli.of(kieli));
     }
 
 }

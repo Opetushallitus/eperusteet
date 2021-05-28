@@ -165,13 +165,20 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
         }
 
         if (!ObjectUtils.isEmpty(tq.getKoulutusTyyppi())) {
-            SetJoin<Tiedote, KoulutusTyyppi> koulutustyypit = root.join(Tiedote_.koulutustyypit);
+            SetJoin<Tiedote, KoulutusTyyppi> koulutustyypit = root.join(Tiedote_.koulutustyypit, JoinType.LEFT);
             Optional<Predicate> koulutustyyppiPred = tq.getKoulutusTyyppi().stream()
                     .map((koulutustyyppi) -> cb.equal(koulutustyypit, KoulutusTyyppi.of(koulutustyyppi)))
                     .reduce(cb::or);
 
             if (koulutustyyppiPred.isPresent()) {
-                pred = cb.and(pred, koulutustyyppiPred.get());
+                if (tq.getKoulutustyypiton() != null && tq.getKoulutustyypiton()) {
+                    pred = cb.and(pred,
+                            cb.or(
+                                    koulutustyypit.isNull(),
+                                    koulutustyyppiPred.get()));
+                } else {
+                    pred = cb.and(pred, koulutustyyppiPred.get());
+                }
             }
         }
 
