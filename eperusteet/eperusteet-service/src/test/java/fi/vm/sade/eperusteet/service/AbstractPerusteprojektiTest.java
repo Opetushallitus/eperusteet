@@ -202,4 +202,10 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
             tutkintonimikeKoodiRepository.save(tutkintonimikeKoodi);
         });
     }
+
+    protected void julkaisePeruste(long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        peruste.asetaTila(PerusteTila.VALMIS);
+        perusteRepository.save(peruste);
+    }
 }

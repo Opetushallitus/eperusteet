@@ -435,4 +435,11 @@ public class PerusteController {
         return service.getJulkaistutKoulutustyyppit(Kieli.of(kieli));
     }
 
+    @RequestMapping(value = "/opaskoodikiinnitys/{koodiUri}", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Oppaat joihin kiinnitetty koodiUri")
+    public List<PerusteDto> getOpasKiinnitettyKoodi(@PathVariable("koodiUri") final String koodiUri) {
+        return service.getOpasKiinnitettyKoodi(koodiUri);
+    }
+
 }
