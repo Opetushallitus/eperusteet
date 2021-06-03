@@ -16,16 +16,25 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
  *
@@ -50,10 +59,28 @@ public class OpasSisalto extends AbstractAuditedReferenceableEntity implements P
     @JoinColumn
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
+    @Getter
+    @NotAudited
+    @OneToMany(mappedBy = "opasSisalto", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OppaanKiinnitettyKoodi> oppaanKiinnitetytKoodit = new ArrayList<>();
+
+    public void setOppaanKiinnitetytKoodit(List<OppaanKiinnitettyKoodi> oppaanKiinnitetytKoodit) {
+        this.oppaanKiinnitetytKoodit.clear();
+
+        if (oppaanKiinnitetytKoodit != null) {
+            this.oppaanKiinnitetytKoodit.addAll(oppaanKiinnitetytKoodit);
+        }
+    }
+
     public OpasSisalto kloonaa(Peruste peruste) {
         OpasSisalto eps = new OpasSisalto();
         eps.setPeruste(peruste);
         eps.setSisalto(sisalto.copy());
+
+        eps.setOppaanKiinnitetytKoodit(oppaanKiinnitetytKoodit.stream()
+                .map(oppaanKiinnitettyKoodi -> oppaanKiinnitettyKoodi.copy(eps))
+                .collect(Collectors.toList()));
+
         return eps;
     }
 

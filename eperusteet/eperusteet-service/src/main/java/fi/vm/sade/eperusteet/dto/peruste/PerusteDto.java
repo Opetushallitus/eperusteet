@@ -35,5 +35,8 @@ public class PerusteDto extends PerusteBaseDto {
     private VapaasivistystyoSisaltoKevytDto vstSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private OpasSisaltoKevytDto oppaanSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Integer laajuus;
 }

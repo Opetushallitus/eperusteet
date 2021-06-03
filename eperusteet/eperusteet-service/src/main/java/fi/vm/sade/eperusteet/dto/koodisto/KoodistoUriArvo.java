@@ -18,6 +18,7 @@ public class KoodistoUriArvo {
     public static final String OSAAMISTAVOITTEET = "osaamistavoitteet";
 
     public static final String OPINTOKOKONAISUUSTAVOITTEET = "opintokokonaisuustavoitteet";
+    public static final String OPINTOKOKONAISUUSNIMET = "opintokokonaisuusnimet";
 
     public static final String ARVIOINTIASTEIKKOAMMATILLINEN = "arviointiasteikkoammatillinen15";
     public static final String OSAAMISALA = "osaamisala";
@@ -27,5 +28,6 @@ public class KoodistoUriArvo {
     public static final String KOTOUTUMISKOULUTUSTAVOITTEET = "kotoutumiskoulutustavoitteet";
 
     public static final String TUTKINTOKOULUTUKSEEN_VALMENTAVAKOULUTUS_LAAJAALAINENOSAAMINEN = "tutkintokoulutukseenvalmentavakoulutuslaajaalainenosaaminen";
+    public static final String KOULUTUKSENOSATTUVA = "koulutuksenosattuva";
 
 }

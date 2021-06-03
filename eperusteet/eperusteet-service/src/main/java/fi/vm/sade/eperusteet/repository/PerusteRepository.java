@@ -182,4 +182,17 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
             "AND k = :kieli")
     List<String> findJulkaistutDistinctKoulutustyyppiByKieli(@Param("kieli") Kieli kieli);
+
+    @Query("SELECT distinct p " +
+            "FROM Peruste p " +
+            "JOIN p.oppaanSisalto os " +
+            "JOIN os.oppaanKiinnitetytKoodit okk " +
+            "JOIN okk.koodi k " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.tyyppi = 'OPAS' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))" +
+            "AND k.uri = :koodiUri")
+    List<Peruste> findAllByJulkaisutOppaatKiinnitettyKoodilla(@Param("koodiUri") String koodiUri);
 }

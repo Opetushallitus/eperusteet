@@ -32,6 +32,7 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Muutosmaarays;
+import fi.vm.sade.eperusteet.domain.OpasSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -360,6 +361,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private VapaasivistystyoSisaltoService vapaasivistystyoSisaltoService;
 
     @Autowired
+    private OpasSisaltoService opasSisaltoService;
+
+    @Autowired
     private KoodistoClient koodistoClient;
 
     private final ObjectMapper ieMapper = InitJacksonConverter.createImportExportMapper();
@@ -543,6 +547,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 .filter(koulutustyyppi -> koulutustyyppi != null)
                 .map(KoulutusTyyppi::of)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PerusteDto> getOpasKiinnitettyKoodi(String koodiUri) {
+        return mapper.mapAsList(perusteRepository.findAllByJulkaisutOppaatKiinnitettyKoodilla(koodiUri), PerusteDto.class);
     }
 
     // Julkinen haku
@@ -1099,6 +1108,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (perusteDto.getVstSisalto() != null) {
             vapaasivistystyoSisaltoService.update(id, perusteDto.getVstSisalto());
+        }
+
+        if (perusteDto.getOppaanSisalto() != null) {
+            opasSisaltoService.update(id, perusteDto.getOppaanSisalto());
         }
 
         perusteRepository.save(current);

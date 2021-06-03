@@ -2639,6 +2639,32 @@
         }
       }
     },
+    "/perusteet/opaskoodikiinnitys/{koodiUri}" : {
+      "get" : {
+        "tags" : [ "Perusteet" ],
+        "summary" : "Oppaat joihin kiinnitetty koodiUri",
+        "description" : "",
+        "operationId" : "getOpasKiinnitettyKoodi",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "koodiUri",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/PerusteDto"
+              }
+            }
+          }
+        }
+      }
+    },
     "/perusteet/oppaiden" : {
       "get" : {
         "tags" : [ "Perusteet" ],
@@ -10826,6 +10852,21 @@
         }
       }
     },
+    "OpasSisaltoKevytDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "oppaanKiinnitetytKoodit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OppaanKiinnitettyKoodiDto"
+          }
+        }
+      }
+    },
     "OpetuksenKohdealueDto" : {
       "type" : "object",
       "properties" : {
@@ -10963,6 +11004,22 @@
           }
         }
       } ]
+    },
+    "OppaanKiinnitettyKoodiDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "kiinnitettyKoodiTyyppi" : {
+          "type" : "string",
+          "enum" : [ "TUTKINNONOSA", "OSAAMISALA", "OPPIAINE", "OPINTOKOKONAISUUS", "KOULUTUKSENOSA" ]
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        }
+      }
     },
     "OppiaineDto" : {
       "type" : "object",
@@ -12458,6 +12515,9 @@
         "vstSisalto" : {
           "$ref" : "#/definitions/VapaasivistystyoSisaltoKevytDto"
         },
+        "oppaanSisalto" : {
+          "$ref" : "#/definitions/OpasSisaltoKevytDto"
+        },
         "laajuus" : {
           "type" : "integer",
           "format" : "int32"
@@ -12609,6 +12669,9 @@
         },
         "vstSisalto" : {
           "$ref" : "#/definitions/VapaasivistystyoSisaltoKevytDto"
+        },
+        "oppaanSisalto" : {
+          "$ref" : "#/definitions/OpasSisaltoKevytDto"
         },
         "laajuus" : {
           "type" : "integer",
@@ -12785,6 +12848,9 @@
         },
         "vstSisalto" : {
           "$ref" : "#/definitions/VapaasivistystyoSisaltoKevytDto"
+        },
+        "oppaanSisalto" : {
+          "$ref" : "#/definitions/OpasSisaltoKevytDto"
         },
         "laajuus" : {
           "type" : "integer",
