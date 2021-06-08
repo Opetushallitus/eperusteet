@@ -6,7 +6,7 @@ Opetushallituksen ePerusteet-palvelu tutkintojen ja yleissivistävän koulutukse
 
 
 ## Palvelukortti
-<https://confluence.csc.fi/display/oppija/ePerusteet>
+<https://wiki.eduuni.fi/display/ophpolku/ePerusteet+palvelukokonaisuus>
 
 ## Kehitysympäristön vaatimukset
 
