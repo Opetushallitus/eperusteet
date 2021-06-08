@@ -939,10 +939,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         Integer maksimiLaajuus = koulutuksenOsa.getLaajuusMaksimi() != null ? koulutuksenOsa.getLaajuusMaksimi() : koulutuksenOsa.getLaajuusMinimi() != null ? koulutuksenOsa.getLaajuusMinimi() : 0;
 
         if (minimiLaajuus.compareTo(maksimiLaajuus) == 0) {
-            String nimiSuffix = String.format(", %d %s", minimiLaajuus, messages.translate("docgen.laajuus.op", docBase.getKieli()));
+            String nimiSuffix = String.format(", %d %s", minimiLaajuus, messages.translate("docgen.laajuus.vk", docBase.getKieli()));
             addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
         } else {
-            String nimiSuffix = String.format(", %d - %d %s", minimiLaajuus, maksimiLaajuus, messages.translate("docgen.laajuus.op", docBase.getKieli()));
+            String nimiSuffix = String.format(", %d - %d %s", minimiLaajuus, maksimiLaajuus, messages.translate("docgen.laajuus.vk", docBase.getKieli()));
             addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
         }
 
