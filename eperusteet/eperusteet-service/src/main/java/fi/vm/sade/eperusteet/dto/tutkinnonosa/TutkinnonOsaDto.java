@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -28,6 +29,8 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -95,7 +98,11 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     @Override
     public LokalisoituTekstiDto getNimi() {
         if (koodi != null && !CollectionUtils.isEmpty(koodi.getNimi())) {
-            return new LokalisoituTekstiDto(koodi.getNimi());
+            Map<String, String> kielet = new HashMap<>();
+            kielet.computeIfAbsent("fi", val -> koodi.getNimi().getOrDefault("fi", super.getNimi().get(Kieli.FI)));
+            kielet.computeIfAbsent("sv", val -> koodi.getNimi().getOrDefault("sv", super.getNimi().get(Kieli.SV)));
+            kielet.computeIfAbsent("en", val -> koodi.getNimi().getOrDefault("en", super.getNimi().get(Kieli.EN)));
+            return new LokalisoituTekstiDto(kielet);
         } else {
             return super.getNimi();
         }
