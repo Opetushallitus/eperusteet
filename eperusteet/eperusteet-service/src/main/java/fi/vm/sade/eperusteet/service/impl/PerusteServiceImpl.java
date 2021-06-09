@@ -715,6 +715,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
+
+        KoulutusTyyppi tyyppi = KoulutusTyyppi.of(peruste.getKoulutustyyppi());
+
+        if (!tyyppi.isAmmatillinen() && !tyyppi.isValmaTelma()) {
+            throw new BusinessRuleViolationException("osaamisalat-ainoastaan-ammatillisilla-perusteilla");
+        }
+
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalakuvaukset = new HashMap<>();
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
 
