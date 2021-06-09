@@ -1390,33 +1390,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
         // Valmiin perusteen tunnisteet eivät saa muuttua
-        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
-            Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
-            Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
+        boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
+        if (rakenneMuuttunut) {
+            if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+                Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
+                Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
 
-            if (!uudetTunnisteet.containsAll(nykyisetTunnisteet)) {
-                throw new BusinessRuleViolationException("rakenteen-tunnisteita-ei-voi-muuttaa");
+                if (!uudetTunnisteet.containsAll(nykyisetTunnisteet)) {
+                    throw new BusinessRuleViolationException("rakenteen-tunnisteita-ei-voi-muuttaa");
+                }
             }
-        }
 
-        if (perusteRepository.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
-            Optional<AbstractRakenneOsa.RakenneOsaVirhe> muutosVirheellinen = moduuli.isSame(nykyinen, 0, false);
-            if (muutosVirheellinen.isPresent()) {
-                throw new BusinessRuleViolationException(muutosVirheellinen.get().getMessage());
+            if (perusteRepository.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
+                Optional<AbstractRakenneOsa.RakenneOsaVirhe> muutosVirheellinen = moduuli.isSame(nykyinen, 0, false);
+                if (muutosVirheellinen.isPresent()) {
+                    throw new BusinessRuleViolationException(muutosVirheellinen.get().getMessage());
+                }
             }
+
+            moduuli = checkIfKoodiAlreadyExists(moduuli);
+
+            { // Save-delete ongelma uniikkien tunnisteiden kanssa
+                rakenneRepository.delete(suoritustapa.getRakenne());
+                suoritustapa.setRakenne(new RakenneModuuli());
+                em.flush();
+            }
+
+            (new RakenneModuuli()).mergeState(moduuli);
+            suoritustapa.setRakenne(rakenneRepository.save(moduuli));
+            onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
-
-        moduuli = checkIfKoodiAlreadyExists(moduuli);
-
-        { // Save-delete ongelma uniikkien tunnisteiden kanssa
-            rakenneRepository.delete(suoritustapa.getRakenne());
-            suoritustapa.setRakenne(new RakenneModuuli());
-            em.flush();
-        }
-
-        (new RakenneModuuli()).mergeState(moduuli);
-        suoritustapa.setRakenne(rakenneRepository.save(moduuli));
-        onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
 
         RakenneModuuliDto updated = mapper.map(moduuli, RakenneModuuliDto.class);
         updateAllTutkinnonOsaJarjestys(perusteId, updated);
@@ -1559,29 +1562,25 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private RakenneModuuli checkIfKoodiAlreadyExists(RakenneModuuli rakenneModuuli) {
         if (rakenneModuuli != null) {
             if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
-                Koodi osaamisalaKoodi = koodiRepository.findOneByUriAndVersio(
-                        rakenneModuuli.getOsaamisala().getUri(),
-                        rakenneModuuli.getOsaamisala().getVersio());
+                Koodi osaamisalaKoodi = koodiRepository.findFirstByUriOrderByVersioDesc(
+                        rakenneModuuli.getOsaamisala().getUri());
                 if (osaamisalaKoodi != null) {
                     rakenneModuuli.setOsaamisala(osaamisalaKoodi);
                 } else {
                     rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
-                setRakenneModuuliKoodiNimi(rakenneModuuli, rakenneModuuli.getOsaamisala());
             } else {
                 rakenneModuuli.setOsaamisala(null);
             }
 
             if (rakenneModuuli.getTutkintonimike() != null && rakenneModuuli.getTutkintonimike().getUri() != null) {
-                Koodi tutkintonimikeKoodi = koodiRepository.findOneByUriAndVersio(
-                        rakenneModuuli.getTutkintonimike().getUri(),
-                        rakenneModuuli.getTutkintonimike().getVersio());
+                Koodi tutkintonimikeKoodi = koodiRepository.findFirstByUriOrderByVersioDesc(
+                        rakenneModuuli.getTutkintonimike().getUri());
                 if (tutkintonimikeKoodi != null) {
                     rakenneModuuli.setTutkintonimike(tutkintonimikeKoodi);
                 } else {
                     rakenneModuuli.setTutkintonimike(koodiRepository.save(rakenneModuuli.getTutkintonimike()));
                 }
-                setRakenneModuuliKoodiNimi(rakenneModuuli, rakenneModuuli.getTutkintonimike());
             } else {
                 rakenneModuuli.setTutkintonimike(null);
             }
@@ -1593,19 +1592,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             }
         }
         return rakenneModuuli;
-    }
-
-    private void setRakenneModuuliKoodiNimi(RakenneModuuli rakenneModuuli, Koodi koodi) {
-        if (koodi.isTemporary()) {
-            rakenneModuuli.setNimi(koodi.getNimi());
-        } else {
-            LokalisoituTekstiDto koodiNimi = mapper.map(koodi, KoodiDto.class).getNimi();
-            LokalisoituTekstiDto rakenneModuuliNimi = mapper.map(rakenneModuuli.getNimi(), LokalisoituTekstiDto.class);
-
-            if (koodiNimi != null && (rakenneModuuliNimi == null || !koodiNimi.getTekstit().equals(rakenneModuuliNimi.getTekstit()))) {
-                rakenneModuuli.setNimi(mapper.map(koodiNimi, TekstiPalanen.class));
-            }
-        }
     }
 
     @Override

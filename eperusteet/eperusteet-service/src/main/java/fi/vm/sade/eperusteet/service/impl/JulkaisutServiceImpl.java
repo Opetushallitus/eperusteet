@@ -226,18 +226,17 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     private void kooditaValiaikaisetKoodit(Peruste peruste) {
+        peruste.getKoodit().stream()
+                .filter(koodi -> koodi.isTemporary())
+                .forEach(koodi -> {
+                    KoodiDto koodiDto = mapper.map(koodi, KoodiDto.class);
+                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(koodi.getKoodisto(), koodiDto.getNimi());
 
-        peruste.getOsaamisalat().stream()
-                .filter(osaamisala -> osaamisala.isTemporary())
-                .forEach(osaamisala -> {
-                    KoodiDto osaamisalaKoodi = mapper.map(osaamisala, KoodiDto.class);
-                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("osaamisala", osaamisalaKoodi.getNimi());
-
-                    osaamisala.setUri(lisattyKoodi.getKoodiUri());
-                    osaamisala.setKoodisto("osaamisala");
-                    osaamisala.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
-                    osaamisala.setNimi(null);
-                    koodiRepository.save(osaamisala);
+                    koodi.setUri(lisattyKoodi.getKoodiUri());
+                    koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
+                    koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
+                    koodi.setNimi(null);
+                    koodiRepository.save(koodi);
                 });
 
         List<TutkintonimikeKoodiDto> perusteenTutkintonimikkeet = perusteService.getTutkintonimikeKoodit(peruste.getId());

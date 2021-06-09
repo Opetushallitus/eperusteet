@@ -24,6 +24,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 @Getter
 @Setter
@@ -73,6 +74,18 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
                 dto.foreach(visitor, depth + 1);
             }
         }
+    }
+
+    public LokalisoituTekstiDto getNimi() {
+        if (osaamisala != null && osaamisala.getNimi() != null && !CollectionUtils.isEmpty(osaamisala.getNimi().getTekstit())) {
+            return osaamisala.getNimi();
+        }
+
+        if (tutkintonimike != null && tutkintonimike.getNimi() != null && !CollectionUtils.isEmpty(tutkintonimike.getNimi().getTekstit())) {
+            return tutkintonimike.getNimi();
+        }
+
+        return nimi;
     }
 
 }

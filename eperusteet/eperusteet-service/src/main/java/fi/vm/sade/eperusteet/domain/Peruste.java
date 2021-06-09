@@ -68,6 +68,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -75,14 +76,13 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity
-        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma {
+        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma, Kooditettu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -610,7 +610,22 @@ public class Peruste extends AbstractAuditedEntity
         return NavigationType.peruste;
     }
 
-    public interface Valmis {}
-    public interface ValmisPohja {}
-    public interface ValmisOpas {}
+    @Override
+    public List<Koodi> getKoodit() {
+        List<Koodi> koodit = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(osaamisalat)) {
+            koodit.addAll(osaamisalat);
+        }
+
+        return koodit;
+    }
+
+    public interface Valmis {
+    }
+
+    public interface ValmisPohja {
+    }
+
+    public interface ValmisOpas {
+    }
 }

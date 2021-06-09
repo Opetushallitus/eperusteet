@@ -62,7 +62,7 @@ public class Koodi implements Serializable {
     private Long versio; // Oletuksena null milloin käytetään uusinta koodiston versiota
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen nimi;
 
     public Koodi() {
@@ -76,6 +76,14 @@ public class Koodi implements Serializable {
 
     public boolean isTemporary() {
         return uri != null && uri.startsWith("temporary_");
+    }
+
+    public String getKoodisto() {
+        if (isTemporary()) {
+            return getUri().split("_")[1];
+        } else {
+            return this.koodisto;
+        }
     }
 
     public static void validateChange(final Koodi a, final Koodi b) {

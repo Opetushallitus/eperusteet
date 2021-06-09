@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
@@ -408,15 +409,21 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             tutkintonimikkeet.setAttribute("translate", messages.translate("tutkintonimikkeet", docBase.getKieli()));
 
             nimikeKoodit.forEach(tnkoodi -> {
-                KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikkeet", tnkoodi.getTutkintonimikeUri());
+                if (tnkoodi.getTutkintonimikeUri().startsWith("temporary")) {
+                    Element tutkintonimike = docBase.getDocument().createElement("tutkintonimike");
+                    tutkintonimike.setTextContent(getTextString(docBase, tnkoodi.getNimi()));
+                    tutkintonimikkeet.appendChild(tutkintonimike);
+                } else {
+                    KoodistoKoodiDto koodiDto = koodistoService.get("tutkintonimikkeet", tnkoodi.getTutkintonimikeUri());
 
-                for (KoodistoMetadataDto meta : koodiDto.getMetadata()) {
-                    if (meta.getKieli().toLowerCase().equals(docBase.getKieli().toString().toLowerCase())) {
-                        Element tutkintonimike = docBase.getDocument().createElement("tutkintonimike");
-                        tutkintonimike.setTextContent(meta.getNimi() + " (" + tnkoodi.getTutkintonimikeArvo() + ")");
-                        tutkintonimikkeet.appendChild(tutkintonimike);
-                    } else {
-                        log.warn("{} was no match", meta.getKieli());
+                    for (KoodistoMetadataDto meta : koodiDto.getMetadata()) {
+                        if (meta.getKieli().toLowerCase().equals(docBase.getKieli().toString().toLowerCase())) {
+                            Element tutkintonimike = docBase.getDocument().createElement("tutkintonimike");
+                            tutkintonimike.setTextContent(meta.getNimi() + " (" + tnkoodi.getTutkintonimikeArvo() + ")");
+                            tutkintonimikkeet.appendChild(tutkintonimike);
+                        } else {
+                            log.warn("{} was no match", meta.getKieli());
+                        }
                     }
                 }
             });
@@ -497,7 +504,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addRakenneModuuli(DokumenttiPeruste docBase, RakenneModuuli rakenneModuuli, Element tbody, int depth) {
-        String nimi = getTextString(docBase, rakenneModuuli.getNimi());
+        RakenneModuuliDto rakenneModuuliDto = mapper.map(rakenneModuuli, RakenneModuuliDto.class);
+        String nimi = getTextString(docBase, rakenneModuuliDto.getNimi());
         MuodostumisSaanto muodostumisSaanto = rakenneModuuli.getMuodostumisSaanto();
 
         String kokoTeksti = getKokoTeksti(muodostumisSaanto, docBase.getKieli());

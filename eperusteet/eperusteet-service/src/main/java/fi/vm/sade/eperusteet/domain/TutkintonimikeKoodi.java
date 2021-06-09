@@ -80,6 +80,6 @@ public class TutkintonimikeKoodi implements Serializable {
     private String tutkintonimikeArvo;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen nimi;
 }

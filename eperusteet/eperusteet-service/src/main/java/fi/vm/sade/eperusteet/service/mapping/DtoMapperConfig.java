@@ -491,7 +491,9 @@ public class DtoMapperConfig {
                     public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
                         super.mapAtoB(a, b, context);
                         try {
-                            koodistoClient.addNimiAndArvo(b);
+                            if (!a.isTemporary()) {
+                                koodistoClient.addNimiAndArvo(b);
+                            }
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
                         }
@@ -500,9 +502,8 @@ public class DtoMapperConfig {
                     @Override
                     public void mapBtoA(KoodiDto b, Koodi a, MappingContext context) {
                         super.mapBtoA(b, a, context);
-                        if (StringUtils.isEmpty(b.getUri())) {
-                            a.setKoodisto("temporary");
-                            a.setUri("temporary_" + UUID.randomUUID().toString());
+                        if (StringUtils.isEmpty(b.getUri()) && !StringUtils.isEmpty(b.getKoodisto())) {
+                            a.setUri("temporary_" + b.getKoodisto() + "_" + UUID.randomUUID().toString());
                         }
                         if (!b.isTemporary()) {
                             a.setNimi(null);
