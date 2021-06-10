@@ -22,12 +22,14 @@ import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
@@ -68,6 +70,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -75,14 +78,13 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity
-        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma {
+        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma, Kooditettu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -155,6 +157,7 @@ public class Peruste extends AbstractAuditedEntity
 
     @Getter
     @Setter
+    @ValidKoodisto(koodisto = KoodistoUriArvo.OSAAMISALA)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "peruste_osaamisala",
@@ -610,7 +613,22 @@ public class Peruste extends AbstractAuditedEntity
         return NavigationType.peruste;
     }
 
-    public interface Valmis {}
-    public interface ValmisPohja {}
-    public interface ValmisOpas {}
+    @Override
+    public List<Koodi> getKoodit() {
+        List<Koodi> koodit = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(osaamisalat)) {
+            koodit.addAll(osaamisalat);
+        }
+
+        return koodit;
+    }
+
+    public interface Valmis {
+    }
+
+    public interface ValmisPohja {
+    }
+
+    public interface ValmisOpas {
+    }
 }

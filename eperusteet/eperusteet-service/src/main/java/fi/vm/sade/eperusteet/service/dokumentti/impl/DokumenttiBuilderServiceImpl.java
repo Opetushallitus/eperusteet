@@ -1500,7 +1500,7 @@ public class DokumenttiBuilderServiceImpl implements DokumenttiBuilderService {
         List<KoodiDto> osaamisalat = mapper.mapAsList(peruste.getOsaamisalat(), KoodiDto.class);
         Element osaamisalalist = doc.createElement("simplelist");
         for (KoodiDto osaamisala : osaamisalat) {
-            String osaamisalaNimi = getTextString(osaamisala.getNimi(), kieli);
+            String osaamisalaNimi = osaamisala.getNimi().get(kieli);
             if (StringUtils.isNotEmpty(osaamisala.getArvo())) {
                 osaamisalaNimi += " (" + osaamisala.getArvo() + ")";
             }

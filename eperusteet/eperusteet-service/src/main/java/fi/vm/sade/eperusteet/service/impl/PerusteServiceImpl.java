@@ -102,7 +102,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -202,6 +201,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -974,22 +974,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 throw new BusinessRuleViolationException("diaarinumero-ei-validi");
             }
 
-            if (!ObjectUtils.isEmpty(perusteDto.getOsaamisalat().stream().filter(osaamisala -> osaamisala.getUri() == null))) {
-                perusteDto.setOsaamisalat(perusteDto.getOsaamisalat().stream().map(osaamisala -> {
-                    if (osaamisala.getUri() == null) {
-                        LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(osaamisala.getNimi());
-                        KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("osaamisala", lokalisoituTekstiDto);
-                        return KoodiDto.builder()
-                                .arvo(lisattyKoodi.getKoodiArvo())
-                                .uri(lisattyKoodi.getKoodiUri())
-                                .versio(Long.parseLong(lisattyKoodi.getVersio()))
-                                .build();
-                    }
-
-                    return osaamisala;
-                }).collect(Collectors.toSet()));
-            }
-
             perusteRepository.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
 
@@ -1406,17 +1390,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         RakenneModuuli moduuli = mapper.map(rakenne, RakenneModuuli.class);
 
         // Valmiin perusteen tunnisteet eivät saa muuttua
-        if (PerusteTila.VALMIS.equals(peruste.getTila())) {
-            Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
-            Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
-
-            if (!uudetTunnisteet.containsAll(nykyisetTunnisteet)) {
-                throw new BusinessRuleViolationException("rakenteen-tunnisteita-ei-voi-muuttaa");
-            }
-        }
-
         boolean rakenneMuuttunut = moduuli.isSame(nykyinen, 0, true).isPresent();
         if (rakenneMuuttunut) {
+            if (PerusteTila.VALMIS.equals(peruste.getTila())) {
+                Set<UUID> nykyisetTunnisteet = keraaTunnisteet(nykyinen);
+                Set<UUID> uudetTunnisteet = keraaTunnisteet(moduuli);
+
+                if (!uudetTunnisteet.containsAll(nykyisetTunnisteet)) {
+                    throw new BusinessRuleViolationException("rakenteen-tunnisteita-ei-voi-muuttaa");
+                }
+            }
+
             if (perusteRepository.findOne(perusteId).getTila() == PerusteTila.VALMIS) {
                 Optional<AbstractRakenneOsa.RakenneOsaVirhe> muutosVirheellinen = moduuli.isSame(nykyinen, 0, false);
                 if (muutosVirheellinen.isPresent()) {
@@ -1578,18 +1562,29 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     private RakenneModuuli checkIfKoodiAlreadyExists(RakenneModuuli rakenneModuuli) {
         if (rakenneModuuli != null) {
             if (rakenneModuuli.getOsaamisala() != null && rakenneModuuli.getOsaamisala().getUri() != null) {
-                Koodi osaamisalaKoodi = koodiRepository.findOneByUriAndVersio(
-                        rakenneModuuli.getOsaamisala().getUri(),
-                        rakenneModuuli.getOsaamisala().getVersio());
+                Koodi osaamisalaKoodi = koodiRepository.findFirstByUriOrderByVersioDesc(
+                        rakenneModuuli.getOsaamisala().getUri());
                 if (osaamisalaKoodi != null) {
                     rakenneModuuli.setOsaamisala(osaamisalaKoodi);
                 } else {
                     rakenneModuuli.setOsaamisala(koodiRepository.save(rakenneModuuli.getOsaamisala()));
                 }
-            }
-            else {
+            } else {
                 rakenneModuuli.setOsaamisala(null);
             }
+
+            if (rakenneModuuli.getTutkintonimike() != null && rakenneModuuli.getTutkintonimike().getUri() != null) {
+                Koodi tutkintonimikeKoodi = koodiRepository.findFirstByUriOrderByVersioDesc(
+                        rakenneModuuli.getTutkintonimike().getUri());
+                if (tutkintonimikeKoodi != null) {
+                    rakenneModuuli.setTutkintonimike(tutkintonimikeKoodi);
+                } else {
+                    rakenneModuuli.setTutkintonimike(koodiRepository.save(rakenneModuuli.getTutkintonimike()));
+                }
+            } else {
+                rakenneModuuli.setTutkintonimike(null);
+            }
+
             for (AbstractRakenneOsa osa : rakenneModuuli.getOsat()) {
                 if (osa instanceof RakenneModuuli) {
                     osa = checkIfKoodiAlreadyExists((RakenneModuuli) osa);
@@ -1804,6 +1799,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
+    public TutkintonimikeKoodiDto getTutkintonimikeKoodi(@P("perusteId") Long perusteId, String tutkintonimikeKoodiUri) {
+        return getTutkintonimikeKoodit(perusteId).stream()
+                .filter(tutkintonimikeKoodi -> tutkintonimikeKoodi.getTutkintonimikeUri().equals(tutkintonimikeKoodiUri))
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(Long perusteId) {
         List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
@@ -1819,11 +1824,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    public TutkintonimikeKoodiDto updateTutkintonimikeKoodi(Long perusteId, TutkintonimikeKoodiDto dto) {
+        TutkintonimikeKoodi tnk = mapper.map(dto, TutkintonimikeKoodi.class);
+        TutkintonimikeKoodi saved = tutkintonimikeKoodiRepository.save(tnk);
+        return mapper.map(saved, TutkintonimikeKoodiDto.class);
+    }
+
+    @Override
     public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
         tutkintonimikeKoodiDtos = tutkintonimikeKoodiDtos.stream().map(tutkintonimike -> {
             if (tutkintonimike.getTutkintonimikeUri() == null) {
-                LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(tutkintonimike.getNimi());
-                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", lokalisoituTekstiDto, 5);
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", tutkintonimike.getNimi(), 5);
                 tutkintonimike.setTutkintonimikeArvo(lisattyKoodi.getKoodiArvo());
                 tutkintonimike.setTutkintonimikeUri(lisattyKoodi.getKoodiUri());
                 return tutkintonimike;
@@ -1835,11 +1846,35 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         List<String> perusteenTutkintonimikeUrit = perusteenTutkintonimikkeet.stream().map(TutkintonimikeKoodiDto::getTutkintonimikeUri).collect(Collectors.toList());
         List<String> tallennettavatTutkintonimikkeet = tutkintonimikeKoodiDtos.stream().map(TutkintonimikeKoodiDto::getTutkintonimikeUri).collect(Collectors.toList());
         tutkintonimikeKoodiDtos.stream()
+                .filter(tutkintonimike -> perusteenTutkintonimikeUrit.contains(tutkintonimike.getTutkintonimikeUri()))
+                .filter(tutkintonimike -> tutkintonimike.isTutkintonimikeTemporary())
+                .forEach(tutkintonimike -> updateTutkintonimikeKoodi(perusteId, tutkintonimike));
+        tutkintonimikeKoodiDtos.stream()
                 .filter(tutkintonimike -> !perusteenTutkintonimikeUrit.contains(tutkintonimike.getTutkintonimikeUri()))
                 .forEach(tutkintonimike -> addTutkintonimikeKoodi(perusteId, tutkintonimike));
         perusteenTutkintonimikkeet.stream()
                 .filter(tutkintonimike -> !tallennettavatTutkintonimikkeet.contains(tutkintonimike.getTutkintonimikeUri()))
                 .forEach(tutkintonimike -> removeTutkintonimikeKoodi(perusteId, tutkintonimike.getId()));
+
+        getTutkintonimikeKoodit(perusteId).forEach(tutkintonimikeKoodi -> {
+            if (tutkintonimikeKoodi.isTutkintonimikeTemporary()) {
+                Koodi koodi = koodiRepository.findFirstByUriOrderByVersioDesc(tutkintonimikeKoodi.getTutkintonimikeUri());
+                if (koodi != null) {
+                    LokalisoituTekstiDto koodiNimi = mapper.map(koodi, KoodiDto.class).getNimi();
+
+                    if (koodiNimi == null || !koodiNimi.equals(tutkintonimikeKoodi.getNimi())) {
+                        koodi.setNimi(mapper.map(tutkintonimikeKoodi.getNimi(), TekstiPalanen.class));
+                        koodiRepository.save(koodi);
+                    }
+                } else {
+                    koodi = new Koodi();
+                    koodi.setUri(tutkintonimikeKoodi.getTutkintonimikeUri());
+                    koodi.setNimi(mapper.map(tutkintonimikeKoodi.getNimi(), TekstiPalanen.class));
+                    koodiRepository.save(koodi);
+                }
+            }
+
+        });
     }
 
     @Override

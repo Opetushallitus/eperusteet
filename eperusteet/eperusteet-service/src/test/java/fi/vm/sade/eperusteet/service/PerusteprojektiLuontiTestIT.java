@@ -451,8 +451,8 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testOsaamisaloillaTaytyyOllaKuvaukset() {
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
-        KoodiDto osaamisala1 = KoodiDto.of("osaamisalat", "1234");
-        KoodiDto osaamisala2 = KoodiDto.of("osaamisalat", "12345");
+        KoodiDto osaamisala1 = KoodiDto.of("osaamisala", "1234");
+        KoodiDto osaamisala2 = KoodiDto.of("osaamisala", "12345");
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             Set<KoodiDto> osaamisalat = Stream.of(osaamisala1, osaamisala2).collect(Collectors.toSet());
@@ -488,8 +488,8 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testOsaamisalaTutkintonimikeTutkinnonOsaYhdistelmat() {
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
-        KoodiDto osaamisala1 = KoodiDto.of("osaamisalat", "1234");
-        KoodiDto osaamisala2 = KoodiDto.of("osaamisalat", "12345");
+        KoodiDto osaamisala1 = KoodiDto.of("osaamisala", "1234");
+        KoodiDto osaamisala2 = KoodiDto.of("osaamisala", "12345");
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             Set<KoodiDto> osaamisalat = Stream.of(osaamisala1, osaamisala2).collect(Collectors.toSet());

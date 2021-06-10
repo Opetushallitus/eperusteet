@@ -97,11 +97,11 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
 
     @Override
     public LokalisoituTekstiDto getNimi() {
-        if (koodi != null && !CollectionUtils.isEmpty(koodi.getNimi())) {
+        if (koodi != null && koodi.getNimi() != null && !CollectionUtils.isEmpty(koodi.getNimi().getTekstit())) {
             Map<String, String> kielet = new HashMap<>();
-            kielet.computeIfAbsent("fi", val -> koodi.getNimi().getOrDefault("fi", super.getNimi().get(Kieli.FI)));
-            kielet.computeIfAbsent("sv", val -> koodi.getNimi().getOrDefault("sv", super.getNimi().get(Kieli.SV)));
-            kielet.computeIfAbsent("en", val -> koodi.getNimi().getOrDefault("en", super.getNimi().get(Kieli.EN)));
+            kielet.computeIfAbsent("fi", val -> koodi.getNimi().getTekstit().getOrDefault("fi", super.getNimi().get(Kieli.FI)));
+            kielet.computeIfAbsent("sv", val -> koodi.getNimi().getTekstit().getOrDefault("sv", super.getNimi().get(Kieli.SV)));
+            kielet.computeIfAbsent("en", val -> koodi.getNimi().getTekstit().getOrDefault("en", super.getNimi().get(Kieli.EN)));
             return new LokalisoituTekstiDto(kielet);
         } else {
             return super.getNimi();

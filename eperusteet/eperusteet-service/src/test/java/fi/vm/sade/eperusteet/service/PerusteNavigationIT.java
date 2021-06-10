@@ -65,7 +65,7 @@ public class PerusteNavigationIT {
             Object arg = i.getArgument(0);
             KoodiDto koodi = (KoodiDto) arg;
             if (koodi != null) {
-                koodi.setNimi(lt(uniikkiString()).asMap());
+                koodi.setNimi(lt(uniikkiString()));
                 if (koodi.getUri() != null) {
                     String[] s = koodi.getUri().split("_");
                     koodi.setArvo(s[s.length - 1]);

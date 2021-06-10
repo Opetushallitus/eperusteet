@@ -7,14 +7,22 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
+import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -44,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import org.springframework.util.ObjectUtils;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -82,6 +91,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private DokumenttiService dokumenttiService;
+
+    @Autowired
+    private KoodistoClient koodistoClient;
+
+    @Autowired
+    private KoodiRepository koodiRepository;
+
+    @Autowired
+    private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
     private static final List<String> pdfEnabled = Arrays.asList(
@@ -155,6 +173,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 }
             }
 
+            kooditaValiaikaisetKoodit(peruste);
+
             dokumentit.addAll(suoritustavat.stream()
                     .map(suoritustapa -> peruste.getKielet().stream()
                             .map(kieli -> {
@@ -203,6 +223,45 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
 
         return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
+    }
+
+    private void kooditaValiaikaisetKoodit(Peruste peruste) {
+        peruste.getKoodit().stream()
+                .filter(koodi -> koodi.isTemporary())
+                .forEach(koodi -> {
+                    KoodiDto koodiDto = mapper.map(koodi, KoodiDto.class);
+                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(koodi.getKoodisto(), koodiDto.getNimi());
+
+                    koodi.setUri(lisattyKoodi.getKoodiUri());
+                    koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
+                    koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
+                    koodi.setNimi(null);
+                    koodiRepository.save(koodi);
+                });
+
+        List<TutkintonimikeKoodiDto> perusteenTutkintonimikkeet = perusteService.getTutkintonimikeKoodit(peruste.getId());
+        perusteenTutkintonimikkeet.forEach(tutkintonimikeKoodiDto -> {
+            if (tutkintonimikeKoodiDto.getTutkintonimikeUri() != null && tutkintonimikeKoodiDto.getTutkintonimikeUri().contains("temporary")) {
+                Koodi tutkintonimike = koodiRepository.findFirstByUriOrderByVersioDesc(tutkintonimikeKoodiDto.getTutkintonimikeUri());
+                TutkintonimikeKoodi tutkintonimikeKoodi = mapper.map(tutkintonimikeKoodiDto, TutkintonimikeKoodi.class);
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", tutkintonimikeKoodiDto.getNimi(), 5);
+
+                if (tutkintonimike != null) {
+                    tutkintonimike.setUri(lisattyKoodi.getKoodiUri());
+                    tutkintonimike.setKoodisto("tutkintonimikkeet");
+                    tutkintonimike.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
+                    tutkintonimike.setNimi(null);
+                    koodiRepository.save(tutkintonimike);
+                }
+
+                tutkintonimikeKoodi.setTutkintonimikeArvo(lisattyKoodi.getKoodiArvo());
+                tutkintonimikeKoodi.setTutkintonimikeUri(lisattyKoodi.getKoodiUri());
+                tutkintonimikeKoodi.setNimi(null);
+                tutkintonimikeKoodiRepository.save(tutkintonimikeKoodi);
+            }
+        });
+
+
     }
 
     private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {

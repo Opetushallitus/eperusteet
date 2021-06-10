@@ -43,11 +43,10 @@ public class OpintokokonaisuusMapper extends CustomMapper<OpintokokonaisuusDto, 
         for (KoodiDto tavoite : opintokokonaisuusDto.getOpetuksenTavoitteet()) {
 
             if (tavoite.getUri() == null) {
-                LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(tavoite.getNimi());
-                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.OPINTOKOKONAISUUSTAVOITTEET, lokalisoituTekstiDto, koodiStack.pop());
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.OPINTOKOKONAISUUSTAVOITTEET, tavoite.getNimi(), koodiStack.pop());
 
                 if (lisattyKoodi == null) {
-                    log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, tavoite.getNimi());
+                    log.error("Koodin lisääminen epäonnistui {} {}", tavoite.getNimi(), tavoite.getNimi());
                     throw new BusinessRuleViolationException("tavoitteen-lisaaminen-epaonnistui");
                 }
 

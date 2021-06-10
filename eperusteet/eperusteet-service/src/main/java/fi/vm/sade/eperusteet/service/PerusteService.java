@@ -228,11 +228,17 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(@P("perusteId") Long perusteId);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    TutkintonimikeKoodiDto getTutkintonimikeKoodi(@P("perusteId") Long perusteId, String tutkintonimikeKoodiUri);
+
     @PreAuthorize("permitAll()")
     List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     TutkintonimikeKoodiDto addTutkintonimikeKoodi(@P("perusteId") Long perusteId, TutkintonimikeKoodiDto dto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    TutkintonimikeKoodiDto updateTutkintonimikeKoodi(@P("perusteId") Long perusteId, TutkintonimikeKoodiDto dto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void updateTutkintonimikkeet(@P("perusteId") Long perusteId, List<TutkintonimikeKoodiDto> dtos);

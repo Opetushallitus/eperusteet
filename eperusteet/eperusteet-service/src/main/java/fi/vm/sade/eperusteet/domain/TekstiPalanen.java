@@ -137,7 +137,7 @@ public class TekstiPalanen implements Serializable {
     public static TekstiPalanen of(Kieli kieli, String teksti) {
         return of(Collections.singletonMap(kieli, teksti));
     }
-
+    
     public static TekstiPalanen of(String suomeksi, String ruotsiksi) {
         Map<Kieli, String> tekstit = new HashMap<>();
         tekstit.put(Kieli.FI, suomeksi);

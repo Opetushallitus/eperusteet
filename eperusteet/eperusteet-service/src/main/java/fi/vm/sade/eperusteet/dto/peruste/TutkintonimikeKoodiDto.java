@@ -15,7 +15,9 @@
  */
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +44,7 @@ public class TutkintonimikeKoodiDto {
     private String osaamisalaArvo;
     private String tutkintonimikeUri;
     private String tutkintonimikeArvo;
-    private Map<String, String> nimi;
+    private LokalisoituTekstiDto nimi;
 
     public TutkintonimikeKoodiDto() {
     }
@@ -58,5 +60,9 @@ public class TutkintonimikeKoodiDto {
         this.tutkintonimikeUri = "tutkintonimikkeet_" + tutkintonimikeArvo;
     }
 
+    @JsonIgnore
+    public boolean isTutkintonimikeTemporary() {
+        return tutkintonimikeUri.contains("temporary");
+    }
 
 }

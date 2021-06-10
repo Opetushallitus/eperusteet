@@ -105,7 +105,7 @@ public class KoodistoClientMock implements KoodistoClient {
         KoodiDto result = new KoodiDto();
         result.setKoodisto(koodisto);
         result.setUri(koodiUri);
-        result.setNimi(lt(uniikkiString()).asMap());
+        result.setNimi(lt(uniikkiString()));
         return result;
     }
 
@@ -119,7 +119,7 @@ public class KoodistoClientMock implements KoodistoClient {
     @Override
     public void addNimiAndArvo(KoodiDto koodi) {
         if (koodi != null) {
-            koodi.setNimi(lt(uniikkiString()).asMap());
+            koodi.setNimi(lt(uniikkiString()));
             if (koodi.getUri() != null) {
                 String[] s = koodi.getUri().split("_");
                 koodi.setArvo(s[s.length - 1]);

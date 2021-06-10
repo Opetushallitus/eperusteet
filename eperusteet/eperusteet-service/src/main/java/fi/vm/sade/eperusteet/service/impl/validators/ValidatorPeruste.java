@@ -510,7 +510,6 @@ public class ValidatorPeruste implements Validator {
                                     })
                                     .map(k -> mapper.map(k, KoodiDto.class))
                                     .map(KoodiDto::getNimi)
-                                    .map(LokalisoituTekstiDto::new)
                                     .collect(Collectors.toList());
                             updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta", null, puuttuvatOsaamisalat);
                             updateStatus.setVaihtoOk(false);
@@ -540,7 +539,7 @@ public class ValidatorPeruste implements Validator {
                             oalat.removeAll(kuvaukselliset);
                             List<LokalisoituTekstiDto> puuttuvat = oalat.stream()
                                     .map(koodi -> mapper.map(koodi, KoodiDto.class))
-                                    .map(koodiDto -> new LokalisoituTekstiDto(koodiDto.getNimi()))
+                                    .map(koodiDto -> koodiDto.getNimi())
                                     .collect(Collectors.toList());
                             updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta", null, puuttuvat);
                             updateStatus.setVaihtoOk(false);

@@ -113,7 +113,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     KoodiDto mapped = mapper.map(oa, KoodiDto.class);
                     TekstiKappaleDto tk = new TekstiKappaleDto();
                     tk.setOsaamisala(mapped);
-                    tk.setNimi(new LokalisoituTekstiDto(mapped.getNimi()));
+                    tk.setNimi(mapped.getNimi());
                     PerusteenOsaViiteDto.Matala viite = new PerusteenOsaViiteDto.Matala();
                     viite.setPerusteenOsa(tk);
                     perusteenOsaViiteService.addSisaltoJulkaistuun(peruste.getId(), sisalto.getId(), viite);

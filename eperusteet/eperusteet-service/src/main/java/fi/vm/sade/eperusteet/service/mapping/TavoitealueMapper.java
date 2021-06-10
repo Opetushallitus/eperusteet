@@ -44,11 +44,10 @@ public class TavoitealueMapper extends CustomMapper<TavoiteAlueDto, TavoiteAlue>
             for (KoodiDto tavoite : tavoitealueDto.getTavoitteet()) {
 
                 if (tavoite.getUri() == null) {
-                    LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(tavoite.getNimi());
-                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, lokalisoituTekstiDto, koodiStack.pop());
+                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, tavoite.getNimi(), koodiStack.pop());
 
                     if (lisattyKoodi == null) {
-                        log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, tavoite.getNimi());
+                        log.error("Koodin lisääminen epäonnistui {} {}", tavoite.getNimi(), tavoite.getNimi());
                         throw new BusinessRuleViolationException("tavoitteen-lisaaminen-epaonnistui");
                     }
 

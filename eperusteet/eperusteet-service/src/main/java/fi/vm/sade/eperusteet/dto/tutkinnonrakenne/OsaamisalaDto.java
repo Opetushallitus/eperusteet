@@ -16,7 +16,9 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,15 +26,15 @@ import lombok.Setter;
 import java.util.Map;
 
 /**
- *
  * @author harrik
  */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class OsaamisalaDto {
-    private Map<String, String> nimi;
+    private LokalisoituTekstiDto nimi;
     private String osaamisalakoodiArvo;
     private String osaamisalakoodiUri;
 
