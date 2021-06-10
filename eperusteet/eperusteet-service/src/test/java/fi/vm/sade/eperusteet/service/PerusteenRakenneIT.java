@@ -41,6 +41,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import javax.validation.ConstraintViolationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,22 +248,22 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
     @Rollback
     public void testRegressionRakenteessaUsampiTutkintonimikeIlmanOsaamisaloja() {
         perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
-                    .tutkintonimikeArvo("1001")
-                    .tutkintonimikeUri("tutkintonimike_1001").build());
+                .tutkintonimikeArvo("1001")
+                .tutkintonimikeUri("tutkintonimikkeet_1001").build());
 
         perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
                 .tutkintonimikeArvo("1002")
-                .tutkintonimikeUri("tutkintonimike_1002").build());
+                .tutkintonimikeUri("tutkintonimikkeet_1002").build());
 
         RakenneModuuliDto rakenneDto = getRakenneDto();
         rakenneDto.setOsat(Arrays.asList(
                 RakenneModuuliDto.builder()
                         .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1001"))
+                        .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1001"))
                         .build(),
                 RakenneModuuliDto.builder()
                         .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1002"))
+                        .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1002"))
                         .build()));
         RakenneModuuliDto rakenne = update(rakenneDto);
         TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
@@ -280,13 +281,13 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                 .tutkinnonOsaArvo("1")
                 .tutkinnonOsaUri("tutkinnonosa_1")
                 .tutkintonimikeArvo("1")
-                .tutkintonimikeUri("tutkintonimike_1").build());
+                .tutkintonimikeUri("tutkintonimikkeet_1").build());
 
         perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
                 .tutkinnonOsaArvo("2")
                 .tutkinnonOsaUri("tutkinnonosa_2")
                 .tutkintonimikeArvo("1")
-                .tutkintonimikeUri("tutkintonimike_1").build());
+                .tutkintonimikeUri("tutkintonimikkeet_1").build());
 
         TutkinnonOsaViiteDto a = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
                 .koodi(KoodiDto.of("tutkinnonosa", "1"))
@@ -300,12 +301,12 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         rakenneDto.setOsat(new ArrayList<>(Arrays.asList(
                 RakenneModuuliDto.builder()
                         .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                        .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1"))
                         .osat(Collections.singletonList(RakenneOsaDto.of(a)))
                         .build(),
                 RakenneModuuliDto.builder()
                         .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                        .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1"))
                         .osat(Collections.singletonList(RakenneOsaDto.of(b)))
                         .build())));
 
@@ -319,7 +320,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         rakenneDto.getOsat()
                 .add(RakenneModuuliDto.builder()
                         .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                        .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                        .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1"))
                         .osat(Collections.singletonList(RakenneOsaDto.of(c)))
                         .build());
 
@@ -336,13 +337,13 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                 .osaamisalaArvo("1")
                 .osaamisalaUri("osaamisala_1")
                 .tutkintonimikeArvo("1")
-                .tutkintonimikeUri("tutkintonimike_1").build());
+                .tutkintonimikeUri("tutkintonimikkeet_1").build());
 
         perusteService.addTutkintonimikeKoodi(peruste.getId(), TutkintonimikeKoodiDto.builder()
                 .osaamisalaArvo("1")
                 .osaamisalaUri("osaamisala_1")
                 .tutkintonimikeArvo("1")
-                .tutkintonimikeUri("tutkintonimike_2").build());
+                .tutkintonimikeUri("tutkintonimikkeet_2").build());
 
         TutkinnonOsaViiteDto a = uusiTutkinnonOsa(TutkinnonOsaDto.builder()
                 .koodi(KoodiDto.of("tutkinnonosa", "1"))
@@ -363,7 +364,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                         .osaamisala(OsaamisalaDto.of("1"))
                         .osat(Collections.singletonList(RakenneModuuliDto.builder()
                                 .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                                .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                                .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1"))
                                 .osat(Collections.singletonList(RakenneOsaDto.of(a)))
                             .build()))
                         .build(),
@@ -372,7 +373,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                         .osaamisala(OsaamisalaDto.of("1"))
                         .osat(Collections.singletonList(RakenneModuuliDto.builder()
                                 .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                                .tutkintonimike(KoodiDto.of("tutkintonimike", "2"))
+                                .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "2"))
                                 .osat(Collections.singletonList(RakenneOsaDto.of(a)))
                                 .build()))
                         .build())));
@@ -390,7 +391,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                     .osaamisala(OsaamisalaDto.of("1"))
                     .osat(Collections.singletonList(RakenneModuuliDto.builder()
                             .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
-                            .tutkintonimike(KoodiDto.of("tutkintonimike", "1"))
+                            .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1"))
                             .osat(Collections.singletonList(RakenneOsaDto.of(a)))
                             .build()))
                     .build());
@@ -550,6 +551,29 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         assertThat(((RakenneModuuliDto) rakenne.getOsat().get(0)).getTutkintonimike().getUri()).isEqualTo("temporary_tutkintonimikkeet_1111-1111");
         assertThat(((RakenneModuuliDto) rakenne.getOsat().get(1)).getNimi().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("tutkintonimike2").getTekstit());
         assertThat(((RakenneModuuliDto) rakenne.getOsat().get(1)).getTutkintonimike().getUri()).isEqualTo("temporary_tutkintonimikkeet_2222-2222");
+
+    }
+
+    @Test
+    @Rollback
+    public void testTemporaryTutkintonimike_invalid_koodisto() {
+
+        perusteService.updateTutkintonimikkeet(peruste.getId(), Arrays.asList(
+                TutkintonimikeKoodiDto.builder()
+                        .tutkintonimikeUri("temporary_tutkintonimikkeetxxx_1111-1111")
+                        .nimi(LokalisoituTekstiDto.of("tutkintonimike1")).build()
+        ));
+
+        RakenneModuuliDto rakenneDto = getRakenneDto();
+        rakenneDto.setOsat(Arrays.asList(
+                RakenneModuuliDto.builder()
+                        .rooli(RakenneModuuliRooli.TUTKINTONIMIKE)
+                        .tutkintonimike(KoodiDto.builder().uri("temporary_tutkintonimikkeetxxx_1111-1111").build())
+                        .build())
+        );
+        assertThatThrownBy(() -> update(rakenneDto))
+                .isInstanceOf(ConstraintViolationException.class)
+                .hasMessageContaining("koodilla-vaara-koodisto");
 
     }
 

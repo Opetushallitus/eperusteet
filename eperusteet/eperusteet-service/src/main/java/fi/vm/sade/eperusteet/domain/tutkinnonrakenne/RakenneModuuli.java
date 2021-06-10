@@ -19,6 +19,8 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -71,12 +73,14 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidKoodisto(koodisto = KoodistoUriArvo.OSAAMISALA)
     private Koodi osaamisala;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidKoodisto(koodisto = KoodistoUriArvo.TUTKINTONIMIKKEET)
     private Koodi tutkintonimike;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
