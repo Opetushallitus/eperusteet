@@ -136,6 +136,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             throw new BusinessRuleViolationException("projekti-ei-validi");
         }
 
+        // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
+        peruste.asetaTila(PerusteTila.VALMIS);
+        peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
+
         PerusteVersion version = peruste.getGlobalVersion();
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
         Set<Long> dokumentit = new HashSet<>();
