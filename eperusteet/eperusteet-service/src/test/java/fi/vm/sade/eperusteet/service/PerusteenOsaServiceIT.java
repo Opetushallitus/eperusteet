@@ -229,7 +229,9 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         opintokokonaisuusDto.setNimiKoodi(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
         opintokokonaisuusDto.setNimi(LokalisoituTekstiDto.of("nimi"));
         opintokokonaisuusDto.setOpetuksenTavoiteOtsikko(LokalisoituTekstiDto.of("opetuksentavoiteotsikko"));
-        opintokokonaisuusDto.setOpetuksenTavoitteet(Arrays.asList(koodiDto("nimi1"), koodiDto("nimi2")));
+        opintokokonaisuusDto.setOpetuksenTavoitteet(Arrays.asList(
+                KoodiDto.builder().nimi(LokalisoituTekstiDto.of("nimi1")).uri("temporary_opintokokonaisuustavoitteet_1111").build(),
+                KoodiDto.builder().nimi(LokalisoituTekstiDto.of("nimi2")).uri("temporary_opintokokonaisuustavoitteet_2222").build()));
         opintokokonaisuusDto.setArvioinnit(Arrays.asList(LokalisoituTekstiDto.of("arviointi1"), LokalisoituTekstiDto.of("arviointi2")));
 
         opintokokonaisuusDto = perusteenOsaService.update(opintokokonaisuusDto);
@@ -239,7 +241,10 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(opintokokonaisuusDto.getMinimilaajuus()).isEqualTo(1);
         assertThat(opintokokonaisuusDto.getNimiKoodi()).isEqualTo(KoodiDto.of("opintokokonaisuusnimikoodi", "arvi1"));
         assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).hasSize(2);
-        assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).extracting("uri").containsExactlyInAnyOrder("opintokokonaisuustavoitteet_0", "opintokokonaisuustavoitteet_1");
+        assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).extracting("koodisto")
+                .containsExactlyInAnyOrder("opintokokonaisuustavoitteet", "opintokokonaisuustavoitteet");
+        assertThat(opintokokonaisuusDto.getOpetuksenTavoitteet()).extracting("uri")
+                .containsExactlyInAnyOrder("temporary_opintokokonaisuustavoitteet_1111", "temporary_opintokokonaisuustavoitteet_2222");
         assertThat(opintokokonaisuusDto.getArvioinnit()).hasSize(2);
         assertThat(opintokokonaisuusDto.getArvioinnit()).extracting("tekstit").containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "arviointi1"), Maps.newHashMap(Kieli.FI, "arviointi2"));
     }

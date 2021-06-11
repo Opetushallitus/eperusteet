@@ -620,6 +620,10 @@ public class Peruste extends AbstractAuditedEntity
             koodit.addAll(osaamisalat);
         }
 
+        if (getVstSisalto() != null) {
+            koodit.addAll(getVstSisalto().getKoodit());
+        }
+
         return koodit;
     }
 

@@ -24,7 +24,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -73,6 +75,7 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
     private TekstiPalanen opetuksenTavoiteOtsikko;
 
     @OrderColumn
+    @ValidKoodisto(koodisto = KoodistoUriArvo.OPINTOKOKONAISUUSTAVOITTEET)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "opintokokonaisuus_opetuksen_tavoitteet",
