@@ -45,6 +45,7 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
@@ -69,6 +70,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.util.TemporaryKoodiGenerator;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.*;
@@ -103,12 +105,6 @@ public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
     private KoodistoClient koodistoClient;
-
-    @Autowired
-    private OpintokokonaisuusMapper opintokokonaisuusMapper;
-
-    @Autowired
-    private TavoitealueMapper tavoitealueMapper;
 
     @Autowired
     public DtoMapperConfig(KoodistoClient koodistoClient) {
@@ -503,9 +499,9 @@ public class DtoMapperConfig {
                     public void mapBtoA(KoodiDto b, Koodi a, MappingContext context) {
                         super.mapBtoA(b, a, context);
                         if (StringUtils.isEmpty(b.getUri()) && !StringUtils.isEmpty(b.getKoodisto())) {
-                            a.setUri("temporary_" + b.getKoodisto() + "_" + UUID.randomUUID().toString());
+                            a.setUri(TemporaryKoodiGenerator.generate(b.getKoodisto()));
                         }
-                        if (!b.isTemporary()) {
+                        if (!a.isTemporary()) {
                             a.setNimi(null);
                         }
                     }
@@ -597,17 +593,11 @@ public class DtoMapperConfig {
         factory.classMap(OpintokokonaisuusDto.class, Opintokokonaisuus.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
-                .customize(opintokokonaisuusMapper)
                 .register();
 
         factory.classMap(TavoitesisaltoalueDto.class, Tavoitesisaltoalue.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
-                .register();
-
-        factory.classMap(TavoiteAlueDto.class, TavoiteAlue.class)
-                .byDefault()
-                .customize(tavoitealueMapper)
                 .register();
 
         factory.classMap(KoulutuksenOsaDto.class, KoulutuksenOsa.class)

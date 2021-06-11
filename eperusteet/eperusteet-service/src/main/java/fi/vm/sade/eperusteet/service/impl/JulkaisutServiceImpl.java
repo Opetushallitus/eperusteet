@@ -158,6 +158,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         peruste.asetaTila(PerusteTila.VALMIS);
         peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
 
+        kooditaValiaikaisetKoodit(peruste);
+
         PerusteVersion version = peruste.getGlobalVersion();
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
         Set<Long> dokumentit = new HashSet<>();
@@ -172,8 +174,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                     suoritustavat.add(Suoritustapakoodi.REFORMI);
                 }
             }
-
-            kooditaValiaikaisetKoodit(peruste);
 
             dokumentit.addAll(suoritustavat.stream()
                     .map(suoritustapa -> peruste.getKielet().stream()

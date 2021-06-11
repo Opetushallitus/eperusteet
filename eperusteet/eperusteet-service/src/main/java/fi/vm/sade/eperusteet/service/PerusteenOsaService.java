@@ -68,7 +68,7 @@ public interface PerusteenOsaService {
     <T extends PerusteenOsaDto.Laaja> T update(@P("po") T perusteenOsaDto);
 
     @PreAuthorize("isAuthenticated()")
-    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
+    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS') or hasPermission(returnObject.id, 'perusteenosa', 'KORJAUS')")
     <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
