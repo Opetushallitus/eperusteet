@@ -507,7 +507,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            return null;
         }
         return mapper.mapAsList(osaAlue.getOsaamistavoitteet(), OsaamistavoiteLaajaDto.class);
 
