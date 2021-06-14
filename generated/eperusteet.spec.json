@@ -5740,6 +5740,31 @@
         }
       }
     },
+    "/perusteet/{perusteId}/projektitila" : {
+      "get" : {
+        "tags" : [ "Perusteet" ],
+        "summary" : "perusteprojektin tila",
+        "description" : "",
+        "operationId" : "getPerusteProjektiTila",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string",
+              "enum" : [ "POISTETTU", "LAADINTA", "KOMMENTOINTI", "VIIMEISTELY", "VALMIS", "JULKAISTU" ]
+            }
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}" : {
       "get" : {
         "tags" : [ "Perusteet" ],
