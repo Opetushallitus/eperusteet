@@ -49,6 +49,7 @@ import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
+import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -96,6 +97,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
@@ -156,6 +158,7 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
@@ -630,6 +633,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return dto;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProjektiTila getPerusteProjektiTila(@P("perusteId") final Long id) {
+        Peruste p = perusteRepository.findOne(id);
+        PerusteprojektiKevytDto projektiKevytDto = mapper.map(p.getPerusteprojekti(), PerusteprojektiKevytDto.class);
+        return projektiKevytDto.getTila();
     }
 
     @Override

@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
@@ -30,6 +31,7 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -305,8 +307,14 @@ public class PerusteController {
     @ResponseBody
     @ApiOperation(value = "perusteen tietojen haku")
     public ResponseEntity<PerusteDto> getPerusteenTiedot(@PathVariable("perusteId") final long id) {
-
         return handleGet(id, 1, () -> service.get(id));
+    }
+
+    @RequestMapping(value = "/{perusteId}/projektitila", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteprojektin tila")
+    public ResponseEntity<ProjektiTila> getPerusteProjektiTila(@PathVariable("perusteId") final long id) {
+        return ResponseEntity.ok(service.getPerusteProjektiTila(id));
     }
 
     @RequestMapping(value = "/{perusteId}/version", method = GET)

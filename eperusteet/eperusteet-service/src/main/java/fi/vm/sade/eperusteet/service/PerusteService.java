@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
@@ -51,6 +52,7 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -95,6 +97,9 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     PerusteDto get(@P("perusteId") final Long id);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    ProjektiTila getPerusteProjektiTila(@P("perusteId") final Long id);
 
     @PreAuthorize("permitAll()")
     boolean isDiaariValid(String diaarinumero);
