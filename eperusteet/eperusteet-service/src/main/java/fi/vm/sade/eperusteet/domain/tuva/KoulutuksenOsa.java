@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain.tuva;
 
 import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.KoulutusOsanTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -48,6 +49,9 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
 
     @Enumerated(EnumType.STRING)
     private KoulutusOsanKoulutustyyppi koulutusOsanKoulutustyyppi;
+
+    @Enumerated(EnumType.STRING)
+    private KoulutusOsanTyyppi koulutusOsanTyyppi;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -164,6 +168,7 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
         setNimi(other.getNimi());
         setKuvaus(other.getKuvaus());
         setKoulutusOsanKoulutustyyppi(other.getKoulutusOsanKoulutustyyppi());
+        setKoulutusOsanTyyppi(other.getKoulutusOsanTyyppi());
         setLaajuusMinimi(other.getLaajuusMinimi());
         setLaajuusMaksimi(other.getLaajuusMaksimi());
         setKeskeinenSisalto(other.getKeskeinenSisalto());
