@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tuva.TutkintoonvalmentavaSisaltoDto;
@@ -75,5 +76,5 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("tutkintoonvalmentava")
-    private TutkintoonvalmentavaSisaltoDto tuvaSisalto;
+    private TutkintoonvalmentavaSisaltoDto tuvasisalto;
 }

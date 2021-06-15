@@ -777,8 +777,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste;
         if (perusteRev != null) {
             peruste = perusteRepository.findRevision(id, perusteRev);
-        }
-        else {
+        } else {
             peruste = perusteRepository.getOne(id);
         }
 
@@ -786,18 +785,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             return null;
         }
 
-        if (perusteRev == null && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.LAADINTA)) {
-            JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
-            if (julkaisu != null) {
-                ObjectNode data = julkaisu.getData().getData();
-                try {
-                    return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
-                } catch (JsonProcessingException e) {
-                    throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
-                }
-            } else if (!peruste.getPerusteprojekti().isEsikatseltavissa()) {
-                throw new BusinessRuleViolationException("perustetta-ei-loydy");
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        if (julkaisu != null) {
+            ObjectNode data = julkaisu.getData().getData();
+            try {
+                return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
+            } catch (JsonProcessingException e) {
+                throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
             }
+        } else if (!peruste.getPerusteprojekti().isEsikatseltavissa() && !Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
+            throw new BusinessRuleViolationException("perustetta-ei-loydy");
         }
 
         return getKaikkiSisalto(id, perusteRev);

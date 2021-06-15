@@ -201,7 +201,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     public void test_kaikkiRajapinta() {
         PerusteprojektiDto perusteprojektiDto = rakennaAmmattitaitovaatimusLatausPohjadata();
         Long perusteId = perusteprojektiDto.getPeruste().getIdLong();
-        PerusteKaikkiDto kaikki = perusteService.getJulkaistuSisalto(perusteId);
+        PerusteKaikkiDto kaikki = perusteService.getKaikkiSisalto(perusteId);
         assertThat(kaikki).isNotNull();
         Ammattitaitovaatimukset2019Dto av = kaikki.getTutkinnonOsat().get(0).getAmmattitaitovaatimukset2019();
         assertThat(av).isNotNull()
