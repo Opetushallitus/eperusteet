@@ -730,7 +730,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         KoulutusTyyppi tyyppi = KoulutusTyyppi.of(peruste.getKoulutustyyppi());
 
         if (!tyyppi.isAmmatillinen() && !tyyppi.isValmaTelma()) {
-            throw new BusinessRuleViolationException("osaamisalat-ainoastaan-ammatillisilla-perusteilla");
+            return new HashMap<>();
         }
 
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalakuvaukset = new HashMap<>();
