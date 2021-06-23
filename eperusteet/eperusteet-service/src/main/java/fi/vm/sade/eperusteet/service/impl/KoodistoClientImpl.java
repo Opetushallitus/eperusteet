@@ -295,6 +295,10 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
 
+        if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > 256)) {
+            throw new BusinessRuleViolationException("koodi-arvo-liian-pitka");
+        }
+
         cacheManager.getCache("koodistot").evict(koodistonimi + false);
         cacheManager.getCache("koodistot").evict(koodistonimi + true);
 
