@@ -12,4 +12,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     JulkaisuBaseDto teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+
+    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision);
 }
