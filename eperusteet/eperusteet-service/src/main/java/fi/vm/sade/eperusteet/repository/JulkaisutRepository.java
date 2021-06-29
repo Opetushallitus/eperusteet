@@ -25,6 +25,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     JulkaistuPeruste findOneByPerusteAndLuotu(Peruste peruste, Date aikaleima);
 
+    JulkaistuPeruste findByPerusteAndRevision(Peruste peruste, int revision);
+
     @Query("SELECT p " +
             "FROM JulkaistuPeruste jp " +
             "    INNER JOIN jp.peruste p " +

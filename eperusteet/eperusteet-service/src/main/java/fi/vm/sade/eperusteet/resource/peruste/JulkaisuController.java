@@ -39,4 +39,13 @@ public class JulkaisuController {
         return julkaisutService.teeJulkaisu(projektiId, julkaisuBaseDto);
     }
 
+    @RequestMapping(method = POST, value = "/{projektiId}/aktivoi/{revision}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public JulkaisuBaseDto aktivoiJulkaisu(
+            @PathVariable("projektiId") final long projektiId,
+            @PathVariable("revision") final int revision) {
+        return julkaisutService.aktivoiJulkaisu(projektiId, revision);
+    }
+
 }

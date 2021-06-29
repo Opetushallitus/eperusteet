@@ -225,6 +225,30 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
     }
 
+    @Override
+    public JulkaisuBaseDto aktivoiJulkaisu(long projektiId, int revision) {
+        Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
+
+        if (perusteprojekti == null) {
+            throw new BusinessRuleViolationException("projektia-ei-ole");
+        }
+
+        Peruste peruste = perusteprojekti.getPeruste();
+        JulkaistuPeruste vanhaJulkaisu = julkaisutRepository.findByPerusteAndRevision(peruste, revision);
+        long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
+
+        JulkaistuPeruste julkaisu = new JulkaistuPeruste();
+        julkaisu.setRevision((int) julkaisutCount + 1);
+        julkaisu.setTiedote(vanhaJulkaisu.getTiedote());
+        julkaisu.setDokumentit(Sets.newHashSet(vanhaJulkaisu.getDokumentit()));
+        julkaisu.setPeruste(peruste);
+        julkaisu.setData(vanhaJulkaisu.getData());
+        julkaisu = julkaisutRepository.save(julkaisu);
+        muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
+
+        return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
+    }
+
     private void kooditaValiaikaisetKoodit(Peruste peruste) {
         peruste.getKoodit().stream()
                 .filter(koodi -> koodi.isTemporary())
