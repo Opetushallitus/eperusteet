@@ -23,7 +23,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TermistoRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -34,7 +33,6 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.CharapterNumberGenerator;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiPeruste;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiRivi;
-import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiRiviBgColor;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiRiviTyyppi;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiTaulukko;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -167,7 +165,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addTutkinnonosat(docBase);
 
         // Tekstikappaleet
-        addTekstikappaleet(docBase);
+        addPerusteenOsat(docBase);
 
         // Alaviitteet
         addFootnotes(docBase);
@@ -666,16 +664,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.getGenerator().increaseNumber();
     }
 
-    private void addTekstikappaleet(DokumenttiPeruste docBase) {
+    private void addPerusteenOsat(DokumenttiPeruste docBase) {
         PerusteenOsaViite sisalto = docBase.getSisalto();
         if (sisalto == null) {
             return;
         }
 
-        addTekstikappaleet(docBase, sisalto);
+        addPerusteenOsat(docBase, sisalto);
+        addTekstikappaleLiitteet(docBase, sisalto);
     }
 
-    private void addTekstikappaleet(DokumenttiPeruste docBase, PerusteenOsaViite parent) {
+    private void addPerusteenOsat(DokumenttiPeruste docBase, PerusteenOsaViite parent) {
         if (parent == null) {
             return;
         }
@@ -708,8 +707,31 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addKotoSisalto(docBase, kotoOpinto, po, lapsi);
             } else if (po instanceof TekstiKappale) {
                 TekstiKappale tk = (TekstiKappale) po;
-                addTekstikappale(docBase, tk, po, lapsi);
+                if (!tk.isLiite()) {
+                    addTekstikappale(docBase, tk, po, lapsi);
+                }
             }
+        }
+    }
+
+    private void addTekstikappaleLiitteet(DokumenttiPeruste docBase, PerusteenOsaViite parent) {
+        if (parent == null) {
+            return;
+        }
+
+        for (PerusteenOsaViite lapsi : parent.getLapset()) {
+            PerusteenOsa po = lapsi.getPerusteenOsa();
+            if (po == null) {
+                continue;
+            }
+            if (po instanceof TekstiKappale) {
+                TekstiKappale tk = (TekstiKappale) po;
+                if (tk.isLiite()) {
+                    addTekstikappale(docBase, tk, po, lapsi);
+                }
+            }
+
+            addTekstikappaleLiitteet(docBase, lapsi);
         }
     }
 
@@ -728,7 +750,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.getGenerator().increaseDepth();
 
         // Rekursiivisesti
-        addTekstikappaleet(docBase, lapsi);
+        addPerusteenOsat(docBase, lapsi);
 
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
@@ -749,7 +771,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             docBase.getGenerator().increaseDepth();
 
             // Rekursiivisesti
-            addTekstikappaleet(docBase, lapsi);
+            addPerusteenOsat(docBase, lapsi);
 
             docBase.getGenerator().decreaseDepth();
             docBase.getGenerator().increaseNumber();
@@ -865,7 +887,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         docBase.getBodyElement().appendChild(arvioinnitEl);
 
         docBase.getGenerator().increaseDepth();
-        addTekstikappaleet(docBase, lapsi);
+        addPerusteenOsat(docBase, lapsi);
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
     }
@@ -932,7 +954,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         tavoitesisaltoalueTaulukko.addToDokumentti(docBase);
 
         docBase.getGenerator().increaseDepth();
-        addTekstikappaleet(docBase, lapsi);
+        addPerusteenOsat(docBase, lapsi);
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
     }
@@ -995,7 +1017,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         }
 
         docBase.getGenerator().increaseDepth();
-        addTekstikappaleet(docBase, lapsi);
+        addPerusteenOsat(docBase, lapsi);
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
     }
@@ -1057,7 +1079,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         });
 
         docBase.getGenerator().increaseDepth();
-        addTekstikappaleet(docBase, lapsi);
+        addPerusteenOsat(docBase, lapsi);
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
     }
