@@ -36,6 +36,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
@@ -48,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -435,5 +439,18 @@ public abstract class TestUtils {
         tiedoteDto.setOtsikko(lt(uniikkiString()));
         tiedoteDto.setSisalto(lt(uniikkiString()));
         return tiedoteDto;
+    }
+
+    public static List<KoodistoKoodiDto> createMockAmmattitaitovaatimuksetKoodistoKoodit() {
+        return Arrays.asList(
+                KoodistoKoodiLaajaDto.builder()
+                        .koodiUri("ammattitaitovaatimukset_on")
+                        .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tekstiOn", "fi", "")})
+                        .build(),
+                KoodistoKoodiLaajaDto.builder()
+                        .koodiUri("ammattitaitovaatimukset_on2")
+                        .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tekstiOn2", "fi", "")})
+                        .build()
+        );
     }
 }
