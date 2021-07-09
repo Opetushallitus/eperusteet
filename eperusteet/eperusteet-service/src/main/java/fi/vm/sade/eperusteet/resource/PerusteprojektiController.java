@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
@@ -92,7 +93,7 @@ public class PerusteprojektiController {
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
         return page;
     }
-
+    
     @RequestMapping(value = "/omat", method = GET)
     @ResponseBody
     public ResponseEntity<List<PerusteprojektiListausDto>> getOmatPerusteprojektit() {

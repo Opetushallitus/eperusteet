@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
@@ -98,8 +99,12 @@ public class OpasController {
 
     @ResponseBody
     @RequestMapping(value = "/projektit", method = GET)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
+    })
     public Page<PerusteprojektiKevytDto> getAllOppaatKevyt(PerusteprojektiQueryDto pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
+        pquery.setTyyppi(PerusteTyyppi.OPAS);
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         Page<PerusteprojektiKevytDto> page = service.findProjektiBy(p, pquery);
         return page;
     }
