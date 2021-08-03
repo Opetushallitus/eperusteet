@@ -1734,17 +1734,23 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 Element td = docBase.getDocument().createElement("td");
                 tr.appendChild(td);
 
+                // Tavoitteista johdetut oppimisen tavoitteet
+                if (opetuksenTavoite.getTavoitteistaJohdetutOppimisenTavoitteet() != null) {
+                    addTeksti(docBase, messages.translate("docgen.tavoitteista-johdetut-oppimisen-tavoitteet.title", docBase.getKieli()), "h6", td);
+                    addTeksti(docBase, getTextString(docBase, opetuksenTavoite.getTavoitteistaJohdetutOppimisenTavoitteet()), "div", td);
+                }
+
                 // Tavoitealueet
                 addTeksti(docBase, messages.translate("docgen.tavoitealueet.title", docBase.getKieli()), "h6", td);
                 opetuksenTavoite.getKohdealueet().forEach(opetuksenKohdealue -> addTeksti(docBase,
-                        getTextString(docBase, opetuksenKohdealue.getNimi()), "p", td));
+                        getTextString(docBase, opetuksenKohdealue.getNimi()), "div", td));
 
                 // Laaja-alainen osaaminen
                 addTeksti(docBase, messages.translate("docgen.laaja_alainen_osaaminen.title", docBase.getKieli()), "h6", td);
                 StringJoiner joiner = new StringJoiner(", ");
                 opetuksenTavoite.getLaajattavoitteet().forEach(laajaalainenOsaaminen -> joiner
                         .add(getTextString(docBase, laajaalainenOsaaminen.getNimi())));
-                addTeksti(docBase, joiner.toString(), "p", td);
+                addTeksti(docBase, joiner.toString(), "div", td);
 
                 // Arviointi
                 addTeksti(docBase, getTextString(docBase, opetuksenTavoite.getArvioinninOtsikko()), "h6", td);
