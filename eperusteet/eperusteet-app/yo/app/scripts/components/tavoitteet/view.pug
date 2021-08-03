@@ -10,6 +10,10 @@ mixin tavoite-naytto
   h4.tavoite-otsikko.action-link(kaanna="tavoite.tavoite || 'nimeton-tavoite'", ng-click="tavoite.$accordionOpen = !tavoite.$accordionOpen")
 
   .div(uib-collapse="!tavoite.$accordionOpen")
+    h4(kaanna="'tavoitteista-johdetut-oppimisen-tavoitteet'")
+    p(ng-if="tavoite.tavoitteistaJohdetutOppimisenTavoitteet", ng-bind-html='tavoite.tavoitteistaJohdetutOppimisenTavoitteet | kaanna | unsafe')
+    p(ng-if="!tavoite.tavoitteistaJohdetutOppimisenTavoitteet", kaanna="'ei-asetettu'")
+
     h4(kaanna="'kohdealueet'")
     p(kaanna="tavoite.$valittuKohdealue.nimi || 'ei-asetettu'")
 
@@ -51,6 +55,9 @@ mixin arviointi
 mixin tavoite-muokkaus
   h4(kaanna="'nimi'")
   input.form-control(ng-model="tavoite.tavoite", slocalized, placeholder="{{'tavoitteen-nimi-placeholder' | kaanna}}")
+
+  h4(kaanna="'tavoitteista-johdetut-oppimisen-tavoitteet'")
+  div(ckeditor slocalized ng-model='tavoite.tavoitteistaJohdetutOppimisenTavoitteet')
 
   h4(kaanna="'kohdealueet'")
   .input-group
