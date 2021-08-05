@@ -903,7 +903,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         } else {
             updateStatus = validoiProjekti(id, tila);
         }
-        
+
         // Perusteen tilan muutos
         if (!updateStatus.isVaihtoOk()) {
             return updateStatus;
@@ -961,8 +961,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
                 projekti.setTila(ProjektiTila.POISTETTU);
                 projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
-            }
-            else {
+            } else {
                 setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
             }
         }
@@ -971,8 +970,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
                 projekti.setTila(ProjektiTila.LAADINTA);
                 projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
-            }
-            else {
+            } else {
                 setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
             }
         }
@@ -986,6 +984,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         projekti.setTila(tila);
         repository.save(projekti);
         return updateStatus;
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public void updateProjektiTila(Long id, ProjektiTila tila) {
+        Perusteprojekti projekti = repository.findOne(id);
+        projekti.setTila(tila);
+        repository.save(projekti);
     }
 
     private void validoiLukio(Peruste peruste, ProjektiTila tila, TilaUpdateStatus updateStatus) {

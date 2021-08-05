@@ -176,6 +176,15 @@ public class PerusteprojektiController {
         return service.updateTila(id, ProjektiTila.of(tila), tiedoteDto);
     }
 
+    @RequestMapping(value = "/{id}/projekti/tila/{tila}", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProjektiTilaOnly(
+            @PathVariable("id") final long id,
+            @PathVariable("tila") final String tila
+    ) {
+        service.updateProjektiTila(id, ProjektiTila.of(tila));
+    }
+
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
