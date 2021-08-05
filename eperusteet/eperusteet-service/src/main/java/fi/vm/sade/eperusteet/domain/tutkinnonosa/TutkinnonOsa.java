@@ -182,6 +182,9 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     public Arviointi getArviointi() {
+        if (this.geneerinenArviointiasteikko != null) {
+            return null;
+        }
         return arviointi;
     }
 
