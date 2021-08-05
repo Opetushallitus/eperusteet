@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <fop version="1.0">
+  <accessibility>true</accessibility>
 
   <!-- Strict user configuration -->
   <strict-configuration>true</strict-configuration>
@@ -28,14 +29,19 @@
   <!-- Uses renderer mime type for renderers -->
   <renderers>
     <renderer mime="application/pdf">
+      <accessibility>true</accessibility>
+      <pdf-a-mode>PDF/A-1b</pdf-a-mode>
+      <version>1.4</version>
+<!--      <pdf-ua-mode>PDF/UA-1</pdf-ua-mode>-->
+
       <filterList>
         <!-- provides compression using zlib flate (default is on) -->
         <value>flate</value>
-  
+
         <!-- encodes binary data into printable ascii characters (default off)
              This provides about a 4:5 expansion of data size -->
         <!-- <value>ascii-85</value> -->
-  
+
         <!-- encodes binary data with hex representation (default off)
              This filter is not recommended as it doubles the data size -->
         <!-- <value>ascii-hex</value> -->
@@ -65,48 +71,58 @@
         (normal = 400, bold = 700)
         -->
 
-        <font embed-url="Arimo-Bold.ttf" >
+        <font embed-url="Arimo-Bold.ttf" embedding-mode="full">
           <font-triplet name="sans-serif" style="normal" weight="bold" />
           <font-triplet name="Symbol" style="normal" weight="bold"/>
           <font-triplet name="ZapfDingbats" style="normal" weight="bold"/>
         </font>
-        <font embed-url="Arimo-BoldItalic.ttf" >
+        <font embed-url="Arimo-BoldItalic.ttf" embedding-mode="full">
           <font-triplet name="sans-serif" style="italic" weight="bold" />
           <font-triplet name="Symbol" style="italic" weight="bold" />
           <font-triplet name="ZapfDingbats" style="italic" weight="bold" />
         </font>
-        <font embed-url="Arimo-Italic.ttf" >
+
+        <font embed-url="Arimo-Italic.ttf" embedding-mode="full">
           <font-triplet name="sans-serif" style="italic" weight="normal" />
           <font-triplet name="Symbol" style="italic" weight="normal" />
           <font-triplet name="ZapfDingbats" style="italic" weight="normal" />
         </font>
-        <font embed-url="Arimo-Regular.ttf" >
+
+        <font embed-url="Arimo-Regular.ttf" embedding-mode="full">
           <font-triplet name="sans-serif" style="normal" weight="normal" />
           <font-triplet name="Symbol" style="normal" weight="normal"/>
           <font-triplet name="ZapfDingbats" style="normal" weight="normal"/>
         </font>
-        <font embed-url="Tinos-Bold.ttf" >
+
+        <font embed-url="Tinos-Bold.ttf" embedding-mode="full">
           <font-triplet name="serif" style="normal" weight="bold" />
         </font>
-        <font embed-url="Tinos-BoldItalic.ttf" >
+
+        <font embed-url="Tinos-BoldItalic.ttf" embedding-mode="full">
           <font-triplet name="serif" style="italic" weight="bold" />
         </font>
-        <font embed-url="Tinos-Italic.ttf" >
+
+        <font embed-url="Tinos-Italic.ttf" embedding-mode="full">
           <font-triplet name="serif" style="italic" weight="normal" />
         </font>
-        <font embed-url="Tinos-Regular.ttf" >
+
+        <font embed-url="Tinos-Regular.ttf" embedding-mode="full">
           <font-triplet name="serif" style="normal" weight="normal" />
         </font>
-        <font embed-url="Cousine-Bold.ttf" >
+
+        <font embed-url="Cousine-Bold.ttf" embedding-mode="full">
           <font-triplet name="monospace" style="normal" weight="bold" />
         </font>
-        <font embed-url="Cousine-BoldItalic.ttf" >
+
+        <font embed-url="Cousine-BoldItalic.ttf" embedding-mode="full">
           <font-triplet name="monospace" style="italic" weight="bold" />
         </font>
-        <font embed-url="Cousine-Italic.ttf" >
+
+        <font embed-url="Cousine-Italic.ttf" embedding-mode="full">
           <font-triplet name="monospace" style="italic" weight="normal" />
         </font>
-        <font embed-url="Cousine-Regular.ttf" >
+
+        <font embed-url="Cousine-Regular.ttf" embedding-mode="full">
           <font-triplet name="monospace" style="normal" weight="normal" />
         </font>
       </fonts>

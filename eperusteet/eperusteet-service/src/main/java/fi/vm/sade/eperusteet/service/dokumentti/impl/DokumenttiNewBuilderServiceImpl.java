@@ -215,6 +215,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         // Nimi
         Element title = docBase.getDocument().createElement("title");
         String nimi = getTextString(docBase, docBase.getPeruste().getNimi());
+        docBase.getDocument().getDocumentElement().setAttribute("opetushallitus", messages.translate("opetushallitus", docBase.getKieli()));
 
         if (nimi != null && nimi.length() != 0) {
             title.appendChild(docBase.getDocument().createTextNode(nimi));
@@ -554,16 +555,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 }
 
                 break;
-            case 3:
-                tbody.appendChild(tr);
-                tr.appendChild(td);
-                td.appendChild(p);
-                p.appendChild(newBoldElement(docBase.getDocument(), nimi));
-                if (StringUtils.isNotEmpty(kuvaus)) {
-                    td.appendChild(newItalicElement(docBase, kuvaus));
-                }
 
-                break;
             default:
                 tbody.appendChild(tr);
                 tr.appendChild(td);
@@ -774,7 +766,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addPerusteenOsat(docBase, lapsi);
 
             docBase.getGenerator().decreaseDepth();
-            docBase.getGenerator().increaseNumber();
 
         } else if (tunniste == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
                 && docBase.getAipeOpetuksenSisalto() != null) {
@@ -793,6 +784,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 });
             }
         }
+        docBase.getGenerator().increaseNumber();
     }
 
     private void addTaiteenala(DokumenttiPeruste docBase, Taiteenala taiteenala, PerusteenOsa po,
