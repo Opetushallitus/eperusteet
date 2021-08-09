@@ -268,7 +268,11 @@ public class PerusteenRakenne {
                     validointi.laskettuLaajuus = laajuusMax;
                 }
             } else {
-                validointi.laskettuLaajuus = laajuusMax;
+                if (laajuusMax.compareTo(BigDecimal.valueOf(Integer.MIN_VALUE)) != 0) {
+                    validointi.laskettuLaajuus = laajuusMax;
+                } else {
+                    validointi.laskettuLaajuus = laajuusMin;
+                }
             }
         }
         return validointi;
@@ -281,7 +285,7 @@ public class PerusteenRakenne {
         if (roa != null) {
             boolean osaamisalaaEiPerusteella = true;
             for (Koodi oa : ctx.getContext().getOsaamisalat()) {
-                if (roa.equals(oa)) {
+                if (roa != null && roa.getUri() != null && oa != null && roa.getUri().equals(oa.getUri())) {
                     osaamisalaaEiPerusteella = false;
                     break;
                 }

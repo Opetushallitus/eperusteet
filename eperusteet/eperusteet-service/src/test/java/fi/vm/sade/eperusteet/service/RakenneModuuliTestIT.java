@@ -251,7 +251,9 @@ public class RakenneModuuliTestIT {
     @Test
     public void testOsaamisalatSamallaTasolla() {
         Koodi oak1 = new Koodi();
+        oak1.setUri("urikoodi_123");
         Koodi oak2 = new Koodi();
+        oak2.setUri("urikoodi_234");
 
         TestUtils.RakenneModuuliBuilder oa1 = TestUtils.rakenneModuuli()
                 .laajuus(60)
