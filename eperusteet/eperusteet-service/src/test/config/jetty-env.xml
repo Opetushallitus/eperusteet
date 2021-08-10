@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+    <New id="DSTest" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg></Arg>
+        <Arg>jdbc/eperusteet</Arg>
+        <Arg>
+            <New class="org.postgresql.ds.PGSimpleDataSource">
+                <Set name="User">
+                    <SystemProperty name="user"/>
+                </Set>
+                <Set name="Password">
+                    <SystemProperty name="password"/>
+                </Set>
+                <Set name="url">
+                    <SystemProperty name="url"/>
+                </Set>
+            </New>
+        </Arg>
+    </New>
+</Configure>
