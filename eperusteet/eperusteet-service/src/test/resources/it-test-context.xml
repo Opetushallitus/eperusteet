@@ -64,7 +64,7 @@
     </bean>
 
     <bean id="dataSource"
-          class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
+          class="oorg.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:test"/>
     </bean>

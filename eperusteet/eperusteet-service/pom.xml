@@ -13,8 +13,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate.version>4.3.11.Final</hibernate.version>
-        <spring.version>5.3.6</spring.version>
-        <spring.security.version>5.4.6</spring.security.version>
+        <spring.version>5.3.7</spring.version>
+        <spring.security.version>5.4.7</spring.security.version>
         <spring.data.jpa.version>1.11.23.RELEASE</spring.data.jpa.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <logback.version>1.2.3</logback.version>
@@ -32,7 +32,7 @@
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
         <fop.version>2.6</fop.version>
-        <pdfbox.version>2.0.23</pdfbox.version>
+        <pdfbox.version>2.0.24</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
         <springfox.version>2.7.0</springfox.version>
@@ -202,12 +202,12 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1.1-jre</version>
+            <version>30.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.5.Final</version>
+            <version>6.0.22.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -256,9 +256,9 @@
             <version>${postgresql.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-dbcp</artifactId>
-            <version>${tomcat.version}</version>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -480,7 +480,12 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.11.983</version>
+            <version>1.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.7</version>
         </dependency>
     </dependencies>
     <build>
@@ -632,6 +637,17 @@
                         <exclude>fi/vm/sade/eperusteet/domain/**/*_.java</exclude>
                         <exclude>com/google/code/**</exclude>
                     </sourceFileExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.snyk</groupId>
+                <artifactId>snyk-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <args>
+                        <arg>--all-projects</arg>
+                    </args>
                 </configuration>
             </plugin>
         </plugins>
