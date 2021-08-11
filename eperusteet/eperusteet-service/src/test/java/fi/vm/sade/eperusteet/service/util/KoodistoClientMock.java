@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.createMockAmmattitaitovaatimuksetKoodistoKoodit;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 
@@ -129,7 +132,14 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public List<KoodistoKoodiDto> getAll(String koodisto) {
-        return Collections.emptyList();
+
+        switch (koodisto) {
+            case "ammattitaitovaatimukset":
+                return createMockAmmattitaitovaatimuksetKoodistoKoodit();
+            default:
+                return Collections.emptyList();
+        }
+
     }
 
     @Override

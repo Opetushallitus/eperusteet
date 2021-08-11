@@ -226,7 +226,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                 Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti1")),
                 Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
                 Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti3"))
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti3")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "tekstiOn")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "tekstiOn2"))
         ));
         vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
 
@@ -247,8 +249,16 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                 .flatMap(x -> x.stream())
                 .collect(Collectors.toList());
 
-        assertThat(tallennetutVaatimukset).hasSize(5);
-        assertThat(tallennetutVaatimukset).extracting("koodi.uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2", "ammattitaitovaatimukset_2");
+        assertThat(tallennetutVaatimukset).hasSize(7);
+        assertThat(tallennetutVaatimukset).extracting("koodi.uri")
+                .containsExactlyInAnyOrder(
+                        "ammattitaitovaatimukset_0",
+                        "ammattitaitovaatimukset_1",
+                        "ammattitaitovaatimukset_1",
+                        "ammattitaitovaatimukset_2",
+                        "ammattitaitovaatimukset_2",
+                        "ammattitaitovaatimukset_on",
+                        "ammattitaitovaatimukset_on2");
     }
 
     @Test
