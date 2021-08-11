@@ -19,6 +19,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
@@ -791,6 +792,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             try {
                 return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
             } catch (JsonProcessingException e) {
+                log.error(Throwables.getStackTraceAsString(e));
                 throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
             }
         } else if (!peruste.getPerusteprojekti().isEsikatseltavissa() && !Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
