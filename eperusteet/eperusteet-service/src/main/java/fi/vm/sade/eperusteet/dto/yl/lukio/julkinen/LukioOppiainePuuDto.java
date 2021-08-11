@@ -23,6 +23,8 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * User: tommiratamaa
@@ -30,9 +32,11 @@ import java.util.stream.Stream;
  * Time: 12.43
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class LukioOppiainePuuDto implements Lokalisoitava {
-    private final Long perusteId;
-    private final List<LukioOppiaineOppimaaraNodeDto> oppiaineet = new ArrayList<>();
+    private Long perusteId;
+    private List<LukioOppiaineOppimaaraNodeDto> oppiaineet = new ArrayList<>();
 
     public LukioOppiainePuuDto(Long perusteId) {
         this.perusteId = perusteId;

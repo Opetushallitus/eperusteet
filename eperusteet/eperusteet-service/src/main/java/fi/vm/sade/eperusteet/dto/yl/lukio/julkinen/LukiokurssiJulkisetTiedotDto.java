@@ -24,6 +24,8 @@ import lombok.Getter;
 import java.io.Serializable;
 import java.util.UUID;
 import java.util.stream.Stream;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
 import static fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto.localizedLaterByIds;
@@ -34,20 +36,22 @@ import static fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto.lo
  * Time: 12.57
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class LukiokurssiJulkisetTiedotDto implements Serializable, Lokalisoitava {
-    private final Long id;
-    private final Long oppiaineId;
-    private final Integer jarjestys;
-    private final UUID tunniste;
-    private final String koodiUri;
-    private final String koodiArvo;
-    private final LokalisoituTekstiDto lokalisoituKoodi;
-    private final LukiokurssiTyyppi tyyppi;
-    private final LokalisoituTekstiDto nimi;
-    private final LokalisoituTekstiDto kuvaus;
-    private final LokalisoitavaOsaDto tavoitteet;
-    private final LokalisoitavaOsaDto keskeisetSisallot;
-    private final LokalisoitavaOsaDto tavoitteetJaKeskeisetSisallot;
+    private Long id;
+    private Long oppiaineId;
+    private Integer jarjestys;
+    private UUID tunniste;
+    private String koodiUri;
+    private String koodiArvo;
+    private LokalisoituTekstiDto lokalisoituKoodi;
+    private LukiokurssiTyyppi tyyppi;
+    private LokalisoituTekstiDto nimi;
+    private LokalisoituTekstiDto kuvaus;
+    private LokalisoitavaOsaDto tavoitteet;
+    private LokalisoitavaOsaDto keskeisetSisallot;
+    private LokalisoitavaOsaDto tavoitteetJaKeskeisetSisallot;
 
     public LukiokurssiJulkisetTiedotDto(Long id, Long oppiaineId, Integer jarjestys,
                                         UUID tunniste, String koodiUri, String koodiArvo,
