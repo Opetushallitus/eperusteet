@@ -319,7 +319,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         }
 
         List<KoodistoKoodiDto> ammattitaitovaatimukset = koodistoClient.getAll("ammattitaitovaatimukset");
-        Map<Ammattitaitovaatimus2019, KoodistoKoodiDto> olemassaOlevatKoodit = new LinkedHashMap<>();
+        Map<Long, KoodistoKoodiDto> olemassaOlevatKoodit = new LinkedHashMap<>();
 
         Map<Map<Kieli, String>, List<Ammattitaitovaatimus2019>> uniqueVaatimukset = new LinkedHashMap<>();
         vaatimukset.forEach(vaatimus -> {
@@ -329,7 +329,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                             && amv.getMetadataName(vaatimusKieli.toString()).getNimi().equals(vaatimus.getVaatimus().getTeksti().get(vaatimusKieli)))
                     .findFirst();
             if (olemassaolevaKoodi.isPresent()) {
-                olemassaOlevatKoodit.put(vaatimus, olemassaolevaKoodi.get());
+                olemassaOlevatKoodit.put(vaatimus.getId(), olemassaolevaKoodi.get());
             } else {
                 if (uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()) == null) {
                     uniqueVaatimukset.put(vaatimus.getVaatimus().getTeksti(), new ArrayList<>());
@@ -365,9 +365,12 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             });
         }
 
-        for (Ammattitaitovaatimus2019 ammattitaitovaatimus2019 : olemassaOlevatKoodit.keySet()) {
+        for (Long ammattitaitovaatimus2019Id : olemassaOlevatKoodit.keySet()) {
 
-            KoodistoKoodiDto koodistoKoodi = olemassaOlevatKoodit.get(ammattitaitovaatimus2019);
+            Ammattitaitovaatimus2019 ammattitaitovaatimus2019 = vaatimukset.stream()
+                    .filter(vaatimus -> vaatimus.getId().equals(ammattitaitovaatimus2019Id))
+                    .findFirst().get();
+            KoodistoKoodiDto koodistoKoodi = olemassaOlevatKoodit.get(ammattitaitovaatimus2019Id);
 
             Koodi koodi = new Koodi();
             koodi.setKoodisto("ammattitaitovaatimukset");
