@@ -6,7 +6,7 @@
   <strict-configuration>true</strict-configuration>
 
   <!-- Strict FO validation -->
-  <strict-validation>false</strict-validation>
+  <strict-validation>true</strict-validation>
 
   <!-- Base URL for resolving relative URLs -->
   <base>.</base>
@@ -24,6 +24,8 @@
 
   <!-- Cause memory leaks (FOP-2525) -->
   <complex-scripts disabled="true"/>
+
+  <hyphenation-pattern lang="fi">fi</hyphenation-pattern>
 
   <!-- Information for specific renderers -->
   <!-- Uses renderer mime type for renderers -->
