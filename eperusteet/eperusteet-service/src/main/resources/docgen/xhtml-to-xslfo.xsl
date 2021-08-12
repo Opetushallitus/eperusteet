@@ -84,31 +84,16 @@
             </fo:layout-master-set>
 
             <fo:declarations>
-                <x:xmpmeta xmlns:x="adobe:ns:meta/">
-                    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-                        <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/">
-                            <dc:title>
-                                <rdf:Alt>
-                                    <rdf:li xml:lang="x-default">
-                                        <xsl:value-of select="title"/>
-                                    </rdf:li>
-                                </rdf:Alt>
-                            </dc:title>
-                            <dc:creator>
-                                <rdf:Seq>
-                                    <rdf:li>
-                                        <xsl:value-of select="opetushallitus"/>
-                                    </rdf:li>
-                                </rdf:Seq>
-                            </dc:creator>
-                            <dc:description>
-                                <rdf:Alt>
-                                    <xsl:value-of select="description"/>
-                                </rdf:Alt>
-                            </dc:description>
-                        </rdf:Description>
-                    </rdf:RDF>
-                </x:xmpmeta>
+                <pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+                    <xsl:choose>
+                        <xsl:when test="/html/head/peruste and boolean(/html/head/meta[@name='pdfkaannoskieli'])">
+                            <pdf:string key="Lang"><xsl:apply-templates select="/html/head/meta[@name='pdfkaannoskieli']/@translate"/></pdf:string>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <pdf:string key="Lang">fi-FI</pdf:string>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </pdf:catalog>
             </fo:declarations>
 
             <!-- Bookmarks -->
