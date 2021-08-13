@@ -178,6 +178,16 @@ public class PerusteenOsaController {
         return service.update(dto);
     }
 
+    @RequestMapping(value = "/{id}/viite/{viiteId}/peruste/{perusteId}", method = POST)
+    @ResponseBody
+    public PerusteenOsaDto.Laaja updatePerusteenOsaPerusteella(
+            @PathVariable("viiteId") final Long viiteId,
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("id") final Long id,
+            @RequestBody PerusteenOsaUpdateDto dto) {
+        return service.update(perusteId, viiteId, dto);
+    }
+
     /**
      * Luo ja liittää uuden osa-alueen tutkinnon osaan.
      * @param id

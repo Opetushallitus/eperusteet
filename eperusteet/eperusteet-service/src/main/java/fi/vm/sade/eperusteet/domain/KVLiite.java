@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -30,13 +31,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
  * @author nkala
  */
 @Entity
 @Table(name = "kvliite")
 @Audited
-public class KVLiite extends AbstractAuditedEntity implements Serializable, ReferenceableEntity {
+public class KVLiite extends AbstractAuditedEntity implements Serializable, ReferenceableEntity, HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -178,5 +178,15 @@ public class KVLiite extends AbstractAuditedEntity implements Serializable, Refe
         } else {
             return tutkinnostaPaattavaViranomainen;
         }
+    }
+
+    @Override
+    public TekstiPalanen getNimi() {
+        return null;
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.kvliite;
     }
 }

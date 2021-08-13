@@ -1080,7 +1080,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         perusteRepository.save(current);
-        muokkausTietoService.addMuokkaustieto(perusteId, current, MuokkausTapahtuma.JARJESTETTY);
+        muokkausTietoService.addMuokkaustieto(perusteId, current, MuokkausTapahtuma.PAIVITYS);
         PerusteDto result = mapper.map(current, PerusteDto.class);
         return result;
     }
@@ -1345,6 +1345,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (rakenne.getMetadata() != null) {
             perusteRepository.setRevisioKommentti(rakenne.getMetadata().getKommentti());
         }
+
+        muokkausTietoService.addMuokkaustieto(perusteId, mapper.map(updated, RakenneModuuli.class), MuokkausTapahtuma.PAIVITYS);
         return updated;
     }
 
@@ -2452,7 +2454,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             mapper.map(kvliiteDto, liite);
         }
 
-        muokkausTietoService.addMuokkaustieto(id, current, MuokkausTapahtuma.PAIVITYS);
+        muokkausTietoService.addMuokkaustieto(id, liite, MuokkausTapahtuma.PAIVITYS);
 
         return mapper.map(current, PerusteDto.class);
     }

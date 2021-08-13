@@ -92,7 +92,7 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
                     .muokkaaja(SecurityUtil.getAuthenticatedPrincipal().getName())
                     .kohde(navigationType)
                     .kohdeId(historiaTapahtuma.getId())
-                    .luotu(historiaTapahtuma.getMuokattu())
+                    .luotu(new Date())
                     .lisatieto(lisatieto)
                     .poistettu(Objects.equals(muokkausTapahtuma.getTapahtuma(), MuokkausTapahtuma.POISTO.toString()))
                     .build();

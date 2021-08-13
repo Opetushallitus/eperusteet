@@ -17,13 +17,22 @@ public interface OsaAlueService {
     OsaAlueLaajaDto addOsaAlue(@P("viiteId") final Long viiteId, OsaAlueLaajaDto osaAlueDto);
 
     @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
+    OsaAlueLaajaDto addOsaAlue(Long perusteId, @P("viiteId") final Long viiteId, OsaAlueLaajaDto osaAlueDto);
+
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
     OsaAlueLaajaDto updateOsaAlue(@P("viiteId") final Long viiteId, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
+
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
+    OsaAlueLaajaDto updateOsaAlue(Long perusteId, @P("viiteId") final Long viiteId, final Long osaAlueId, OsaAlueLaajaDto osaAlue);
 
     @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
     void removeOsaAlue(@P("viiteId") final Long viiteId, final Long osaAlueId);
 
     @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
-    LukkoDto getOsaAlueLock(@P("viiteId")Long viiteId, Long osaAlueId);
+    void removeOsaAlue(Long perusteId, @P("viiteId") final Long viiteId, final Long osaAlueId);
+
+    @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
+    LukkoDto getOsaAlueLock(@P("viiteId") Long viiteId, Long osaAlueId);
 
     @PreAuthorize("hasPermission(#viiteId, 'tutkinnonosaviite', 'MUOKKAUS')")
     LukkoDto lockOsaAlue(@P("viiteId") Long viiteId, Long osaAlueId);

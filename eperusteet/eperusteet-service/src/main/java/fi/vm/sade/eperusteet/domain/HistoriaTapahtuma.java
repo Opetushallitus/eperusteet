@@ -5,13 +5,21 @@ import java.util.Date;
 
 public interface HistoriaTapahtuma {
 
-    Date getLuotu();
+    default Date getLuotu() {
+        return null;
+    }
 
-    Date getMuokattu();
+    default Date getMuokattu() {
+        return null;
+    }
 
-    String getLuoja();
+    default String getLuoja() {
+        return null;
+    }
 
-    String getMuokkaaja();
+    default String getMuokkaaja() {
+        return null;
+    }
 
     Long getId();
 

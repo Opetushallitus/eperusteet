@@ -15,12 +15,14 @@
  */
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Mergeable;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
@@ -47,7 +49,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @DiscriminatorValue("RM")
 @Audited
 @RakenneModuuli.ValidRakenneModuuli
-public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli> {
+public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli>, HistoriaTapahtuma {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
@@ -240,15 +242,22 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         return false;
     }
 
-    @Target({ TYPE, ANNOTATION_TYPE })
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.tutkinnon_muodostuminen;
+    }
+
+    @Target({TYPE, ANNOTATION_TYPE})
     @Retention(RUNTIME)
-    @Constraint(validatedBy = { ValidRakenneModuuliValidator.class })
+    @Constraint(validatedBy = {ValidRakenneModuuliValidator.class})
     @Documented
     public @interface ValidRakenneModuuli {
         String message() default "{org.hibernate.validator.referenceguide.chapter06.classlevel." +
                 "ValidRakenneModuuliValidator.message}";
-        Class<?>[] groups() default { };
-        Class<? extends Payload>[] payload() default { };
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
     }
 
     private static class ValidRakenneModuuliValidator implements ConstraintValidator<ValidRakenneModuuli, RakenneModuuli> {
