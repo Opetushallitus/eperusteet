@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,13 +36,12 @@ import java.util.*;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 /**
- *
  * @author harrik
  */
 @Entity
 @Table(name = "tutkinnonosa_osaalue")
 @Audited
-public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
+public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, HistoriaTapahtuma {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -239,5 +239,30 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue> {
             }
         }
         return tempList;
+    }
+
+    @Override
+    public Date getLuotu() {
+        return null;
+    }
+
+    @Override
+    public Date getMuokattu() {
+        return null;
+    }
+
+    @Override
+    public String getLuoja() {
+        return null;
+    }
+
+    @Override
+    public String getMuokkaaja() {
+        return null;
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.osaalue;
     }
 }

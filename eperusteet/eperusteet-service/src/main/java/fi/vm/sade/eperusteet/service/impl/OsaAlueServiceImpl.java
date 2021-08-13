@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
@@ -14,6 +15,7 @@ import fi.vm.sade.eperusteet.repository.OsaAlueRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.OsaAlueService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -46,6 +48,9 @@ public class OsaAlueServiceImpl implements OsaAlueService {
     @Autowired
     @Dto
     private DtoMapper mapper;
+
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
 
     private OsaAlue findOne(Long viiteId, Long osaAlueId, boolean readonly) {
         OsaAlue osaAlue = osaAlueRepository.getOne(osaAlueId);
@@ -87,8 +92,15 @@ public class OsaAlueServiceImpl implements OsaAlueService {
         updateGeneerinen(osaAlue, osaAlueDto);
         osaAlue = osaAlueRepository.save(osaAlue);
         tov.getTutkinnonOsa().getOsaAlueet().add(osaAlue);
-//        tutkinnonOsaRepo.save(tutkinnonOsa);
         return mapper.map(osaAlue, OsaAlueLaajaDto.class);
+    }
+
+    @Override
+    public OsaAlueLaajaDto addOsaAlue(Long perusteId, Long viiteId, OsaAlueLaajaDto osaAlueDto) {
+        OsaAlueLaajaDto uusiOsaAlueDto = addOsaAlue(viiteId, osaAlueDto);
+        OsaAlue osaAlue = mapper.map(uusiOsaAlueDto, OsaAlue.class);
+        muokkausTietoService.addMuokkaustieto(perusteId, osaAlue, MuokkausTapahtuma.LUONTI);
+        return uusiOsaAlueDto;
     }
 
     private void updateGeneerinen(OsaAlue osaAlue, OsaAlueLaajaDto dto) {
@@ -119,6 +131,14 @@ public class OsaAlueServiceImpl implements OsaAlueService {
     }
 
     @Override
+    public OsaAlueLaajaDto updateOsaAlue(Long perusteId, Long viiteId, Long osaAlueId, OsaAlueLaajaDto osaAlueDto) {
+        OsaAlueLaajaDto uusiOsaAlueDto = updateOsaAlue(viiteId, osaAlueId, osaAlueDto);
+        OsaAlue osaAlue = mapper.map(uusiOsaAlueDto, OsaAlue.class);
+        muokkausTietoService.addMuokkaustieto(perusteId, osaAlue, MuokkausTapahtuma.PAIVITYS);
+        return uusiOsaAlueDto;
+    }
+
+    @Override
     public void removeOsaAlue(Long viiteId, Long osaAlueId) {
         OsaAlue oa = findOne(viiteId, osaAlueId, false);
         TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(viiteId);
@@ -126,6 +146,14 @@ public class OsaAlueServiceImpl implements OsaAlueService {
         osaAlueRepository.delete(oa);
     }
 
+    @Override
+    public void removeOsaAlue(Long perusteId, Long viiteId, Long osaAlueId) {
+        OsaAlue oa = findOne(viiteId, osaAlueId, false);
+        TutkinnonOsaViite tov = tutkinnonOsaViiteRepository.getOne(viiteId);
+        tov.getTutkinnonOsa().getOsaAlueet().remove(oa);
+        muokkausTietoService.addMuokkaustieto(perusteId, oa, MuokkausTapahtuma.POISTO);
+        osaAlueRepository.delete(oa);
+    }
 
     @Override
     public LukkoDto getOsaAlueLock(Long viiteId, Long osaAlueId) {

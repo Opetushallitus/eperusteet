@@ -37,6 +37,15 @@ public class OsaAlueController {
         return new ResponseEntity<>(service.addOsaAlue(viiteId, osaAlue), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/peruste/{perusteId}", method = POST)
+    @ResponseBody
+    public ResponseEntity<OsaAlueLaajaDto> addOsaAluePerusteella(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("viiteId") final Long viiteId,
+            @RequestBody OsaAlueLaajaDto osaAlue) {
+        return new ResponseEntity<>(service.addOsaAlue(perusteId, viiteId, osaAlue), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{osaAlueId}", method = PUT)
     @ResponseBody
     public ResponseEntity<OsaAlueLaajaDto> updateOsaAlueV2(
@@ -46,12 +55,31 @@ public class OsaAlueController {
         return new ResponseEntity<>(service.updateOsaAlue(viiteId, osaAlueId, osaAlue), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{osaAlueId}/peruste/{perusteId}", method = PUT)
+    @ResponseBody
+    public ResponseEntity<OsaAlueLaajaDto> updateOsaAluePerusteella(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("viiteId") final Long viiteId,
+            @PathVariable("osaAlueId") final Long osaAlueId,
+            @RequestBody OsaAlueLaajaDto osaAlue) {
+        return new ResponseEntity<>(service.updateOsaAlue(perusteId, viiteId, osaAlueId, osaAlue), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{osaAlueId}", method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeOsaAlueV2(
             @PathVariable("viiteId") final Long viiteId,
             @PathVariable("osaAlueId") final Long osaAlueId) {
         service.removeOsaAlue(viiteId, osaAlueId);
+    }
+
+    @RequestMapping(value = "/{osaAlueId}/peruste/{perusteId}", method = DELETE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeOsaAluePerusteella(
+            @PathVariable("perusteId") final Long perusteId,
+            @PathVariable("viiteId") final Long viiteId,
+            @PathVariable("osaAlueId") final Long osaAlueId) {
+        service.removeOsaAlue(perusteId, viiteId, osaAlueId);
     }
 
     @RequestMapping(value = "/{osaAlueId}/lukko", method = GET)

@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.PerusteenMuokkaustieto;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
 import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
