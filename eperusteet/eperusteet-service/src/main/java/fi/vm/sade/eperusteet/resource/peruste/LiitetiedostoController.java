@@ -242,6 +242,13 @@ public class LiitetiedostoController {
         return liitteet.getAllByTyyppi(perusteId, DOCUMENT_TYPES);
     }
 
+    @RequestMapping(value = "/lisatieto", method = RequestMethod.POST)
+    public void paivitaLisatieto(@PathVariable("perusteId") Long perusteId,
+                                 @RequestParam("liiteId") String liiteId,
+                                 @RequestParam("lisatieto") String lisatieto) {
+        liitteet.paivitaLisatieto(perusteId, UUID.fromString(liiteId), lisatieto);
+    }
+
     private Pair<UUID, String> upload(
             Long perusteId,
             String nimi,

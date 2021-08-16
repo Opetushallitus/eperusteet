@@ -77,6 +77,13 @@ public class LiiteServiceImpl implements LiiteService {
     }
 
     @Override
+    public void paivitaLisatieto(Long perusteId, UUID id, String lisatieto) {
+        Liite liite = liitteet.findOne(perusteId, id);
+        liite.setLisatieto(lisatieto);
+        liitteet.save(liite);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {

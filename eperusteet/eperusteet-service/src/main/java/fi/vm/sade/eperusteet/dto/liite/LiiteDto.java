@@ -33,4 +33,5 @@ public class LiiteDto extends LiiteBaseDto {
     private LiiteTyyppi tyyppi;
     private Date luotu;
     private String mime;
+    private String lisatieto;
 }
