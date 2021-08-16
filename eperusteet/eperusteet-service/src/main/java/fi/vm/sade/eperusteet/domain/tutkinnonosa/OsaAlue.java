@@ -240,27 +240,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
         }
         return tempList;
     }
-
-    @Override
-    public Date getLuotu() {
-        return null;
-    }
-
-    @Override
-    public Date getMuokattu() {
-        return null;
-    }
-
-    @Override
-    public String getLuoja() {
-        return null;
-    }
-
-    @Override
-    public String getMuokkaaja() {
-        return null;
-    }
-
+    
     @Override
     public NavigationType getNavigationType() {
         return NavigationType.osaalue;
