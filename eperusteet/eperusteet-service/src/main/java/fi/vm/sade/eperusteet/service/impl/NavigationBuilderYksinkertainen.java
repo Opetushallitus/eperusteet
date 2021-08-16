@@ -42,6 +42,9 @@ public class NavigationBuilderYksinkertainen implements NavigationBuilder {
     @Autowired
     private NavigationBuilderAipe navigationBuilderAipe;
 
+    @Autowired
+    private NavigationBuilderLukio navigationBuilderLukio;
+
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
@@ -51,6 +54,10 @@ public class NavigationBuilderYksinkertainen implements NavigationBuilder {
 
         if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.AIKUISTENPERUSOPETUS)) {
             return basicNavigation.addAll(navigationBuilderAipe.buildNavigation(perusteId, kieli));
+        }
+
+        if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS)) {
+            return navigationBuilderLukio.buildNavigation(perusteId, basicNavigation);
         }
 
         return basicNavigation;
