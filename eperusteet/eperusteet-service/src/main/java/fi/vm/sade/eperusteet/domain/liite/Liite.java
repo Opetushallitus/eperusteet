@@ -71,11 +71,15 @@ public class Liite implements Serializable {
     @RelatesToPeruste
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "peruste_liite",
-            joinColumns = @JoinColumn(name="liite_id"),
-            inverseJoinColumns = @JoinColumn(name="peruste_id"))
+            joinColumns = @JoinColumn(name = "liite_id"),
+            inverseJoinColumns = @JoinColumn(name = "peruste_id"))
     @Getter
     @Setter
     private Set<Peruste> perusteet;
+
+    @Getter
+    @Setter
+    private String lisatieto;
 
     protected Liite() {
         //JPA

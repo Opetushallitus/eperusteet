@@ -52,4 +52,7 @@ public interface LiiteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     void export(@P("perusteId") final Long perusteId, UUID id, OutputStream os);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    void paivitaLisatieto(@P("perusteId") final Long perusteId, UUID id, String lisatieto);
+
 }
