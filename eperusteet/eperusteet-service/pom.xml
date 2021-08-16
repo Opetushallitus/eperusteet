@@ -700,20 +700,7 @@
                                             ${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController
                                         </location>
                                         <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>
-<!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuusLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukiokoulutuksenPerusteenSisaltoController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukiokoulutusJulkisetPerusteenSisallotController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukiokurssiLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioOpetussuunnitelmaRakenneLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioOppiaineLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioYleisetTavoitteetLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.TpoOpetuksenSisaltoController</location>-->
-<!--                                        <location>${eperusteet.resources}.TutkinnonRakenneLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.VuosiluokkaKokonaisuusLockController</location>-->
-
-                                        <!--                                        <location>${eperusteet.resources}.peruste.*</location>-->
+                                        <location>${eperusteet.resources}.peruste.LukiokoulutusJulkisetPerusteenSisallotController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>
