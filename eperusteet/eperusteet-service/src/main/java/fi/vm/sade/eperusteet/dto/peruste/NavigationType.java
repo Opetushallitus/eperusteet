@@ -7,7 +7,7 @@ public enum NavigationType {
     liitteet, liite, kvliite,
     laajaalaiset, laajaalainen,
     oppiaineet, oppimaarat, oppiaine,
-    lukiooppiaineet, lukiooppimaarat, lukiooppiaine, lukiokurssit, lukiokurssi,
+    lukiooppiaineet_2015, lukiooppimaarat_2015, lukiooppiaine_2015, lukiokurssit, lukiokurssi,
     moduulit, moduuli,
     muodostuminen, tutkinnonosat, tutkinnonosa, tutkinnonosaviite, osaalue, osaalueet, tutkinnon_muodostuminen,
     peruste, lukiorakenne, aihekokonaisuudet, opetuksenyleisettavoitteet, tekstikappale, taiteenala,
