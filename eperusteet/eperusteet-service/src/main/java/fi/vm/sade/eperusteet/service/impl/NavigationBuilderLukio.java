@@ -42,22 +42,22 @@ public class NavigationBuilderLukio {
 
     private NavigationNodeDto oppiaineet(Long perusteId) {
         LukioOppiainePuuDto lukioOppiainePuuDto = lukiokoulutuksenPerusteenSisaltoService.getOppiaineTreeStructure(perusteId);
-        return NavigationNodeDto.of(NavigationType.lukiooppiaineet)
-            .addAll(lukioOppiainePuuDto.getOppiaineet().stream()
-                .map(oa -> mapOppiaine(oa))
-                .collect(Collectors.toList()));
+        return NavigationNodeDto.of(NavigationType.lukiooppiaineet_2015)
+                .addAll(lukioOppiainePuuDto.getOppiaineet().stream()
+                        .map(oa -> mapOppiaine(oa))
+                        .collect(Collectors.toList()));
     }
 
     private NavigationNodeDto mapOppiaine(
             LukioOppiaineOppimaaraNodeDto oa) {
         NavigationNodeDto result = NavigationNodeDto
-                .of(NavigationType.lukiooppiaine, oa.getNimi(), oa.getId())
+                .of(NavigationType.lukiooppiaine_2015, oa.getNimi(), oa.getId())
                 .meta("koodi", KoodiDto.builder().arvo(oa.getKoodiArvo()).build());
 
         if (!CollectionUtils.isEmpty(oa.getOppimaarat())) {
             Optional.ofNullable(oa.getOppimaarat())
-                    .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.lukiooppimaarat).meta("navigation-subtype", true)
-                    .addAll(oppimaarat.stream().map(om -> mapOppiaine(om)))));
+                    .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.lukiooppimaarat_2015).meta("navigation-subtype", true)
+                            .addAll(oppimaarat.stream().map(om -> mapOppiaine(om)))));
         }
 
         if (!CollectionUtils.isEmpty(oa.getKurssit())) {
