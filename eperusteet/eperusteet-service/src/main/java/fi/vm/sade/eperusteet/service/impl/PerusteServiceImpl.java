@@ -541,7 +541,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public List<PerusteKevytDto> getJulkaistutPerusteet() {
-        return mapper.mapAsList(perusteRepository.findVoimassaolevatJulkaistutPerusteet(), PerusteKevytDto.class);
+        return mapper.mapAsList(perusteRepository.findJulkaistutPerusteet(), PerusteKevytDto.class);
     }
 
     @Override
