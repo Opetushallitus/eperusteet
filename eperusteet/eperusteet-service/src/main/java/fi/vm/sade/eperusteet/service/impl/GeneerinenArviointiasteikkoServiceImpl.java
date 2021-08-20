@@ -46,6 +46,12 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
         return mapper.mapAsList(asteikot, GeneerinenArviointiasteikkoDto.class);
     }
 
+    @Override
+    public List<GeneerinenArviointiasteikkoDto> getJulkaistut() {
+        List<GeneerinenArviointiasteikko> asteikot = geneerinenArviointiasteikkoRepository.findByJulkaistuTrue();
+        return mapper.mapAsList(asteikot, GeneerinenArviointiasteikkoDto.class);
+    }
+
     private void tarkistaArviointiAsteikot(GeneerinenArviointiasteikko geneerinen) {
         Set<Long> asteikonTasot = geneerinen.getArviointiAsteikko().getOsaamistasot().stream()
                 .map(Osaamistaso::getId)

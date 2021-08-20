@@ -26,6 +26,11 @@ public class GeneerinenArviointiasteikkoController {
         return geneerinenArviointiasteikkoService.getAll();
     }
 
+    @RequestMapping(value = "/julkaistu", method = GET)
+    public List<GeneerinenArviointiasteikkoDto> getAllGeneerisetArviointiasteikotJulkaistu() {
+        return geneerinenArviointiasteikkoService.getJulkaistut();
+    }
+
     @RequestMapping(value = "/{id}", method = GET)
     public GeneerinenArviointiasteikkoDto getOneGeneerisetArviointiasteikko(@PathVariable Long id) {
         return geneerinenArviointiasteikkoService.getOne(id);
