@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Sets;
@@ -9,11 +10,10 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -31,28 +31,30 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.util.JsonMapper;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
-import org.springframework.util.ObjectUtils;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -234,11 +236,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         Peruste peruste = perusteprojekti.getPeruste();
-        JulkaistuPeruste vanhaJulkaisu = julkaisutRepository.findByPerusteAndRevision(peruste, revision);
+        JulkaistuPeruste vanhaJulkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, revision);
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
 
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-        julkaisu.setRevision((int) julkaisutCount + 1);
+        julkaisu.setRevision((int) julkaisutCount);
         julkaisu.setTiedote(vanhaJulkaisu.getTiedote());
         julkaisu.setDokumentit(Sets.newHashSet(vanhaJulkaisu.getDokumentit()));
         julkaisu.setPeruste(peruste);
@@ -247,6 +249,21 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
 
         return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
+    }
+
+    @Override
+    public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, boolean tulevat,
+                                                            boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti,
+                                                            Integer sivu, Integer sivukoko) {
+        Pageable pageable = new PageRequest(sivu, sivukoko);
+        Long currentMillis = DateTime.now().getMillis();
+        return julkaisutRepository.findAllJulkisetJulkaisut(koulutustyyppi, nimi, kieli, currentMillis, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, pageable)
+                .map(obj -> objToPerusteenJulkaisuData(obj));
+    }
+
+    @SneakyThrows
+    private PerusteenJulkaisuData objToPerusteenJulkaisuData(String obj) {
+        return objectMapper.readValue(obj, PerusteenJulkaisuData.class);
     }
 
     private void kooditaValiaikaisetKoodit(Peruste peruste) {
