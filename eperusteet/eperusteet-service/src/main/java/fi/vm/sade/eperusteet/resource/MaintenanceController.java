@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -88,8 +89,10 @@ public class MaintenanceController {
     }
 
     @RequestMapping(value = "/julkaisut", method = GET)
-    public void teeJulkaisut() {
-        maintenanceService.teeJulkaisut();
+    public void teeJulkaisut(
+            @RequestParam(value = "julkaisekaikki", defaultValue = "false") boolean julkaiseKaikki
+    ) {
+        maintenanceService.teeJulkaisut(julkaiseKaikki);
     }
 
     @RequestMapping(value = "/export/{perusteId}", method = GET, produces = "application/zip")

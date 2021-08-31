@@ -30,6 +30,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Transactional
@@ -134,10 +135,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     @Transactional(propagation = Propagation.NEVER)
-    public void teeJulkaisut() {
+    public void teeJulkaisut(boolean julkaiseKaikki) {
         List<Perusteprojekti> projektit = perusteprojektiRepository.findAllByTilaAndPerusteTyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI);
         List<Long> perusteet = projektit.stream()
                 .map(Perusteprojekti::getPeruste)
+                .filter(peruste -> julkaiseKaikki || CollectionUtils.isEmpty(peruste.getJulkaisut()))
                 .map(Peruste::getId)
                 .collect(Collectors.toList());
 

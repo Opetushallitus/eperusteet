@@ -12,7 +12,7 @@ public interface MaintenanceService {
     void runValidointi();
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    void teeJulkaisut();
+    void teeJulkaisut(boolean julkaiseKaikki);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<YllapitoDto> getSallitutYllapidot();
