@@ -89,7 +89,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
-        WebRequest request) {
+                                                                  WebRequest request) {
         if (ex.getRootCause() != null && ex.getRootCause() instanceof UnrecognizedPropertyException) {
             return handleExceptionInternal((UnrecognizedPropertyException) ex.getRootCause(), null, headers, status, request);
         } else {
@@ -97,13 +97,19 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         }
     }
 
-    @ExceptionHandler(ClientAbortException.class)
-    public void clientAbortExceptionHandler(HttpServletRequest request, ClientAbortException ex) {
-        Principal principal = request.getUserPrincipal();
-        String username = principal != null ? principal.getName() : "<NONE>";
-        LOG.warn("ClientAbortException: message={} username={}, remoteAddr={}, userAgent={}, requestedURL={}",
-                ex.getLocalizedMessage(), username, request.getRemoteAddr(), request.getHeader("User-Agent"),
-                request.getRequestURL());
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<Object> clientAbortExceptionHandler(HttpServletRequest request, WebRequest webRequest, IOException ex) throws Exception {
+        String exceptionSimpleName = ex.getCause().getClass().getSimpleName();
+        if ("ClientAbortException".equals(exceptionSimpleName)) {
+            Principal principal = request.getUserPrincipal();
+            String username = principal != null ? principal.getName() : "<NONE>";
+            LOG.warn("ClientAbortException: message={} username={}, remoteAddr={}, userAgent={}, requestedURL={}",
+                    ex.getLocalizedMessage(), username, request.getRemoteAddr(), request.getHeader("User-Agent"),
+                    request.getRequestURL());
+            return null;
+        } else {
+            return handleAllExceptions(ex, webRequest);
+        }
     }
 
     @ExceptionHandler(value = {
@@ -111,7 +117,6 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             MappingException.class,
             NestedRuntimeException.class,
             NestedCheckedException.class,
-            IOException.class,
             ServletException.class,
             ValidationException.class,
             IllegalArgumentException.class
