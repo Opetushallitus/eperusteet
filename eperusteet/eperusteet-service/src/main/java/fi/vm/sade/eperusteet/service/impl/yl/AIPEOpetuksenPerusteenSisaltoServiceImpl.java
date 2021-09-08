@@ -260,6 +260,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             AIPEOppiaine.validateChange(oppiaine, uusioppiaine);
         }
 
+        oppiaineRepository.save(uusioppiaine);
         AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
         dto.setTavoitteet(tavoitteetDtos);
         return dto;
