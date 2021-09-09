@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.dto.peruste.OsanTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusDto;
@@ -49,7 +50,7 @@ public class AihekokonaisuudetLaajaDto extends Laaja {
     }
 
     @Override
-    public String getOsanTyyppi() {
-        return "aihekokonaisuudet";
+    public OsanTyyppi getOsanTyyppi() {
+        return OsanTyyppi.AIHEKOKONAISUUDET;
     }
 }

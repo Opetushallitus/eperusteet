@@ -87,7 +87,7 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = TuvaLaajaAlainenOsaaminenDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto {
-        public abstract String getOsanTyyppi();
+        public abstract OsanTyyppi getOsanTyyppi();
         public Laaja() {
         }
         public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {

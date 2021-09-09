@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.dto.tuva;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.KoulutusOsanTyyppi;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
+import fi.vm.sade.eperusteet.dto.peruste.OsanTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -29,7 +30,7 @@ public class KoulutuksenOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto arvioinninKuvaus;
 
     @Override
-    public String getOsanTyyppi() {
-        return "koulutuksenosa";
+    public OsanTyyppi getOsanTyyppi() {
+        return OsanTyyppi.KOULUTUKSENOSA;
     }
 }

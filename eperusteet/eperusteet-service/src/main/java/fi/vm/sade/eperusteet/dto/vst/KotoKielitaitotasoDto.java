@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.vst;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.dto.peruste.OsanTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -17,7 +18,7 @@ public class KotoKielitaitotasoDto extends PerusteenOsaDto.Laaja {
     private List<KotoTaitotasoDto> taitotasot = new ArrayList<>();
 
     @Override
-    public String getOsanTyyppi() {
-        return "koto_kielitaitotaso";
+    public OsanTyyppi getOsanTyyppi() {
+        return OsanTyyppi.KOTO_KIELITAITOTASO;
     }
 }

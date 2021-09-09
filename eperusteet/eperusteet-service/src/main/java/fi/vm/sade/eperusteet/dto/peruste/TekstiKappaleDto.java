@@ -50,7 +50,7 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     }
 
     @Override
-    public String getOsanTyyppi() {
-        return "tekstikappale";
+    public OsanTyyppi getOsanTyyppi() {
+        return OsanTyyppi.TEKSTIKAPPALE;
     }
 }

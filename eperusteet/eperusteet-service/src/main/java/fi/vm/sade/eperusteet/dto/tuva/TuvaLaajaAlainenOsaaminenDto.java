@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.tuva;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.dto.peruste.OsanTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -16,8 +17,8 @@ public class TuvaLaajaAlainenOsaaminenDto extends PerusteenOsaDto.Laaja {
     private Boolean liite;
 
     @Override
-    public String getOsanTyyppi() {
-        return "laajaalainenosaaminen";
+    public OsanTyyppi getOsanTyyppi() {
+        return OsanTyyppi.LAAJAALAINENOSAAMINEN;
     }
 
     @Override

@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.OsanTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -48,8 +49,8 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
     private KevytTekstiKappaleDto oppimisenArviointiOpetuksessa;
 
     @Override
-    public String getOsanTyyppi() {
-        return "taiteenala";
+    public OsanTyyppi getOsanTyyppi() {
+        return OsanTyyppi.TAITEENALA;
     }
 
     public Map<String, KevytTekstiKappaleDto> getOsaavainMap() {
