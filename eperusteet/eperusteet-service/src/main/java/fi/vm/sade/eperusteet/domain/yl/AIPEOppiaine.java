@@ -194,6 +194,13 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
         }
     }
 
+    public void addKurssit(List<AIPEKurssi> kurssit) {
+        this.kurssit.clear();
+        if (kurssit != null) {
+            this.kurssit.addAll(kurssit);
+        }
+    }
+
     public Optional<AIPEKurssi> getKurssi(Long kurssiId) {
         return kurssit.stream()
                 .filter(kurssi -> Objects.equals(kurssi.getId(), kurssiId))
