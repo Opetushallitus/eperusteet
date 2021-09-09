@@ -184,6 +184,13 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
             } finally {
             }
         }
+
+        AIPEOppiaineDto oppiaineDto = sisalto.getOppiaine(perusteId, vaiheId, oppiaineId1, null);
+        oppiaineDto.setOhjaus(TestUtils.oto("otsiko", "uusi uusiOhjaus"));
+        sisalto.updateOppiaine(perusteId, vaiheId, oppiaineId1, oppiaineDto);
+        AIPEOppiaineDto paivitettyOppiaineDto = sisalto.getOppiaine(perusteId, vaiheId, oppiaineId1, null);
+        assertEquals(paivitettyOppiaineDto.getOhjaus().get().getOtsikko().get().get(Kieli.FI), "otsiko");
+        assertEquals(paivitettyOppiaineDto.getOhjaus().get().getTeksti().get().get(Kieli.FI), "uusi uusiOhjaus");
     }
 
     @Test

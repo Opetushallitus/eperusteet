@@ -252,7 +252,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         Peruste peruste = getPeruste(perusteId);
         oppiaineDto.setId(oppiaineId);
+        List<AIPEKurssi> kurssit = new ArrayList(oppiaine.getKurssit());
         AIPEOppiaine uusioppiaine = mapper.map(oppiaineDto, oppiaine);
+        uusioppiaine.addKurssit(kurssit);
         List<OpetuksenTavoite> tavoitteet = uusioppiaine.getTavoitteet();
         List<OpetuksenTavoiteDto> tavoitteetDtos = mapper.mapAsList(tavoitteet, OpetuksenTavoiteDto.class);
 
@@ -260,7 +262,6 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             AIPEOppiaine.validateChange(oppiaine, uusioppiaine);
         }
 
-        oppiaineRepository.save(uusioppiaine);
         AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
         dto.setTavoitteet(tavoitteetDtos);
         return dto;
