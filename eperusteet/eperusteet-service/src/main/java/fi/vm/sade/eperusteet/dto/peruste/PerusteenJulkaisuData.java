@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import java.util.List;
@@ -23,5 +22,7 @@ public class PerusteenJulkaisuData {
     private String diaarinumero;
     private Set<KoodiDto> osaamisalat;
     private List<TutkintonimikeKoodiDto> tutkintonimikkeet;
+    private String koulutustyyppi;
+    private Integer laajuus;
 
 }

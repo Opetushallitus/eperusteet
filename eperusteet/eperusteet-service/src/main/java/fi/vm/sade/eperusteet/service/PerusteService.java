@@ -314,7 +314,8 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     List<PerusteKevytDto> getJulkaistutPerusteet();
 
-    List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli);
+    @PreAuthorize("permitAll()")
+    List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppit(Kieli kieli);
 
     @PreAuthorize("permitAll()")
     List<PerusteDto> getOpasKiinnitettyKoodi(String koodiUri);

@@ -439,7 +439,7 @@ public class PerusteController {
     @RequestMapping(value = "/julkaistutkoulutustyypit", method = GET)
     @ResponseBody
     @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
-    public List<KoulutusTyyppi> getJulkaistutKoulutustyypit(@RequestParam(defaultValue = "fi") String kieli) {
+    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyypit(@RequestParam(defaultValue = "fi") String kieli) {
         return service.getJulkaistutKoulutustyyppit(Kieli.of(kieli));
     }
 

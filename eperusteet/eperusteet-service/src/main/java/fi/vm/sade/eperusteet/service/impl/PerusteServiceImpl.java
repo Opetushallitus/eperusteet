@@ -198,6 +198,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -546,10 +547,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Cacheable("julkaistutkoulutustyypit")
-    public List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli) {
-        return perusteRepository.findJulkaistutDistinctKoulutustyyppiByKieli(kieli).stream()
+    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppit(Kieli kieli) {
+        Long currentMillis = DateTime.now().getMillis();
+        return julkaisutRepository.findJulkaistutDistinctKoulutustyyppiByKieli(
+                kieli.toString(),
+                currentMillis).stream()
                 .filter(koulutustyyppi -> koulutustyyppi != null)
-                .map(KoulutusTyyppi::of)
                 .collect(Collectors.toList());
     }
 
