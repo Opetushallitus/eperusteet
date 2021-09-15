@@ -64,7 +64,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "   OR (data.\"siirtymaPaattyy\" IS NOT NULL AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
                     "AND LOWER(CAST(kielet as text)) LIKE LOWER(CONCAT('%', :kieli,'%')) " +
                     "GROUP BY data.koulutustyyppi")
-    List<KoulutustyyppiLukumaara> findJulkaistutDistinctKoulutustyyppiByKieli(
+    List<KoulutustyyppiLukumaara> findJulkaistutKoulutustyyppiLukumaaratByKieli(
             @Param("kieli") String kieli,
             @Param("nykyhetki") Long nykyhetki
     );

@@ -315,7 +315,10 @@ public interface PerusteService {
     List<PerusteKevytDto> getJulkaistutPerusteet();
 
     @PreAuthorize("permitAll()")
-    List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppit(Kieli kieli);
+    List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(Kieli kieli);
+
+    @PreAuthorize("permitAll()")
+    List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli);
 
     @PreAuthorize("permitAll()")
     List<PerusteDto> getOpasKiinnitettyKoodi(String koodiUri);

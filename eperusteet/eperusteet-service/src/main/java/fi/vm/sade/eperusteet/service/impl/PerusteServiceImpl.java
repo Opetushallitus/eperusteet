@@ -547,12 +547,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Cacheable("julkaistutkoulutustyypit")
-    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppit(Kieli kieli) {
+    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(Kieli kieli) {
         Long currentMillis = DateTime.now().getMillis();
-        return julkaisutRepository.findJulkaistutDistinctKoulutustyyppiByKieli(
+        return julkaisutRepository.findJulkaistutKoulutustyyppiLukumaaratByKieli(
                 kieli.toString(),
                 currentMillis).stream()
                 .filter(koulutustyyppi -> koulutustyyppi != null)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli) {
+        return perusteRepository.findJulkaistutDistinctKoulutustyyppiByKieli(kieli).stream()
+                .filter(koulutustyyppi -> koulutustyyppi != null)
+                .map(KoulutusTyyppi::of)
                 .collect(Collectors.toList());
     }
 
