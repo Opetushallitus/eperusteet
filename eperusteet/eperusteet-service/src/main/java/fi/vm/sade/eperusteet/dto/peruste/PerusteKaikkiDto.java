@@ -16,8 +16,13 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.OpasSisalto;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
@@ -28,8 +33,13 @@ import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -77,4 +87,36 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("tutkintoonvalmentava")
     private TutkintoonvalmentavaSisaltoDto tuvasisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("opas")
+    private OpasSisaltoDto oppaanSisalto;
+
+    @JsonIgnore
+    public Set<PerusteenSisaltoDto> getSisallot() {
+        if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
+            return Collections.singleton(this.getOppaanSisalto());
+        } else {
+            if (KoulutustyyppiToteutus.AMMATILLINEN.equals(this.getToteutus())) {
+                return new HashSet<>(this.getSuoritustavat());
+            } else if (this.getPerusopetuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
+            } else if (this.getLops2019Sisalto() != null) {
+                return Collections.singleton(this.getLops2019Sisalto());
+            } else if (this.getEsiopetuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getEsiopetuksenPerusteenSisalto());
+            } else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getLukiokoulutuksenPerusteenSisalto());
+            } else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
+                return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
+            } else if (this.getTpoOpetuksenSisalto() != null) {
+                return Collections.singleton(this.getTpoOpetuksenSisalto());
+            } else if (this.getVstSisalto() != null) {
+                return Collections.singleton(this.getVstSisalto());
+            } else if (this.getTuvasisalto() != null) {
+                return Collections.singleton(this.getTuvasisalto());
+            }
+        }
+        return new HashSet<>();
+    }
 }

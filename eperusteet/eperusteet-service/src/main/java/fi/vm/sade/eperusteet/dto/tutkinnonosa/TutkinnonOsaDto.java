@@ -25,6 +25,8 @@ import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.peruste.Navigable;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -40,7 +42,6 @@ import java.util.List;
 import org.springframework.util.CollectionUtils;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -68,6 +69,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
 
     public TutkinnonOsaDto() {
     }
+
     public TutkinnonOsaDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }
@@ -106,5 +108,10 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
         } else {
             return super.getNimi();
         }
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.tutkinnonosa;
     }
 }

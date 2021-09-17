@@ -620,6 +620,11 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
+        factory.classMap(Peruste.class, PerusteKaikkiDto.class)
+                .exclude("sisallot")
+                .byDefault()
+                .register();
+
         return new DtoMapperImpl(factory.getMapperFacade());
     }
 

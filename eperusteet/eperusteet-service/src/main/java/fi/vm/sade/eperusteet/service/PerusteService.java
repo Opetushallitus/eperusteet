@@ -305,6 +305,9 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    NavigationNodeDto buildNavigationPublic(@P("perusteId") Long perusteId, String kieli);
+
     @PreAuthorize("isAuthenticated()")
     List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);
 

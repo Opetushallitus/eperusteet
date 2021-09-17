@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.tuva;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -27,5 +28,10 @@ public class TuvaLaajaAlainenOsaaminenDto extends PerusteenOsaDto.Laaja {
         } else {
             return super.getNimi();
         }
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.laajaalainenosaaminen;
     }
 }

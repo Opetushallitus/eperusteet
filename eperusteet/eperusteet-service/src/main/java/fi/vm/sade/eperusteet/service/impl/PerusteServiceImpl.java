@@ -137,6 +137,7 @@ import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -2590,6 +2591,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         Peruste peruste = getPeruste(perusteId);
         return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima(), kieli);
+    }
+
+    @Override
+    public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli) {
+        NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
+                .buildNavigation(perusteId, kieli);
+        return siirraLiitteetLoppuun(navigationNodeDto);
     }
 
     @Override

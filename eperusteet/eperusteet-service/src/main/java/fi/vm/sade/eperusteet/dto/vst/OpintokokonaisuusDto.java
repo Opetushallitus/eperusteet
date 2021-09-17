@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.vst;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -22,5 +23,10 @@ public class OpintokokonaisuusDto extends PerusteenOsaDto.Laaja {
     @Override
     public String getOsanTyyppi() {
         return "opintokokonaisuus";
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.opintokokonaisuus;
     }
 }
