@@ -45,7 +45,7 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         NavigationType type = NavigationType.viite;
         PerusteenOsaDto.Laaja po = sisalto.getPerusteenOsa();
         if (po != null) {
-            if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite()) {
+            if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite()) {
                 type = NavigationType.liite;
             } else if (po instanceof TekstiKappaleDto) {
                 TekstiKappaleDto tk = (TekstiKappaleDto) po;
