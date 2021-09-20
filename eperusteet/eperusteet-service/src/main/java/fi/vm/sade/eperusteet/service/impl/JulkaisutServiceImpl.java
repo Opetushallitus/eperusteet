@@ -1,17 +1,30 @@
 package fi.vm.sade.eperusteet.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Sets;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteVersion;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -35,32 +48,31 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Objects;
 
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @Service
 @Transactional
+@Profile("default")
 public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Value("${fi.vm.sade.eperusteet.salli_virheelliset:false}")
@@ -258,12 +270,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         Pageable pageable = new PageRequest(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
         return julkaisutRepository.findAllJulkisetJulkaisut(koulutustyyppi, nimi, kieli, currentMillis, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, pageable)
-                .map(obj -> objToPerusteenJulkaisuData(obj));
-    }
-
-    @SneakyThrows
-    private PerusteenJulkaisuData objToPerusteenJulkaisuData(String obj) {
-        return objectMapper.readValue(obj, PerusteenJulkaisuData.class);
+                .map(obj -> {
+                    try {
+                        return objectMapper.readValue(obj, PerusteenJulkaisuData.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                });
     }
 
     private void kooditaValiaikaisetKoodit(Peruste peruste) {

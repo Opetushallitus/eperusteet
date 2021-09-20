@@ -137,6 +137,7 @@ import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -198,6 +199,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -546,6 +548,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Cacheable("julkaistutkoulutustyypit")
+    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(Kieli kieli) {
+        Long currentMillis = DateTime.now().getMillis();
+        return julkaisutRepository.findJulkaistutKoulutustyyppiLukumaaratByKieli(
+                kieli.toString(),
+                currentMillis).stream()
+                .filter(koulutustyyppi -> koulutustyyppi != null)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<KoulutusTyyppi> getJulkaistutKoulutustyyppit(Kieli kieli) {
         return perusteRepository.findJulkaistutDistinctKoulutustyyppiByKieli(kieli).stream()
                 .filter(koulutustyyppi -> koulutustyyppi != null)
@@ -2579,6 +2591,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         Peruste peruste = getPeruste(perusteId);
         return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima(), kieli);
+    }
+
+    @Override
+    public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli) {
+        NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
+                .buildNavigation(perusteId, kieli);
+        return siirraLiitteetLoppuun(navigationNodeDto);
     }
 
     @Override

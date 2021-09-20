@@ -208,6 +208,15 @@ public class PerusteController {
         return service.buildNavigation(perusteId, kieli);
     }
 
+    @InternalApi
+    @RequestMapping(value = "/{perusteId}/navigaatio/public", method = GET)
+    public NavigationNodeDto getNavigationPublic(
+            @PathVariable final Long perusteId,
+            @RequestParam(value = "kieli", required = false, defaultValue = "fi") final String kieli
+    ) {
+        return service.buildNavigationPublic(perusteId, kieli);
+    }
+
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -441,6 +450,13 @@ public class PerusteController {
     @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
     public List<KoulutusTyyppi> getJulkaistutKoulutustyypit(@RequestParam(defaultValue = "fi") String kieli) {
         return service.getJulkaistutKoulutustyyppit(Kieli.of(kieli));
+    }
+
+    @RequestMapping(value = "/julkaistutkoulutustyyppimaarat", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
+    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(@RequestParam(defaultValue = "fi") String kieli) {
+        return service.getJulkaistutKoulutustyyppiLukumaarat(Kieli.of(kieli));
     }
 
     @RequestMapping(value = "/opaskoodikiinnitys/{koodiUri}", method = GET)

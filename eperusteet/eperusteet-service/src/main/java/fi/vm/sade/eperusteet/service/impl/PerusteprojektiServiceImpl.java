@@ -66,6 +66,8 @@ import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
@@ -94,6 +96,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.ValidointiStatusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
+import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -261,6 +264,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     HttpHeaders httpHeaders;
+
+    @Autowired
+    private JulkaisutService julkaisutService;
 
     @Override
     @Transactional(readOnly = true)
@@ -935,26 +941,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             tiedoteDto.setJulkinen(true);
             tiedoteDto.setPerusteprojekti(new Reference(projekti.getId()));
             tiedoteService.addTiedote(tiedoteDto);
-
-            Optional.of(peruste)
-                    .ifPresent(p -> p.getSuoritustavat()
-                            .forEach(suoritustapa -> p.getKielet()
-                                    .forEach(kieli -> {
-                                        try {
-                                            DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                                    p.getId(),
-                                                    kieli,
-                                                    suoritustapa.getSuoritustapakoodi(),
-                                                    GeneratorVersion.UUSI
-                                            );
-                                            if (createDtoFor != null ) {
-                                                dokumenttiService.setStarted(createDtoFor);
-                                                dokumenttiService.generateWithDto(createDtoFor);
-                                            }
-                                        } catch (DokumenttiException e) {
-                                            log.error(e.getLocalizedMessage(), e);
-                                        }
-                                    })));
+            julkaisutService.teeJulkaisu(
+                    projekti.getId(),
+                    JulkaisuBaseDto
+                            .builder()
+                            .peruste(mapper.map(peruste, PerusteBaseDto.class))
+                            .tiedote(tiedoteDto.getSisalto() != null ? tiedoteDto.getSisalto() : LokalisoituTekstiDto.of("Julkaisu"))
+                            .build());
         }
 
         if (tila == ProjektiTila.POISTETTU) {

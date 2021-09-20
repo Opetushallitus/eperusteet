@@ -86,10 +86,12 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = KotoOpintoDto.class),
             @JsonSubTypes.Type(value = TuvaLaajaAlainenOsaaminenDto.class)
     })
-    public static abstract class Laaja extends PerusteenOsaDto {
+    public static abstract class Laaja extends PerusteenOsaDto implements Navigable {
         public abstract String getOsanTyyppi();
+
         public Laaja() {
         }
+
         public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
             super(nimi, tila, tunniste);
         }
@@ -99,8 +101,10 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
     @Setter
     public static class Suppea extends PerusteenOsaDto {
         private String osanTyyppi;
+
         public Suppea() {
         }
+
         public Suppea(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
             super(nimi, tila, tunniste);
         }

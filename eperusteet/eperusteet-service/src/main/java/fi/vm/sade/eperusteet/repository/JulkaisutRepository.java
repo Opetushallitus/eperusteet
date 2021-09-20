@@ -1,21 +1,17 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
-import java.util.Map;
-import javax.persistence.criteria.Predicate;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Repository
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {
@@ -59,6 +55,19 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("poistuneet") boolean poistuneet,
             @Param("koulutusvienti") boolean koulutusvienti,
             Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = "SELECT data.koulutustyyppi, COUNT(*) " +
+                    "FROM julkaistu_peruste_Data_view data " +
+                    "WHERE data.koulutustyyppi IS NOT NULL " +
+                    "AND ((data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
+                    "   OR (data.\"siirtymaPaattyy\" IS NOT NULL AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
+                    "AND LOWER(CAST(kielet as text)) LIKE LOWER(CONCAT('%', :kieli,'%')) " +
+                    "GROUP BY data.koulutustyyppi")
+    List<KoulutustyyppiLukumaara> findJulkaistutKoulutustyyppiLukumaaratByKieli(
+            @Param("kieli") String kieli,
+            @Param("nykyhetki") Long nykyhetki
+    );
 
     List<JulkaistuPeruste> findAllByPerusteId(Long id);
 

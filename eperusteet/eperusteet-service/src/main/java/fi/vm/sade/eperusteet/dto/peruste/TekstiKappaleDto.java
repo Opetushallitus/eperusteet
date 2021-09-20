@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -52,5 +51,10 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     @Override
     public String getOsanTyyppi() {
         return "tekstikappale";
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.viite;
     }
 }

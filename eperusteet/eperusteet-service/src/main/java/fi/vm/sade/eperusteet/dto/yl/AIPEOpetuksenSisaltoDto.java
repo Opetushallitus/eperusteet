@@ -17,18 +17,18 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter
 @Setter
-public class AIPEOpetuksenSisaltoDto {
+public class AIPEOpetuksenSisaltoDto implements PerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
     private List<LaajaalainenOsaaminenDto> laajaalaisetosaamiset = new ArrayList<>();
     private List<AIPEVaiheDto> vaiheet = new ArrayList<>();
