@@ -1,54 +1,51 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
+import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.KoodillinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 @Component
 @Transactional
-public class NavigationBuilderLops2019 implements NavigationBuilder {
-
-    private final DtoMapper mapper;
-    private final Lops2019SisaltoRepository lops2019SisaltoRepository;
-    private final Lops2019OppiaineRepository lops2019OppiaineRepository;
-    private final Lops2019ModuuliRepository lops2019ModuuliRepository;
-    private final PerusteDispatcher dispatcher;
+public class NavigationBuilderPublicLops2019 implements NavigationBuilderPublic {
 
     @Autowired
-    public NavigationBuilderLops2019(@Dto DtoMapper mapper,
-                                     Lops2019SisaltoRepository lops2019SisaltoRepository,
-                                     Lops2019OppiaineRepository lops2019OppiaineRepository,
-                                     Lops2019ModuuliRepository lops2019ModuuliRepository,
-                                     PerusteDispatcher dispatcher) {
-        this.mapper = mapper;
-        this.lops2019SisaltoRepository = lops2019SisaltoRepository;
-        this.lops2019OppiaineRepository = lops2019OppiaineRepository;
-        this.lops2019ModuuliRepository = lops2019ModuuliRepository;
-        this.dispatcher = dispatcher;
-    }
+    private PerusteDispatcher dispatcher;
+
+    @Autowired
+    private PerusteService perusteService;
 
     @Override
     public Set<KoulutustyyppiToteutus> getTyypit() {
@@ -92,27 +89,26 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
         }
     }
 
-    private NavigationNodeDto laajaAlaiset(Long perusteId) {
-        final Lops2019Sisalto sisalto = lops2019SisaltoRepository.findByPerusteId(perusteId);
+    private NavigationNodeDto laajaAlaiset(PerusteKaikkiDto peruste) {
         return NavigationNodeDto.of(NavigationType.laajaalaiset)
-                .addAll(sisalto.getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset().stream()
+                .addAll(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset().stream()
                         .map(lo -> NavigationNodeDto.of(
                                 NavigationType.laajaalainen,
-                                mapper.map(lo.getNimi(), LokalisoituTekstiDto.class),
+                                lo.getNimi(),
                                 lo.getId())
-                                .koodi(mapper.map(lo.getKoodi(), KoodiDto.class))
-                                .meta("koodi", mapper.map(lo.getKoodi(), KoodiDto.class)))
+                                .koodi(lo.getKoodi())
+                                .meta("koodi", lo.getKoodi()))
                         .sorted(this::koodiComparator));
     }
 
     private NavigationNodeDto mapOppiaine(
-            Lops2019Oppiaine oa,
-            Map<Long, List<Lops2019Oppiaine>> oppimaaratMap,
-            Map<Long, List<Lops2019Moduuli>> moduulitMap) {
+            Lops2019OppiaineKaikkiDto oa,
+            Map<Long, List<Lops2019OppiaineKaikkiDto>> oppimaaratMap,
+            Map<Long, List<Lops2019ModuuliDto>> moduulitMap) {
         NavigationNodeDto result = NavigationNodeDto
-                .of(NavigationType.oppiaine, mapper.map(oa.getNimi(), LokalisoituTekstiDto.class), oa.getId())
-                .koodi(mapper.map(oa.getKoodi(), KoodiDto.class))
-                .meta("koodi", mapper.map(oa.getKoodi(), KoodiDto.class));
+                .of(NavigationType.oppiaine, oa.getNimi(), oa.getId())
+                .koodi(oa.getKoodi())
+                .meta("koodi", oa.getKoodi());
 
         Optional.ofNullable(oppimaaratMap.get(oa.getId()))
                 .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
@@ -123,47 +119,49 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                 .addAll(moduulit.stream()
                     .map(m -> NavigationNodeDto.of(
                         NavigationType.moduuli,
-                        mapper.map(m.getNimi(), LokalisoituTekstiDto.class),
+                            m.getNimi(),
                         m.getId())
-                        .koodi(mapper.map(m.getKoodi(), fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto.class))
-                        .meta("oppiaine", m.getOppiaine() != null ? m.getOppiaine().getId() : null)
-                        .meta("koodi", mapper.map(m.getKoodi(), KoodiDto.class))
+                        .koodi(m.getKoodi())
+                        .meta("oppiaine", m.getOppiaine() != null ? m.getOppiaine().getIdLong() : null)
+                        .meta("koodi", m.getKoodi())
                         .meta("pakollinen", m.getPakollinen()))
                     .sorted(this::koodiComparator))));
 
         return result;
     }
 
-    private NavigationNodeDto oppiaineet(Long perusteId) {
-        final Lops2019Sisalto sisalto = lops2019SisaltoRepository.findByPerusteId(perusteId);
-        List<Lops2019Oppiaine> oppiaineet = sisalto.getOppiaineet();
-        List<Lops2019Oppiaine> oppimaarat = new ArrayList<>();
-        if (!ObjectUtils.isEmpty(oppiaineet)) {
-            oppimaarat = lops2019OppiaineRepository.getOppimaaratByParents(oppiaineet);
-        }
+    private NavigationNodeDto oppiaineet(PerusteKaikkiDto peruste) {
+        List<Lops2019OppiaineKaikkiDto> oppiaineet = peruste.getLops2019Sisalto().getOppiaineet();
+        List<Lops2019OppiaineKaikkiDto> oppimaarat = oppiaineet.stream()
+                .map(oppiaine -> oppiaine.getOppimaarat())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
 
-        List<Lops2019Oppiaine> kaikki = new ArrayList<>();
+        List<Lops2019OppiaineKaikkiDto> kaikki = new ArrayList<>();
         kaikki.addAll(oppiaineet);
         kaikki.addAll(oppimaarat);
 
-        Map<Long, List<Lops2019Oppiaine>> oppimaaratMap = new HashMap<>();
+        Map<Long, List<Lops2019OppiaineKaikkiDto>> oppimaaratMap = new HashMap<>();
         oppimaarat.forEach(om -> {
-            if (!oppimaaratMap.containsKey(om.getOppiaine().getId())) {
-                oppimaaratMap.put(om.getOppiaine().getId(), new ArrayList<>());
+            if (!oppimaaratMap.containsKey(om.getOppiaine().getIdLong())) {
+                oppimaaratMap.put(om.getOppiaine().getIdLong(), new ArrayList<>());
             }
-            oppimaaratMap.get(om.getOppiaine().getId()).add(om);
+            oppimaaratMap.get(om.getOppiaine().getIdLong()).add(om);
         });
 
-        Map<Long, List<Lops2019Moduuli>> moduulitMap = new HashMap<>();
-        List<Lops2019Moduuli> moduulit = new ArrayList<>();
+        Map<Long, List<Lops2019ModuuliDto>> moduulitMap = new HashMap<>();
+        List<Lops2019ModuuliDto> moduulit = new ArrayList<>();
         if (!ObjectUtils.isEmpty(kaikki)) {
-            moduulit = lops2019ModuuliRepository.getModuulitByParents(kaikki);
+            moduulit = kaikki.stream()
+                    .map(oppiaine -> oppiaine.getModuulit())
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
         }
         moduulit.forEach(m -> {
-            if (!moduulitMap.containsKey(m.getOppiaine().getId())) {
-                moduulitMap.put(m.getOppiaine().getId(), new ArrayList<>());
+            if (!moduulitMap.containsKey(m.getOppiaine().getIdLong())) {
+                moduulitMap.put(m.getOppiaine().getIdLong(), new ArrayList<>());
             }
-            moduulitMap.get(m.getOppiaine().getId()).add(m);
+            moduulitMap.get(m.getOppiaine().getIdLong()).add(m);
         });
 
         return NavigationNodeDto.of(NavigationType.oppiaineet)
@@ -175,11 +173,12 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
 
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
         NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
         NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
         return NavigationNodeDto.of(NavigationType.root)
             .addAll(basicNavigation.getChildren())
-            .add(laajaAlaiset(perusteId))
-            .add(oppiaineet(perusteId));
+            .add(laajaAlaiset(peruste))
+            .add(oppiaineet(peruste));
     }
 }

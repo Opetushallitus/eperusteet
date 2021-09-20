@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
@@ -48,7 +48,7 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
-        NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId, kieli);
+        NavigationNodeDto tekstit = dispatcher.get(NavigationBuilderPublic.class).buildNavigation(perusteId, kieli);
         return NavigationNodeDto.of(NavigationType.root)
                 .add(tutkinnonOsat(peruste))
                 .addAll(tekstit.getChildren());
