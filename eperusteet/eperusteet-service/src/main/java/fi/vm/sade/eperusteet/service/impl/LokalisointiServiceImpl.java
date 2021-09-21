@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,6 +126,7 @@ public class LokalisointiServiceImpl implements LokalisointiService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public <T extends Lokalisoitava> T lokalisoi(T dto) {
         if (dto != null) {
             lokalisoi(dto.lokalisoitavatTekstit());

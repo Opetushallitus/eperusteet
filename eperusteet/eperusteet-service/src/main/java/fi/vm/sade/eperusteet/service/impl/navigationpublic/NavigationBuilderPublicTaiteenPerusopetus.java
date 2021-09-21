@@ -1,49 +1,61 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 @Component
 @Transactional
-public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
+public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuilderPublic {
 
     @Autowired
     private PerusteDispatcher dispatcher;
+
+    @Autowired
+    private PerusteService perusteService;
 
     @Override
     public Set<KoulutustyyppiToteutus> getTyypit() {
         return Sets.newHashSet(KoulutustyyppiToteutus.TPO);
     }
 
-    @Autowired
-    private PerusteenOsaService service;
 
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
+        NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
         NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
 
-        basicNavigation.getChildren().forEach(navigationNodeDto -> {
-            PerusteenOsaDto.Laaja viite = service.getByViite(navigationNodeDto.getId());
+        List<PerusteenOsaViiteDto.Laaja> viitteet = getLapsiViitteet(peruste.getTpoOpetuksenSisalto().getSisalto().getLapset());
 
-            if (viite instanceof TaiteenalaDto) {
-                TaiteenalaDto taiteenaladto = (TaiteenalaDto) service.getByViite(navigationNodeDto.getId());
+        basicNavigation.getChildren().forEach(navigationNodeDto -> {
+            Optional<PerusteenOsaViiteDto.Laaja> viite = viitteet.stream().filter(filteredViite -> filteredViite.getId().equals(navigationNodeDto.getId())).findFirst();
+
+            if (viite.isPresent() && viite.get().getPerusteenOsa() instanceof TaiteenalaDto) {
+                TaiteenalaDto taiteenaladto = (TaiteenalaDto)viite.get().getPerusteenOsa();
 
                 navigationNodeDto.addAll(taiteenaladto.getOsaavainMap().keySet().stream().map(alaosa -> {
                     KevytTekstiKappaleDto tekstikappale = taiteenaladto.getOsaavainMap().get(alaosa);
@@ -60,6 +72,18 @@ public class NavigationBuilderTaiteenPerusopetus implements NavigationBuilder {
         });
 
         return basicNavigation;
+    }
+
+    private List<PerusteenOsaViiteDto.Laaja> getLapsiViitteet(List<PerusteenOsaViiteDto.Laaja> viitteet) {
+        List<PerusteenOsaViiteDto.Laaja> lapsiviitteet = new ArrayList<>();
+        if (!CollectionUtils.isEmpty(viitteet)) {
+            lapsiviitteet.addAll(viitteet);
+            lapsiviitteet.addAll(viitteet.stream()
+                    .map(lapsi -> getLapsiViitteet(lapsi.getLapset()))
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList()));
+        }
+        return viitteet;
     }
 
 }

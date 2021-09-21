@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -45,7 +45,7 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         NavigationType type = NavigationType.viite;
         PerusteenOsaDto.Laaja po = sisalto.getPerusteenOsa();
         if (po != null) {
-            if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite()) {
+            if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite()) {
                 type = NavigationType.liite;
             } else if (po instanceof TekstiKappaleDto) {
                 TekstiKappaleDto tk = (TekstiKappaleDto) po;

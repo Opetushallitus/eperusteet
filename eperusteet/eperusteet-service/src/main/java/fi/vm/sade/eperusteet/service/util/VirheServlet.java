@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.service.util;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.google.common.base.Throwables;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -93,7 +94,7 @@ public class VirheServlet extends HttpServlet {
             if (LOG.isDebugEnabled()) {
                 LOG.error("Käsittelemätön poikkeus: ", t);
             } else {
-                LOG.error("Käsittelemätön poikkeus: {}", t.getLocalizedMessage());
+                LOG.error("Käsittelemätön poikkeus: {}", Throwables.getStackTraceAsString(t));
             }
             return t.getLocalizedMessage();
         }

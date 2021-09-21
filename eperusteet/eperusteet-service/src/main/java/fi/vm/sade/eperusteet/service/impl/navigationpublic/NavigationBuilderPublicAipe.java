@@ -1,10 +1,12 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,15 +17,15 @@ import org.springframework.util.ObjectUtils;
 
 @Component
 @Transactional
-public class NavigationBuilderAipe {
-    
+public class NavigationBuilderPublicAipe {
+
     @Autowired
-    private AIPEOpetuksenPerusteenSisaltoService aipeOpetuksenPerusteenSisaltoService;
+    private PerusteService perusteService;
 
     public List<NavigationNodeDto> buildNavigation(Long perusteId, String kieli) {
-        return aipeOpetuksenPerusteenSisaltoService.getVaiheetKaikki(perusteId).stream()
-                .map(vaihe -> NavigationNodeDto.of(NavigationType.aipevaihe, vaihe.getNimi() != null ? vaihe.getNimi().orElseGet(() -> LokalisoituTekstiDto.of("tuntematon")) : LokalisoituTekstiDto.of("tuntematon"), vaihe.getId())
-                        .addAll(oppiaineet(vaihe.getOppiaineet(), kieli)))
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
+        return peruste.getAipeOpetuksenPerusteenSisalto().getVaiheet().stream().map(vaihe -> NavigationNodeDto.of(NavigationType.aipevaihe, vaihe.getNimi() != null ? vaihe.getNimi().orElseGet(() -> LokalisoituTekstiDto.of("tuntematon")) : LokalisoituTekstiDto.of("tuntematon"), vaihe.getId())
+                .addAll(oppiaineet(vaihe.getOppiaineet(), kieli)))
                 .collect(Collectors.toList());
     }
 
