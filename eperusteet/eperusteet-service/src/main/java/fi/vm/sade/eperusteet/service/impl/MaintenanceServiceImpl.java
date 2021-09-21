@@ -15,12 +15,17 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.impl.validators.ValidointiTask;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -134,11 +139,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    @Async
+    @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
     public void teeJulkaisut(boolean julkaiseKaikki) {
-        List<Perusteprojekti> projektit = perusteprojektiRepository.findAllByTilaAndPerusteTyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI);
-        List<Long> perusteet = projektit.stream()
-                .map(Perusteprojekti::getPeruste)
+        List<Long> perusteet = perusteRepository.findJulkaistutPerusteet().stream()
                 .filter(peruste -> julkaiseKaikki || CollectionUtils.isEmpty(peruste.getJulkaisut()))
                 .map(Peruste::getId)
                 .collect(Collectors.toList());
@@ -148,11 +153,12 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         for (Long perusteId : perusteet) {
             try {
                 teeJulkaisu(username, perusteId);
-            }
-            catch (RuntimeException ex) {
+            } catch (RuntimeException ex) {
                 log.error(ex.getLocalizedMessage(), ex);
             }
         }
+
+        log.info("julkaisut tehty");
     }
 
     @Override
@@ -160,7 +166,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
     }
 
-    @Transactional(propagation = Propagation.NEVER)
     private void teeJulkaisu(String username, Long perusteId) {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
