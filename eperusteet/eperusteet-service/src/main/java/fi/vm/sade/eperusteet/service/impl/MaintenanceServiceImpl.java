@@ -148,6 +148,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                 .map(Peruste::getId)
                 .collect(Collectors.toList());
 
+        log.error("julkaistavia perusteita ", perusteet.size());
+
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
         for (Long perusteId : perusteet) {
@@ -173,11 +175,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             PerusteVersion version = peruste.getGlobalVersion();
             List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPeruste(peruste);
             if (julkaisut.stream().anyMatch(julkaisu -> julkaisu.getLuotu().compareTo(version.getAikaleima()) > 0)) {
-                log.info("Perusteella jo julkaisu: " + peruste.getId());
+                log.error("Perusteella jo julkaisu: " + peruste.getId());
                 return true;
             }
 
-            log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
+            log.error("Luodaan julkaisu perusteelle: " + peruste.getId());
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
