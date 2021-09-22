@@ -187,7 +187,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(julkaisut.size());
-            julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
+            julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Ylläpidon suorittama julkaisu"));
             julkaisu.setLuoja("maintenance");
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
