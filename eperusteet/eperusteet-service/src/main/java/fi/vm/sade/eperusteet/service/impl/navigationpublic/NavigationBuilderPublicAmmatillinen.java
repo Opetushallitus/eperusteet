@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -65,7 +66,10 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
     }
 
     private NavigationNodeDto tutkinnonOsat(PerusteKaikkiDto peruste) {
-        return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, peruste.getId())
+        return NavigationNodeDto.of(
+                KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma() ? NavigationType.koulutuksenosat : NavigationType.tutkinnonosat,
+                null,
+                peruste.getId())
                 .addAll(peruste.getTutkinnonOsat().stream()
                         .map(tosa -> buildTutkinnonOsa(peruste.getSuoritustavat().stream()
                                 .map(st -> st.getTutkinnonOsat().stream()
