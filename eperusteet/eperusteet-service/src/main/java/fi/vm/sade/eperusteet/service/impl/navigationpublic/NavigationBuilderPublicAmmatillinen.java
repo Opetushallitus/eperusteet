@@ -61,23 +61,7 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
                 viite.getId())
                 .meta("koodi", tosa.getKoodi())
                 .meta("laajuus", viite.getLaajuus());
-        if (tosa.getTyyppi() != TutkinnonOsaTyyppi.NORMAALI) {
-            result.add(NavigationNodeDto.of(NavigationType.osaalueet)
-                    .addAll(tosa.getOsaAlueet().stream()
-                    .map(osaAlue -> buildOsaAlue(viite, tosa, osaAlue))
-                .collect(Collectors.toList())));
-        }
         return result;
-    }
-
-    private NavigationNodeDto buildOsaAlue(TutkinnonOsaViiteSuppeaDto viite, TutkinnonOsaKaikkiDto tosa, OsaAlueKokonaanDto osaAlue) {
-        return NavigationNodeDto.of(
-                NavigationType.osaalue,
-                osaAlue.getNimi(),
-                osaAlue.getId())
-                .meta("koodi", osaAlue.getKoodi())
-                .meta("tutkinnonOsa", tosa.getId())
-                .meta("tutkinnonOsaViite", viite.getId());
     }
 
     private NavigationNodeDto tutkinnonOsat(PerusteKaikkiDto peruste) {
