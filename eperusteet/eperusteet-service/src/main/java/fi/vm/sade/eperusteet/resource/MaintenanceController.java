@@ -91,9 +91,10 @@ public class MaintenanceController {
     @RequestMapping(value = "/julkaisut", method = GET)
     public void teeJulkaisut(
             @RequestParam(value = "julkaisekaikki", defaultValue = "false") boolean julkaiseKaikki,
-            @RequestParam(value = "force", defaultValue = "false") boolean pakkojulkaisu
+            @RequestParam(value = "force", defaultValue = "false") boolean pakkojulkaisu,
+            @RequestParam(value = "tyyppi", defaultValue = "NORMAALI") String tyyppi
     ) {
-        maintenanceService.teeJulkaisut(julkaiseKaikki, pakkojulkaisu);
+        maintenanceService.teeJulkaisut(julkaiseKaikki, pakkojulkaisu, tyyppi);
     }
 
     @RequestMapping(value = "/export/{perusteId}", method = GET, produces = "application/zip")

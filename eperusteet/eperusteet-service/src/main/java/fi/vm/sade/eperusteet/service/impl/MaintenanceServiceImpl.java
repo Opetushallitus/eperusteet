@@ -142,8 +142,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Async
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
-    public void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu) {
-        List<Long> perusteet = perusteRepository.findJulkaistutPerusteet().stream()
+    public void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi) {
+        List<Long> perusteet = perusteRepository.findJulkaistutPerusteet(PerusteTyyppi.of(tyyppi)).stream()
                 .filter(peruste -> julkaiseKaikki || CollectionUtils.isEmpty(peruste.getJulkaisut()))
                 .map(Peruste::getId)
                 .collect(Collectors.toList());
