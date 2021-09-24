@@ -142,19 +142,17 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Async
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
-    public void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi) {
-        List<Long> perusteet = perusteRepository.findJulkaistutPerusteet(PerusteTyyppi.of(tyyppi)).stream()
+    public void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi, String koulutustyyppi, String tiedote) {
+        List<Long> perusteet = perusteRepository.findJulkaistutPerusteet(PerusteTyyppi.of(tyyppi), koulutustyyppi).stream()
                 .filter(peruste -> julkaiseKaikki || CollectionUtils.isEmpty(peruste.getJulkaisut()))
                 .map(Peruste::getId)
                 .collect(Collectors.toList());
 
-        log.info("julkaistavia perusteita ", perusteet.size());
-
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("julkaistavia perusteita " + perusteet.size());
 
         for (Long perusteId : perusteet) {
             try {
-                teeJulkaisu(username, perusteId, pakkojulkaisu);
+                teeJulkaisu(perusteId, pakkojulkaisu, tiedote);
             } catch (RuntimeException ex) {
                 log.error(ex.getLocalizedMessage(), ex);
             }
@@ -168,7 +166,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
     }
 
-    private void teeJulkaisu(String username, Long perusteId, boolean pakkojulkaisu) {
+    private void teeJulkaisu(Long perusteId, boolean pakkojulkaisu, String tiedote) {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(perusteId);
@@ -187,7 +185,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(julkaisut.size());
-            julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Ylläpidon suorittama julkaisu"));
+            julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));
             julkaisu.setLuoja("maintenance");
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
