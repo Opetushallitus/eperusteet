@@ -59,7 +59,7 @@ public class PerusteUtils {
         }
         else {
             if (kt != null) {
-                if (kt.isAmmatillinen()) {
+                if (kt.isAmmatillinen() || kt.isValmaTelma()) {
                     return KoulutustyyppiToteutus.AMMATILLINEN;
                 } else if (kt == KoulutusTyyppi.PERUSOPETUS) {
                     return KoulutustyyppiToteutus.PERUSOPETUS;

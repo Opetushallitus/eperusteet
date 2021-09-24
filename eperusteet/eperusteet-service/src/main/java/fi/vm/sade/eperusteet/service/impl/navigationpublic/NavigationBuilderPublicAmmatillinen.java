@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -61,27 +62,14 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
                 viite.getId())
                 .meta("koodi", tosa.getKoodi())
                 .meta("laajuus", viite.getLaajuus());
-        if (tosa.getTyyppi() != TutkinnonOsaTyyppi.NORMAALI) {
-            result.add(NavigationNodeDto.of(NavigationType.osaalueet)
-                    .addAll(tosa.getOsaAlueet().stream()
-                    .map(osaAlue -> buildOsaAlue(viite, tosa, osaAlue))
-                .collect(Collectors.toList())));
-        }
         return result;
     }
 
-    private NavigationNodeDto buildOsaAlue(TutkinnonOsaViiteSuppeaDto viite, TutkinnonOsaKaikkiDto tosa, OsaAlueKokonaanDto osaAlue) {
-        return NavigationNodeDto.of(
-                NavigationType.osaalue,
-                osaAlue.getNimi(),
-                osaAlue.getId())
-                .meta("koodi", osaAlue.getKoodi())
-                .meta("tutkinnonOsa", tosa.getId())
-                .meta("tutkinnonOsaViite", viite.getId());
-    }
-
     private NavigationNodeDto tutkinnonOsat(PerusteKaikkiDto peruste) {
-        return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, peruste.getId())
+        return NavigationNodeDto.of(
+                KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma() ? NavigationType.koulutuksenosat : NavigationType.tutkinnonosat,
+                null,
+                peruste.getId())
                 .addAll(peruste.getTutkinnonOsat().stream()
                         .map(tosa -> buildTutkinnonOsa(peruste.getSuoritustavat().stream()
                                 .map(st -> st.getTutkinnonOsat().stream()
