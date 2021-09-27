@@ -184,17 +184,13 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         assertThat(perusteRepository.findAll()).hasSize(4);
 
         // ammattivaatimuksilla 2
-        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
+        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU,
                 PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)).hasSize(2);
 
         // lukiolla 0
-        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
+        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU,
                 PerusteTyyppi.NORMAALI, Arrays.asList(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString()), Suoritustapakoodi.LUKIOKOULUTUS)).hasSize(0);
-
-        // aikavertailulla 0
-        assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(2999, 1, 1, 0, 0).toDate(),
-                PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)).hasSize(0);
-
+        
     }
 
     @Test

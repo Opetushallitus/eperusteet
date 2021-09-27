@@ -12,7 +12,7 @@ public interface MaintenanceService {
     void runValidointi();
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
-    void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi, String koulutustyyppi, String tiedote);
+    void teeJulkaisut(boolean julkaiseKaikki, String tyyppi, String koulutustyyppi, String tiedote);
     
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<YllapitoDto> getSallitutYllapidot();

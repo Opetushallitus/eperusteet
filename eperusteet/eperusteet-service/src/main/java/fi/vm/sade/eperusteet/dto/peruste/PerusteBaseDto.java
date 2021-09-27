@@ -36,6 +36,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -75,6 +76,7 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
 
     @ApiModelProperty("Perusteen määräyksen päätöspäivämäärä")
     private Date paatospvm;
+    private Optional<Date> viimeisinJulkaisuAika;
 
     private Date luotu;
     @ApiModelProperty(hidden = true)

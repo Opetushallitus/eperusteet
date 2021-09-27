@@ -1191,11 +1191,14 @@
           "required" : true,
           "type" : "boolean"
         }, {
+<<<<<<< HEAD
           "name" : "force",
           "in" : "query",
           "required" : true,
           "type" : "boolean"
         }, {
+=======
+>>>>>>> 10af657de... EP-2604
           "name" : "tyyppi",
           "in" : "query",
           "required" : true,
@@ -10851,12 +10854,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
-        "koulutustyyppi" : {
-          "type" : "string"
-        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "koulutustyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -11615,7 +11618,11 @@
         },
         "kohde" : {
           "type" : "string",
+<<<<<<< HEAD
           "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen" ]
+=======
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen" ]
+>>>>>>> 10af657de... EP-2604
         },
         "luotu" : {
           "type" : "string",
@@ -11668,7 +11675,11 @@
         },
         "type" : {
           "type" : "string",
+<<<<<<< HEAD
           "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen" ]
+=======
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen" ]
+>>>>>>> 10af657de... EP-2604
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
@@ -12588,14 +12599,11 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -12608,6 +12616,11 @@
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+=======
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+>>>>>>> 10af657de... EP-2604
         },
         "size" : {
           "type" : "integer",
@@ -12632,22 +12645,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PageKoodistoKoodiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12672,22 +12704,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PageKoulutuskoodiStatusDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12712,22 +12763,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteBaseDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12752,22 +12822,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteHakuDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12792,22 +12881,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteHakuInternalDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12832,22 +12940,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteInfoDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12872,22 +12999,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteenJulkaisuData" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12912,22 +13058,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteprojektiKevytDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12952,22 +13117,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PageTiedoteDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -12992,22 +13176,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PageTilaUpdateStatus" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -13032,22 +13235,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PageTutkinnonOsaDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -13072,22 +13294,41 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+=======
+>>>>>>> 10af657de... EP-2604
         "sort" : {
           "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
+<<<<<<< HEAD
+=======
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PageTutkinnonOsaViiteKontekstiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+>>>>>>> 10af657de... EP-2604
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -13102,6 +13343,22 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+>>>>>>> 10af657de... EP-2604
         }
       }
     },
@@ -13294,6 +13551,10 @@
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
         },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
         "luotu" : {
           "type" : "string",
           "format" : "date-time"
@@ -13437,6 +13698,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",
@@ -13601,6 +13866,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",
@@ -13789,6 +14058,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",
@@ -14017,6 +14290,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",

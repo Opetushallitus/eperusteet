@@ -178,7 +178,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         kooditaValiaikaisetKoodit(peruste);
 
-        PerusteVersion version = peruste.getGlobalVersion();
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
         Set<Long> dokumentit = new HashSet<>();
 
@@ -222,7 +221,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setRevision((int) julkaisutCount);
         julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
         julkaisu.setLuoja(username);
-        julkaisu.setLuotu(version.getAikaleima());
+        julkaisu.setLuotu(new Date());
         julkaisu.setPeruste(peruste);
 
         if (!dokumentit.isEmpty()) {

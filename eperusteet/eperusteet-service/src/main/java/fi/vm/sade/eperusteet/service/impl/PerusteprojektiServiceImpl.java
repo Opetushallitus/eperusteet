@@ -133,6 +133,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -351,7 +352,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(peruste);
             boolean vaatiiValidoinnin = vs == null
                     || !vs.isVaihtoOk()
-                    || peruste.getGlobalVersion().getAikaleima().after(vs.getLastCheck());
+                    || peruste.getViimeisinJulkaisuAika().orElse(peruste.getGlobalVersion().getAikaleima()).after(vs.getLastCheck());
 
             if (!vaatiiValidoinnin) {
                 return true;
@@ -370,7 +371,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             }
 
             vs.setPeruste(peruste);
-            vs.setLastCheck(peruste.getGlobalVersion().getAikaleima());
+            vs.setLastCheck(new Date());
 
             validointiStatusRepository.save(vs);
 
@@ -419,7 +420,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             KoulutuskoodiStatus koulutuskoodiStatus = koulutuskoodiStatusRepository.findOneByPeruste(peruste);
             boolean vaatiiTarkistuksen = koulutuskoodiStatus == null
                     || !koulutuskoodiStatus.isKooditOk()
-                    || peruste.getGlobalVersion().getAikaleima().after(koulutuskoodiStatus.getLastCheck());
+                    || peruste.getViimeisinJulkaisuAika().orElse(peruste.getGlobalVersion().getAikaleima()).after(koulutuskoodiStatus.getLastCheck());
 
             if (!vaatiiTarkistuksen) {
                 return false;
@@ -1356,7 +1357,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             MaarayskirjeStatus mks = maarayskirjeStatusRepository.findOneByPeruste(peruste);
             boolean vaatiiLataamisen = mks == null
                     || !mks.isLataaminenOk()
-                    || peruste.getGlobalVersion().getAikaleima().after(mks.getLastCheck());
+                    || peruste.getViimeisinJulkaisuAika().orElse(peruste.getGlobalVersion().getAikaleima()).after(mks.getLastCheck());
 
             if (!vaatiiLataamisen) {
                 return true;

@@ -291,7 +291,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     @Async
     @IgnorePerusteUpdateCheck
     public void addAmmattitaitovaatimuskooditToKoodisto() {
-        perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU, new DateTime(1970, 1, 1, 0, 0).toDate(),
+        perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU,
                 PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
                 .forEach(peruste -> {
                     addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
