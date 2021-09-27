@@ -48,7 +48,7 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     private Set<Long> dokumentit = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private JulkaistuPerusteData data;
 
     @PrePersist
