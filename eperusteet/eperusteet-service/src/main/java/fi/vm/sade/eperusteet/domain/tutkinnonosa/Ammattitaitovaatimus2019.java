@@ -35,7 +35,7 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @Getter
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = NOT_AUDITED)
-    @ValidMaxLength(pituus = 256)
+    @ValidMaxLength
     private TekstiPalanen vaatimus;
 
     public static Ammattitaitovaatimus2019 of(TekstiPalanen tp) {
