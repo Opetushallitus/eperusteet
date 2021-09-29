@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.Map;
 
 public class ValidMaxLengthValidator extends ValidHtmlValidatorBase implements ConstraintValidator<ValidMaxLength, TekstiPalanen>  {
-    private int pituus = 255;
+    private int pituus = 512;
 
     @Override
     public void initialize(ValidMaxLength validator) {

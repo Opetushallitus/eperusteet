@@ -10,13 +10,16 @@ import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({ FIELD, ANNOTATION_TYPE })
+@Target({FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Constraint(validatedBy = {ValidMaxLengthValidator.class})
 @Documented
 public @interface ValidMaxLength {
-    int pituus() default 256;
+    int pituus() default 512;
+
     String message() default "liian-pitka-teksti";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

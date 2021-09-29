@@ -387,10 +387,10 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         ValidMaxLengthValidator validator = new ValidMaxLengthValidator();
         TekstiPalanen a = TekstiPalanen.of(Kieli.FI, null);
         TekstiPalanen b = TekstiPalanen.of(Kieli.FI, "");
-        String size257 = "aabccdbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd";
-        assertThat(size257).hasSize(257);
-        TekstiPalanen c = TekstiPalanen.of(Kieli.FI, size257);
-        TekstiPalanen d = TekstiPalanen.of(Kieli.FI, size257.substring(256));
+        String size514 = "aabccdbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdaabccdbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd";
+        assertThat(size514).hasSize(514);
+        TekstiPalanen c = TekstiPalanen.of(Kieli.FI, size514);
+        TekstiPalanen d = TekstiPalanen.of(Kieli.FI, size514.substring(512));
 
         assertThat(validator.isValid(null, null)).isEqualTo(true);
         assertThat(validator.isValid(null, null)).isEqualTo(true);

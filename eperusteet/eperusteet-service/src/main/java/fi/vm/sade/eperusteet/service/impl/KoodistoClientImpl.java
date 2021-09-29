@@ -97,6 +97,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     private static final String ADD_CODE_ELEMENT_RELATIONS = CODEELEMENT + "/addrelations/";
     private static final String ADD_CODE_RELATION = CODES + "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}";
 
+    private static final int KOODISTO_TEKSTI_MAX_LENGTH = 512;
+
     @Autowired
     RestClientFactory restClientFactory;
 
@@ -295,7 +297,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
 
-        if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > 256)) {
+        if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > KOODISTO_TEKSTI_MAX_LENGTH)) {
             throw new BusinessRuleViolationException("koodi-arvo-liian-pitka");
         }
 
