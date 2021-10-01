@@ -29,7 +29,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "       )" +
             "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
             "   AND (:koulutusvienti = false OR CAST(koulutusvienti as boolean) = true) " +
-            "   AND ((:poistuneet = true AND tila IN ('VALMIS', 'POISTETTU')) OR (:poistuneet = false AND tila IN ('VALMIS'))) " +
+            "   AND ((:poistuneet = true AND tila IN ('LUONNOS', 'VALMIS', 'POISTETTU')) OR (:poistuneet = false AND tila IN ('LUONNOS', 'VALMIS'))) " +
             "   AND ((:tulevat = true " +
             "                       AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
             "       OR (:siirtymat = true " +
