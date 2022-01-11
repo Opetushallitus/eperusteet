@@ -391,6 +391,11 @@ public class DtoMapperConfig {
                 .field("geneerinenArviointiasteikko", "arviointi")
                 .register();
 
+        factory.classMap(OsaAlue.class, OsaAlueKokonaanDto.class)
+                .byDefault()
+                .field("geneerinenArviointiasteikko", "arviointi")
+                .register();
+
         factory.classMap(Lops2019Oppiaine.class, Lops2019OppiaineKaikkiDto.class)
                 .byDefault()
                 .register();
