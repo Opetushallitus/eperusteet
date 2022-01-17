@@ -2,7 +2,7 @@
 ### user.home\\.m2\settings.xml
 - maven settings
 
-```
+```xml
   <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
@@ -34,7 +34,7 @@
 ### docker-compose.yml
 - docker compose -tiedosto mikäli tietokantaa ajetaan paikallisesti
 
-```
+```yaml
   version: "3.1"
   services:
   eperusteet:
@@ -75,7 +75,7 @@
 - ulkopuolisten palveluiden sijaintien configuraatiot
 - korvaa [username] ja [password] käyttäjän tunnuksiin
 
-```
+```properties
   cas.service.authentication-service=https://virkailija.testiopintopolku.fi/authentication-service
   cas.service.organisaatio-service=https://virkailija.testiopintopolku.fi/organisaatio-service
   cas.service.oppijanumerorekisteri-service=https://virkailija.testiopintopolku.fi/oppijanumerorekisteri-service
@@ -100,7 +100,7 @@
 - sovelluksen käyttämä kirjautumisconfiguraation
 - authority muodossa ROLE_APP_[palvelu] _[oikeus] _[organisaatio]
 
-```
+```xml
   <beans:beans xmlns="http://www.springframework.org/schema/security"
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
