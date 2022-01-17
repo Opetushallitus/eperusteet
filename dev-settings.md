@@ -73,7 +73,7 @@
 
 ### user.home\oph-configuration\override.properties
 - ulkopuolisten palveluiden sijaintien configuraatiot
-- korvaa [username] ja [password] käyttäjän tunnuksiin
+- korvaa [username] ja [password] käyttäjän testiopintopolku tunnuksiin
 
 ```properties
   cas.service.authentication-service=https://virkailija.testiopintopolku.fi/authentication-service
@@ -83,6 +83,8 @@
   fi.vm.sade.eperusteet.ylops.eperusteet-service=https://virkailija.testiopintopolku.fi/eperusteet-service
   fi.vm.sade.eperusteet.amosaa.eperusteet-service=https://virkailija.testiopintopolku.fi/eperusteet-service
   koodisto.service.url=https://virkailija.testiopintopolku.fi/koodisto-service
+  
+  fi.vm.sade.eperusteet.salli_virheelliset=true
 
   fi.vm.sade.eperusteet.amosaa.oph_username=[username]
   fi.vm.sade.eperusteet.amosaa.oph_password=[password]
