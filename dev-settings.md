@@ -70,16 +70,14 @@
                                  http://www.springframework.org/schema/security
                                  http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http use-expressions="true" request-matcher="regex">
+    <http use-expressions="true" request-matcher="ant">
         <http-basic/>
-		<intercept-url pattern="/api/.*" access="isAuthenticated()" method="POST"/>
-		<intercept-url pattern="/api/.*" access="isAuthenticated()" method="PUT"/>
-		<intercept-url pattern="/api/.*" access="isAuthenticated()" method="DELETE"/>
-		<intercept-url pattern="/api/.*" access="isAuthenticated()" method="PATCH"/>
+        <!-- todo: default rooli -->
         <intercept-url pattern="/" access="permitAll"/>
         <intercept-url pattern="/index.html" access="permitAll"/>
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>
-        <csrf disabled="true" />
+        <!--<logout logout-url="/logout"/>--> <!-- no server side logout for basic auth -->
+        <csrf disabled="true"/>
     </http>
 	
     <beans:bean id="tokenRepository" class="org.springframework.security.web.csrf.CookieCsrfTokenRepository">
