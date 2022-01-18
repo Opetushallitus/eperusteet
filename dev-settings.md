@@ -3,31 +3,31 @@
 - maven settings
 
 ```xml
-  <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                        https://maven.apache.org/xsd/settings-1.0.0.xsd">
-
-    <profiles>
-      <profile>
-        <id>oph</id>
-          <properties>
-          <eperusteet.devdb.user>oph</eperusteet.devdb.user>
-          <eperusteet.devdb.password>test</eperusteet.devdb.password>
-          <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/eperusteet</eperusteet.devdb.jdbcurl>
-
-          <eperusteet-amosaa.devdb.user>oph</eperusteet-amosaa.devdb.user>
-          <eperusteet-amosaa.devdb.password>test</eperusteet-amosaa.devdb.password>
-          <eperusteet-amosaa.devdb.jdbcurl>jdbc:postgresql://localhost:5433/amosaa</eperusteet-amosaa.devdb.jdbcurl>
-
-          <eperusteet-ylops.devdb.user>oph</eperusteet-ylops.devdb.user>
-          <eperusteet-ylops.devdb.password>test</eperusteet-ylops.devdb.password>
-          <eperusteet-ylops.devdb.jdbcurl>jdbc:postgresql://localhost:5434/ylops</eperusteet-ylops.devdb.jdbcurl>
-        </properties>
-      </profile>
-    </profiles>
-
-  </settings>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      https://maven.apache.org/xsd/settings-1.0.0.xsd">
+    
+  <profiles>
+    <profile>
+      <id>oph</id>
+        <properties>
+        <eperusteet.devdb.user>oph</eperusteet.devdb.user>
+        <eperusteet.devdb.password>test</eperusteet.devdb.password>
+        <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/eperusteet</eperusteet.devdb.jdbcurl>
+            
+        <eperusteet-amosaa.devdb.user>oph</eperusteet-amosaa.devdb.user>
+        <eperusteet-amosaa.devdb.password>test</eperusteet-amosaa.devdb.password>
+        <eperusteet-amosaa.devdb.jdbcurl>jdbc:postgresql://localhost:5433/amosaa</eperusteet-amosaa.devdb.jdbcurl>
+            
+        <eperusteet-ylops.devdb.user>oph</eperusteet-ylops.devdb.user>
+        <eperusteet-ylops.devdb.password>test</eperusteet-ylops.devdb.password>
+        <eperusteet-ylops.devdb.jdbcurl>jdbc:postgresql://localhost:5434/ylops</eperusteet-ylops.devdb.jdbcurl>
+      </properties>
+    </profile>
+  </profiles>
+    
+</settings>
 ```
 
 ### user.home\oph-configuration\override.properties
@@ -35,25 +35,25 @@
 - korvaa [username] ja [password] käyttäjän testiopintopolku tunnuksiin
 
 ```properties
-  cas.service.authentication-service=https://virkailija.testiopintopolku.fi/authentication-service
-  cas.service.organisaatio-service=https://virkailija.testiopintopolku.fi/organisaatio-service
-  cas.service.oppijanumerorekisteri-service=https://virkailija.testiopintopolku.fi/oppijanumerorekisteri-service
-  cas.service.kayttooikeus-service=https://virkailija.testiopintopolku.fi/kayttooikeus-service
-  fi.vm.sade.eperusteet.ylops.eperusteet-service=https://virkailija.testiopintopolku.fi/eperusteet-service
-  fi.vm.sade.eperusteet.amosaa.eperusteet-service=https://virkailija.testiopintopolku.fi/eperusteet-service
-  koodisto.service.url=https://virkailija.testiopintopolku.fi/koodisto-service
-  
-  fi.vm.sade.eperusteet.salli_virheelliset=true
+cas.service.authentication-service=https://virkailija.testiopintopolku.fi/authentication-service
+cas.service.organisaatio-service=https://virkailija.testiopintopolku.fi/organisaatio-service
+cas.service.oppijanumerorekisteri-service=https://virkailija.testiopintopolku.fi/oppijanumerorekisteri-service
+cas.service.kayttooikeus-service=https://virkailija.testiopintopolku.fi/kayttooikeus-service
+fi.vm.sade.eperusteet.ylops.eperusteet-service=https://virkailija.testiopintopolku.fi/eperusteet-service
+fi.vm.sade.eperusteet.amosaa.eperusteet-service=https://virkailija.testiopintopolku.fi/eperusteet-service
+koodisto.service.url=https://virkailija.testiopintopolku.fi/koodisto-service
 
-  fi.vm.sade.eperusteet.amosaa.oph_username=[username]
-  fi.vm.sade.eperusteet.amosaa.oph_password=[password]
-  fi.vm.sade.eperusteet.ylops.oph_username=[username]
-  fi.vm.sade.eperusteet.ylops.oph_password=[password]
-  fi.vm.sade.eperusteet.oph_username=[username]
-  fi.vm.sade.eperusteet.oph_password=[password]
+fi.vm.sade.eperusteet.salli_virheelliset=true
 
-  web.url.cas=https\://virkailija.testiopintopolku.fi/cas
-  hibernate.show_sql=false
+fi.vm.sade.eperusteet.amosaa.oph_username=[username]
+fi.vm.sade.eperusteet.amosaa.oph_password=[password]
+fi.vm.sade.eperusteet.ylops.oph_username=[username]
+fi.vm.sade.eperusteet.ylops.oph_password=[password]
+fi.vm.sade.eperusteet.oph_username=[username]
+fi.vm.sade.eperusteet.oph_password=[password]
+
+web.url.cas=https\://virkailija.testiopintopolku.fi/cas
+hibernate.show_sql=false
 ```
 
 
