@@ -112,9 +112,27 @@ hibernate.show_sql=false
                            ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.68534785412,
                            ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001,
                            ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
-          <user name="ep"     password="{noop}ep"     authorities="ROLE_USER, ROLE_APP_EPERUSTEET,        ROLE_APP_EPERUSTEET_CRUD,       ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001,       ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001" />
-          <user name="ylops"  password="{noop}ylops"  authorities="ROLE_USER, ROLE_APP_EPERUSTEET_YLOPS,  ROLE_APP_EPERUSTEET_YLOPS_CRUD, ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
-          <user name="amosaa" password="{noop}amosaa" authorities="ROLE_USER, ROLE_APP_EPERUSTEET_AMOSAA, ROLE_APP_EPERUSTEET_AMOSAA_CRUD,ROLE_APP_EPERUSTEET_AMOSAA_ADMIN_1.2.246.562.10.00000000001,ROLE_APP_EPERUSTEET_AMOSAA_CRUD_1.2.246.562.10.00000000001" />
+          <user name="ep"     
+                password="{noop}ep"     
+                authorities="ROLE_USER, 
+                             ROLE_APP_EPERUSTEET,        
+                             ROLE_APP_EPERUSTEET_CRUD,       
+                             ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001,       
+                             ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001" />
+          <user name="ylops"  
+                password="{noop}ylops"  
+                authorities="ROLE_USER, 
+                             ROLE_APP_EPERUSTEET_YLOPS,  
+                             ROLE_APP_EPERUSTEET_YLOPS_CRUD, 
+                             ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001, 
+                             ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
+          <user name="amosaa" 
+                password="{noop}amosaa" 
+                authorities="ROLE_USER, 
+                             ROLE_APP_EPERUSTEET_AMOSAA, 
+                             ROLE_APP_EPERUSTEET_AMOSAA_CRUD,
+                             ROLE_APP_EPERUSTEET_AMOSAA_ADMIN_1.2.246.562.10.00000000001,
+                             ROLE_APP_EPERUSTEET_AMOSAA_CRUD_1.2.246.562.10.00000000001" />
         </user-service>
       </authentication-provider>
   </authentication-manager>
