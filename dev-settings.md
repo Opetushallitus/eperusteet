@@ -66,9 +66,9 @@
              xmlns:beans="http://www.springframework.org/schema/beans"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-  http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-  http://www.springframework.org/schema/security
-  http://www.springframework.org/schema/security/spring-security.xsd">
+                                 http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                                 http://www.springframework.org/schema/security
+                                 http://www.springframework.org/schema/security/spring-security.xsd">
 
     <http use-expressions="true" request-matcher="regex">
         <http-basic/>
@@ -92,9 +92,9 @@
     <authentication-manager alias="authenticationManager">
         <authentication-provider>
           <user-service>
-            <user name="ep"     password="ep"     authorities="ROLE_USER, ROLE_APP_EPERUSTEET,        ROLE_APP_EPERUSTEET_CRUD,       ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001,       ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001" />
-            <user name="ylops"  password="ylops"  authorities="ROLE_USER, ROLE_APP_EPERUSTEET_YLOPS,  ROLE_APP_EPERUSTEET_YLOPS_CRUD, ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
-            <user name="amosaa" password="amosaa" authorities="ROLE_USER, ROLE_APP_EPERUSTEET_AMOSAA, ROLE_APP_EPERUSTEET_AMOSAA_CRUD,ROLE_APP_EPERUSTEET_AMOSAA_ADMIN_1.2.246.562.10.00000000001,ROLE_APP_EPERUSTEET_AMOSAA_CRUD_1.2.246.562.10.00000000001" />
+            <user name="ep"     password="{noop}ep"     authorities="ROLE_USER, ROLE_APP_EPERUSTEET,        ROLE_APP_EPERUSTEET_CRUD,       ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001,       ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001" />
+            <user name="ylops"  password="{noop}ylops"  authorities="ROLE_USER, ROLE_APP_EPERUSTEET_YLOPS,  ROLE_APP_EPERUSTEET_YLOPS_CRUD, ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
+            <user name="amosaa" password="{noop}amosaa" authorities="ROLE_USER, ROLE_APP_EPERUSTEET_AMOSAA, ROLE_APP_EPERUSTEET_AMOSAA_CRUD,ROLE_APP_EPERUSTEET_AMOSAA_ADMIN_1.2.246.562.10.00000000001,ROLE_APP_EPERUSTEET_AMOSAA_CRUD_1.2.246.562.10.00000000001" />
           </user-service>
         </authentication-provider>
     </authentication-manager>
