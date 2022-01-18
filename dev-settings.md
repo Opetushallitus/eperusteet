@@ -90,6 +90,28 @@ hibernate.show_sql=false
   <authentication-manager alias="authenticationManager">
       <authentication-provider>
         <user-service>
+        <user name="test" 
+              password="{noop}test" 
+              authorities="ROLE_USER,
+                           ROLE_APP_EPERUSTEET,
+                           ROLE_APP_EPERUSTEET_CRUD,
+                           ROLE_APP_EPERUSTEET_ADMIN,
+                           ROLE_APP_EPERUSTEET_AMOSAA,
+                           ROLE_APP_EPERUSTEET_AMOSAA_ADMIN_1.2.246.562.10.2013120512391252668625
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.61057016927,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.20516711478,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.28.55860281986,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.28.11287634288,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.28.85557110211,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.79499343246,
+                           ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001,
+                           ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001,
+                           ROLE_APP_EPERUSTEET_YLOPS,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.22840843613,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.68534785412,
+                           ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001,
+                           ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
           <user name="ep"     password="{noop}ep"     authorities="ROLE_USER, ROLE_APP_EPERUSTEET,        ROLE_APP_EPERUSTEET_CRUD,       ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001,       ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001" />
           <user name="ylops"  password="{noop}ylops"  authorities="ROLE_USER, ROLE_APP_EPERUSTEET_YLOPS,  ROLE_APP_EPERUSTEET_YLOPS_CRUD, ROLE_APP_EPERUSTEET_YLOPS_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_YLOPS_CRUD_1.2.246.562.10.00000000001" />
           <user name="amosaa" password="{noop}amosaa" authorities="ROLE_USER, ROLE_APP_EPERUSTEET_AMOSAA, ROLE_APP_EPERUSTEET_AMOSAA_CRUD,ROLE_APP_EPERUSTEET_AMOSAA_ADMIN_1.2.246.562.10.00000000001,ROLE_APP_EPERUSTEET_AMOSAA_CRUD_1.2.246.562.10.00000000001" />
