@@ -30,47 +30,6 @@
   </settings>
 ```
 
-
-### docker-compose.yml
-- docker compose -tiedosto mikäli tietokantaa ajetaan paikallisesti
-
-```yaml
-  version: "3.1"
-  services:
-    eperusteet:
-      image: postgres:10.7
-      environment:
-        POSTGRES_USER: oph
-        POSTGRES_PASSWORD: test
-        POSTGRES_DB: eperusteet
-      ports:
-        - "127.0.0.1:5432:5432"
-      #volumes:
-      #  - "./eperusteet:/var/lib/postgresql/data"
-    eperusteet-amosaa:
-      image: postgres:10.7
-      environment:
-        POSTGRES_USER: oph
-        POSTGRES_PASSWORD: test
-        POSTGRES_DB: amosaa
-      ports:
-        - "127.0.0.1:5433:5432"
-      #volumes:
-      #  - "./eperusteet:/var/lib/postgresql/data"
-    eperusteet-ylops:
-      image: postgres:10.7
-      environment:
-        POSTGRES_USER: oph
-        POSTGRES_PASSWORD: test
-        POSTGRES_DB: ylops
-      ports:
-        - "127.0.0.1:5434:5432"
-      #volumes:
-      #  - "./eperusteet:/var/lib/postgresql/data"   
-```
-
-
-
 ### user.home\oph-configuration\override.properties
 - ulkopuolisten palveluiden sijaintien configuraatiot
 - korvaa [username] ja [password] käyttäjän testiopintopolku tunnuksiin
