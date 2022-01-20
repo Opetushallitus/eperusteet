@@ -99,7 +99,7 @@ aja tiedoston kanssa samassa kansiossa komento `docker compose up`
 
 Tämän jälkeen palvelun saa käyntiin seuraavilla komennoilla:
 
-```shell
+```bash
 cd eperusteet/eperusteet-service
 mvn jetty:run -Djetty.port=8080
 ```
