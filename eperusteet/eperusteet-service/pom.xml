@@ -18,7 +18,7 @@
         <spring.data.jpa.version>1.11.23.RELEASE</spring.data.jpa.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <logback.version>1.2.3</logback.version>
-        <postgresql.version>9.4.1211</postgresql.version>
+        <postgresql.version>42.2.25</postgresql.version>
         <jackson.version>2.11.4</jackson.version>
         <jackson.databind.version>2.10.5.1</jackson.databind.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
@@ -476,7 +476,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.12.1</version>
+            <version>1.12.151</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
