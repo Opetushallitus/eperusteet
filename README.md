@@ -106,6 +106,8 @@ mvn jetty:run -Djetty.port=8080
 
 #### &nbsp;&nbsp;API-generointi
 
+Jos muutat tietomallia tai rajapintoja aja tämä:
+
 ```
 cd eperusteet/eperusteet-service  
 mvn clean compile -Pgenerate-openapi
