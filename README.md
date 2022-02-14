@@ -111,9 +111,9 @@ Jos muutat tietomallia tai rajapintoja aja tämä:
 ```
 cd eperusteet/eperusteet-service  
 mvn clean compile -Pgenerate-openapi
-specfile="$EPERUSTEET_SERVICE_DIR/target/openapi/eperusteet.spec.json"
-npx openapi-generator generate -c ../../generator.config.json -i "$specfile" -g typescript-axios
 ```
+Tämän jälkeen kopio `eperusteet/eperusteet-service/target/openapi/eperusteet.spec.json`-tiedoston sisältö tiedostoon `eperusteet/generated/eperusteet.spec.json`
+
 
 ### eperusteet-app (vanha käyttöliittymä)
 
