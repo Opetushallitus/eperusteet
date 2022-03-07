@@ -21,4 +21,7 @@ public class KotoTaitotasoDto {
     private LokalisoituTekstiDto viestintataidot;
     private LokalisoituTekstiDto opiskelijantaidot;
 
+    private LokalisoituTekstiDto suullinenVastaanottaminen;
+    private LokalisoituTekstiDto suullinenTuottaminen;
+    private LokalisoituTekstiDto vuorovaikutusJaMeditaatio;
 }

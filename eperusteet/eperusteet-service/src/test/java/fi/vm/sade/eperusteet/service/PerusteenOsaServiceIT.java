@@ -351,6 +351,9 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                         .opiskelijantaidot(LokalisoituTekstiDto.of("opiskelijantaidot2"))
                         .tavoitteet(LokalisoituTekstiDto.of("tavoitteet2"))
                         .viestintataidot(LokalisoituTekstiDto.of("viestintataidot2"))
+                        .suullinenVastaanottaminen(LokalisoituTekstiDto.of("testiSuullinenVastaanottaminen"))
+                        .suullinenTuottaminen(LokalisoituTekstiDto.of("testiSuullinenTuottaminen"))
+                        .vuorovaikutusJaMeditaatio(LokalisoituTekstiDto.of("testiVuorovaikutusJaMeditaatio"))
                         .build()
         ));
         kotoKielitaitotaso = perusteenOsaService.update(kotoKielitaitotaso);
@@ -361,14 +364,17 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(kotoKielitaitotaso.getTaitotasot()).hasSize(1);
         assertThat(kotoKielitaitotaso.getTaitotasot().get(0)).extracting("nimi").isEqualTo(KoodiDto.of(KoodistoUriArvo.KOTOUTUMISKOULUTUSTAVOITTEET, "taitotasonimi2"));
         assertThat(kotoKielitaitotaso.getTaitotasot())
-                .flatExtracting("aihealueet", "kielenkayttotarkoitus", "opiskelijantaidot", "tavoitteet", "viestintataidot")
+                .flatExtracting("aihealueet", "kielenkayttotarkoitus", "opiskelijantaidot", "tavoitteet", "viestintataidot", "suullinenVastaanottaminen", "suullinenTuottaminen", "vuorovaikutusJaMeditaatio")
                 .extracting("tekstit")
                 .containsExactlyInAnyOrder(
                         Maps.newHashMap(Kieli.FI, "aihealueet2"),
                         Maps.newHashMap(Kieli.FI, "kielenkayttotarkoitus2"),
                         Maps.newHashMap(Kieli.FI, "opiskelijantaidot2"),
                         Maps.newHashMap(Kieli.FI, "tavoitteet2"),
-                        Maps.newHashMap(Kieli.FI, "viestintataidot2"));
+                        Maps.newHashMap(Kieli.FI, "viestintataidot2"),
+                        Maps.newHashMap(Kieli.FI, "testiSuullinenVastaanottaminen"),
+                        Maps.newHashMap(Kieli.FI, "testiSuullinenTuottaminen"),
+                        Maps.newHashMap(Kieli.FI, "testiVuorovaikutusJaMeditaatio"));
     }
 
     @Test
