@@ -1031,10 +1031,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addTeksti(docBase, getTextString(docBase, taitotasoNimi.getNimi()), "h5");
 
             String tavoitteet = getTextString(docBase, taitotaso.getTavoitteet());
-            if (StringUtils.isNotEmpty(tavoitteet)) {
-                addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, tavoitteet, "div");
-            }
+
+            addKotoH6Teksti(tavoitteet, "docgen.tavoitteet.title", docBase);
 
             String kielenkayttotarkoitus = getTextString(docBase, taitotaso.getKielenkayttotarkoitus());
             String aihealueet = getTextString(docBase, taitotaso.getAihealueet());
@@ -1050,17 +1048,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
             addKotoH6Teksti(kielenkayttotarkoitus, "docgen.kielenkayttotarkoitus.title", docBase);
             addKotoH6Teksti(aihealueet, "docgen.aihealueet.title", docBase);
-
-            if (StringUtils.isNotEmpty(viestintataidot)) {
-                addTeksti(docBase, messages.translate("docgen.viestintataidot.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, viestintataidot, "div");
-            }
-
-            if (StringUtils.isNotEmpty(opiskelijantaidot)) {
-                addTeksti(docBase, messages.translate("docgen.opiskelijantaidot.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, opiskelijantaidot, "div");
-            }
-
+            addKotoH6Teksti(viestintataidot, "docgen.viestintataidot.title", docBase);
+            addKotoH6Teksti(opiskelijantaidot, "docgen.opiskelijantaidot.title", docBase);
         });
 
         docBase.getGenerator().increaseDepth();
