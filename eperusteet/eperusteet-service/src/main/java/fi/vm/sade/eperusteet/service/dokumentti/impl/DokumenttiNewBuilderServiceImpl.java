@@ -1048,15 +1048,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addTeksti(docBase, messages.translate("docgen.keskeiset-sisallot.title", docBase.getKieli()), "h5");
             }
 
-            if (StringUtils.isNotEmpty(kielenkayttotarkoitus)) {
-                addTeksti(docBase, messages.translate("docgen.kielenkayttotarkoitus.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, kielenkayttotarkoitus, "div");
-            }
-
-            if (StringUtils.isNotEmpty(aihealueet)) {
-                addTeksti(docBase, messages.translate("docgen.aihealueet.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, aihealueet, "div");
-            }
+            addKotoH6Teksti(kielenkayttotarkoitus, "docgen.kielenkayttotarkoitus.title", docBase);
+            addKotoH6Teksti(aihealueet, "docgen.aihealueet.title", docBase);
 
             if (StringUtils.isNotEmpty(viestintataidot)) {
                 addTeksti(docBase, messages.translate("docgen.viestintataidot.title", docBase.getKieli()), "h6");
@@ -1074,6 +1067,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addPerusteenOsat(docBase, lapsi);
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
+    }
+
+    private void addKotoH6Teksti(String text, String translationKey, DokumenttiPeruste docBase) {
+        if (StringUtils.isNotEmpty(text)) {
+            addTeksti(docBase, messages.translate(translationKey, docBase.getKieli()), "h6");
+            addTeksti(docBase, text, "div");
+        }
     }
 
     private void addTaiteenalaSisalto(DokumenttiPeruste docBase, KevytTekstiKappale tekstiKappale, String placeholder) {
