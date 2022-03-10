@@ -1031,15 +1031,17 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addTeksti(docBase, getTextString(docBase, taitotasoNimi.getNimi()), "h5");
 
             String tavoitteet = getTextString(docBase, taitotaso.getTavoitteet());
-            if (StringUtils.isNotEmpty(tavoitteet)) {
-                addTeksti(docBase, messages.translate("docgen.tavoitteet.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, tavoitteet, "div");
-            }
+
+            addKotoH6Teksti(tavoitteet, "docgen.tavoitteet.title", docBase);
 
             String kielenkayttotarkoitus = getTextString(docBase, taitotaso.getKielenkayttotarkoitus());
             String aihealueet = getTextString(docBase, taitotaso.getAihealueet());
             String viestintataidot = getTextString(docBase, taitotaso.getViestintataidot());
             String opiskelijantaidot = getTextString(docBase, taitotaso.getOpiskelijantaidot());
+
+            String suullinenVastaanottaminen = getTextString(docBase, taitotaso.getSuullinenVastaanottaminen());
+            String suullinenTuottaminen = getTextString(docBase, taitotaso.getSuullinenTuottaminen());
+            String vuorovaikutusJaMeditaatio = getTextString(docBase, taitotaso.getVuorovaikutusJaMeditaatio());
 
             if (StringUtils.isNotEmpty(kielenkayttotarkoitus)
                     || StringUtils.isNotEmpty(aihealueet)
@@ -1048,32 +1050,33 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 addTeksti(docBase, messages.translate("docgen.keskeiset-sisallot.title", docBase.getKieli()), "h5");
             }
 
-            if (StringUtils.isNotEmpty(kielenkayttotarkoitus)) {
-                addTeksti(docBase, messages.translate("docgen.kielenkayttotarkoitus.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, kielenkayttotarkoitus, "div");
+            addKotoH6Teksti(kielenkayttotarkoitus, "docgen.kielenkayttotarkoitus.title", docBase);
+            addKotoH6Teksti(aihealueet, "docgen.aihealueet.title", docBase);
+            addKotoH6Teksti(viestintataidot, "docgen.viestintataidot.title", docBase);
+            addKotoH6Teksti(opiskelijantaidot, "docgen.opiskelijantaidot.title", docBase);
+
+            if (StringUtils.isNotEmpty(suullinenVastaanottaminen)
+                    || StringUtils.isNotEmpty(suullinenTuottaminen)
+                    || StringUtils.isNotEmpty(vuorovaikutusJaMeditaatio)) {
+                addTeksti(docBase, messages.translate("docgen.opiskelijan_osaaminen.title", docBase.getKieli()), "h5");
             }
 
-            if (StringUtils.isNotEmpty(aihealueet)) {
-                addTeksti(docBase, messages.translate("docgen.aihealueet.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, aihealueet, "div");
-            }
-
-            if (StringUtils.isNotEmpty(viestintataidot)) {
-                addTeksti(docBase, messages.translate("docgen.viestintataidot.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, viestintataidot, "div");
-            }
-
-            if (StringUtils.isNotEmpty(opiskelijantaidot)) {
-                addTeksti(docBase, messages.translate("docgen.opiskelijantaidot.title", docBase.getKieli()), "h6");
-                addTeksti(docBase, opiskelijantaidot, "div");
-            }
-
+            addKotoH6Teksti(suullinenVastaanottaminen, "docgen.suullinen_vastaanottaminen.title", docBase);
+            addKotoH6Teksti(suullinenTuottaminen, "docgen.suullinen_tuottaminen.title", docBase);
+            addKotoH6Teksti(vuorovaikutusJaMeditaatio, "docgen.vuorovaikutus_ja_meditaatio.title", docBase);
         });
 
         docBase.getGenerator().increaseDepth();
         addPerusteenOsat(docBase, lapsi);
         docBase.getGenerator().decreaseDepth();
         docBase.getGenerator().increaseNumber();
+    }
+
+    private void addKotoH6Teksti(String text, String translationKey, DokumenttiPeruste docBase) {
+        if (StringUtils.isNotEmpty(text)) {
+            addTeksti(docBase, messages.translate(translationKey, docBase.getKieli()), "h6");
+            addTeksti(docBase, text, "div");
+        }
     }
 
     private void addTaiteenalaSisalto(DokumenttiPeruste docBase, KevytTekstiKappale tekstiKappale, String placeholder) {
