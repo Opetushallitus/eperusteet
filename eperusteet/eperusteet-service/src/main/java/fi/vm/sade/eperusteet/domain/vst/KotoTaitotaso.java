@@ -58,10 +58,19 @@ public class KotoTaitotaso extends AbstractAuditedEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen viestintataidot;
 
+    @Deprecated //Tulee poistumaan kunhan uudet koton kentät on toteutettu
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen opiskelijantaidot;
+
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen opiskelijanTyoelamataidot;
+
+    private Integer tyoelamaOpintoMinimiLaajuus;
+    private Integer tyoelamaOpintoMaksimiLaajuus;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
