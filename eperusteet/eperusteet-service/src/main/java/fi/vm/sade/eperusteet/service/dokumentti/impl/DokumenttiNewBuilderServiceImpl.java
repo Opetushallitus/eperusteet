@@ -1055,12 +1055,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addKotoH6Teksti(viestintataidot, "docgen.viestintataidot.title", docBase);
             addKotoH6Teksti(opiskelijantaidot, "docgen.opiskelijantaidot.title", docBase);
 
-            if (StringUtils.isNotEmpty(suullinenVastaanottaminen)
-                    || StringUtils.isNotEmpty(suullinenTuottaminen)
-                    || StringUtils.isNotEmpty(vuorovaikutusJaMeditaatio)) {
-                addTeksti(docBase, messages.translate("docgen.opiskelijan_osaaminen.title", docBase.getKieli()), "h5");
-            }
-
             addKotoH6Teksti(suullinenVastaanottaminen, "docgen.suullinen_vastaanottaminen.title", docBase);
             addKotoH6Teksti(suullinenTuottaminen, "docgen.suullinen_tuottaminen.title", docBase);
             addKotoH6Teksti(vuorovaikutusJaMeditaatio, "docgen.vuorovaikutus_ja_meditaatio.title", docBase);
