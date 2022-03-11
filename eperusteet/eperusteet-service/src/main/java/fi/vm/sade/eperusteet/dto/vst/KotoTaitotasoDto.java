@@ -21,6 +21,9 @@ public class KotoTaitotasoDto {
     private LokalisoituTekstiDto viestintataidot;
     private LokalisoituTekstiDto opiskelijantaidot;
 
+    private LokalisoituTekstiDto opiskelijanTyoelamataidot;
+    private Integer tyoelamaOpintoMinimiLaajuus;
+    private Integer tyoelamaOpintoMaksimiLaajuus;
     private LokalisoituTekstiDto suullinenVastaanottaminen;
     private LokalisoituTekstiDto suullinenTuottaminen;
     private LokalisoituTekstiDto vuorovaikutusJaMeditaatio;

@@ -1039,6 +1039,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             String viestintataidot = getTextString(docBase, taitotaso.getViestintataidot());
             String opiskelijantaidot = getTextString(docBase, taitotaso.getOpiskelijantaidot());
 
+            String opiskelijanTyoelamataidot = getTextString(docBase, taitotaso.getOpiskelijanTyoelamataidot());
             String suullinenVastaanottaminen = getTextString(docBase, taitotaso.getSuullinenVastaanottaminen());
             String suullinenTuottaminen = getTextString(docBase, taitotaso.getSuullinenTuottaminen());
             String vuorovaikutusJaMeditaatio = getTextString(docBase, taitotaso.getVuorovaikutusJaMeditaatio());
@@ -1046,7 +1047,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             if (StringUtils.isNotEmpty(kielenkayttotarkoitus)
                     || StringUtils.isNotEmpty(aihealueet)
                     || StringUtils.isNotEmpty(viestintataidot)
-                    || StringUtils.isNotEmpty(opiskelijantaidot)) {
+                    || StringUtils.isNotEmpty(opiskelijantaidot)
+                    || StringUtils.isNotEmpty(opiskelijanTyoelamataidot)
+                    || StringUtils.isNotEmpty(suullinenVastaanottaminen)
+                    || StringUtils.isNotEmpty(suullinenTuottaminen)
+                    || StringUtils.isNotEmpty(vuorovaikutusJaMeditaatio)) {
                 addTeksti(docBase, messages.translate("docgen.keskeiset-sisallot.title", docBase.getKieli()), "h5");
             }
 
@@ -1055,12 +1060,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addKotoH6Teksti(viestintataidot, "docgen.viestintataidot.title", docBase);
             addKotoH6Teksti(opiskelijantaidot, "docgen.opiskelijantaidot.title", docBase);
 
-            if (StringUtils.isNotEmpty(suullinenVastaanottaminen)
-                    || StringUtils.isNotEmpty(suullinenTuottaminen)
-                    || StringUtils.isNotEmpty(vuorovaikutusJaMeditaatio)) {
-                addTeksti(docBase, messages.translate("docgen.opiskelijan_osaaminen.title", docBase.getKieli()), "h5");
-            }
-
+            addKotoH6Teksti(opiskelijanTyoelamataidot, "docgen.opiskelijan_tyoelamataidot.title", docBase);
             addKotoH6Teksti(suullinenVastaanottaminen, "docgen.suullinen_vastaanottaminen.title", docBase);
             addKotoH6Teksti(suullinenTuottaminen, "docgen.suullinen_tuottaminen.title", docBase);
             addKotoH6Teksti(vuorovaikutusJaMeditaatio, "docgen.vuorovaikutus_ja_meditaatio.title", docBase);

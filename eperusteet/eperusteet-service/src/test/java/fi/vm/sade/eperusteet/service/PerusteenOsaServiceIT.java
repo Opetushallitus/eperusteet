@@ -396,10 +396,11 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                 KotoTaitotasoDto.builder()
                         .nimi(KoodiDto.of(KoodistoUriArvo.KOTOUTUMISKOULUTUSTAVOITTEET, "taitotasonimi1"))
                         .aihealueet(LokalisoituTekstiDto.of("aihealueet1"))
-                        .kielenkayttotarkoitus(LokalisoituTekstiDto.of("kielenkayttotarkoitus1"))
                         .opiskelijantaidot(LokalisoituTekstiDto.of("opiskelijantaidot1"))
                         .tavoitteet(LokalisoituTekstiDto.of("tavoitteet1"))
-                        .viestintataidot(LokalisoituTekstiDto.of("viestintataidot1"))
+                        .opiskelijanTyoelamataidot(LokalisoituTekstiDto.of("testiTyoelamataidot"))
+                        .tyoelamaOpintoMinimiLaajuus(2)
+                        .tyoelamaOpintoMaksimiLaajuus(4)
                         .build()
         ));
         kotoOpinto = perusteenOsaService.update(kotoOpinto);
@@ -409,15 +410,16 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(kotoOpinto.getNimiKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.TAVOITESISALTOALUEENOTSIKKO, "nimi1"));
         assertThat(kotoOpinto.getTaitotasot()).hasSize(1);
         assertThat(kotoOpinto.getTaitotasot().get(0)).extracting("nimi").isEqualTo(KoodiDto.of(KoodistoUriArvo.KOTOUTUMISKOULUTUSTAVOITTEET, "taitotasonimi1"));
+        assertThat(kotoOpinto.getTaitotasot().get(0)).extracting("tyoelamaOpintoMinimiLaajuus").isEqualTo(2);
+        assertThat(kotoOpinto.getTaitotasot().get(0)).extracting("tyoelamaOpintoMaksimiLaajuus").isEqualTo(4);
         assertThat(kotoOpinto.getTaitotasot())
-                .flatExtracting("aihealueet", "kielenkayttotarkoitus", "opiskelijantaidot", "tavoitteet", "viestintataidot")
+                .flatExtracting("aihealueet", "opiskelijantaidot", "tavoitteet", "opiskelijanTyoelamataidot")
                 .extracting("tekstit")
                 .containsExactlyInAnyOrder(
                         Maps.newHashMap(Kieli.FI, "aihealueet1"),
-                        Maps.newHashMap(Kieli.FI, "kielenkayttotarkoitus1"),
                         Maps.newHashMap(Kieli.FI, "opiskelijantaidot1"),
                         Maps.newHashMap(Kieli.FI, "tavoitteet1"),
-                        Maps.newHashMap(Kieli.FI, "viestintataidot1"));
+                        Maps.newHashMap(Kieli.FI, "testiTyoelamataidot"));
     }
 
     private void assertTavoitesisaltoalueData(TavoitesisaltoalueDto tavoitesisaltoalueDto) {
