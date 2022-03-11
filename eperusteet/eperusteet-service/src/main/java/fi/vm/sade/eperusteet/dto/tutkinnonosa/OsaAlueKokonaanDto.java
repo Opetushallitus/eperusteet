@@ -15,8 +15,11 @@
  */
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,10 +31,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OsaAlueKokonaanDto extends OsaAlueDto {
+
     private Arviointi2020Dto arviointi;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Osaamistavoite2020Dto pakollisetOsaamistavoitteet;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Osaamistavoite2020Dto valinnaisetOsaamistavoitteet;
 
     @Deprecated
-    private List<OsaamistavoiteLaajaDto> osaamistavoitteet;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private List<OsaamistavoiteLaajaDto> osaamistavoitteet = new ArrayList<>();
 }
