@@ -1,15 +1,15 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;
@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.repository.ArvioinninKohdealueRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
+import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -256,6 +257,35 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
         assertThat(suomi).isEqualTo("<dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueetonSuomi</dd></dl><b>kohdealueSuomi</b><dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueellinenSuomi</dd></dl>");
         assertThat(ruotsi).isEqualTo("<dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueetonRuotsi</dd></dl><b>kohdealueRuotsi</b><dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueellinenRuotsi</dd></dl>");
 
+    }
+
+    @Test
+    @Rollback
+    public void testOsaAlueetExport() throws JsonProcessingException {
+        ObjectMapper objectMapper = InitJacksonConverter.createMapper();
+        {
+            OsaAlue oa = new OsaAlue();
+            oa.setTyyppi(OsaAlueTyyppi.OSAALUE2014);
+            oa.setOsaamistavoitteet(new ArrayList<>());
+            oa.getOsaamistavoitteet().add(new Osaamistavoite());
+            oa.getOsaamistavoitteet().add(new Osaamistavoite());
+            OsaAlueKokonaanDto oaDto = mapper.map(oa, OsaAlueKokonaanDto.class);
+            OsaAlueKokonaanDto parsed = objectMapper.readValue(objectMapper.writeValueAsString(oa), OsaAlueKokonaanDto.class);
+            assertThat(parsed.getPakollisetOsaamistavoitteet()).isNull();
+            assertThat(parsed.getValinnaisetOsaamistavoitteet()).isNull();
+            assertThat(parsed.getOsaamistavoitteet()).hasSize(2);
+        }
+
+        {
+            OsaAlue oa = new OsaAlue();
+            oa.setTyyppi(OsaAlueTyyppi.OSAALUE2020);
+            oa.setPakollisetOsaamistavoitteet(new Osaamistavoite());
+            oa.setValinnaisetOsaamistavoitteet(new Osaamistavoite());
+            OsaAlueKokonaanDto parsed = objectMapper.readValue(objectMapper.writeValueAsString(oa), OsaAlueKokonaanDto.class);
+            assertThat(parsed.getPakollisetOsaamistavoitteet()).isNotNull();
+            assertThat(parsed.getValinnaisetOsaamistavoitteet()).isNotNull();
+            assertThat(parsed.getOsaamistavoitteet()).isNull();
+        }
     }
 
     @Test
