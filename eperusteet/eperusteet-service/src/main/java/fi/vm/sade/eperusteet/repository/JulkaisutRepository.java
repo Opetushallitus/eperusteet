@@ -32,7 +32,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "   AND ((:tulevat = true " +
             "                       AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
             "       OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki " +
-            "           AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint, 0)) < :nykyhetki)" +
+            "           AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
             "       OR (:siirtymat = true " +
             "                       AND (data.\"voimassaoloLoppuu\" IS NOT NULL AND data.\"siirtymaPaattyy\" IS NOT NULL " +
             "                           AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
