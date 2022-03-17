@@ -52,7 +52,7 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
@@ -108,7 +108,7 @@ public interface PerusteService {
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id);
 
     @PreAuthorize("permitAll()")
-    PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer rev);
+    PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer rev, boolean useCurrentData);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS') ")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);

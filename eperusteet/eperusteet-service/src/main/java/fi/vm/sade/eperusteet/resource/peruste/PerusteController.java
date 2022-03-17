@@ -380,8 +380,9 @@ public class PerusteController {
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
             @PathVariable("perusteId") final long id,
-            @RequestParam(value = "rev", required = false) final Integer rev) {
-        return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev));
+            @RequestParam(value = "rev", required = false) final Integer rev,
+            @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
+        return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev, useCurrentData));
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

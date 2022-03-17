@@ -33,7 +33,6 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Muutosmaarays;
-import fi.vm.sade.eperusteet.domain.OpasSisalto;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -50,7 +49,6 @@ import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
-import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
@@ -160,7 +158,7 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
@@ -781,12 +779,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
-        return getJulkaistuSisalto(id, null);
+        return getJulkaistuSisalto(id, null, false);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev) {
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev, boolean useCurrentData) {
         Peruste peruste;
         if (perusteRev != null) {
             peruste = perusteRepository.findRevision(id, perusteRev);
@@ -799,7 +797,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
-        if (julkaisu != null) {
+        if (!useCurrentData && julkaisu != null) {
             ObjectNode data = julkaisu.getData().getData();
             try {
                 return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
