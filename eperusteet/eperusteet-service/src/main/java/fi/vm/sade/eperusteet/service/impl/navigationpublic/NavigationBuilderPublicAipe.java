@@ -7,7 +7,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
