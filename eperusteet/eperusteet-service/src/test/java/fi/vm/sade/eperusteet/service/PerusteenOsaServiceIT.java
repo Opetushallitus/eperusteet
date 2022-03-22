@@ -329,7 +329,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testVstKotoKielitaitotaso() {
+    public void testKotoKielitaitotaso() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString()));
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
@@ -378,7 +378,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testVstKotoOpinto() {
+    public void testKotoOpinto() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString()));
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
