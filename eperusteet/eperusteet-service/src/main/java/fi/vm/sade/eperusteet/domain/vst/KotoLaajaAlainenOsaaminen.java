@@ -71,13 +71,9 @@ public class KotoLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
 
     @Override
     public boolean structureEquals(PerusteenOsa updated) {
-        boolean result = false;
-
-        KotoLaajaAlainenOsaaminen that = (KotoLaajaAlainenOsaaminen) updated;
-        result = super.structureEquals(that);
-        TekstiPalanen yleiskuvaus = getYleiskuvaus();
-        TekstiPalanen yleiskuvausUusi = that.getYleiskuvaus();
-        result &= yleiskuvaus == null || refXnor(yleiskuvaus, yleiskuvausUusi);
+        KotoLaajaAlainenOsaaminen updatedKoto = (KotoLaajaAlainenOsaaminen) updated;
+        boolean result = super.structureEquals(updatedKoto);
+        result &= getYleiskuvaus() == null || refXnor(getYleiskuvaus(), updatedKoto.getYleiskuvaus());
 
         return result;
     }
