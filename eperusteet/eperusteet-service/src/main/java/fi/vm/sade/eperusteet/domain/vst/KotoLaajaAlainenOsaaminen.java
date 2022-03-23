@@ -20,7 +20,7 @@ import java.io.Serializable;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
-@Table(name = "koto_laajaalainenosaaminen")
+@Table(name = "koto_laaja_alainen_osaaminen")
 @Audited
 @Getter
 @Setter
