@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
 @Entity
 @Table(name = "koto_laajaalainenosaaminen")
 @Audited
@@ -31,7 +33,6 @@ public class KotoLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
 
 
     public KotoLaajaAlainenOsaaminen() {
-
     }
 
     public KotoLaajaAlainenOsaaminen(KotoLaajaAlainenOsaaminen other) {
@@ -66,5 +67,18 @@ public class KotoLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
     @Override
     public NavigationType getNavigationType() {
         return NavigationType.koto_laajaalainenosaaminen;
+    }
+
+    @Override
+    public boolean structureEquals(PerusteenOsa updated) {
+        boolean result = false;
+
+        KotoLaajaAlainenOsaaminen that = (KotoLaajaAlainenOsaaminen) updated;
+        result = super.structureEquals(that);
+        TekstiPalanen yleiskuvaus = getYleiskuvaus();
+        TekstiPalanen yleiskuvausUusi = that.getYleiskuvaus();
+        result &= yleiskuvaus == null || refXnor(yleiskuvaus, yleiskuvausUusi);
+
+        return result;
     }
 }
