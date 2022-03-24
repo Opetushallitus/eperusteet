@@ -41,6 +41,7 @@ import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoTaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
@@ -329,7 +330,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testVstKotoKielitaitotaso() {
+    public void testKotoKielitaitotaso() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString()));
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
@@ -378,7 +379,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testVstKotoOpinto() {
+    public void testKotoOpinto() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString()));
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
@@ -420,6 +421,30 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                         Maps.newHashMap(Kieli.FI, "opiskelijantaidot1"),
                         Maps.newHashMap(Kieli.FI, "tavoitteet1"),
                         Maps.newHashMap(Kieli.FI, "testiTyoelamataidot"));
+    }
+
+    @Test
+    public void testKotoLaajaAlainenOsaaminen() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString()));
+
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(
+                perusteDto.getId(),
+                null,
+                new PerusteenOsaViiteDto.Matala(new KotoLaajaAlainenOsaaminenDto()));
+
+        KotoLaajaAlainenOsaaminenDto kotoLaajaAlainen = (KotoLaajaAlainenOsaaminenDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(kotoLaajaAlainen.getId());
+
+        assertThat(kotoLaajaAlainen.getId()).isNotNull();
+
+        kotoLaajaAlainen.setYleiskuvaus(LokalisoituTekstiDto.of("joku yleiskuvaus"));
+        kotoLaajaAlainen.setNimi(LokalisoituTekstiDto.of("Laaja-alainen osaaminen kotoutumiskoulutuksekssa"));
+        KotoLaajaAlainenOsaaminenDto updatedKotoLaajaAlainen = perusteenOsaService.update(kotoLaajaAlainen);
+
+        assertThat(updatedKotoLaajaAlainen.getNimi().get(Kieli.FI)).isEqualTo("Laaja-alainen osaaminen kotoutumiskoulutuksekssa");
+        assertThat(updatedKotoLaajaAlainen.getYleiskuvaus().get(Kieli.FI)).isEqualTo("joku yleiskuvaus");
     }
 
     private void assertTavoitesisaltoalueData(TavoitesisaltoalueDto tavoitesisaltoalueDto) {
