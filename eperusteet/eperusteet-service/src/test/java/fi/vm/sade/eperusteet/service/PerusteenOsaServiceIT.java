@@ -42,6 +42,7 @@ import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlaisenOsaamisenAlueDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoTaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
@@ -58,6 +59,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolationException;
@@ -434,17 +436,27 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                 null,
                 new PerusteenOsaViiteDto.Matala(new KotoLaajaAlainenOsaaminenDto()));
 
-        KotoLaajaAlainenOsaaminenDto kotoLaajaAlainen = (KotoLaajaAlainenOsaaminenDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
-        perusteenOsaService.lock(kotoLaajaAlainen.getId());
+        KotoLaajaAlainenOsaaminenDto koto = (KotoLaajaAlainenOsaaminenDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(koto.getId());
 
-        assertThat(kotoLaajaAlainen.getId()).isNotNull();
+        assertThat(koto.getId()).isNotNull();
 
-        kotoLaajaAlainen.setYleiskuvaus(LokalisoituTekstiDto.of("joku yleiskuvaus"));
-        kotoLaajaAlainen.setNimi(LokalisoituTekstiDto.of("Laaja-alainen osaaminen kotoutumiskoulutuksekssa"));
-        KotoLaajaAlainenOsaaminenDto updatedKotoLaajaAlainen = perusteenOsaService.update(kotoLaajaAlainen);
+        koto.setYleiskuvaus(LokalisoituTekstiDto.of("joku yleiskuvaus"));
+        koto.setNimi(LokalisoituTekstiDto.of("Laaja-alainen osaaminen kotoutumiskoulutuksekssa"));
+        koto.setOsaamisAlueet(Collections.singletonList(
+                KotoLaajaAlaisenOsaamisenAlueDto
+                        .builder()
+                        .koodi(KoodiDto.of(KoodistoUriArvo.LAAJAALAINENOSAAMINENKOTO2022, "Digiosaaminen"))
+                        .kuvaus(LokalisoituTekstiDto.of("joku osaamisalue"))
+                        .build()));
 
-        assertThat(updatedKotoLaajaAlainen.getNimi().get(Kieli.FI)).isEqualTo("Laaja-alainen osaaminen kotoutumiskoulutuksekssa");
-        assertThat(updatedKotoLaajaAlainen.getYleiskuvaus().get(Kieli.FI)).isEqualTo("joku yleiskuvaus");
+        KotoLaajaAlainenOsaaminenDto updatedKoto = perusteenOsaService.update(koto);
+
+        assertThat(updatedKoto.getNimi().get(Kieli.FI)).isEqualTo("Laaja-alainen osaaminen kotoutumiskoulutuksekssa");
+        assertThat(updatedKoto.getYleiskuvaus().get(Kieli.FI)).isEqualTo("joku yleiskuvaus");
+        assertThat(updatedKoto.getOsaamisAlueet().get(0).getKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.LAAJAALAINENOSAAMINENKOTO2022, "Digiosaaminen"));
+        Map<Kieli, String> tekstit = updatedKoto.getOsaamisAlueet().get(0).getKuvaus().getTekstit();
+        assertThat(tekstit).isEqualTo(Maps.newHashMap(Kieli.FI, "joku osaamisalue"));
     }
 
     private void assertTavoitesisaltoalueData(TavoitesisaltoalueDto tavoitesisaltoalueDto) {
