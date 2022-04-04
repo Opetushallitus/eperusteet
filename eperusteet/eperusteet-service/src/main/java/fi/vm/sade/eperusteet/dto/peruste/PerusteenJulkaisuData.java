@@ -18,6 +18,7 @@ public class PerusteenJulkaisuData {
     private Map<String, String> nimi;
     private Long voimassaoloAlkaa;
     private Long voimassaoloLoppuu;
+    private Long siirtymaPaattyy;
     private Long perusteId;
     private String diaarinumero;
     private Set<KoodiDto> osaamisalat;
