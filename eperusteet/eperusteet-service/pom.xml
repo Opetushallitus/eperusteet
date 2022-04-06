@@ -775,7 +775,7 @@
             </build>
         </profile>
         <profile>
-            <id>generate-openapi-public</id>
+            <id>generate-openapi-ext</id>
             <build>
                 <plugins>
                     <plugin>
@@ -792,14 +792,14 @@
                                     </schemes>
                                     <basePath>/api</basePath>
                                     <locations>
-                                        <location>${eperusteet.resources}.peruste.JulkaisuController</location>
+                                        <location>${eperusteet.resources}.julkinen.ExternalController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>
                                         <title>ePerusteet api</title>
                                         <version>v1</version>
                                     </info>
-                                    <swaggerFileName>eperusteet-public.spec</swaggerFileName>
+                                    <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>
                                 </apiSource>
                             </apiSources>
