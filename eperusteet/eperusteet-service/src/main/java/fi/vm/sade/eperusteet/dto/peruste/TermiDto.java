@@ -26,4 +26,5 @@ public class TermiDto {
     private String avain;
     private LokalisoituTekstiDto termi;
     private LokalisoituTekstiDto selitys;
+    private boolean alaviite;
 }

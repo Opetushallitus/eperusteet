@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -24,19 +25,23 @@ import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.peruste.Navigable;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import org.springframework.util.CollectionUtils;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -64,6 +69,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
 
     public TutkinnonOsaDto() {
     }
+
     public TutkinnonOsaDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }
@@ -89,5 +95,23 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
         } else {
             return koodiArvo;
         }
+    }
+
+    @Override
+    public LokalisoituTekstiDto getNimi() {
+        if (koodi != null && koodi.getNimi() != null && !CollectionUtils.isEmpty(koodi.getNimi().getTekstit())) {
+            Map<String, String> kielet = new HashMap<>();
+            kielet.computeIfAbsent("fi", val -> koodi.getNimi().getTekstit().getOrDefault("fi", super.getNimi().get(Kieli.FI)));
+            kielet.computeIfAbsent("sv", val -> koodi.getNimi().getTekstit().getOrDefault("sv", super.getNimi().get(Kieli.SV)));
+            kielet.computeIfAbsent("en", val -> koodi.getNimi().getTekstit().getOrDefault("en", super.getNimi().get(Kieli.EN)));
+            return new LokalisoituTekstiDto(kielet);
+        } else {
+            return super.getNimi();
+        }
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.tutkinnonosa;
     }
 }

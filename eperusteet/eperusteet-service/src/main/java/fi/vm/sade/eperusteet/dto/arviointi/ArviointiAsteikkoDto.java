@@ -18,7 +18,10 @@ package fi.vm.sade.eperusteet.dto.arviointi;
 
 import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -27,6 +30,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ArviointiAsteikkoDto {
     private Long id;
     private List<OsaamistasoDto> osaamistasot;

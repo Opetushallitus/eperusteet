@@ -19,20 +19,18 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
-import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -72,7 +70,11 @@ public class PermissionManager {
     @Autowired
     private JulkaisutRepository julkaisutRepository;
 
+    @Autowired
+    private Environment env;
+
     private static final Logger LOG = LoggerFactory.getLogger(PermissionManager.class);
+    private static final String OPH_ADMIN = "ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001";
 
     public enum Permission {
 
@@ -101,6 +103,7 @@ public class PermissionManager {
         ARVIOINTIASTEIKKO("arviointiasteikko"),
         PERUSTEPROJEKTI("perusteprojekti"),
         PERUSTE("peruste"),
+        POHJA("pohja"),
         PERUSTEENMETATIEDOT("perusteenmetatiedot"),
         PERUSTEENOSA("perusteenosa"),
         TUTKINNONOSAVIITE("tutkinnonosaviite"),
@@ -127,6 +130,7 @@ public class PermissionManager {
         Map<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> allowedRolesTmp = new EnumMap<>(Target.class);
 
         Set<String> r0 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001");
+        Set<String> r0Admin = Sets.newHashSet(OPH_ADMIN);
         Set<String> r1 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001",
                 "ROLE_APP_EPERUSTEET_CRUD_<oid>");
         Set<String> r2 = Sets.newHashSet("ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001",
@@ -271,6 +275,18 @@ public class PermissionManager {
             allowedRolesTmp.put(Target.TUTKINNONOSAVIITE, tmp);
             allowedRolesTmp.put(Target.PERUSTEENOSAVIITE, tmp);
         }
+
+        // Pohja
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, r0Admin);
+            perm.put(LUKU, r3);
+            perm.put(MUOKKAUS, r0Admin);
+            perm.put(POISTO, r0Admin);
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.POHJA, tmp);
+        }
         // Perusteen metatiedot
         {
             Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
@@ -375,6 +391,10 @@ public class PermissionManager {
     @Transactional(readOnly = true)
     public boolean hasPermission(Authentication authentication, Serializable targetId, Target targetType, Permission permission) {
 
+        if (Arrays.stream(env.getActiveProfiles()).anyMatch(profile -> profile.equals("developmentPermissionOverride"))) {
+            return true;
+        }
+
         if (LOG.isTraceEnabled()) {
             LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
         }
@@ -405,6 +425,27 @@ public class PermissionManager {
             }
             targetId = p.getPerusteenOsa().getId();
             targetType = Target.PERUSTEENOSA;
+        }
+
+        if (Target.POHJA.equals(targetType)) {
+            return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
+        }
+
+        if (targetId != null && (Target.PERUSTEPROJEKTI.equals(targetType) || Target.PERUSTE.equals(targetType)) && !LUKU.equals(permission)) {
+            Peruste peruste;
+            if (Target.PERUSTE.equals(targetType)) {
+                peruste = perusteet.findOne((Long) targetId);
+            } else {
+                peruste = projektiRepository.findOne((Long) targetId).getPeruste();
+            }
+
+            if (peruste == null) {
+                return false;
+            }
+
+            if (peruste.getTyyppi().equals(PerusteTyyppi.POHJA)) {
+                return isUserAdmin();
+            }
         }
 
         if (LUKU.equals(permission)) {
@@ -489,14 +530,35 @@ public class PermissionManager {
             throw new NotExistsException("Perustetta ei ole olemassa");
         }
 
+        if (projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.POHJA) && !isUserAdmin()) {
+            removeCRUD(permissionMap, Target.PERUSTEPROJEKTI);
+            removeCRUD(permissionMap, Target.PERUSTE);
+            removeCRUD(permissionMap, Target.PERUSTEENMETATIEDOT);
+        }
+
+        return permissionMap;
+    }
+
+    private boolean isUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(authority -> authority.equals(OPH_ADMIN));
+    }
+
+    private Map<Target, Set<Permission>> removeCRUD(Map<Target, Set<Permission>> permissionMap, Target target) {
+        if (permissionMap.containsKey(target)) {
+            Set<Permission> current = permissionMap.get(target);
+            current.removeAll(Sets.newHashSet(POISTO, KORJAUS, LUONTI, MUOKKAUS, TILANVAIHTO));
+            permissionMap.put(target, current);
+        }
+
         return permissionMap;
     }
 
     /**
      * @param authentication authentication
-     * @param targetId targetId
-     * @param targetType targetType
-     * @param tila tila
+     * @param targetId       targetId
+     * @param targetType     targetType
+     * @param tila           tila
      * @return oikeussetti
      */
     // TODO: tila parametrin voisi varmaan karsia pois

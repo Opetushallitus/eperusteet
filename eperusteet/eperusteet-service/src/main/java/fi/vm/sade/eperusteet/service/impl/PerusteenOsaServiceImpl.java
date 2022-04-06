@@ -36,6 +36,7 @@ import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionR
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -115,6 +116,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
 
     @Override
     @Transactional(readOnly = true)
@@ -255,6 +259,15 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public <T extends PerusteenOsaDto.Laaja> T update(UpdateDto<T> perusteenOsaDto) {
         T updated = update(perusteenOsaDto.getDto());
         perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadataOrEmpty().getKommentti());
+        return updated;
+    }
+
+    @Override
+    @Transactional(readOnly = false)
+    public <T extends PerusteenOsaDto.Laaja> T update(Long perusteId, Long viiteId, UpdateDto<T> perusteenOsaDto) {
+        T updated = update(perusteenOsaDto.getDto());
+        perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadataOrEmpty().getKommentti());
+        muokkausTietoService.addMuokkaustieto(perusteId, perusteenOsaViiteRepository.findOne(viiteId), MuokkausTapahtuma.PAIVITYS);
         return updated;
     }
 
@@ -507,7 +520,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         assertExists(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
         if (osaAlue == null) {
-            throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
+            return null;
         }
         return mapper.mapAsList(osaAlue.getOsaamistavoitteet(), OsaamistavoiteLaajaDto.class);
 

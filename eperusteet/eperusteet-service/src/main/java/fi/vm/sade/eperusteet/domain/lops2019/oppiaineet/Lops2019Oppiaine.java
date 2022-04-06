@@ -76,19 +76,25 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
 
     @Getter
     @Setter
-    @JoinColumn(name="arviointi_id")
+    @JoinColumn(name = "arviointi_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Lops2019Arviointi arviointi;
 
     @Getter
     @Setter
-    @JoinColumn(name="tehtava_id")
+    @JoinColumn(name = "tehtava_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Lops2019Tehtava tehtava;
 
     @Getter
     @Setter
-    @JoinColumn(name="lao_id")
+    @JoinColumn(name = "opiskeluymparisto_tyotavat_id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Lops2019OpiskeluymparistoTyotavat opiskeluymparistoTyotavat;
+
+    @Getter
+    @Setter
+    @JoinColumn(name = "lao_id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private Lops2019OppiaineLaajaAlainenOsaaminen laajaAlaisetOsaamiset;
 
@@ -170,6 +176,9 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         }
         if (this.getTehtava() != null) {
             result.setTehtava(this.getTehtava().copy());
+        }
+        if (this.getOpiskeluymparistoTyotavat() != null) {
+            result.setOpiskeluymparistoTyotavat(this.getOpiskeluymparistoTyotavat().copy());
         }
         if (this.getLaajaAlaisetOsaamiset() != null) {
             result.setLaajaAlaisetOsaamiset(this.getLaajaAlaisetOsaamiset().copy());

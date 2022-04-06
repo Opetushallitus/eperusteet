@@ -21,6 +21,7 @@ public class Lops2019OppiaineBaseDto implements ReferenceableDto {
 
     private Lops2019ArviointiDto arviointi;
     private Lops2019TehtavaDto tehtava;
+    private Lops2019OpiskeluymparistoTyotavatDto opiskeluymparistoTyotavat;
     private Lops2019OppiaineLaajaAlainenOsaaminenDto laajaAlaisetOsaamiset;
     private Lops2019OppiaineTavoitteetDto tavoitteet;
 }

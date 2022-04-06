@@ -79,6 +79,9 @@ public interface KoodistoClient {
     KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi);
 
     @PreAuthorize("isAuthenticated()")
+    KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength);
+
+    @PreAuthorize("isAuthenticated()")
     KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi);
 
     @PreAuthorize("isAuthenticated()")
@@ -86,6 +89,9 @@ public interface KoodistoClient {
 
     @PreAuthorize("isAuthenticated()")
     Collection<Long> nextKoodiId(String koodistonimi, int count);
+
+    @PreAuthorize("isAuthenticated()")
+    Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);

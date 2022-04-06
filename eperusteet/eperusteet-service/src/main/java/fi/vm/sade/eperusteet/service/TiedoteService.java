@@ -26,13 +26,13 @@ public interface TiedoteService {
     @PostFilter("filterObject.julkinen or filterObject.perusteprojekti == null or hasPermission(filterObject.perusteprojekti.id, 'perusteprojekti', 'LUKU')")
     List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen);
 
-    @PostAuthorize("returnObject == null or returnObject.julkinen or isAuthenticated() or returnObject.julkaisupaikat.size() > 0")
+    @PostAuthorize("returnObject == null or returnObject.julkinen or isAuthenticated() or returnObject.julkaisupaikat.size() > 0 or returnObject.koulutustyypit.size() > 0 or returnObject.perusteet.size() > 0")
     TiedoteDto getTiedote(@P("tiedoteId") Long tiedoteId);
 
-    @PreAuthorize("hasPermission(null, 'tiedote', 'LUONTI')")
+    @PreAuthorize("hasPermission(null, 'tiedote', 'LUONTI') or (#tiedoteDto.perusteet != null and #tiedoteDto.perusteet.size() == 1 and hasPermission(#tiedoteDto.perusteet[0].id, 'peruste', 'MUOKKAUS'))")
     TiedoteDto addTiedote(TiedoteDto tiedoteDto);
 
-    @PreAuthorize("hasPermission(null, 'tiedote', 'MUOKKAUS')")
+    @PreAuthorize("hasPermission(null, 'tiedote', 'MUOKKAUS') or (#tiedoteDto.perusteet != null and #tiedoteDto.perusteet.size() == 1 and hasPermission(#tiedoteDto.perusteet[0].id, 'peruste', 'MUOKKAUS'))")
     TiedoteDto updateTiedote(TiedoteDto tiedoteDto);
 
     @PreAuthorize("hasPermission(null, 'tiedote', 'POISTO')")

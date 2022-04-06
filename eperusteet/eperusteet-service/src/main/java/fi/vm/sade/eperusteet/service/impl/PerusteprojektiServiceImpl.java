@@ -62,9 +62,12 @@ import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
@@ -93,6 +96,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.ValidointiStatusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
+import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
@@ -261,6 +265,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     HttpHeaders httpHeaders;
 
+    @Autowired
+    private JulkaisutService julkaisutService;
+
     @Override
     @Transactional(readOnly = true)
     public List<PerusteprojektiInfoDto> getBasicInfo() {
@@ -349,6 +356,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             log.debug(String.format("%04d", counter) + " Perusteen ajastettu validointi: " + peruste.getId());
 
             TilaUpdateStatus tilaUpdateStatus = projektiValidator.run(pp.getId(), JULKAISTU);
+            tilaUpdateStatus.setInfot(tilaUpdateStatus.getInfot().stream().filter(info -> info.getValidointiStatusType() != ValidointiStatusType.HUOMAUTUS).collect(Collectors.toList()));
 
             if (vs != null) {
                 mapper.map(tilaUpdateStatus, vs);
@@ -810,6 +818,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @Transactional
+    public PerusteprojektiDto savePohja(PerusteprojektiLuontiDto perusteprojektiDto) {
+        return save(perusteprojektiDto);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero) {
         DiaarinumeroHakuDto reply = new DiaarinumeroHakuDto();
@@ -895,7 +909,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         } else {
             updateStatus = validoiProjekti(id, tila);
         }
-        
+
         // Perusteen tilan muutos
         if (!updateStatus.isVaihtoOk()) {
             return updateStatus;
@@ -927,34 +941,20 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             tiedoteDto.setJulkinen(true);
             tiedoteDto.setPerusteprojekti(new Reference(projekti.getId()));
             tiedoteService.addTiedote(tiedoteDto);
-
-            Optional.of(peruste)
-                    .ifPresent(p -> p.getSuoritustavat()
-                            .forEach(suoritustapa -> p.getKielet()
-                                    .forEach(kieli -> {
-                                        try {
-                                            DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                                    p.getId(),
-                                                    kieli,
-                                                    suoritustapa.getSuoritustapakoodi(),
-                                                    GeneratorVersion.UUSI
-                                            );
-                                            if (createDtoFor != null ) {
-                                                dokumenttiService.setStarted(createDtoFor);
-                                                dokumenttiService.generateWithDto(createDtoFor);
-                                            }
-                                        } catch (DokumenttiException e) {
-                                            log.error(e.getLocalizedMessage(), e);
-                                        }
-                                    })));
+            julkaisutService.teeJulkaisu(
+                    projekti.getId(),
+                    JulkaisuBaseDto
+                            .builder()
+                            .peruste(mapper.map(peruste, PerusteBaseDto.class))
+                            .tiedote(tiedoteDto.getSisalto() != null ? tiedoteDto.getSisalto() : LokalisoituTekstiDto.of("Julkaisu"))
+                            .build());
         }
 
         if (tila == ProjektiTila.POISTETTU) {
             if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
                 projekti.setTila(ProjektiTila.POISTETTU);
                 projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);
-            }
-            else {
+            } else {
                 setPerusteTila(projekti.getPeruste(), PerusteTila.POISTETTU);
             }
         }
@@ -963,8 +963,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             if (PerusteTyyppi.POHJA.equals(projekti.getPeruste().getTyyppi())) {
                 projekti.setTila(ProjektiTila.LAADINTA);
                 projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
-            }
-            else {
+            } else {
                 setPerusteTila(projekti.getPeruste(), PerusteTila.LUONNOS);
             }
         }
@@ -978,6 +977,15 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         projekti.setTila(tila);
         repository.save(projekti);
         return updateStatus;
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public void updateProjektiTila(Long id, ProjektiTila tila) {
+        Perusteprojekti projekti = repository.findOne(id);
+        projekti.setTila(tila);
+        repository.save(projekti);
     }
 
     private void validoiLukio(Peruste peruste, ProjektiTila tila, TilaUpdateStatus updateStatus) {

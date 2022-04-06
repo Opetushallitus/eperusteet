@@ -1,0 +1,76 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.22.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JAVA-ORGAPACHETOMCAT-551990:
+    - '*':
+        reason: tomcat liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:49:37.667Z
+  SNYK-JAVA-ORGAPACHETOMCAT-551994:
+    - '*':
+        reason: tomcat liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:49:53.366Z
+  SNYK-JAVA-ORGAPACHETOMCAT-174534:
+    - '*':
+        reason: tomcat liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:50:05.328Z
+  SNYK-JAVA-ORGHIBERNATE-1041788:
+    - '*':
+        reason: hibernate liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:50:49.020Z
+  SNYK-JAVA-ORGHIBERNATE-584563:
+    - '*':
+        reason: hibernate liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:51:02.482Z
+  SNYK-JAVA-ORGPOSTGRESQL-571481:
+    - '*':
+        reason: postgre liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:51:27.044Z
+  SNYK-JAVA-ORGPOSTGRESQL-173997:
+    - '*':
+        reason: postgre liian uusi
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T12:51:39.019Z
+  	
+  SNYK-JAVA-LOG4J-572732:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:38:32.772Z
+  SNYK-JAVA-ORGBOUNCYCASTLE-1052448:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:43:54.280Z
+  SNYK-JAVA-DOM4J-174153:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:44:20.067Z
+  SNYK-JAVA-COMMONSHTTPCLIENT-31660:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:56:49.393Z
+  SNYK-JAVA-LOG4J-1300176:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:57:06.222Z
+  SNYK-JAVA-COMMONSHTTPCLIENT-30083:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:57:23.861Z
+  SNYK-JAVA-COMMONSCODEC-561518:
+    - '*':
+        reason: issue with no direct upgrade
+        expires: 2022-01-01T00:00:00.000Z
+        created: 2021-08-10T10:57:39.875Z
+patch: {}

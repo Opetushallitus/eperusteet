@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.validation.ValidMaxLengthValidator;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -200,7 +201,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     public void test_kaikkiRajapinta() {
         PerusteprojektiDto perusteprojektiDto = rakennaAmmattitaitovaatimusLatausPohjadata();
         Long perusteId = perusteprojektiDto.getPeruste().getIdLong();
-        PerusteKaikkiDto kaikki = perusteService.getJulkaistuSisalto(perusteId);
+        PerusteKaikkiDto kaikki = perusteService.getKaikkiSisalto(perusteId);
         assertThat(kaikki).isNotNull();
         Ammattitaitovaatimukset2019Dto av = kaikki.getTutkinnonOsat().get(0).getAmmattitaitovaatimukset2019();
         assertThat(av).isNotNull()
@@ -225,7 +226,9 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                 Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti1")),
                 Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
                 Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti3"))
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti3")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "tekstiOn")),
+                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "tekstiOn2"))
         ));
         vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
 
@@ -246,8 +249,16 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                 .flatMap(x -> x.stream())
                 .collect(Collectors.toList());
 
-        assertThat(tallennetutVaatimukset).hasSize(5);
-        assertThat(tallennetutVaatimukset).extracting("koodi.uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2", "ammattitaitovaatimukset_2");
+        assertThat(tallennetutVaatimukset).hasSize(7);
+        assertThat(tallennetutVaatimukset).extracting("koodi.uri")
+                .containsExactlyInAnyOrder(
+                        "ammattitaitovaatimukset_0",
+                        "ammattitaitovaatimukset_1",
+                        "ammattitaitovaatimukset_1",
+                        "ammattitaitovaatimukset_2",
+                        "ammattitaitovaatimukset_2",
+                        "ammattitaitovaatimukset_on",
+                        "ammattitaitovaatimukset_on2");
     }
 
     @Test
@@ -369,6 +380,24 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             }
             return vaatimus;
         }).collect(Collectors.toList());
+    }
+
+    @Test
+    public void testMaxLength() {
+        ValidMaxLengthValidator validator = new ValidMaxLengthValidator();
+        TekstiPalanen a = TekstiPalanen.of(Kieli.FI, null);
+        TekstiPalanen b = TekstiPalanen.of(Kieli.FI, "");
+        String size514 = "aabccdbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdaabccdbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcd";
+        assertThat(size514).hasSize(514);
+        TekstiPalanen c = TekstiPalanen.of(Kieli.FI, size514);
+        TekstiPalanen d = TekstiPalanen.of(Kieli.FI, size514.substring(512));
+
+        assertThat(validator.isValid(null, null)).isEqualTo(true);
+        assertThat(validator.isValid(null, null)).isEqualTo(true);
+        assertThat(validator.isValid(a, null)).isEqualTo(true);
+        assertThat(validator.isValid(b, null)).isEqualTo(true);
+        assertThat(validator.isValid(c, null)).isEqualTo(false);
+        assertThat(validator.isValid(d, null)).isEqualTo(true);
     }
 
 }

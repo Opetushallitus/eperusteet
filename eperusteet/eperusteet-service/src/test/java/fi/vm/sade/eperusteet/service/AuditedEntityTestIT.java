@@ -116,7 +116,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         List<Revision> revisions = perusteenOsaService.getVersiot(teksti.getId());
 
     	assertNotNull(revisions);
-        assertEquals(1, revisions.size());
+        assertEquals(2, revisions.size());
 
     }
 

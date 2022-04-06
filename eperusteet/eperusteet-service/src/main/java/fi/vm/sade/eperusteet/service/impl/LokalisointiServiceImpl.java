@@ -21,20 +21,26 @@ import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -60,7 +66,11 @@ public class LokalisointiServiceImpl implements LokalisointiService {
     @Autowired
     HttpEntity httpEntity;
 
+    @Autowired
+    HttpHeaders httpHeaders;
+
     @Override
+    @Cacheable("kategorialokalisoinnit")
     public List<LokalisointiDto> getAllByCategoryAndLocale(String category, String locale) {
         RestTemplate restTemplate = new RestTemplate();
         String url = lokalisointiServiceUrl + "category=" + category + "&locale=" + locale;
@@ -116,11 +126,47 @@ public class LokalisointiServiceImpl implements LokalisointiService {
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public <T extends Lokalisoitava> T lokalisoi(T dto) {
         if (dto != null) {
             lokalisoi(dto.lokalisoitavatTekstit());
         }
         return dto;
+    }
+
+    @Override
+    @Transactional
+    public void save(List<LokalisointiDto> kaannokset) {
+        final Set<String> sallitutKielet = Stream.of("fi", "en", "sv").collect(Collectors.toSet());
+        final Set<String> sallitutKategoriat = Stream.of("eperusteet", "eperusteet-ylops", "eperusteet-opintopolku").collect(Collectors.toSet());
+        for (LokalisointiDto kaannos : kaannokset) {
+            if (!sallitutKategoriat.contains(kaannos.getCategory())) {
+                throw new BusinessRuleViolationException("vain-eperusteiden-kaannokset-sallittu");
+            }
+            else if (StringUtils.isEmpty(kaannos.getKey())) {
+                throw new BusinessRuleViolationException("kaannosavainta-ei-maaritetty");
+            }
+            else if (!sallitutKielet.contains(kaannos.getLocale())) {
+                throw new BusinessRuleViolationException("kaannoskieli-virheellinen");
+            }
+            else if (kaannos.getValue() == null) {
+                throw new BusinessRuleViolationException("virheellinen-kaannos-arvo");
+            }
+            kaannos.setDescription("");
+            kaannos.setId(null);
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = lokalisointiServiceUrl.substring(0, lokalisointiServiceUrl.length() - 1) + "/update";
+
+        try {
+            LOG.info("Päivitetään käännökset: ", kaannokset);
+            HttpEntity<List<LokalisointiDto>> request = new HttpEntity<>(kaannokset, httpHeaders);
+            restTemplate.put(url, request);
+        }
+        catch (HttpClientErrorException error) {
+            throw new BusinessRuleViolationException("ei-riittavia-oikeuksia");
+        }
     }
 
 }

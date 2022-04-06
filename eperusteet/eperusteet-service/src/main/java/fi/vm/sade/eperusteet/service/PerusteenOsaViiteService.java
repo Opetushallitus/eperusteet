@@ -47,7 +47,7 @@ public interface PerusteenOsaViiteService {
     @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
     void removeSisalto(@P("perusteId") Long perusteId, Long id);
 
-    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    @PreAuthorize("hasPermission(#perusteId,'peruste','MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     PerusteenOsaViiteDto.Matala addSisalto(@P("perusteId") Long perusteId, Long viiteId, PerusteenOsaViiteDto.Matala viiteDto);
 
     // Käytetään ohjelmallisesti puuttuvien sisältöjen lisäämiseen

@@ -19,7 +19,9 @@ import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.util.*;
@@ -94,7 +96,7 @@ public class LiitetiedostoController {
             @RequestParam("file") Part file,
             UriComponentsBuilder ucb
     ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
-        Pair<UUID, String> res = upload(perusteId, nimi, file, LiiteTyyppi.KUVA, IMAGE_TYPES);
+        Pair<UUID, String> res = upload(perusteId, nimi, file.getInputStream(), file.getSize(), LiiteTyyppi.KUVA, IMAGE_TYPES);
         UUID uuid = res.getFirst();
         String extension = res.getSecond();
 
@@ -114,7 +116,29 @@ public class LiitetiedostoController {
             @RequestParam("tyyppi") String tyyppi,
             UriComponentsBuilder ucb
     ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
-        Pair<UUID, String> res = upload(perusteId, nimi, file, LiiteTyyppi.of(tyyppi), DOCUMENT_TYPES);
+        Pair<UUID, String> res = upload(perusteId, nimi, file.getInputStream(), file.getSize(), LiiteTyyppi.of(tyyppi), DOCUMENT_TYPES);
+        UUID uuid = res.getFirst();
+        String extension = res.getSecond();
+
+        HttpHeaders h = new HttpHeaders();
+        h.setLocation(ucb.path("/perusteet/{perusteId}/liitteet/{id}" + extension).buildAndExpand(perusteId, uuid.toString()).toUri());
+
+        return new ResponseEntity<>(uuid.toString(), h, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/liitteet/b64", method = RequestMethod.POST)
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    public ResponseEntity<String> uploadLiiteBase64(
+            @PathVariable("perusteId")
+            @P("perusteId") Long perusteId,
+            @RequestParam("nimi") String nimi,
+            @RequestParam("file") String b64file,
+            @RequestParam("tyyppi") String tyyppi,
+            UriComponentsBuilder ucb
+    ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+        byte[] decoder = Base64.getDecoder().decode(b64file);
+        InputStream is = new ByteArrayInputStream(decoder);
+        Pair<UUID, String> res = upload(perusteId, nimi, is, decoder.length, LiiteTyyppi.of(tyyppi), DOCUMENT_TYPES);
         UUID uuid = res.getFirst();
         String extension = res.getSecond();
 
@@ -218,15 +242,22 @@ public class LiitetiedostoController {
         return liitteet.getAllByTyyppi(perusteId, DOCUMENT_TYPES);
     }
 
+    @RequestMapping(value = "/lisatieto", method = RequestMethod.POST)
+    public void paivitaLisatieto(@PathVariable("perusteId") Long perusteId,
+                                 @RequestParam("liiteId") String liiteId,
+                                 @RequestParam("lisatieto") String lisatieto) {
+        liitteet.paivitaLisatieto(perusteId, UUID.fromString(liiteId), lisatieto);
+    }
+
     private Pair<UUID, String> upload(
             Long perusteId,
             String nimi,
-            Part file,
+            InputStream is,
+            long koko,
             LiiteTyyppi tyyppi,
             Set<String> tyypit
     ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
-        final long koko = file.getSize();
-        try (PushbackInputStream pis = new PushbackInputStream(file.getInputStream(), BUFSIZE)) {
+        try (PushbackInputStream pis = new PushbackInputStream(is, BUFSIZE)) {
             byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
             int len = pis.read(buf);
             if (len < buf.length) {
@@ -244,5 +275,4 @@ public class LiitetiedostoController {
             return Pair.of(liitteet.add(perusteId, tyyppi, mime, nimi, koko, pis), extension);
         }
     }
-
 }

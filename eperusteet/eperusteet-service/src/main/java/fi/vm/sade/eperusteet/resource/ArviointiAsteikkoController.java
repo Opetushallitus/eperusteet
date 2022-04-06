@@ -55,9 +55,7 @@ public class ArviointiAsteikkoController {
     public ResponseEntity<List<ArviointiAsteikkoDto>> updateArviointiasteikot(
             @RequestBody List<ArviointiAsteikkoDto> arviointiasteikotDtos
     ) {
-        List<ArviointiAsteikkoDto> arviointiasteikot = new ArrayList<>();
-        arviointiasteikotDtos.forEach(arviointiAsteikkoDto
-                -> arviointiasteikot.add(service.update(arviointiAsteikkoDto)));
+        List<ArviointiAsteikkoDto> arviointiasteikot = service.update(arviointiasteikotDtos);
         return ResponseEntity.ok(arviointiasteikot);
     }
 }

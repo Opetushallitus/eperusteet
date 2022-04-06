@@ -55,7 +55,7 @@
     </bean>
 
     <bean id="dataSource"
-          class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" destroy-method="close">
+          class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.postgresql.Driver"/>
         <property name="url" value="${eperusteet.ittestdb.jdbcurl}"/>
         <property name="username" value="${eperusteet.ittestdb.user}"/>

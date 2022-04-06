@@ -103,7 +103,7 @@ public class LokalisoituTekstiDto {
         this.id = tmpId;
         this.tekstit = tmpValues;
     }
-
+    
     @JsonValue
     public Map<String, String> asMap() {
         HashMap<String, String> map = new HashMap<>();
@@ -133,6 +133,10 @@ public class LokalisoituTekstiDto {
 
     public LokalisoituTekstiDto concat(LokalisoituTekstiDto dto) {
         return concat(dto::get);
+    }
+
+    public void add(Kieli kieli, String teksti) {
+        this.tekstit.put(kieli, teksti);
     }
 
     @JsonIgnore

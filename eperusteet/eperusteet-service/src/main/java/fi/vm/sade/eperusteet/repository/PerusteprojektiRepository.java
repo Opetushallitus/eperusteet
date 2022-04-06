@@ -41,32 +41,32 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
     Perusteprojekti findOneByPeruste(Peruste peruste);
 
     @Query("SELECT p from Perusteprojekti p" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
+            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
             "   AND p.peruste NOT IN (SELECT peruste FROM ValidointiStatus)")
     Set<Perusteprojekti> findAllValidoimattomatUudet();
 
     @Query("SELECT p from Perusteprojekti p, ValidointiStatus vs" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
+            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
             " AND vs.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > vs.lastCheck")
     Set<Perusteprojekti> findAllValidoimattomat();
 
     @Query("SELECT p from Perusteprojekti p" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
+            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
             "   AND p.peruste NOT IN (SELECT peruste FROM KoulutuskoodiStatus)")
     Set<Perusteprojekti> findAllKoodiValidoimattomatUudet();
 
     @Query("SELECT p from Perusteprojekti p, KoulutuskoodiStatus kks" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND p.tila = 'JULKAISTU'" +
+            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
             " AND kks.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > kks.lastCheck")
     Set<Perusteprojekti> findAllKoodiValidoimattomat();
 
     @Query("SELECT p from Perusteprojekti p" +
-            " WHERE p.tila = 'JULKAISTU'" +
+            " WHERE (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
             "   AND p.peruste NOT IN (SELECT peruste FROM MaarayskirjeStatus)")
     Set<Perusteprojekti> findAllMaarayskirjeetUudet();
 
     @Query("SELECT p from Perusteprojekti p, MaarayskirjeStatus mks" +
-            " WHERE p.tila = 'JULKAISTU'" +
+            " WHERE (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
             " AND mks.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > mks.lastCheck")
     Set<Perusteprojekti> findAllMaarayskirjeet();
 

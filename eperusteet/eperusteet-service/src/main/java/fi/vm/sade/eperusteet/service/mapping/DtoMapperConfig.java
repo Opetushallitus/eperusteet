@@ -17,7 +17,20 @@ package fi.vm.sade.eperusteet.service.mapping;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.KVLiite;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Tiedote;
+import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
@@ -29,9 +42,15 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
+import fi.vm.sade.eperusteet.domain.tuva.TuvaLaajaAlainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.vst.KotoKielitaitotaso;
+import fi.vm.sade.eperusteet.domain.vst.KotoLaajaAlainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
-import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
-import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.Taiteenala;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
@@ -41,32 +60,61 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
-import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Osaamistavoite2020Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
+import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
-import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
-import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
+import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
-import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.*;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetSuppeaDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
-import java.util.List;
-import java.util.Stack;
-import java.util.stream.Collectors;
+import fi.vm.sade.eperusteet.service.util.TemporaryKoodiGenerator;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.*;
+import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.Mapper;
+import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.converter.builtin.PassThroughConverter;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
@@ -84,6 +132,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 
 import java.time.Instant;
@@ -97,9 +146,6 @@ public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
     private KoodistoClient koodistoClient;
-
-    @Autowired
-    private OpintokokonaisuusMapper opintokokonaisuusMapper;
 
     @Autowired
     public DtoMapperConfig(KoodistoClient koodistoClient) {
@@ -307,6 +353,20 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
+        factory.classMap(Perusteprojekti.class, PerusteprojektiKevytDto.class)
+                .byDefault()
+                .favorExtension(true)
+                .customize(new CustomMapper<Perusteprojekti, PerusteprojektiKevytDto>() {
+                    @Override
+                    public void mapAtoB(Perusteprojekti source, PerusteprojektiKevytDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (CollectionUtils.isNotEmpty(source.getPeruste().getJulkaisut()) && !ProjektiTila.POISTETTU.equals(source.getTila())) {
+                            target.setTila(ProjektiTila.JULKAISTU);
+                        }
+                    }
+                })
+                .register();
+
         factory.classMap(PerusteprojektiInfoDto.class, Perusteprojekti.class)
                 .fieldBToA("peruste.koulutustyyppi", "koulutustyyppi")
                 .byDefault()
@@ -327,7 +387,19 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
-                .fieldBToA("tutkinnonOsa.nimi", "nimi")
+                .customize(new CustomMapper<TutkinnonOsaViiteDto, TutkinnonOsaViite>() {
+                    @Override
+                    public void mapBtoA(TutkinnonOsaViite source, TutkinnonOsaViiteDto target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                        if (source.getTutkinnonOsa().getKoodi() != null) {
+                            KoodiDto koodiDto = new KoodiDto();
+                            koodiDto.setUri(source.getTutkinnonOsa().getKoodi().getUri());
+                            koodiDto.setKoodisto(source.getTutkinnonOsa().getKoodi().getKoodisto());
+                            koodistoClient.addNimiAndArvo(koodiDto);
+                            target.setNimi(koodiDto.getNimi());
+                        }
+                    }
+                })
                 .fieldBToA("tutkinnonOsa.tyyppi", "tyyppi")
                 .byDefault()
                 .register();
@@ -356,6 +428,11 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(OsaAlue.class, OsaAlueLaajaDto.class)
+                .byDefault()
+                .field("geneerinenArviointiasteikko", "arviointi")
+                .register();
+
+        factory.classMap(OsaAlue.class, OsaAlueKokonaanDto.class)
                 .byDefault()
                 .field("geneerinenArviointiasteikko", "arviointi")
                 .register();
@@ -421,7 +498,7 @@ public class DtoMapperConfig {
                             koodiDto.setUri(target.getKoulutuskoodiUri());
                             koodiDto.setKoodisto("koulutus");
                             koodistoClient.addNimiAndArvo(koodiDto);
-                            target.setNimi(new LokalisoituTekstiDto(koodiDto.getNimi()));
+                            target.setNimi(koodiDto.getNimi());
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.error(ex.getLocalizedMessage());
                         }
@@ -434,14 +511,16 @@ public class DtoMapperConfig {
                 .customize(new CustomMapper<TutkintonimikeKoodi, TutkintonimikeKoodiDto>() {
                     @Override
                     public void mapAtoB(TutkintonimikeKoodi source, TutkintonimikeKoodiDto target, MappingContext context) {
-                        try {
-                            KoodiDto koodiDto = new KoodiDto();
-                            koodiDto.setUri(target.getTutkintonimikeUri());
-                            koodiDto.setKoodisto("tutkintonimikkeet");
-                            koodistoClient.addNimiAndArvo(koodiDto);
-                            target.setNimi(koodiDto.getNimi());
-                        } catch (RestClientException | AccessDeniedException ex) {
-                            logger.error(ex.getLocalizedMessage());
+                        if (!source.getTutkintonimikeUri().contains("temporary")) {
+                            try {
+                                KoodiDto koodiDto = new KoodiDto();
+                                koodiDto.setUri(target.getTutkintonimikeUri());
+                                koodiDto.setKoodisto("tutkintonimikkeet");
+                                koodistoClient.addNimiAndArvo(koodiDto);
+                                target.setNimi(koodiDto.getNimi());
+                            } catch (RestClientException | AccessDeniedException ex) {
+                                logger.error(ex.getLocalizedMessage());
+                            }
                         }
                     }
                 })
@@ -452,11 +531,24 @@ public class DtoMapperConfig {
                 .customize(new CustomMapper<Koodi, KoodiDto>() {
                     @Override
                     public void mapAtoB(Koodi a, KoodiDto b, MappingContext context) {
+                        super.mapAtoB(a, b, context);
                         try {
-                            koodistoClient.addNimiAndArvo(b);
+                            if (!a.isTemporary()) {
+                                koodistoClient.addNimiAndArvo(b);
+                            }
                         } catch (RestClientException | AccessDeniedException ex) {
-
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(KoodiDto b, Koodi a, MappingContext context) {
+                        super.mapBtoA(b, a, context);
+                        if (StringUtils.isEmpty(b.getUri()) && !StringUtils.isEmpty(b.getKoodisto())) {
+                            a.setUri(TemporaryKoodiGenerator.generate(b.getKoodisto()));
+                        }
+                        if (!a.isTemporary()) {
+                            a.setNimi(null);
                         }
                     }
                 })
@@ -469,7 +561,7 @@ public class DtoMapperConfig {
                     public void mapAtoB(Ammattitaitovaatimus2019 source, Ammattitaitovaatimus2019Dto target, MappingContext context) {
                         super.mapAtoB(source, target, context);
                         if (target.getKoodi() != null) {
-                            target.setVaatimus(new LokalisoituTekstiDto(target.getKoodi().getNimi()));
+                            target.setVaatimus(target.getKoodi().getNimi());
                         }
                     }
 
@@ -487,18 +579,22 @@ public class DtoMapperConfig {
                     @Override
                     public void mapBtoA(OsaamisalaDto osaamisalaDto, Koodi koodi, MappingContext context) {
                         super.mapBtoA(osaamisalaDto, koodi, context);
-                        koodi.setKoodisto("osaamisala");
-                        koodi.setUri(osaamisalaDto.getOsaamisalakoodiUri());
+                        if (!osaamisalaDto.getOsaamisalakoodiUri().contains("temporary")) {
+                            koodi.setKoodisto("osaamisala");
+                            koodi.setUri(osaamisalaDto.getOsaamisalakoodiUri());
+                        }
                     }
 
                     @Override
                     public void mapAtoB(Koodi a, OsaamisalaDto b, MappingContext context) {
                         try {
                             super.mapAtoB(a, b, context);
-                            KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
-                            if (koodi != null) {
-                                b.setNimi(koodi.getNimi());
-                                b.setOsaamisalakoodiArvo(koodi.getArvo());
+                            if (!a.isTemporary()) {
+                                KoodiDto koodi = koodistoClient.getKoodi(a.getKoodisto(), a.getUri(), a.getVersio());
+                                if (koodi != null) {
+                                    b.setNimi(koodi.getNimi());
+                                    b.setOsaamisalakoodiArvo(koodi.getArvo());
+                                }
                             }
                         } catch (RestClientException | AccessDeniedException ex) {
                             logger.warn(rakennaKoodiVirhe(a, ex.getLocalizedMessage()));
@@ -543,11 +639,40 @@ public class DtoMapperConfig {
         factory.classMap(OpintokokonaisuusDto.class, Opintokokonaisuus.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
-                .customize(opintokokonaisuusMapper)
+                .register();
+
+        factory.classMap(TavoitesisaltoalueDto.class, Tavoitesisaltoalue.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
                 .register();
 
         factory.classMap(KoulutuksenOsaDto.class, KoulutuksenOsa.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(TuvaLaajaAlainenOsaaminenDto.class, TuvaLaajaAlainenOsaaminen.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KotoKielitaitotasoDto.class, KotoKielitaitotaso.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KotoOpintoDto.class, KotoOpinto.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KotoLaajaAlainenOsaaminenDto.class, KotoLaajaAlainenOsaaminen.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(Peruste.class, PerusteKaikkiDto.class)
+                .exclude("sisallot")
                 .byDefault()
                 .register();
 

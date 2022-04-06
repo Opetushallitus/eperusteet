@@ -16,18 +16,18 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter
 @Setter
-public class PerusopetuksenPerusteenSisaltoDto {
+public class PerusopetuksenPerusteenSisaltoDto implements PerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
     private Set<LaajaalainenOsaaminenDto> laajaalaisetosaamiset;
     private List<OppiaineLaajaDto> oppiaineet;

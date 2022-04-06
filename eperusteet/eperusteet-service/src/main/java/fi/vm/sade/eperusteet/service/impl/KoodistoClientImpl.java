@@ -97,6 +97,8 @@ public class KoodistoClientImpl implements KoodistoClient {
     private static final String ADD_CODE_ELEMENT_RELATIONS = CODEELEMENT + "/addrelations/";
     private static final String ADD_CODE_RELATION = CODES + "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}";
 
+    private static final int KOODISTO_TEKSTI_MAX_LENGTH = 512;
+
     @Autowired
     RestClientFactory restClientFactory;
 
@@ -218,10 +220,12 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public void addNimiAndArvo(KoodiDto koodi) {
-        KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
-        if (koodistoKoodi != null) {
-            koodi.setArvo(koodistoKoodi.getKoodiArvo());
-            koodi.setNimi(metadataToLocalized(koodistoKoodi));
+        if (!koodi.isTemporary()) {
+            KoodistoKoodiDto koodistoKoodi = get(koodi.getKoodisto(), koodi.getUri());
+            if (koodistoKoodi != null) {
+                koodi.setArvo(koodistoKoodi.getKoodiArvo());
+                koodi.setNimi(new LokalisoituTekstiDto(metadataToLocalized(koodistoKoodi)));
+            }
         }
     }
 
@@ -285,7 +289,17 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength) {
+        long seuraavaKoodi = nextKoodiId(koodistonimi, 1, koodiArvoLength).stream().findFirst().get();
+        return addKoodiNimella(koodistonimi, koodinimi, seuraavaKoodi);
+    }
+
+    @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
+
+        if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > KOODISTO_TEKSTI_MAX_LENGTH)) {
+            throw new BusinessRuleViolationException("koodi-arvo-liian-pitka");
+        }
 
         cacheManager.getCache("koodistot").evict(koodistonimi + false);
         cacheManager.getCache("koodistot").evict(koodistonimi + true);
@@ -318,23 +332,29 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
+        return nextKoodiId(koodistonimi, count, 4);
+    }
+
+    @Override
+    public Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength) {
         List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
+        Long minAllowedArvo = Long.parseLong("10000".substring(0, koodiArvoLength));
         if (koodit.size() == 0) {
-            koodit = Collections.singletonList(KoodistoKoodiDto.builder().koodiArvo("999").build());
+            koodit = Collections.singletonList(KoodistoKoodiDto.builder().koodiArvo("99999".substring(0, koodiArvoLength - 1)).build());
         }
 
         List<Long> ids = new ArrayList<>();
         List<Long> currentIds = koodit.stream().map(k -> Long.parseLong(k.getKoodiArvo())).collect(Collectors.toList());
-        Long max = currentIds.stream().mapToLong(Long::longValue).max().getAsLong();
-        Long min = currentIds.stream().mapToLong(Long::longValue).min().getAsLong();
+        Long max = Long.max(currentIds.stream().mapToLong(Long::longValue).max().getAsLong(), minAllowedArvo);
+        Long min = Long.max(currentIds.stream().mapToLong(Long::longValue).min().getAsLong(), minAllowedArvo);
 
-        for(Long ind = min; ind <= max + count && ids.size() < count; ind++) {
-            if(!currentIds.contains(ind)) {
+        for (Long ind = min; ind <= max + count && ids.size() < count; ind++) {
+            if (!currentIds.contains(ind)) {
                 ids.add(ind);
             }
         }
 
-       return ids;
+        return ids;
     }
 
     @Override

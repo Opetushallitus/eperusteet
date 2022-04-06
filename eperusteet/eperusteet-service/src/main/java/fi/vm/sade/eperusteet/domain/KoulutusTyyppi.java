@@ -38,7 +38,9 @@ public enum KoulutusTyyppi {
     PERUSOPETUSVALMISTAVA("koulutustyyppi_22"),
     LUKIOVALMISTAVAKOULUTUS("koulutustyyppi_23"),
     TPO("koulutustyyppi_999907"),
-    VAPAASIVISTYSTYO("koulutustyyppi_30"),
+    VAPAASIVISTYSTYO("koulutustyyppi_10"),
+    MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS("koulutustyyppi_30"),
+    VAPAASIVISTYSTYOLUKUTAITO("koulutustyyppi_35"),
     TUTKINTOONVALMENTAVA("koulutustyyppi_40");
 
     private final String tyyppi;
@@ -81,6 +83,10 @@ public enum KoulutusTyyppi {
 
     public boolean isAmmatillinen() {
         return isOneOf(AMMATTITUTKINTO, ERIKOISAMMATTITUTKINTO, PERUSTUTKINTO);
+    }
+
+    public boolean isVapaaSivistystyo() {
+        return isOneOf(VAPAASIVISTYSTYO, MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS, VAPAASIVISTYSTYOLUKUTAITO);
     }
 
     public static List<String> ammatilliset() {

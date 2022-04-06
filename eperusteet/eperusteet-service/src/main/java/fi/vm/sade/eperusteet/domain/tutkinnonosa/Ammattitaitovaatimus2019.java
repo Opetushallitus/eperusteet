@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
+import fi.vm.sade.eperusteet.domain.validation.ValidMaxLength;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,11 +30,12 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Koodi koodi;
 
-    @ValidHtml
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @Setter
     @Getter
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = NOT_AUDITED)
+    @ValidMaxLength
     private TekstiPalanen vaatimus;
 
     public static Ammattitaitovaatimus2019 of(TekstiPalanen tp) {

@@ -31,6 +31,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -184,6 +185,23 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.or(preds.toArray(new Predicate[0])));
         }
 
+        if (CollectionUtils.isNotEmpty(pq.getTutkinnonosaKoodit())) {
+            Join<TutkinnonOsa, Koodi> tutkinnonOsaKoodi = root
+                    .join(Peruste_.suoritustavat)
+                    .join(Suoritustapa_.tutkinnonOsat)
+                    .join(TutkinnonOsaViite_.tutkinnonOsa)
+                    .join(TutkinnonOsa_.koodi);
+            Predicate tosanKoodiArvossa = tutkinnonOsaKoodi.get(Koodi_.uri).in(pq.getTutkinnonosaKoodit());
+            pred = cb.and(pred, tosanKoodiArvossa);
+        }
+
+        if (CollectionUtils.isNotEmpty(pq.getOsaamisalaKoodit())) {
+            Join<Peruste, Koodi> osaamisalaKoodit = root
+                    .join(Peruste_.osaamisalat);
+            Predicate tosanKoodiArvossa = osaamisalaKoodit.get(Koodi_.uri).in(pq.getOsaamisalaKoodit());
+            pred = cb.and(pred, tosanKoodiArvossa);
+        }
+        
         if (pq.getKoulutusvienti() != KoulutusVientiEhto.KAIKKI) {
             if (pq.isKoulutusvienti()) {
                 pred = cb.and(pred, cb.isTrue(root.get(Peruste_.koulutusvienti)));
@@ -202,7 +220,20 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
             pred = cb.and(pred, cb.equal(suoritustapa.get(Suoritustapa_.suoritustapakoodi), suoritustapakoodi));
         }
         if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
-            pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            if (!StringUtils.isEmpty(pq.getPerusteTyyppi()) && PerusteTyyppi.of(pq.getPerusteTyyppi()).equals(PerusteTyyppi.OPAS)) {
+                Set<KoulutusTyyppi> koulutustyypit = pq.getKoulutustyyppi().stream()
+                        .map(KoulutusTyyppi::of)
+                        .collect(Collectors.toSet());
+
+                SetJoin<Peruste, KoulutusTyyppi> oppaanKoulutustyypit = root.join(Peruste_.oppaanKoulutustyypit, JoinType.LEFT);
+                Optional<Predicate> koulutustyyppiPred = koulutustyypit.stream()
+                        .map((koulutustyyppi) -> cb.equal(oppaanKoulutustyypit, koulutustyyppi))
+                        .reduce(cb::or);
+
+                pred = cb.and(pred, cb.or(root.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()), koulutustyyppiPred.get()));
+            } else {
+                pred = cb.and(pred, root.get(Peruste_.koulutustyyppi).in(pq.getKoulutustyyppi()));
+            }
         }
 
         Join<Peruste, Koulutus> koulutukset = null;
@@ -263,7 +294,9 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                     cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu))));
         }
 
-        pred = cb.and(pred, tilat);
+        if (pq.isTuleva() || pq.isKoulutusvienti() || pq.isVoimassaolo() || pq.isSiirtyma() || pq.isPoistunut()) {
+            pred = cb.and(pred, tilat);
+        }
 
         if (!ObjectUtils.isEmpty(pq.getTila()) && !pq.isJulkaistu()) {
             Set<PerusteTila> perusteTilat = pq.getTila().stream()
@@ -271,15 +304,13 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                     .collect(Collectors.toSet());
             pred = cb.and(pred, root.get(Peruste_.tila).in(perusteTilat));
         } else if (pq.isJulkaistu()) {
-            Subquery perusteJulkaistuSubQuery = perusteJulkaistuSubQuery(root, cb);
-
             if (ObjectUtils.isEmpty(pq.getTila())) {
-                pred = cb.and(pred, cb.greaterThan(perusteJulkaistuSubQuery, 0l));
+                pred = cb.and(pred, cb.isNotEmpty(root.get(Peruste_.julkaisut)));
             } else {
                 Set<PerusteTila> perusteTilat = pq.getTila().stream()
                         .map(PerusteTila::of)
                         .collect(Collectors.toSet());
-                pred = cb.and(pred, cb.or(root.get(Peruste_.tila).in(perusteTilat), cb.greaterThan(perusteJulkaistuSubQuery, 0l)));
+                pred = cb.and(pred, cb.or(root.get(Peruste_.tila).in(perusteTilat), cb.isNotEmpty(root.get(Peruste_.julkaisut))));
             }
         }
 
@@ -320,12 +351,4 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         return pred;
     }
 
-    private Subquery perusteJulkaistuSubQuery(Root<Peruste> root, CriteriaBuilder cb) {
-        Subquery sub = cb.createQuery(Peruste.class).subquery(Long.class);
-        Root subRoot = sub.from(JulkaistuPeruste.class);
-        Join<JulkaistuPeruste, Peruste> subAuthors = subRoot.join(JulkaistuPeruste_.peruste);
-        sub.select(cb.count(subRoot.get(JulkaistuPeruste_.id)));
-        sub.where(cb.equal(root.get(Peruste_.id), subAuthors.get(Peruste_.id)));
-        return sub;
-    }
 }

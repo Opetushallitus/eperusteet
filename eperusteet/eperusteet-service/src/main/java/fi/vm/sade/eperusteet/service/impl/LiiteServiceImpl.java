@@ -77,6 +77,13 @@ public class LiiteServiceImpl implements LiiteService {
     }
 
     @Override
+    public void paivitaLisatieto(Long perusteId, UUID id, String lisatieto) {
+        Liite liite = liitteet.findOne(perusteId, id);
+        liite.setLisatieto(lisatieto);
+        liitteet.save(liite);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {
@@ -94,6 +101,15 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional
     public UUID add(Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
         Liite liite = liitteet.add(tyyppi, mime, nimi, length, is);
+        Peruste peruste = perusteet.findOne(perusteId);
+        peruste.attachLiite(liite);
+        return liite.getId();
+    }
+
+    @Override
+    @Transactional
+    public UUID add(Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytearray) {
+        Liite liite = liitteet.add(tyyppi, mime, nimi, bytearray);
         Peruste peruste = perusteet.findOne(perusteId);
         peruste.attachLiite(liite);
         return liite.getId();

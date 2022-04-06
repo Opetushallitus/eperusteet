@@ -8,7 +8,8 @@ public enum LiiteTyyppi {
     KUVA("kuva"),
     DOKUMENTTI("dokumentti"),
     MAARAYSKIRJE("maarayskirje"),
-    MUUTOSMAARAYS("muutosmaarays");
+    MUUTOSMAARAYS("muutosmaarays"),
+    KOULUTUSVIENNINOHJE("KOULUTUSVIENNINOHJE");
 
     private final String tyyppi;
 

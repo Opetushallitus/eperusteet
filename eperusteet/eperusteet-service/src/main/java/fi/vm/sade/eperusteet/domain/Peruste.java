@@ -22,12 +22,14 @@ import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
@@ -68,20 +70,21 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
 @Table(name = "peruste")
 @Audited
 public class Peruste extends AbstractAuditedEntity
-        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma {
+        implements Serializable, ReferenceableEntity, WithPerusteTila, PerusteIdentifiable, Identifiable, HistoriaTapahtuma, Kooditettu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -154,6 +157,7 @@ public class Peruste extends AbstractAuditedEntity
 
     @Getter
     @Setter
+    @ValidKoodisto(koodisto = KoodistoUriArvo.OSAAMISALA)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(name = "peruste_osaamisala",
@@ -306,6 +310,11 @@ public class Peruste extends AbstractAuditedEntity
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "peruste", orphanRemoval = true)
     private Set<PerusteAikataulu> perusteenAikataulut = new HashSet<>();
 
+    @NotAudited
+    @OneToMany(mappedBy = "peruste", fetch = FetchType.LAZY)
+    @Getter
+    private List<JulkaistuPeruste> julkaisut;
+
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
             return Collections.singleton(this.getOppaanSisalto());
@@ -314,17 +323,13 @@ public class Peruste extends AbstractAuditedEntity
                 return new HashSet<>(this.getSuoritustavat());
             } else if (this.getPerusopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getPerusopetuksenPerusteenSisalto());
-            }
-            else if (this.getLops2019Sisalto() != null) {
+            } else if (this.getLops2019Sisalto() != null) {
                 return Collections.singleton(this.getLops2019Sisalto());
-            }
-            else if (this.getEsiopetuksenPerusteenSisalto() != null) {
+            } else if (this.getEsiopetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getEsiopetuksenPerusteenSisalto());
-            }
-            else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
+            } else if (this.getLukiokoulutuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getLukiokoulutuksenPerusteenSisalto());
-            }
-            else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
+            } else if (this.getAipeOpetuksenPerusteenSisalto() != null) {
                 return Collections.singleton(this.getAipeOpetuksenPerusteenSisalto());
             } else if (this.getTpoOpetuksenSisalto() != null) {
                 return Collections.singleton(this.getTpoOpetuksenSisalto());
@@ -474,6 +479,8 @@ public class Peruste extends AbstractAuditedEntity
                 }
                 break;
             case VAPAASIVISTYSTYO:
+            case MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS:
+            case VAPAASIVISTYSTYOLUKUTAITO:
                 VapaasivistystyoSisalto vstSisalto = this.getVstSisalto();
                 if (vstSisalto != null) {
                     return vstSisalto.getSisalto();
@@ -606,7 +613,26 @@ public class Peruste extends AbstractAuditedEntity
         return NavigationType.peruste;
     }
 
-    public interface Valmis {}
-    public interface ValmisPohja {}
-    public interface ValmisOpas {}
+    @Override
+    public List<Koodi> getKoodit() {
+        List<Koodi> koodit = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(osaamisalat)) {
+            koodit.addAll(osaamisalat);
+        }
+
+        if (getVstSisalto() != null) {
+            koodit.addAll(getVstSisalto().getKoodit());
+        }
+
+        return koodit;
+    }
+
+    public interface Valmis {
+    }
+
+    public interface ValmisPohja {
+    }
+
+    public interface ValmisOpas {
+    }
 }

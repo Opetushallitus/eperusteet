@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 @Immutable
@@ -32,7 +34,6 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @NotNull
     private TekstiPalanen tiedote;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -42,18 +43,20 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @NotNull
     private String luoja;
 
-//    @ElementCollection
-//    @NotNull
-//    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-//    private Set<Long> dokumentit = new HashSet<>();
+    @ElementCollection
+    @NotNull
+    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+    private Set<Long> dokumentit = new HashSet<>();
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private JulkaistuPerusteData data;
 
     @PrePersist
     private void prepersist() {
         luotu = new Date();
-        luoja = SecurityUtil.getAuthenticatedPrincipal().getName();
+        if (luoja == null) {
+            luoja = SecurityUtil.getAuthenticatedPrincipal().getName();
+        }
     }
 
 }

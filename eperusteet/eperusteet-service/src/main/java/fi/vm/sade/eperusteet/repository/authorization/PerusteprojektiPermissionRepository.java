@@ -15,6 +15,7 @@
 
 package fi.vm.sade.eperusteet.repository.authorization;
 
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
@@ -41,15 +42,16 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
     @Query("SELECT DISTINCT pp FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
     Set<PerusteenosanProjekti> findAllByPerusteenosa(Long perusteenOsaId);
 
+    @Query("SELECT projekti FROM PerusteenosanProjekti pp, Perusteprojekti projekti WHERE projekti.id = pp.perusteProjektiId AND pp.id = ?1")
+    List<Perusteprojekti> findProjektiById(Long perusteenOsaId);
+
     /**
      * Etsii perusteprojektit joihin annettu perusteen osa kuuluu ja palauttaa niiden tilan.
      * Huom!. Tarkastelee vain perusteen osia jotka ovat tilassa LUONNOS.
-     *
      * Varsinainen kysely on monimutkaisuudestaan johtuen piilotettu näkymän "PerusteenosanProjekti" taakse.
-     *
      */
     @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
-    List<Pair<String,ProjektiTila>> findTilaByPerusteenOsaId(Long perusteenOsaId);
+    List<Pair<String, ProjektiTila>> findTilaByPerusteenOsaId(Long perusteenOsaId);
 
     @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.esikatseltavissa) FROM Perusteprojekti pp WHERE pp.peruste.id = ?1")
     List<Pair<String, Boolean>> findEsikatseltavissaByPeruste(Long perusteId);

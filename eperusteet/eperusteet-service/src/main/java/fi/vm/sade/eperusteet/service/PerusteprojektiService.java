@@ -73,6 +73,9 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto);
 
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    PerusteprojektiDto savePohja(PerusteprojektiLuontiDto perusteprojektiDto);
+
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     PerusteprojektiDto update(@P("id") final Long id, PerusteprojektiDto perusteprojektiDto);
 
@@ -82,6 +85,9 @@ public interface PerusteprojektiService {
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'TILANVAIHTO')")
     TilaUpdateStatus updateTila(@P("id") final Long id, ProjektiTila tila, TiedoteDto tiedoteDto);
 
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void updateProjektiTila(Long id, ProjektiTila tila);
+    
     @PreAuthorize("isAuthenticated()")
     DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
 

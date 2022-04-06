@@ -16,6 +16,8 @@
 package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -34,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.createMockAmmattitaitovaatimuksetKoodistoKoodit;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 
@@ -105,7 +108,7 @@ public class KoodistoClientMock implements KoodistoClient {
         KoodiDto result = new KoodiDto();
         result.setKoodisto(koodisto);
         result.setUri(koodiUri);
-        result.setNimi(lt(uniikkiString()).asMap());
+        result.setNimi(lt(uniikkiString()));
         return result;
     }
 
@@ -119,7 +122,7 @@ public class KoodistoClientMock implements KoodistoClient {
     @Override
     public void addNimiAndArvo(KoodiDto koodi) {
         if (koodi != null) {
-            koodi.setNimi(lt(uniikkiString()).asMap());
+            koodi.setNimi(lt(uniikkiString()));
             if (koodi.getUri() != null) {
                 String[] s = koodi.getUri().split("_");
                 koodi.setArvo(s[s.length - 1]);
@@ -129,7 +132,14 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public List<KoodistoKoodiDto> getAll(String koodisto) {
-        return Collections.emptyList();
+
+        switch (koodisto) {
+            case "ammattitaitovaatimukset":
+                return createMockAmmattitaitovaatimuksetKoodistoKoodit();
+            default:
+                return Collections.emptyList();
+        }
+
     }
 
     @Override
@@ -168,6 +178,11 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength) {
+        return null;
+    }
+
+    @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
         return KoodistoKoodiDto.builder()
                 .koodisto(KoodistoDto.of(koodistonimi))
@@ -182,6 +197,11 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count) {
+        return IntStream.range(0, count).boxed().map(operand -> new Long(operand)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength) {
         return IntStream.range(0, count).boxed().map(operand -> new Long(operand)).collect(Collectors.toList());
     }
 

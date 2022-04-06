@@ -15,8 +15,8 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
-import fi.vm.sade.eperusteet.service.impl.NavigationBuilderDefault;
-import fi.vm.sade.eperusteet.service.impl.NavigationBuilderLops2019;
+import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderDefault;
+import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;
 import fi.vm.sade.eperusteet.service.mapping.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class PerusteNavigationIT {
             Object arg = i.getArgument(0);
             KoodiDto koodi = (KoodiDto) arg;
             if (koodi != null) {
-                koodi.setNimi(lt(uniikkiString()).asMap());
+                koodi.setNimi(lt(uniikkiString()));
                 if (koodi.getUri() != null) {
                     String[] s = koodi.getUri().split("_");
                     koodi.setArvo(s[s.length - 1]);

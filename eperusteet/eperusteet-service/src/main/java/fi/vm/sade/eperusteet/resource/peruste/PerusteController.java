@@ -17,7 +17,11 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -27,6 +31,7 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -134,6 +139,8 @@ public class PerusteController {
             @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
             @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
             @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
+            @ApiImplicitParam(name = "tutkinnonosaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
+            @ApiImplicitParam(name = "osaamisalaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
     })
     public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
@@ -168,8 +175,20 @@ public class PerusteController {
             @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
     })
     public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         return service.findByInternal(p, pquery);
+    }
+
+    @RequestMapping(value = "/internal/pohjat", method = GET)
+    @ResponseBody
+    public List<PerusteKevytDto> getPohjaperusteet(@RequestParam(value = "perustetyyppi", required = false, defaultValue = "normaali") final String perustetyyppi) {
+        return service.getPohjaperusteet(PerusteTyyppi.of(perustetyyppi));
+    }
+
+    @RequestMapping(value = "/internal/julkaistut", method = GET)
+    @ResponseBody
+    public List<PerusteKevytDto> getJulkaistutPerusteet() {
+        return service.getJulkaistutPerusteet();
     }
 
     @RequestMapping(value = "/{perusteId}", method = POST)
@@ -187,6 +206,15 @@ public class PerusteController {
             @RequestParam(value = "kieli", required = false, defaultValue = "fi") final String kieli
     ) {
         return service.buildNavigation(perusteId, kieli);
+    }
+
+    @InternalApi
+    @RequestMapping(value = "/{perusteId}/navigaatio/public", method = GET)
+    public NavigationNodeDto getNavigationPublic(
+            @PathVariable final Long perusteId,
+            @RequestParam(value = "kieli", required = false, defaultValue = "fi") final String kieli
+    ) {
+        return service.buildNavigationPublic(perusteId, kieli);
     }
 
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)
@@ -288,8 +316,14 @@ public class PerusteController {
     @ResponseBody
     @ApiOperation(value = "perusteen tietojen haku")
     public ResponseEntity<PerusteDto> getPerusteenTiedot(@PathVariable("perusteId") final long id) {
-
         return handleGet(id, 1, () -> service.get(id));
+    }
+
+    @RequestMapping(value = "/{perusteId}/projektitila", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteprojektin tila")
+    public ResponseEntity<ProjektiTila> getPerusteProjektiTila(@PathVariable("perusteId") final long id) {
+        return ResponseEntity.ok(service.getPerusteProjektiTila(id));
     }
 
     @RequestMapping(value = "/{perusteId}/version", method = GET)
@@ -346,8 +380,9 @@ public class PerusteController {
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
             @PathVariable("perusteId") final long id,
-            @RequestParam(value = "rev", required = false) final Integer rev) {
-        return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev));
+            @RequestParam(value = "rev", required = false) final Integer rev,
+            @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
+        return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev, useCurrentData));
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)
@@ -389,6 +424,47 @@ public class PerusteController {
     public ResponseEntity<List<PerusteKevytDto>> getAllOppaidenPerusteet() {
         List<PerusteKevytDto> poi = service.getAllOppaidenPerusteet();
         return new ResponseEntity<>(poi, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/aikataululliset", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteet julkisilla aikatauluillla")
+    public Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(
+            @RequestParam(value = "sivu") final Integer sivu,
+            @RequestParam(value = "sivukoko") final Integer sivukoko,
+            @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
+    ) {
+        return service.getJulkaisuAikatauluPerusteet(sivu, sivukoko, koulutustyypit);
+    }
+
+    @RequestMapping(value = "/lukumaara", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteiden koulutustyyppikohtaiset lukumäärät")
+    public List<KoulutustyyppiLukumaara> getJulkaistutLukumaarilla(
+            @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
+    ) {
+        return service.getVoimassaolevatJulkaistutPerusteLukumaarat(koulutustyypit);
+    }
+
+    @RequestMapping(value = "/julkaistutkoulutustyypit", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
+    public List<KoulutusTyyppi> getJulkaistutKoulutustyypit(@RequestParam(defaultValue = "fi") String kieli) {
+        return service.getJulkaistutKoulutustyyppit(Kieli.of(kieli));
+    }
+
+    @RequestMapping(value = "/julkaistutkoulutustyyppimaarat", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
+    public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(@RequestParam(defaultValue = "fi") String kieli) {
+        return service.getJulkaistutKoulutustyyppiLukumaarat(Kieli.of(kieli));
+    }
+
+    @RequestMapping(value = "/opaskoodikiinnitys/{koodiUri}", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Oppaat joihin kiinnitetty koodiUri")
+    public List<PerusteDto> getOpasKiinnitettyKoodi(@PathVariable("koodiUri") final String koodiUri) {
+        return service.getOpasKiinnitettyKoodi(koodiUri);
     }
 
 }

@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
@@ -53,6 +54,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -316,13 +318,26 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             return koodit;
         }
 
+        List<KoodistoKoodiDto> ammattitaitovaatimukset = koodistoClient.getAll("ammattitaitovaatimukset");
+        Map<Long, KoodistoKoodiDto> olemassaOlevatKoodit = new LinkedHashMap<>();
+
         Map<Map<Kieli, String>, List<Ammattitaitovaatimus2019>> uniqueVaatimukset = new LinkedHashMap<>();
         vaatimukset.forEach(vaatimus -> {
-            if (uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()) == null) {
-                uniqueVaatimukset.put(vaatimus.getVaatimus().getTeksti(), new ArrayList<>());
+            Kieli vaatimusKieli = vaatimus.getVaatimus().getTeksti().keySet().stream().findFirst().get();
+            Optional<KoodistoKoodiDto> olemassaolevaKoodi = ammattitaitovaatimukset.stream()
+                    .filter(amv -> amv.getMetadataName(vaatimusKieli.toString()) != null
+                            && amv.getMetadataName(vaatimusKieli.toString()).getNimi().equals(vaatimus.getVaatimus().getTeksti().get(vaatimusKieli)))
+                    .findFirst();
+            if (olemassaolevaKoodi.isPresent()) {
+                olemassaOlevatKoodit.put(vaatimus.getId(), olemassaolevaKoodi.get());
+            } else {
+                if (uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()) == null) {
+                    uniqueVaatimukset.put(vaatimus.getVaatimus().getTeksti(), new ArrayList<>());
+                }
+
+                uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()).add(vaatimus);
             }
 
-            uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()).add(vaatimus);
         });
 
         Stack<Long> koodiStack = new Stack<>();
@@ -349,6 +364,23 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 ammattitaitovaatimusRepository.save(ammattitaitovaatimus2019);
             });
         }
+
+        for (Long ammattitaitovaatimus2019Id : olemassaOlevatKoodit.keySet()) {
+
+            Ammattitaitovaatimus2019 ammattitaitovaatimus2019 = vaatimukset.stream()
+                    .filter(vaatimus -> vaatimus.getId().equals(ammattitaitovaatimus2019Id))
+                    .findFirst().get();
+            KoodistoKoodiDto koodistoKoodi = olemassaOlevatKoodit.get(ammattitaitovaatimus2019Id);
+
+            Koodi koodi = new Koodi();
+            koodi.setKoodisto("ammattitaitovaatimukset");
+            koodi.setUri(koodistoKoodi.getKoodiUri());
+            koodi.setVersio(koodistoKoodi.getVersio() != null ? Long.valueOf(koodistoKoodi.getVersio()) : null);
+
+            ammattitaitovaatimus2019.setKoodi(koodi);
+            ammattitaitovaatimusRepository.save(ammattitaitovaatimus2019);
+        }
+
         return koodit;
     }
 

@@ -259,8 +259,20 @@ public class PerusteenRakenne {
                     validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (" + osat.size() + " < " + kokoMax + ").", nimi, syvyys));
                 }
                 validointi.laskettuLaajuus = ms.laajuusMaksimi() != null && ms.laajuusMaksimi() > 0 ? laajuusMax : laajuusSummaMax;
+            } else if (rooli == RakenneModuuliRooli.VIRTUAALINEN) {
+                if (laajuusMax.compareTo(BigDecimal.valueOf(Integer.MIN_VALUE)) != 0) {
+                    validointi.laskettuLaajuus = laajuusMax;
+                } else if (laajuusMin.compareTo(BigDecimal.valueOf(Integer.MIN_VALUE)) != 0) {
+                    validointi.laskettuLaajuus = laajuusMin;
+                } else {
+                    validointi.laskettuLaajuus = laajuusMax;
+                }
             } else {
-                validointi.laskettuLaajuus = laajuusMax;
+                if (laajuusMax.compareTo(BigDecimal.valueOf(Integer.MIN_VALUE)) != 0) {
+                    validointi.laskettuLaajuus = laajuusMax;
+                } else {
+                    validointi.laskettuLaajuus = laajuusMin;
+                }
             }
         }
         return validointi;
@@ -273,7 +285,7 @@ public class PerusteenRakenne {
         if (roa != null) {
             boolean osaamisalaaEiPerusteella = true;
             for (Koodi oa : ctx.getContext().getOsaamisalat()) {
-                if (roa.equals(oa)) {
+                if (roa != null && roa.getUri() != null && oa != null && roa.getUri().equals(oa.getUri())) {
                     osaamisalaaEiPerusteella = false;
                     break;
                 }

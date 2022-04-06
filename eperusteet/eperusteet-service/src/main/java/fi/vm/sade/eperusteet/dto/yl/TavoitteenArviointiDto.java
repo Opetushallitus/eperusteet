@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Set;
@@ -29,6 +30,7 @@ import java.util.Optional;
  */
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TavoitteenArviointiDto implements ReferenceableDto {
     private Long id;
     private Optional<LokalisoituTekstiDto> arvioinninKohde;

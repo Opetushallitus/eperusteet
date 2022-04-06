@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -108,6 +109,9 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     private Peruste peruste;
 
+    @Autowired
+    private PerusteAikatauluService perusteAikatauluService;
+
     public PerusteServiceIT() {
     }
 
@@ -116,7 +120,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
-        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI,"Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri","koulutusalakoodi","opintoalakoodi");
+        Koulutus koulutus = new Koulutus(tekstiPalanenOf(Kieli.FI, "Koulutus"), "koulutuskoodiArvo", "koulutuskoodiUri", "koulutusalakoodi", "opintoalakoodi");
         koulutus = koulutusRepository.save(koulutus);
 
         Perusteprojekti pp = new Perusteprojekti();
@@ -393,6 +397,29 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteenOsaViiteDto.Matala viiteDto = new PerusteenOsaViiteDto.Matala(new KoulutuksenOsaDto());
         PerusteenOsaViiteDto.Matala uusiOpintokokonaisuusDto = perusteService.addSisaltoUUSI(perusteDto.getId(), null, viiteDto);
         assertThat(uusiOpintokokonaisuusDto.getId()).isNotNull();
+    }
+
+    @Test
+    public void testGetJulkaisuAikatauluPerusteet() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.AMMATTITUTKINTO.toString());
+        });
+        PerusteprojektiDto pp2 = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString());
+        });
+
+        Page<PerusteBaseDto> aikataululliset = perusteService.getJulkaisuAikatauluPerusteet(0, 10, Arrays.asList(KoulutusTyyppi.AMMATTITUTKINTO.toString(), KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString()));
+        assertEquals(0, aikataululliset.getTotalElements());
+
+        perusteAikatauluService.save(pp2.getPeruste().getIdLong(), Arrays.asList(PerusteAikatauluDto.builder()
+                .tapahtuma(AikatauluTapahtuma.ARVIOITUJULKAISUPAIVA)
+                .tapahtumapaiva(new Date())
+                .julkinen(true)
+                .build()));
+
+        aikataululliset = perusteService.getJulkaisuAikatauluPerusteet(0, 10, Arrays.asList(KoulutusTyyppi.AMMATTITUTKINTO.toString(), KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString()));
+        assertEquals(1, aikataululliset.getTotalElements());
+        assertEquals(pp2.getPeruste().getIdLong(), aikataululliset.iterator().next().getId());
     }
 
     private Long lisaaPerusteTekstikappaleKoodilla(List<String> koodiUrit) {

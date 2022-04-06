@@ -85,6 +85,16 @@ public class DokumenttiUtils {
         }
     }
 
+    public static String tagTeksti(String teksti, String tagi) {
+        if (teksti != null) {
+
+            teksti = unescapeHtml5(teksti);
+            return "<" + tagi + ">" + teksti + "</" + tagi + ">";
+        }
+
+        return "<" + tagi + "></" + tagi + ">";
+    }
+
     public static void addHeader(DokumenttiPeruste docBase, String text) {
         if (text != null) {
             Element header = docBase.getDocument().createElement("h" + docBase.getGenerator().getDepth());
@@ -229,9 +239,13 @@ public class DokumenttiUtils {
         return strong;
     }
 
-    public static Element newItalicElement(Document doc, String teksti) {
-        Element emphasis = doc.createElement("em");
-        emphasis.appendChild(doc.createTextNode(teksti));
+    public static Element newItalicElement(DokumenttiBase docBase, String teksti) {
+        Element emphasis = docBase.getDocument().createElement("em");
+
+        Document tempDoc = new W3CDom().fromJsoup(Jsoup.parseBodyFragment(unescapeHtml5(teksti)));
+        Node node = tempDoc.getDocumentElement().getChildNodes().item(1).getFirstChild();
+
+        emphasis.appendChild(docBase.getDocument().importNode(node, true));
         return emphasis;
     }
 }

@@ -125,7 +125,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         assertEquals("Nimi", oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(0).getNimi().get().get(Kieli.FI));
         ks.setNimi(olt("Nimi2"));
-        oa.getTehtava().setOtsikko(Optional.of(new LokalisoituTekstiDto(null)));
+        oa.getTehtava().setOtsikko(Optional.of(new LokalisoituTekstiDto(null, null)));
         oa.getTehtava().setTeksti(Optional.empty());
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);

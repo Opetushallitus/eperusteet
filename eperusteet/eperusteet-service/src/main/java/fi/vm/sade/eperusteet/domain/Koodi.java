@@ -16,11 +16,16 @@
 
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Immutable;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -36,32 +41,29 @@ import java.util.Objects;
  */
 
 @Entity
-@Immutable
+@Getter
+@Setter
 @Table(name = "koodi")
 @EqualsAndHashCode(of = {"uri", "versio"})
 public class Koodi implements Serializable {
 
     @Id
-    @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @Getter
-    @Setter
     @NotNull
     @NotEmpty
     private String uri; // Uniikki koodistosta minkä sisällöstä ei voi päätellä mitään
 
-    @Getter
-    @Setter
     @NotNull
     @NotEmpty
     private String koodisto;
 
-    @Getter
-    @Setter
     private Long versio; // Oletuksena null milloin käytetään uusinta koodiston versiota
+
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private TekstiPalanen nimi;
 
     public Koodi() {
     }
@@ -70,6 +72,18 @@ public class Koodi implements Serializable {
         this.uri = uri;
         this.koodisto = koodisto;
         this.versio = null;
+    }
+
+    public boolean isTemporary() {
+        return uri != null && uri.startsWith("temporary_");
+    }
+
+    public String getKoodisto() {
+        if (isTemporary()) {
+            return getUri().split("_")[1];
+        } else {
+            return this.koodisto;
+        }
     }
 
     public static void validateChange(final Koodi a, final Koodi b) {
@@ -100,4 +114,5 @@ public class Koodi implements Serializable {
         result.setKoodisto(koodisto);
         return result;
     }
+
 }

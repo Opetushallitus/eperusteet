@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 
@@ -35,25 +36,30 @@ import java.util.Objects;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
-/**
- *
- * @author jhyoty
- */
-@Entity
-@Table(name = "tekstikappale")
-@Audited
-public class TekstiKappale extends PerusteenOsa implements Serializable {
+ /**
+  * @author jhyoty
+  */
+ @Entity
+ @Table(name = "tekstikappale")
+ @Audited
+ public class TekstiKappale extends PerusteenOsa implements Serializable, Liitteellinen {
 
-    @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen teksti;
+     @ValidHtml
+     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+     private TekstiPalanen teksti;
+
+     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+     @Getter
+     @Setter
+     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private Koodi osaamisala;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private Koodi osaamisala;
+    private Koodi tutkintonimike;
 
     @Getter
     @Setter
@@ -111,6 +117,7 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
             TekstiKappale that = (TekstiKappale)other;
             result = super.structureEquals(that);
             result &= getOsaamisala() == null || Objects.equals(getOsaamisala(), that.getOsaamisala());
+            result &= getTutkintonimike() == null || Objects.equals(getTutkintonimike(), that.getTutkintonimike());
             // Sallitaan liitetiedon muutos julkaistulle perusteelle
             // result &= Objects.equals(isLiite(), that.isLiite());
             result &= getTeksti() == null || refXnor(getTeksti(), that.getTeksti());
@@ -121,6 +128,7 @@ public class TekstiKappale extends PerusteenOsa implements Serializable {
     private void copyState(TekstiKappale other) {
         this.setTeksti(other.getTeksti());
         this.setOsaamisala(other.getOsaamisala());
+        this.setTutkintonimike(other.getTutkintonimike());
         List<Koodi> oKoodit = other.getKoodit();
         if (!ObjectUtils.isEmpty(oKoodit)) {
             ArrayList<Koodi> koodit = new ArrayList<>();

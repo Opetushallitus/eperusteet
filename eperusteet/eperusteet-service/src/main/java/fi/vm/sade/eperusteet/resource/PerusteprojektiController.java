@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
@@ -92,7 +93,7 @@ public class PerusteprojektiController {
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
         return page;
     }
-
+    
     @RequestMapping(value = "/omat", method = GET)
     @ResponseBody
     public ResponseEntity<List<PerusteprojektiListausDto>> getOmatPerusteprojektit() {
@@ -175,6 +176,15 @@ public class PerusteprojektiController {
         return service.updateTila(id, ProjektiTila.of(tila), tiedoteDto);
     }
 
+    @RequestMapping(value = "/{id}/projekti/tila/{tila}", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProjektiTilaOnly(
+            @PathVariable("id") final long id,
+            @PathVariable("tila") final String tila
+    ) {
+        service.updateProjektiTila(id, ProjektiTila.of(tila));
+    }
+
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -183,6 +193,17 @@ public class PerusteprojektiController {
             UriComponentsBuilder ucb
     ) {
         PerusteprojektiDto perusteprojektiDto = service.save(perusteprojektiLuontiDto);
+        return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(method = POST, value = "/pohja")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public ResponseEntity<PerusteprojektiDto> addPerusteprojektiPohja(
+            @RequestBody PerusteprojektiLuontiDto perusteprojektiLuontiDto,
+            UriComponentsBuilder ucb
+    ) {
+        PerusteprojektiDto perusteprojektiDto = service.savePohja(perusteprojektiLuontiDto);
         return new ResponseEntity<>(perusteprojektiDto, buildHeadersFor(perusteprojektiDto.getId(), ucb), HttpStatus.CREATED);
     }
 

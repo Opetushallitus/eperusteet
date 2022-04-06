@@ -141,6 +141,6 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Sor
 
     @Override
     public NavigationType getNavigationType() {
-        return NavigationType.viite;
+        return NavigationType.tutkinnonosa;
     }
 }

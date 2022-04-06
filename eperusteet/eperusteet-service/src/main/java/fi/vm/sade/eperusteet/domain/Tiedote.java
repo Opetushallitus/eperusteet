@@ -2,6 +2,8 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 
+import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import java.util.Date;
 import java.util.EnumSet;
@@ -79,6 +81,22 @@ public class Tiedote extends AbstractAuditedEntity {
     @JoinTable(name = "tiedote_peruste", joinColumns = {@JoinColumn(name = "tiedote_id")}, inverseJoinColumns = {@JoinColumn(name = "peruste_id")})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Set<Peruste> perusteet;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "tiedote_tutkinnonosat", joinColumns = {@JoinColumn(name = "tiedote_id")}, inverseJoinColumns = {@JoinColumn(name = "tutkinnonosa_id")})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidKoodisto(koodisto = KoodistoUriArvo.TUTKINNONOSAT)
+    private Set<Koodi> tutkinnonosat;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "tiedote_osaamisalat", joinColumns = {@JoinColumn(name = "tiedote_id")}, inverseJoinColumns = {@JoinColumn(name = "osaamisala_id")})
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ValidKoodisto(koodisto = KoodistoUriArvo.OSAAMISALA)
+    private Set<Koodi> osaamisalat;
 
     @PrePersist
     void onPersist() {

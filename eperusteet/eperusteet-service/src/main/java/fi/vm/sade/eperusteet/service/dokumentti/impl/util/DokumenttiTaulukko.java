@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
+import java.util.Arrays;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
 import org.w3c.dom.Document;
@@ -28,15 +29,17 @@ import java.util.ArrayList;
 public class DokumenttiTaulukko {
 
     private String otsikko;
-    private ArrayList<String> otsikkoSarakkeet = new ArrayList<>();
     private ArrayList<DokumenttiRivi> rivit = new ArrayList<>();
 
     public void addOtsikko(String otsikko) {
         this.otsikko = otsikko;
     }
 
-    public void addOtsikkoSarake(String sarake) {
-        otsikkoSarakkeet.add(sarake);
+    public void addOtsikkosarakkeet(String... sarakkeet) {
+        DokumenttiRivi otsikkoRivi = new DokumenttiRivi();
+        Arrays.stream(sarakkeet).forEach(otsikkoRivi::addSarake);
+        otsikkoRivi.setTyyppi(DokumenttiRiviTyyppi.HEADER);
+        addRivi(otsikkoRivi);
     }
 
     public void addRivi(DokumenttiRivi rivi) {
@@ -56,28 +59,16 @@ public class DokumenttiTaulukko {
         StringBuilder builder = new StringBuilder();
         builder.append("<div>");
 
-        // Tyhjää taulukkoa on turha antaa
-            if (otsikko != null) {
-                builder.append("<strong>");
-                builder.append(otsikko);
-                builder.append("</strong>");
-            }
+        if (otsikko != null) {
+            builder.append("<strong>");
+            builder.append(otsikko);
+            builder.append("</strong>");
+        }
 
-            builder.append("<table border=\"1\">");
-
-            // Otsikko rivi
-            if (otsikkoSarakkeet.size() > 0) {
-                builder.append("<tr bgcolor=\"#d4e3f4\">");
-                otsikkoSarakkeet.forEach((sarake) -> {
-                    builder.append("<th>");
-                    builder.append(sarake);
-                    builder.append("</th>");
-                });
-                builder.append("</tr>");
-            }
+        builder.append("<table border=\"1\">");
 
         rivit.forEach((rivi) -> {
-            builder.append("<tr>");
+            builder.append(String.format("<tr bgcolor=\"%s\" fontcolor=\"%s\">", rivi.getBackgroundColor(), rivi.getFontColor()));
             builder.append(rivi.toString());
             builder.append("</tr>");
         });

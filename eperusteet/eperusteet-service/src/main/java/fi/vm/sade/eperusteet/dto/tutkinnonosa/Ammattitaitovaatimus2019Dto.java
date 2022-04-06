@@ -15,7 +15,7 @@ public class Ammattitaitovaatimus2019Dto {
 
     public LokalisoituTekstiDto getVaatimus() {
         if (this.koodi != null) {
-            return new LokalisoituTekstiDto(this.koodi.getNimi());
+            return this.koodi.getNimi();
         }
         return vaatimus;
     }

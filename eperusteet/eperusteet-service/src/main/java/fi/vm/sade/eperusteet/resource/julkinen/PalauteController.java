@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,16 +28,28 @@ public class PalauteController {
     private PalauteService palauteService;
 
     @RequestMapping(method = POST)
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public PalauteDto sendPalaute(@RequestBody PalauteDto palauteDto) throws JsonProcessingException {
         return palauteService.lahetaPalaute(palauteDto);
     }
 
+    @RequestMapping(method = POST, value = "/update")
+    @ResponseBody
+    public PalauteDto updatePalaute(@RequestBody PalauteDto palauteDto) {
+        return palauteService.paivitaPalaute(palauteDto);
+    }
+
     @RequestMapping(method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Object palautteet() throws JsonProcessingException {
-        return palauteService.getPalautteet();
+    public Object palautteet(@RequestParam(value = "palautekanava", defaultValue = "eperusteet-opintopolku") String palautekanava) throws JsonProcessingException {
+        return palauteService.getPalautteet(palautekanava);
+    }
+
+    @RequestMapping(method = GET, value = "/status")
+    @ResponseBody
+    public List<PalauteDto> palauteStatukset(@RequestParam(value = "palautekanava") String palautekanava) throws JsonProcessingException {
+        return palauteService.getPalauteStatus(palautekanava);
     }
 }

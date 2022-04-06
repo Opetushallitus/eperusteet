@@ -57,7 +57,6 @@ public class PerusteenMuokkaustieto implements Serializable {
 
     private String muokkaaja;
 
-    @NotNull
     @Column(name = "kohde_id")
     private Long kohdeId;
 

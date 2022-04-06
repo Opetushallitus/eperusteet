@@ -29,13 +29,12 @@ import lombok.Setter;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
 @Setter
 @JsonInclude(NON_NULL)
-public class SuoritustapaLaajaDto {
+public class SuoritustapaLaajaDto implements PerusteenSisaltoDto {
     private Suoritustapakoodi suoritustapakoodi;
     private LaajuusYksikko laajuusYksikko;
     private RakenneModuuliDto rakenne;

@@ -12,26 +12,28 @@
     <name>eperusteet-service</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.3.9.Final</hibernate.version>
-        <spring.version>4.3.23.RELEASE</spring.version>
-        <spring.security.version>4.2.13.RELEASE</spring.security.version>
-        <spring.data.jpa.version>1.11.22.RELEASE</spring.data.jpa.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
+        <spring.version>5.3.7</spring.version>
+        <spring.security.version>5.4.7</spring.security.version>
+        <spring.data.jpa.version>1.11.23.RELEASE</spring.data.jpa.version>
+        <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <logback.version>1.2.3</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
-        <jackson.version>2.11.0</jackson.version>
+        <jackson.version>2.11.4</jackson.version>
+        <jackson.databind.version>2.10.5.1</jackson.databind.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
         <jsoup.version>1.9.2</jsoup.version>
-        <eperusteet.backend-utils.version>2.3-SNAPSHOT</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>2.4-SNAPSHOT</eperusteet.backend-utils.version>
         <ehcache.version>2.6.11</ehcache.version>
         <slf4j.version>1.7.21</slf4j.version>
         <batik.version>1.13</batik.version>
         <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
-        <fop.version>2.5</fop.version>
-        <pdfbox.version>2.0.21</pdfbox.version>
+        <fop.version>2.6</fop.version>
+        <pdfbox.version>2.0.24</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
         <springfox.version>2.7.0</springfox.version>
@@ -134,7 +136,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.10.8</version>
+            <version>${jackson.databind.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
@@ -154,7 +156,7 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -196,17 +198,17 @@
         <dependency>
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-jdbc</artifactId>
-            <version>2.0.10.RELEASE</version>
+            <version>${spring.session.jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>24.1.1-jre</version>
+            <version>30.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.5.Final</version>
+            <version>6.0.22.Final</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -255,15 +257,10 @@
             <version>${postgresql.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-dbcp</artifactId>
-            <version>${tomcat.version}</version>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -472,9 +469,19 @@
             <version>3.9</version>
         </dependency>
         <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.11.934</version>
+            <version>1.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.7</version>
         </dependency>
     </dependencies>
     <build>
@@ -516,14 +523,51 @@
                 </dependencies>
             </plugin>
             <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.4.39.v20210325</version>
+                <configuration>
+                    <httpConnector>
+                        <port>8080</port>
+                    </httpConnector>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <webApp>
+                        <contextPath>/eperusteet-service</contextPath>
+                    </webApp>
+                    <contextXml>${basedir}/src/test/config/jetty-env.xml</contextXml>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>user</name>
+                            <value>${eperusteet.devdb.user}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>password</name>
+                            <value>${eperusteet.devdb.password}</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>url</name>
+                            <value>${eperusteet.devdb.jdbcurl}</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${failsafe.version}</version>
                 <configuration>
                     <argLine>-Xmx2048m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC</argLine>
-<!--                    <parallel>classesAndMethods</parallel>-->
-<!--                    <useUnlimitedThreads>true</useUnlimitedThreads>-->
-                    <reuseForks>false</reuseForks>
+                    <!--                    <parallel>classesAndMethods</parallel>-->
+                    <!--                    <useUnlimitedThreads>true</useUnlimitedThreads>-->
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
                     <argLine>${failsafeArgLine}</argLine>
                     <systemPropertyVariables>
@@ -544,6 +588,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire.version}</version>
                 <configuration>
+                    <forkCount>3</forkCount>
+                    <reuseForks>true</reuseForks>
                     <argLine>${surefireArgLine}</argLine>
                     <systemPropertyVariables>
                         <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
@@ -587,6 +633,17 @@
                         <exclude>fi/vm/sade/eperusteet/domain/**/*_.java</exclude>
                         <exclude>com/google/code/**</exclude>
                     </sourceFileExcludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.snyk</groupId>
+                <artifactId>snyk-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <inherited>false</inherited>
+                <configuration>
+                    <args>
+                        <arg>--all-projects</arg>
+                    </args>
                 </configuration>
             </plugin>
         </plugins>
@@ -669,6 +726,7 @@
                                         <location>${eperusteet.resources}.TilastotController</location>
                                         <location>${eperusteet.resources}.TutkinnonOsaController</location>
                                         <location>${eperusteet.resources}.UlkopuolisetController</location>
+                                        <location>${eperusteet.resources}.MaaraysController</location>
                                         <location>${eperusteet.resources}.MaintenanceController</location>
 
 <!--                                        <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>-->
@@ -692,20 +750,7 @@
                                             ${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController
                                         </location>
                                         <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>
-<!--                                        <location>${eperusteet.resources}.peruste.TutkinnonRakenneLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuudetLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioAihekokonaisuusLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukiokoulutuksenPerusteenSisaltoController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukiokoulutusJulkisetPerusteenSisallotController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukiokurssiLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioOpetussuunnitelmaRakenneLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioOppiaineLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.LukioYleisetTavoitteetLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.TpoOpetuksenSisaltoController</location>-->
-<!--                                        <location>${eperusteet.resources}.TutkinnonRakenneLockController</location>-->
-<!--                                        <location>${eperusteet.resources}.VuosiluokkaKokonaisuusLockController</location>-->
-
-                                        <!--                                        <location>${eperusteet.resources}.peruste.*</location>-->
+                                        <location>${eperusteet.resources}.peruste.LukiokoulutusJulkisetPerusteenSisallotController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>

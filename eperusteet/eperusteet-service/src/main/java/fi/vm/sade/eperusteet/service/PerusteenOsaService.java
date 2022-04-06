@@ -62,13 +62,16 @@ public interface PerusteenOsaService {
     List<PerusteenOsaDto.Suppea> getAllWithName(final String name);
 
     @PreAuthorize("hasPermission(#po.dto.id, 'perusteenosa', 'MUOKKAUS') or hasPermission(#po.dto.id, 'perusteenosa', 'KORJAUS')")
+    <T extends PerusteenOsaDto.Laaja> T update(Long perusteId, final Long viiteId, @P("po") UpdateDto<T> perusteenOsaDto);
+
+    @PreAuthorize("hasPermission(#po.dto.id, 'perusteenosa', 'MUOKKAUS') or hasPermission(#po.dto.id, 'perusteenosa', 'KORJAUS')")
     <T extends PerusteenOsaDto.Laaja> T update(@P("po") UpdateDto<T> perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#po.id, 'perusteenosa', 'MUOKKAUS') or hasPermission(#po.id, 'perusteenosa', 'KORJAUS')")
     <T extends PerusteenOsaDto.Laaja> T update(@P("po") T perusteenOsaDto);
 
     @PreAuthorize("isAuthenticated()")
-    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS')")
+    @PostAuthorize("hasPermission(returnObject.id, 'perusteenosa', 'MUOKKAUS') or hasPermission(returnObject.id, 'perusteenosa', 'KORJAUS')")
     <T extends PerusteenOsaDto.Laaja> T add(PerusteenOsaViite viite, T perusteenOsaDto);
 
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")

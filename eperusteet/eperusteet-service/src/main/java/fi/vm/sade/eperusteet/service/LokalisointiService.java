@@ -33,6 +33,9 @@ public interface LokalisointiService {
     @PreAuthorize("permitAll()")
     LokalisointiDto get(String key, String locale);
 
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void save(List<LokalisointiDto> lokalisoinnit);
+
     @PreAuthorize("permitAll()")
     <T extends Lokalisoitava, C extends Collection<T>> C lokalisoi(C list);
 

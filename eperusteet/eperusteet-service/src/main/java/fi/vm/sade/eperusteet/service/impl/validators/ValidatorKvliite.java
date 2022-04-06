@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -64,8 +65,7 @@ public class ValidatorKvliite implements Validator {
         tarkistaLokalisoituTekstiDto("kvliite-validointi-tyotehtavat-joissa-voi-toimia",
                 julkinenKVLiite.getTyotehtavatJoissaVoiToimia(), vaaditutKielet, virheellisetKielet);
         if (julkinenKVLiite.getArvosanaAsteikko() == null) {
-//            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("kvliite-validointi-arvosana-asteikko");
+            updateStatus.addStatus("kvliite-validointi-arvosana-asteikko", ValidointiStatusType.HUOMAUTUS);
         }
         tarkistaLokalisoituTekstiDto("kvliite-validointi-jatkoopinto-kelpoisuus",
                 julkinenKVLiite.getJatkoopintoKelpoisuus(), vaaditutKielet, virheellisetKielet);
@@ -82,8 +82,7 @@ public class ValidatorKvliite implements Validator {
         tarkistaLokalisoituTekstiDto("kvliite-validointi-nimi",
                 julkinenKVLiite.getNimi(), vaaditutKielet, virheellisetKielet);
         if (ObjectUtils.isEmpty(julkinenKVLiite.getTasot())) {
-//            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("kvliite-validointi-tasot");
+            updateStatus.addStatus("kvliite-validointi-tasot", ValidointiStatusType.HUOMAUTUS);
         }
         Map<Suoritustapakoodi, LokalisoituTekstiDto> muodostumisenKuvaus = julkinenKVLiite.getMuodostumisenKuvaus();
         if (!ObjectUtils.isEmpty(muodostumisenKuvaus)) {
@@ -93,8 +92,7 @@ public class ValidatorKvliite implements Validator {
         }
 
         virheellisetKielet.forEach((viesti, kielet) -> {
-//            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus(viesti, kielet);
+            updateStatus.addStatus(viesti, kielet, ValidointiStatusType.HUOMAUTUS);
         });
     }
 }

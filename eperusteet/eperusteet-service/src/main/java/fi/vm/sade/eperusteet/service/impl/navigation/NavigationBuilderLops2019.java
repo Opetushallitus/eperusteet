@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.impl.navigation;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;

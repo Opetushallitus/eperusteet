@@ -149,6 +149,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public List<Lops2019OppiaineDto> getOppiaineet(final Long perusteId) {
         final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(sisalto.getOppiaineet(), Lops2019OppiaineDto.class);
@@ -346,6 +347,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public Lops2019OppiaineKaikkiDto getOppiaineKaikki(final Long perusteId, final Long oppiaineId) {
         final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, oppiaineId);
         final Lops2019OppiaineKaikkiDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineKaikkiDto.class);

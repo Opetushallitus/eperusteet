@@ -16,7 +16,6 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoKevytDto;
 import java.util.Set;
 import lombok.Getter;
@@ -34,4 +33,10 @@ public class PerusteDto extends PerusteBaseDto {
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private VapaasivistystyoSisaltoKevytDto vstSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private OpasSisaltoKevytDto oppaanSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private Integer laajuus;
 }

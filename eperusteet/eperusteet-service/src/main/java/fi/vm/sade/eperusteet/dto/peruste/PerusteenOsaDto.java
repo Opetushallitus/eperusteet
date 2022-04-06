@@ -25,8 +25,13 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
+import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
@@ -74,12 +79,19 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = OpetuksenYleisetTavoitteetLaajaDto.class),
             @JsonSubTypes.Type(value = LukioOpetussuunnitelmaRakenneLaajaDto.class),
             @JsonSubTypes.Type(value = OpintokokonaisuusDto.class),
-            @JsonSubTypes.Type(value = KoulutuksenOsaDto.class)
+            @JsonSubTypes.Type(value = TavoitesisaltoalueDto.class),
+            @JsonSubTypes.Type(value = KoulutuksenOsaDto.class),
+            @JsonSubTypes.Type(value = KotoKielitaitotasoDto.class),
+            @JsonSubTypes.Type(value = KotoOpintoDto.class),
+            @JsonSubTypes.Type(value = KotoLaajaAlainenOsaaminenDto.class),
+            @JsonSubTypes.Type(value = TuvaLaajaAlainenOsaaminenDto.class)
     })
-    public static abstract class Laaja extends PerusteenOsaDto {
+    public static abstract class Laaja extends PerusteenOsaDto implements Navigable {
         public abstract String getOsanTyyppi();
+
         public Laaja() {
         }
+
         public Laaja(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
             super(nimi, tila, tunniste);
         }
@@ -89,8 +101,10 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
     @Setter
     public static class Suppea extends PerusteenOsaDto {
         private String osanTyyppi;
+
         public Suppea() {
         }
+
         public Suppea(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
             super(nimi, tila, tunniste);
         }

@@ -44,12 +44,13 @@ public class ArviointiAsteikko implements Serializable, ReferenceableEntity {
     @Id
     @Getter
     @Setter
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Getter
     @Setter
     @OrderColumn(name = "osaamistasot_order")
-    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinTable(
             name = "arviointiasteikko_osaamistaso",
             joinColumns = @JoinColumn(name = "arviointiasteikko_id"),

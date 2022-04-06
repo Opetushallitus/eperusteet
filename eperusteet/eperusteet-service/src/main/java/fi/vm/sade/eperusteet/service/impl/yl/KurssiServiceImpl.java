@@ -223,20 +223,22 @@ public class KurssiServiceImpl implements KurssiService {
 
     private <T extends KurssinOppiaineDto> void mergeOppiaineet(long perusteId, Lukiokurssi kurssi, List<T> from) {
         Set<OppiaineLukiokurssi> to = kurssi.getOppiaineet();
-        Map<Long, T> newByOppiaine = from.stream().collect(toMap(KurssinOppiaineDto::getOppiaineId, olk -> olk));
-        to.removeIf(olk -> !newByOppiaine.containsKey(olk.getOppiaine().getId()));
-        to.stream().forEach(existing -> {
-            Long oppiaineId = existing.getOppiaine().getId();
-            existing.setJarjestys(newByOppiaine.get(oppiaineId).getJarjestys());
-            newByOppiaine.remove(oppiaineId);
-        });
-        newByOppiaine.values().stream().forEach(newOppiaine -> {
-            OppiaineLukiokurssi oaKurssi = new OppiaineLukiokurssi();
-            oaKurssi.setKurssi(kurssi);
-            oaKurssi.setOppiaine(found(oppiaineRepository.findOne(newOppiaine.getOppiaineId()), inLukioPeruste(perusteId)));
-            oaKurssi.setJarjestys(newOppiaine.getJarjestys());
-            to.add(oaKurssi);
-        });
+        if (from != null) {
+            Map<Long, T> newByOppiaine = from.stream().collect(toMap(KurssinOppiaineDto::getOppiaineId, olk -> olk));
+            to.removeIf(olk -> !newByOppiaine.containsKey(olk.getOppiaine().getId()));
+            to.stream().forEach(existing -> {
+                Long oppiaineId = existing.getOppiaine().getId();
+                existing.setJarjestys(newByOppiaine.get(oppiaineId).getJarjestys());
+                newByOppiaine.remove(oppiaineId);
+            });
+            newByOppiaine.values().stream().forEach(newOppiaine -> {
+                OppiaineLukiokurssi oaKurssi = new OppiaineLukiokurssi();
+                oaKurssi.setKurssi(kurssi);
+                oaKurssi.setOppiaine(found(oppiaineRepository.findOne(newOppiaine.getOppiaineId()), inLukioPeruste(perusteId)));
+                oaKurssi.setJarjestys(newOppiaine.getJarjestys());
+                to.add(oaKurssi);
+            });
+        }
     }
 
     @Override

@@ -9,11 +9,13 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -29,6 +31,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,6 +89,8 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         tiedoteDto.setSisalto(lt("sisalto"));
         tiedoteDto.setJulkinen(true);
         tiedoteDto.setPerusteet(Sets.newHashSet(perusteDto2));
+        tiedoteDto.setTutkinnonosat(Sets.newHashSet(KoodiDto.of(KoodistoUriArvo.TUTKINNONOSAT, "1")));
+        tiedoteDto.setOsaamisalat(Sets.newHashSet(KoodiDto.of(KoodistoUriArvo.OSAAMISALA, "1")));
         tiedoteService.addTiedote(tiedoteDto);
 
         tiedoteDto = new TiedoteDto();
@@ -108,6 +113,10 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         tiedotteet = tiedoteService.getAll(true, 0L);
         assertEquals(1, tiedotteet.size());
+        assertThat(tiedotteet.get(0).getTutkinnonosat()).hasSize(1);
+        assertThat(tiedotteet.get(0).getTutkinnonosat()).extracting("uri").containsExactlyInAnyOrder(KoodistoUriArvo.TUTKINNONOSAT + "_1");
+        assertThat(tiedotteet.get(0).getOsaamisalat()).hasSize(1);
+        assertThat(tiedotteet.get(0).getOsaamisalat()).extracting("uri").containsExactlyInAnyOrder(KoodistoUriArvo.OSAAMISALA + "_1");
 
         tiedotteet = tiedoteService.getAll(false, 0L);
         assertEquals(2, tiedotteet.size());
@@ -121,7 +130,6 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         assertThat(tiedote1.getJulkaisupaikat()).containsExactlyInAnyOrder(TiedoteJulkaisuPaikka.AMOSAA, TiedoteJulkaisuPaikka.OPINTOPOLKU);
         assertThat(tiedote1.getKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO);
         assertThat(tiedote1.getPerusteet().stream().map(PerusteKevytDto::getId)).containsExactlyInAnyOrderElementsOf(perusteIds);
-
     }
 
     @Test
@@ -300,4 +308,14 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         assertEquals(1, tiedoteDto.getPeruste().getSuoritustavat().size());
     }
+
+    @Test
+    public void testKoulutustyypiton() {
+        TiedoteQuery tq = new TiedoteQuery();
+        tq.setKoulutusTyyppi(Arrays.asList(KoulutusTyyppi.PERUSTUTKINTO.toString(), KoulutusTyyppi.LUKIOKOULUTUS.toString()));
+        tq.setKoulutustyypiton(true);
+        Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
+        assertEquals(2, tiedotteet.getTotalElements());
+    }
+
 }

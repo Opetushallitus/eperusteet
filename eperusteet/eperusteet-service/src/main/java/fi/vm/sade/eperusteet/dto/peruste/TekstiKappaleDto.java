@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author jhyoty
  */
 @Getter
@@ -37,18 +36,25 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto osaamisala;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private KoodiDto tutkintonimike;
     private List<KoodiDto> koodit;
     private Boolean liite;
 
     public TekstiKappaleDto() {
     }
 
-    public TekstiKappaleDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
+    public TekstiKappaleDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);
     }
 
     @Override
     public String getOsanTyyppi() {
         return "tekstikappale";
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.viite;
     }
 }

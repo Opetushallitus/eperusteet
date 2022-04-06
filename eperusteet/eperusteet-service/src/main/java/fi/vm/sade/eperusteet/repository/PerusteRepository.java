@@ -1,9 +1,11 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import java.util.Date;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,16 +40,22 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "WHERE p.paatospvm IS NOT NULL and p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and k IN (?1) ORDER BY p.paatospvm DESC")
     List<Peruste> findAllUusimmat(Set<Kieli> kielet, Pageable pageable);
 
-    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero = ?1")
+    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.diaarinumero = ?1")
     List<Peruste> findAllByDiaarinumero(Diaarinumero diaarinumero);
 
-    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'AMOSAA_YHTEINEN' and p.tila = 'VALMIS'")
+    @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero = ?1")
+    List<Peruste> findAllValmiitByDiaarinumero(Diaarinumero diaarinumero);
+
+    @Query("SELECT p from Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.tyyppi = 'AMOSAA_YHTEINEN' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) ")
     List<Peruste> findAllAmosaaYhteisetPohjat();
 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero IN (?1)")
     Set<Peruste> findAllByDiaarinumerot(Set<Diaarinumero> diaarinumero);
 
-//    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
+    //    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
     @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and diaari.diaarinumero = ?1")
     Set<Peruste> findAllKorvaavatByDiaarinumero(String diaarinumero);
 
@@ -91,7 +99,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p " +
             "FROM Peruste p " +
             "WHERE p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' " +
-            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_30')" +
+            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_10')" +
             "   AND (p.voimassaoloLoppuu IS NULL " +
             "       OR p.voimassaoloLoppuu > NOW() " +
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
@@ -127,4 +135,80 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT DISTINCT p.oppaanPerusteet FROM Peruste p JOIN p.oppaanPerusteet op WHERE size(p.oppaanPerusteet) > 0 AND op.tila = 'VALMIS'")
     List<Peruste> findOppaidenPerusteet();
 
+    List<Peruste> findByTilaAndTyyppiAndKoulutusvienti(PerusteTila tila, PerusteTyyppi tyyppi, boolean koulutusvienti);
+
+    @Query("SELECT distinct p FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.tyyppi = :tyyppi " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND koulutusvienti = :koulutusvienti ")
+    List<Peruste> findValmiitByTyyppi(@Param("tyyppi") PerusteTyyppi tyyppi, @Param("koulutusvienti") boolean koulutusvienti);
+
+
+    @Query("SELECT distinct p FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "and p.tyyppi = 'NORMAALI' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))")
+    List<Peruste> findVoimassaolevatJulkaistutPerusteet();
+
+    @Query("SELECT distinct p FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "and p.tyyppi = 'NORMAALI' " +
+            "AND tila != 'POISTETTU' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) ")
+    List<Peruste> findJulkaistutPerusteet();
+    
+    @Query("SELECT distinct p FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE ((:koulutustyyppi IS NULL AND p.koulutustyyppi IS NOT NULL) OR p.koulutustyyppi = :koulutustyyppi) " +
+            "and p.tyyppi = :tyyppi " +
+            "AND tila != 'POISTETTU' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) ")
+    List<Peruste> findJulkaistutPerusteet(@Param("tyyppi") PerusteTyyppi tyyppi, @Param("koulutustyyppi") String koulutustyyppi);
+
+    @Query("SELECT DISTINCT p FROM Peruste p " +
+            "JOIN p.perusteenAikataulut aikataulu " +
+            "WHERE aikataulu.julkinen = true " +
+            "AND p.koulutustyyppi IN(:koulutustyypit) " +
+            "AND p.tila = 'LUONNOS' AND (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.id) = 0)")
+    Page<Peruste> findAllJulkaisuaikataulullisetPerusteet(@Param("koulutustyypit") List<String> koulutustyypit, Pageable pageable);
+
+    @Query("SELECT p.koulutustyyppi, COUNT(p) AS lukumaara FROM Peruste p " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "AND p.koulutustyyppi IN(:koulutustyypit) " +
+            "AND p.tyyppi = 'NORMAALI' " +
+            "AND (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
+            "GROUP BY p.koulutustyyppi")
+    List<KoulutustyyppiLukumaara> findVoimassaolevatJulkaistutPerusteLukumaarat(@Param("koulutustyypit") List<String> koulutustyypit);
+
+    @Query("SELECT DISTINCT p.koulutustyyppi " +
+            "FROM Peruste p " +
+            "LEFT JOIN p.kielet k " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.koulutustyyppi IS NOT NULL " +
+            "AND p.tyyppi = 'NORMAALI' " +
+            "AND (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
+            "AND k = :kieli")
+    List<String> findJulkaistutDistinctKoulutustyyppiByKieli(@Param("kieli") Kieli kieli);
+
+    @Query("SELECT distinct p " +
+            "FROM Peruste p " +
+            "JOIN p.oppaanSisalto os " +
+            "JOIN os.oppaanKiinnitetytKoodit okk " +
+            "JOIN okk.koodi k " +
+            "LEFT JOIN p.julkaisut j " +
+            "WHERE p.tyyppi = 'OPAS' " +
+            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))" +
+            "AND k.uri = :koodiUri")
+    List<Peruste> findAllByJulkaisutOppaatKiinnitettyKoodilla(@Param("koodiUri") String koodiUri);
 }

@@ -15,12 +15,17 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.impl.validators.ValidointiTask;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,6 +35,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Transactional
@@ -113,7 +119,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                     KoodiDto mapped = mapper.map(oa, KoodiDto.class);
                     TekstiKappaleDto tk = new TekstiKappaleDto();
                     tk.setOsaamisala(mapped);
-                    tk.setNimi(new LokalisoituTekstiDto(mapped.getNimi()));
+                    tk.setNimi(mapped.getNimi());
                     PerusteenOsaViiteDto.Matala viite = new PerusteenOsaViiteDto.Matala();
                     viite.setPerusteenOsa(tk);
                     perusteenOsaViiteService.addSisaltoJulkaistuun(peruste.getId(), sisalto.getId(), viite);
@@ -133,24 +139,26 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    @Async
+    @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
-    public void teeJulkaisut() {
-        List<Perusteprojekti> projektit = perusteprojektiRepository.findAllByTilaAndPerusteTyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI);
-        List<Long> perusteet = projektit.stream()
-                .map(Perusteprojekti::getPeruste)
+    public void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi, String koulutustyyppi, String tiedote) {
+        List<Long> perusteet = perusteRepository.findJulkaistutPerusteet(PerusteTyyppi.of(tyyppi), koulutustyyppi).stream()
+                .filter(peruste -> julkaiseKaikki || CollectionUtils.isEmpty(peruste.getJulkaisut()))
                 .map(Peruste::getId)
                 .collect(Collectors.toList());
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("julkaistavia perusteita " + perusteet.size());
 
         for (Long perusteId : perusteet) {
             try {
-                teeJulkaisu(username, perusteId);
-            }
-            catch (RuntimeException ex) {
+                teeJulkaisu(perusteId, pakkojulkaisu, tiedote);
+            } catch (RuntimeException ex) {
                 log.error(ex.getLocalizedMessage(), ex);
             }
         }
+
+        log.info("julkaisut tehty");
     }
 
     @Override
@@ -158,16 +166,18 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
     }
 
-    @Transactional(propagation = Propagation.NEVER)
-    private void teeJulkaisu(String username, Long perusteId) {
+    private void teeJulkaisu(Long perusteId, boolean pakkojulkaisu, String tiedote) {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(perusteId);
-            PerusteVersion version = peruste.getGlobalVersion();
             List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPeruste(peruste);
-            if (julkaisut.stream().anyMatch(julkaisu -> julkaisu.getLuotu().compareTo(version.getAikaleima()) > 0)) {
-                log.info("Perusteella jo julkaisu: " + peruste.getId());
-                return true;
+
+            if (!pakkojulkaisu) {
+                PerusteVersion version = peruste.getGlobalVersion();
+                if (julkaisut.stream().anyMatch(julkaisu -> julkaisu.getLuotu().compareTo(version.getAikaleima()) > 0)) {
+                    log.info("Perusteella jo julkaisu: " + peruste.getId());
+                    return true;
+                }
             }
 
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
@@ -175,10 +185,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(julkaisut.size());
-            julkaisu.setLuoja("");
-            julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
-            julkaisu.setLuoja(username);
-            julkaisu.setLuotu(version.getAikaleima());
+            julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));
+            julkaisu.setLuoja("maintenance");
+            julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
 
             ObjectNode data = objectMapper.valueToTree(sisalto);

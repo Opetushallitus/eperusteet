@@ -59,7 +59,7 @@ public class PerusteUtils {
         }
         else {
             if (kt != null) {
-                if (kt.isAmmatillinen()) {
+                if (kt.isAmmatillinen() || kt.isValmaTelma()) {
                     return KoulutustyyppiToteutus.AMMATILLINEN;
                 } else if (kt == KoulutusTyyppi.PERUSOPETUS) {
                     return KoulutustyyppiToteutus.PERUSOPETUS;
@@ -67,7 +67,7 @@ public class PerusteUtils {
                     return KoulutustyyppiToteutus.LOPS;
                 } else if (kt == KoulutusTyyppi.TPO) {
                     return KoulutustyyppiToteutus.TPO;
-                } else if (kt == KoulutusTyyppi.VAPAASIVISTYSTYO) {
+                } else if (kt.isVapaaSivistystyo()) {
                     return KoulutustyyppiToteutus.VAPAASIVISTYSTYO;
                 } else if (kt == KoulutusTyyppi.TUTKINTOONVALMENTAVA) {
                     return KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA;

@@ -194,6 +194,13 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
         }
     }
 
+    public void addKurssit(List<AIPEKurssi> kurssit) {
+        this.kurssit.clear();
+        if (kurssit != null) {
+            this.kurssit.addAll(kurssit);
+        }
+    }
+
     public Optional<AIPEKurssi> getKurssi(Long kurssiId) {
         return kurssit.stream()
                 .filter(kurssi -> Objects.equals(kurssi.getId(), kurssiId))
@@ -237,7 +244,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
             throw new BusinessRuleViolationException("oppiaineen-ominaisuutta-ei-voi-muuttaa");
         }
 
-        if ((a.oppiaine != null && b.oppiaine == null || (a.oppiaine != null && Objects.equals(a.oppiaine.getId(), b.oppiaine.getId())))) {
+        if ((a.oppiaine != null && b.oppiaine == null || (a.oppiaine != null && !Objects.equals(a.oppiaine.getId(), b.oppiaine.getId())))) {
             throw new BusinessRuleViolationException("omistavaa-oppiainetta-ei-voi-muuttaa");
         }
 

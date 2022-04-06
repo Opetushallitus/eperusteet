@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokurssiJulkisetTiedotDto;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LokalisointiService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.yl.KurssiService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
@@ -159,6 +160,7 @@ public class LukiokoulutuksenPerusteenSisaltoServiceImpl
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public LukioOppiainePuuDto getOppiaineTreeStructure(long perusteId) {
         found(sisaltoRepository.findLukioperusteenTilaByPerusteId(perusteId),
                 t -> t != PerusteTila.POISTETTU);

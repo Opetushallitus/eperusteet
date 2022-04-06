@@ -38,6 +38,11 @@
                 <div ng-bind-html="oppiaine.tehtava.kuvaus | kaanna | unsafe"></div>
             </div>
 
+            <div ng-if="oppiaine.opiskeluymparistoTyotavat && oppiaine.opiskeluymparistoTyotavat.kuvaus">
+                <h2 kaanna="'opiskeluymparisto-ja-tyotavat'"></h2>
+                <div ng-bind-html="oppiaine.opiskeluymparistoTyotavat.kuvaus | kaanna | unsafe"></div>
+            </div>
+
             <div ng-if="oppiaine.laajaAlaisetOsaamiset && oppiaine.laajaAlaisetOsaamiset.kuvaus">
                 <h2 kaanna="'laaja-alaiset-osaamiset'"></h2>
                 <div ng-bind-html="oppiaine.laajaAlaisetOsaamiset.kuvaus | kaanna | unsafe"></div>
@@ -131,6 +136,12 @@
                  slocalized
                  ckeditor
                  editor-placeholder="oppiaineen-tehtava-kuvaus-placeholder"></div>
+
+            <h2 kaanna="'opiskeluymparisto-ja-tyotavat'"></h2>
+            <div ng-model="oppiaine.opiskeluymparistoTyotavat.kuvaus"
+                slocalized
+                ckeditor
+                editor-placeholder="oppiaineen-opiskeluymparisto-ja-tyotavat-kuvaus-placeholder"></div>
 
             <h2 kaanna="'laaja-alaiset-osaamiset'"></h2>
             <div ng-model="oppiaine.laajaAlaisetOsaamiset.kuvaus"

@@ -83,6 +83,19 @@
 
             </fo:layout-master-set>
 
+            <fo:declarations>
+                <pdf:catalog xmlns:pdf="http://xmlgraphics.apache.org/fop/extensions/pdf">
+                    <xsl:choose>
+                        <xsl:when test="/html/head/peruste and boolean(/html/head/meta[@name='pdfkaannoskieli'])">
+                            <pdf:string key="Lang"><xsl:apply-templates select="/html/head/meta[@name='pdfkaannoskieli']/@translate"/></pdf:string>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <pdf:string key="Lang">fi-FI</pdf:string>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </pdf:catalog>
+            </fo:declarations>
+
             <!-- Bookmarks -->
             <xsl:call-template name="generate-bookmarks"/>
 
@@ -238,6 +251,19 @@
                         </fo:table-row>
                     </xsl:if>
 
+                    <fo:table-row>
+                        <fo:table-cell>
+                            <fo:block font-weight="bold">
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@translate"/>
+                            </fo:block>
+                        </fo:table-cell>
+                        <fo:table-cell>
+                            <fo:block>
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@content"/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
+
                 </fo:table-body>
             </fo:table>
         </xsl:if>
@@ -320,6 +346,19 @@
                             </fo:table-cell>
                         </fo:table-row>
                     </xsl:if>
+
+                    <fo:table-row>
+                        <fo:table-cell>
+                            <fo:block font-weight="bold">
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@translate"/>
+                            </fo:block>
+                        </fo:table-cell>
+                        <fo:table-cell>
+                            <fo:block>
+                                <xsl:apply-templates select="/html/head/meta[@name='pdfluotu']/@content"/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
 
                 </fo:table-body>
             </fo:table>
@@ -596,9 +635,20 @@
                     </fo:table-row>
                     <fo:table-row>
                         <fo:table-cell>
-                            <fo:block>
-                                <xsl:value-of select="@alt"/>
-                            </fo:block>
+                            <xsl:choose>
+                                <xsl:when test="@figcaption and not(@figcaption = '')">
+                                    <fo:block>
+                                        <xsl:value-of select="@figcaption"/>
+                                    </fo:block>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:if test="not(@alt = 'undefined')">
+                                        <fo:block>
+                                            <xsl:value-of select="@alt"/>
+                                        </fo:block>
+                                    </xsl:if>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </fo:table-cell>
                     </fo:table-row>
                 </fo:table-body>
@@ -699,7 +749,7 @@
 
     <xsl:template match="abbr">
 
-        <xsl:value-of select="."/>
+        <xsl:value-of select="@text"/>
 
         <!-- Show endnotes bottom of the page -->
         <fo:footnote>
@@ -708,7 +758,6 @@
             </fo:inline>
             <fo:footnote-body>
                 <fo:block font-size="8pt" line-height="10pt" start-indent="0" text-align="left" color="black">
-
                     <fo:table table-layout="fixed" width="100%">
                         <fo:table-column column-width="10mm"/>
                         <fo:table-column column-width="proportional-column-width(1)"/>
@@ -721,7 +770,7 @@
                                 </fo:table-cell>
                                 <fo:table-cell>
                                     <fo:block>
-                                        <xsl:value-of select="@text"/>
+                                        <xsl:apply-templates select="attrfootnote"/>
                                     </fo:block>
                                 </fo:table-cell>
                             </fo:table-row>
@@ -775,6 +824,17 @@
         <fo:table-cell
                 padding-start="3pt" padding-end="3pt"
                 padding-before="3pt" padding-after="3pt">
+            <xsl:if test="not(table[@border='1']) and not(table[@border='0'])">
+                <xsl:attribute name="border-style">
+                    <xsl:text>solid</xsl:text>
+                </xsl:attribute>
+                <xsl:attribute name="border-color">
+                    <xsl:text>#ddd</xsl:text>
+                </xsl:attribute>
+                <xsl:attribute name="border-width">
+                    <xsl:text>1pt</xsl:text>
+                </xsl:attribute>
+            </xsl:if>
             <!-- FOP-2434 -->
             <xsl:if test="@colspan">
                 <xsl:attribute name="number-columns-spanned">
@@ -895,6 +955,17 @@
     <xsl:template match="th">
         <fo:table-cell padding-start="3pt" padding-end="3pt"
                        padding-before="3pt" padding-after="3pt">
+            <xsl:if test="not(table[@border='1']) and not(table[@border='0'])">
+                <xsl:attribute name="border-style">
+                    <xsl:text>solid</xsl:text>
+                </xsl:attribute>
+                <xsl:attribute name="border-color">
+                    <xsl:text>#ddd</xsl:text>
+                </xsl:attribute>
+                <xsl:attribute name="border-width">
+                    <xsl:text>1pt</xsl:text>
+                </xsl:attribute>
+            </xsl:if>
             <!-- FOP-2434 -->
             <xsl:if test="@colspan">
                 <xsl:attribute name="number-columns-spanned">
@@ -948,7 +1019,30 @@
                     </xsl:choose>
                 </xsl:attribute>
             </xsl:if>
-            <fo:block text-align="center">
+            <xsl:variable name="align">
+                <xsl:choose>
+                    <xsl:when test="@align">
+                        <xsl:choose>
+                            <xsl:when test="@align='start'">
+                                <xsl:text>start</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="@align='right'">
+                                <xsl:text>end</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="@align='justify'">
+                                <xsl:text>justify</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:text>center</xsl:text>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:text>center</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:variable>
+            <fo:block text-align="{$align}">
                 <xsl:apply-templates select="*|text()"/>
             </fo:block>
         </fo:table-cell>
@@ -967,6 +1061,11 @@
             <xsl:if test="@bgcolor">
                 <xsl:attribute name="background-color">
                     <xsl:value-of select="@bgcolor"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:if test="@fontcolor">
+                <xsl:attribute name="color">
+                    <xsl:value-of select="@fontcolor"/>
                 </xsl:attribute>
             </xsl:if>
             <xsl:choose>

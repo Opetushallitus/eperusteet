@@ -18,15 +18,15 @@ env:
   global:
     - NODE_VERSION="10.16.0"
     # AWS_ACCESS_KEY_ID
-    - secure: "FYD48mr1LheMzHUzqO4OdZ3pkidAeBqMXSpojSNyI1CTwovT25HamkIgbi4tPdigehqQEoFg057MtkhoosLYpP+06OaDpCV9vo+yhVh8KL+fdW9zs+thlZHxRugI9+e5QtdiYbVhx6l8yp3TrY4fTu18URzDayCHd0qtF0D1Qqk="
+    - secure: "hIF3fVqQdkYEDoFkdac1oNxkcbCli/ZBWF2g54aiWJ+Zv7bMFl4zxBcZPnFycr9ezEJaTyAw8Y2G1RoWnkeFmwLr5fMYJwAG21g/UXJlxBfTUaq/9FBt2622J3Ybm4xtfMesl0HCtH2hpxoNfuV3SUti7K2QPJm3NU10apYOOo4="
     # AWS_SECRET_ACCESS_KEY
-    - secure: "YU91n/1seuU03KphWAujw/3NdQbWj9JGKFjlIjZHURv+h7fHFNONNlpcd3a7hSMghN0CgcYXywjjSbWvG1qmYVHWktQVczMIziXT5nZRTp23JvobrUzk6ywVz7JHidEbV8nIpDuYMInavQvEtVCuGFKxh1N+4NQZEMBrDCZoKJY="
+    - secure: "sx9CgjvVJSkVTVCh4b7VFyaUc4mpoK+Sh1cWjZBLiaCJ8PNCzOamFdzPzBGCPBUjgzdyYeIZCQUi+3i7CG/iZGt8OKQqbIh7iRpWz8jUrJ+iULZN1mGx+JfffU18SfDZXdRbHmpiVjizFUqEhXpEjzznm34bn17lN1jg/foulDM="
 
 before_install:
   - nvm install $NODE_VERSION
 
 install:
-  - git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
+  - git clone --recurse-submodules --depth 1 ${EPERUSTEET_UI_BRANCH} https://github.com/Opetushallitus/eperusteet-ui.git
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
   - export ARTIFACT_NAME="eperusteet"
@@ -57,7 +57,7 @@ script:
 
   - cd ..
 
-  - export BASE_IMAGE="baseimage-war-openjdk8:master"
+  - export BASE_IMAGE="baseimage-war-tomcat8-openjdk8:master"
   - ./ci-tools/common/pull-image.sh
   - ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
 

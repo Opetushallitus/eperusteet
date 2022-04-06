@@ -16,15 +16,15 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- *
  * @author nkala
  */
 @Getter
 @Setter
-public class EsiopetuksenPerusteenSisaltoDto {
+public class EsiopetuksenPerusteenSisaltoDto implements PerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
 }

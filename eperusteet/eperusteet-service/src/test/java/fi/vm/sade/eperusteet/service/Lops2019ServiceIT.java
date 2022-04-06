@@ -101,6 +101,13 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
     @Test
     @Rollback
+    public void readVanhaLukioJsonToDto() throws IOException {
+        final PerusteKaikkiDto perusteDto = this.readVanhaLukioPeruste();
+        Assert.notNull(perusteDto, "Perusteen lukeminen epäonnistui");
+    }
+
+    @Test
+    @Rollback
     public void convertDtoToEntity() throws IOException {
         final PerusteKaikkiDto perusteDto = this.readPerusteFile();
         final Lops2019SisaltoDto lops2019SisaltoDto = perusteDto.getLops2019Sisalto();
@@ -151,6 +158,11 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
     private PerusteKaikkiDto readPerusteFile() throws IOException {
         final Resource resource = new ClassPathResource("material/lops.json");
+        return objectMapper.readValue(resource.getFile(), PerusteKaikkiDto.class);
+    }
+
+    private PerusteKaikkiDto readVanhaLukioPeruste() throws IOException {
+        final Resource resource = new ClassPathResource("material/vanhalukio.json");
         return objectMapper.readValue(resource.getFile(), PerusteKaikkiDto.class);
     }
 

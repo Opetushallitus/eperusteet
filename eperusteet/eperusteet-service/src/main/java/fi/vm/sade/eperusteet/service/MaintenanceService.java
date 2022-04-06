@@ -11,9 +11,9 @@ public interface MaintenanceService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void runValidointi();
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    void teeJulkaisut();
-
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi, String koulutustyyppi, String tiedote);
+    
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<YllapitoDto> getSallitutYllapidot();
 }

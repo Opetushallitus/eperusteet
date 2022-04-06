@@ -34,6 +34,15 @@ public interface ArviointiAsteikkoService {
     @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'MUOKKAUS')")
     ArviointiAsteikkoDto update(ArviointiAsteikkoDto arviointiAsteikkoDto);
 
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    ArviointiAsteikkoDto insert(ArviointiAsteikkoDto arviointiAsteikkoDto);
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void delete(ArviointiAsteikkoDto arviointiAsteikkoDto);
+
+    @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'MUOKKAUS')")
+    List<ArviointiAsteikkoDto> update(List<ArviointiAsteikkoDto> arviointiAsteikkoDtos);
+
     @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'POISTO')")
     void remove(Long id);
 }

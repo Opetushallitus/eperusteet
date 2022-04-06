@@ -129,7 +129,7 @@ public class PdfServiceImpl implements PdfService {
             FOUserAgent foUserAgent = fopFactory.newFOUserAgent();
             foUserAgent.setAccessibility(true);
             foUserAgent.getRendererOptions().put("pdf-a-mode", "PDF/A-1b");
-            foUserAgent.setAccessibility(true);
+            foUserAgent.getRendererOptions().put("version", "1.4");
 
             if (meta != null && meta.getTitle() != null) {
                 foUserAgent.setTitle(meta.getTitle());
@@ -138,7 +138,6 @@ public class PdfServiceImpl implements PdfService {
             if (meta != null && meta.getSubject() != null) {
                 foUserAgent.setSubject(meta.getSubject());
             }
-
 
             Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, pdf);
 

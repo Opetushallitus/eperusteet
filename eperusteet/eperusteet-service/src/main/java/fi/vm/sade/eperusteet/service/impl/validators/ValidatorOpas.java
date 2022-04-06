@@ -27,7 +27,9 @@ public class ValidatorOpas implements Validator {
 
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
 
-        if (ProjektiTila.JULKAISTU.equals(projekti.getTila()) && projekti.getPeruste().getKoulutustyyppi() == null) {
+        if (ProjektiTila.JULKAISTU.equals(projekti.getTila())
+                && projekti.getPeruste().getKoulutustyyppi() == null
+                && projekti.getPeruste().getOppaanKoulutustyypit().isEmpty()) {
             updateStatus.setVaihtoOk(false);
             updateStatus.addStatus("oppaan-koulutustyyppi-pakollinen");
         }

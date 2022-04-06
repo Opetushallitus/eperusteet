@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
 import static fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto.localizedLaterByIds;
@@ -35,34 +37,36 @@ import static fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto.lo
  * Time: 12.44
  */
 @Getter
+@Setter
+@NoArgsConstructor
 public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitava {
-    private final Long id;
-    private final Long parentId;
-    private final UUID tunniste;
-    private final Integer jarjestys;
-    private final String koodiArvo;
-    private final String koodiUri;
-    private final LokalisoituTekstiDto nimi;
-    private final boolean koosteinen;
-    private final Boolean abstrakti;
+    private Long id;
+    private Long parentId;
+    private UUID tunniste;
+    private Integer jarjestys;
+    private String koodiArvo;
+    private String koodiUri;
+    private LokalisoituTekstiDto nimi;
+    private boolean koosteinen;
+    private Boolean abstrakti;
 
-    private final LokalisoituTekstiDto pakollinenKurssiKuvaus;
-    private final LokalisoituTekstiDto syventavaKurssiKuvaus;
-    private final LokalisoituTekstiDto soveltavaKurssiKuvaus;
-    private final LokalisoitavaOsaDto tavoitteet;
-    private final LokalisoitavaOsaDto arviointi;
-    private final LokalisoitavaOsaDto tehtava;
+    private LokalisoituTekstiDto pakollinenKurssiKuvaus;
+    private LokalisoituTekstiDto syventavaKurssiKuvaus;
+    private LokalisoituTekstiDto soveltavaKurssiKuvaus;
+    private LokalisoitavaOsaDto tavoitteet;
+    private LokalisoitavaOsaDto arviointi;
+    private LokalisoitavaOsaDto tehtava;
 
-    private final List<LukioOppiaineOppimaaraNodeDto> oppimaarat = new ArrayList<>();
-    private final List<LukiokurssiJulkisetTiedotDto> kurssit = new ArrayList<>();
+    private List<LukioOppiaineOppimaaraNodeDto> oppimaarat = new ArrayList<>();
+    private List<LukiokurssiJulkisetTiedotDto> kurssit = new ArrayList<>();
 
     public LukioOppiaineOppimaaraNodeDto(Long id, Long parentId,
-                     UUID tunniste, Long nimiId, boolean koosteinen, Long jarjestys,
-                     String koodiArvo, String koodiUri, Boolean abstrakti,
-                     Long pakollinenKurssiKuvausId, Long syventavaKurssiKuvausId, Long soveltavaKurssiKuvausId,
-                     Long tavoitteetOtsikkoId, Long tavoitteetTekstiId,
-                     Long tehtavaOtsikkoId, Long tehtavaTekstiId,
-                     Long arviointiOtsikkoId, Long arviointiTekstiId) {
+                                         UUID tunniste, Long nimiId, boolean koosteinen, Long jarjestys,
+                                         String koodiArvo, String koodiUri, Boolean abstrakti,
+                                         Long pakollinenKurssiKuvausId, Long syventavaKurssiKuvausId, Long soveltavaKurssiKuvausId,
+                                         Long tavoitteetOtsikkoId, Long tavoitteetTekstiId,
+                                         Long tehtavaOtsikkoId, Long tehtavaTekstiId,
+                                         Long arviointiOtsikkoId, Long arviointiTekstiId) {
         this.id = id;
         this.parentId = parentId;
         this.tunniste = tunniste;

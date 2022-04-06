@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
@@ -92,6 +93,7 @@ public class OpasServiceImpl implements OpasService {
         Peruste peruste = new Peruste();
         peruste.setTyyppi(PerusteTyyppi.OPAS);
         peruste.setSisalto(new OpasSisalto());
+        peruste.setNimi(mapper.map(opasDto.getLokalisoituNimi(), TekstiPalanen.class));
 
         if (opasDto.getPohjaId() != null) {
             Peruste vanha = perusteRepository.getOne(opasDto.getPohjaId());
@@ -115,6 +117,7 @@ public class OpasServiceImpl implements OpasService {
     @Transactional(readOnly = true)
     public Page<PerusteHakuDto> findBy(PageRequest page, PerusteQuery pquery) {
         pquery.setTila(PerusteTila.VALMIS.toString());
+        pquery.setJulkaistu(true);
         pquery.setPerusteTyyppi(PerusteTyyppi.OPAS.toString());
         Page<Peruste> result = perusteRepository.findBy(page, pquery);
         PageDto<Peruste, PerusteHakuDto> resultDto = new PageDto<>(result, PerusteHakuDto.class, page, mapper);
