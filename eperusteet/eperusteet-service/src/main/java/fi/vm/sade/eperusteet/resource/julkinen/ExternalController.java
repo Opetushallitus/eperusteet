@@ -1,6 +1,5 @@
-package fi.vm.sade.eperusteet.resource.peruste;
+package fi.vm.sade.eperusteet.resource.julkinen;
 
-import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
@@ -13,40 +12,39 @@ import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
-@Api(value = "Julkaisut")
-@Description("Perusteiden julkaisut")
-public class JulkaisuController {
+@RequestMapping(value = "/external", produces = "application/json;charset=UTF-8")
+@Api(value = "Julkinen")
+@Description("Perusteiden julkinen rajapinta")
+public class ExternalController {
 
     @Autowired
     private JulkaisutService julkaisutService;
 
-    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu")
-    @ResponseStatus(HttpStatus.OK)
+    @Autowired
+    private PerusteService perusteService;
+
+    @RequestMapping(value = "/peruste/{perusteId}", method = GET)
     @ResponseBody
-    public List<JulkaisuBaseDto> getJulkaisut(
+    @ApiOperation(value = "perusteen kaikkien tietojen haku")
+    public ResponseEntity<PerusteKaikkiDto> getPeruste(
             @PathVariable("perusteId") final long id) {
-        return julkaisutService.getJulkaisut(id);
+        return handleGet(id, 3600, () -> perusteService.getJulkaistuSisalto(id, null, false));
     }
 
-    @RequestMapping(method = GET, value = "/julkaisut")
+    @RequestMapping(method = GET, value = "/perusteet")
     @ResponseBody
     @ApiOperation(value = "julkaistujen perusteiden haku")
-    public ResponseEntity<Page<PerusteenJulkaisuData>> getKoulutustyyppienJulkaisut(
+    public ResponseEntity<Page<PerusteenJulkaisuData>> getPerusteet(
             @RequestParam("koulutustyyppi") final List<String> koulutustyyppi,
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) final String kieli,
@@ -60,22 +58,8 @@ public class JulkaisuController {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, sivu, sivukoko));
     }
 
-    @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public JulkaisuBaseDto teeJulkaisu(
-            @PathVariable("projektiId") final long projektiId,
-            @RequestBody JulkaisuBaseDto julkaisuBaseDto) {
-        return julkaisutService.teeJulkaisu(projektiId, julkaisuBaseDto);
-    }
-
-    @RequestMapping(method = POST, value = "/{projektiId}/aktivoi/{revision}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public JulkaisuBaseDto aktivoiJulkaisu(
-            @PathVariable("projektiId") final long projektiId,
-            @PathVariable("revision") final int revision) {
-        return julkaisutService.aktivoiJulkaisu(projektiId, revision);
+    private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
+        return CacheableResponse.create(perusteService.getPerusteVersion(perusteId), age, response::get);
     }
 
 }

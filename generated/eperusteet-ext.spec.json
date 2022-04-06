@@ -6,16 +6,40 @@
   },
   "basePath" : "/api",
   "tags" : [ {
-    "name" : "Julkaisut"
+    "name" : "Julkinen"
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
-    "/perusteet/julkaisut" : {
+    "/external/peruste/{perusteId}" : {
       "get" : {
-        "tags" : [ "Julkaisut" ],
+        "tags" : [ "Julkinen" ],
+        "summary" : "perusteen kaikkien tietojen haku",
+        "description" : "",
+        "operationId" : "getPeruste",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/perusteet" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
         "summary" : "julkaistujen perusteiden haku",
         "description" : "",
-        "operationId" : "getKoulutustyyppienJulkaisut",
+        "operationId" : "getPerusteet",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
           "name" : "koulutustyyppi",
@@ -79,30 +103,6 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/PagePerusteenJulkaisuData"
-            }
-          }
-        }
-      }
-    },
-    "/perusteet/{perusteId}" : {
-      "get" : {
-        "tags" : [ "Julkaisut" ],
-        "summary" : "perusteen kaikkien tietojen haku",
-        "description" : "",
-        "operationId" : "getKokoSisalto",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
             }
           }
         }
@@ -2121,12 +2121,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2161,12 +2161,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
