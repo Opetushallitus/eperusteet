@@ -21,6 +21,12 @@ gen_openapi:
 	@cd eperusteet/eperusteet-service/ \
 		&& mvn clean compile -P generate-openapi \
 		&& cp target/openapi/eperusteet.spec.json ../../generated
+		
+# Generoi julkinen openapikuvaus		
+gen_openapi_public:
+	@cd eperusteet/eperusteet-service/ \
+		&& mvn clean compile -P generate-openapi-public \
+		&& cp target/openapi/eperusteet-public.spec.json ../../generated
 
 # Generoi lista puutteellisista osaamisaloista
 gen_puutteelliset_osaamisalat:
