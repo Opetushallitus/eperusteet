@@ -47,7 +47,7 @@ public class JulkaisuController {
         return julkaisutService.getJulkaisut(id);
     }
 
-    @RequestMapping(value = "/{perusteId}", method = GET)
+    @RequestMapping(value = "/julkaisu/{perusteId}", method = GET)
     @ResponseBody
     @ApiOperation(value = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
