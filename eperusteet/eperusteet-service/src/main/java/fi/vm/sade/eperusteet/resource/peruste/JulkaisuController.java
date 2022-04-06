@@ -1,17 +1,27 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -25,12 +35,23 @@ public class JulkaisuController {
     @Autowired
     private JulkaisutService julkaisutService;
 
+    @Autowired
+    private PerusteService perusteService;
+
     @RequestMapping(method = GET, value = "/{perusteId}/julkaisu")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<JulkaisuBaseDto> getJulkaisut(
             @PathVariable("perusteId") final long id) {
         return julkaisutService.getJulkaisut(id);
+    }
+
+    @RequestMapping(value = "/{perusteId}", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteen kaikkien tietojen haku")
+    public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
+            @PathVariable("perusteId") final long id) {
+        return handleGet(id, 3600, () -> perusteService.getJulkaistuSisalto(id, null, false));
     }
 
     @RequestMapping(method = GET, value = "/julkaisut")
@@ -66,6 +87,10 @@ public class JulkaisuController {
             @PathVariable("projektiId") final long projektiId,
             @PathVariable("revision") final int revision) {
         return julkaisutService.aktivoiJulkaisu(projektiId, revision);
+    }
+
+    private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
+        return CacheableResponse.create(perusteService.getPerusteVersion(perusteId), age, response::get);
     }
 
 }
