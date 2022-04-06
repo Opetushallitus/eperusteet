@@ -38,6 +38,7 @@ public class JulkaisuController {
     @Autowired
     private PerusteService perusteService;
 
+    @ApiOperation(value = "", hidden = true)
     @RequestMapping(method = GET, value = "/{perusteId}/julkaisu")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -71,6 +72,7 @@ public class JulkaisuController {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, sivu, sivukoko));
     }
 
+    @ApiOperation(value = "", hidden = true)
     @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -80,6 +82,7 @@ public class JulkaisuController {
         return julkaisutService.teeJulkaisu(projektiId, julkaisuBaseDto);
     }
 
+    @ApiOperation(value = "", hidden = true)
     @RequestMapping(method = POST, value = "/{projektiId}/aktivoi/{revision}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
