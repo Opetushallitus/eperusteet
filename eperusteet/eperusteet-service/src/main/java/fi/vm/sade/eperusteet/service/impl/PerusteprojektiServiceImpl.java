@@ -17,9 +17,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.KVLiite;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
@@ -56,7 +54,6 @@ import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
-import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
@@ -108,7 +105,6 @@ import fi.vm.sade.eperusteet.service.TutkintonimikeKoodiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
@@ -180,12 +176,12 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 @Service
 public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
-    private static final String HENKILO_YHTEYSTIEDOT_API = "/s2s/henkilo/yhteystiedot";
+    private static final String VIRKAILIJA_HAKU_API = "/virkailija/haku";
 
     final Tika tika = new Tika();
 
-    @Value("${cas.service.oppijanumerorekisteri-service:''}")
-    private String onrServiceUrl;
+    @Value("${cas.service.kayttooikeus-service:''}")
+    private String kayttooikeusServiceUrl;
 
     @Autowired
     @Dto
@@ -632,9 +628,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         String ryhmaOid = p.getRyhmaOid();
 
-        OphHttpClient client = restClientFactory.get(onrServiceUrl, true);
+        OphHttpClient client = restClientFactory.get(kayttooikeusServiceUrl, true);
 
-        String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
+        String url = kayttooikeusServiceUrl + VIRKAILIJA_HAKU_API;
 
         OphHttpRequest request = OphHttpRequest.Builder
                 .post(url)
@@ -675,9 +671,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return kayttajat;
         }
 
-        OphHttpClient client = restClientFactory.get(onrServiceUrl, true);
+        OphHttpClient client = restClientFactory.get(kayttooikeusServiceUrl, true);
 
-        String url = onrServiceUrl + HENKILO_YHTEYSTIEDOT_API;
+        String url = kayttooikeusServiceUrl + VIRKAILIJA_HAKU_API;
 
         OphHttpRequest request = OphHttpRequest.Builder
                 .post(url)
