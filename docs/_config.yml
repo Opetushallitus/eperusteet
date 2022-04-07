@@ -27,6 +27,15 @@ theme: minima
 plugins:
   - jekyll-feed
 
+include:
+  - pages  
+  
+header_pages:
+  - pages/amosaa.md
+  - pages/eperusteet.md
+  - pages/lops.md
+  - pages/changelog.md  
+
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
 # to override the default setting.
