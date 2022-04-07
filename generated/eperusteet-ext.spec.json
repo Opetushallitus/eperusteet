@@ -13,7 +13,7 @@
     "/external/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "perusteen kaikkien tietojen haku",
+        "summary" : "Perusteen tietojen haku",
         "description" : "",
         "operationId" : "getPeruste",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -37,7 +37,7 @@
     "/external/perusteet" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "julkaistujen perusteiden haku",
+        "summary" : "Perusteiden haku",
         "description" : "",
         "operationId" : "getPerusteet",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -2093,13 +2093,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2133,13 +2133,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",

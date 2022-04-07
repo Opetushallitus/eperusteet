@@ -35,7 +35,7 @@ public class ExternalController {
 
     @RequestMapping(value = "/peruste/{perusteId}", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen kaikkien tietojen haku")
+    @ApiOperation(value = "Perusteen tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getPeruste(
             @PathVariable("perusteId") final long id) {
         return handleGet(id, 3600, () -> perusteService.getJulkaistuSisalto(id, null, false));
@@ -43,7 +43,7 @@ public class ExternalController {
 
     @RequestMapping(method = GET, value = "/perusteet")
     @ResponseBody
-    @ApiOperation(value = "julkaistujen perusteiden haku")
+    @ApiOperation(value = "Perusteiden haku")
     public ResponseEntity<Page<PerusteenJulkaisuData>> getPerusteet(
             @RequestParam("koulutustyyppi") final List<String> koulutustyyppi,
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,
