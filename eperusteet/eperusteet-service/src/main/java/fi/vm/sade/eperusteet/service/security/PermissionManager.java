@@ -443,6 +443,10 @@ public class PermissionManager {
                 return false;
             }
 
+            if (peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                return hasAnyRole(authentication, getAllowedRoles(targetType, ProjektiTila.LAADINTA, permission));
+            }
+
             if (peruste.getTyyppi().equals(PerusteTyyppi.POHJA)) {
                 return isUserAdmin();
             }

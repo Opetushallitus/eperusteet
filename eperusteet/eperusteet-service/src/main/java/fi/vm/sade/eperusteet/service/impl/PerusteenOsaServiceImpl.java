@@ -593,10 +593,15 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     @Override
+    public void delete(final Long id, final Long perusteId) {
+        delete(id);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea> getAllWithName(String name) {
         return mapper
-            .mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
+                .mapAsList(tutkinnonOsaRepo.findByNimiTekstiTekstiContainingIgnoreCase(name), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Suppea.class);
     }
 
     @Override

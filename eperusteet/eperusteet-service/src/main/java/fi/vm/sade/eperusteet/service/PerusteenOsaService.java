@@ -77,6 +77,9 @@ public interface PerusteenOsaService {
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO')")
     void delete(@P("id") final Long id);
 
+    @PreAuthorize("hasPermission(#id, 'perusteenosa', 'POISTO') or hasPermission(#perusteId,'peruste','MUOKKAUS')")
+    void delete(@P("id") final Long id, @P("perusteId") final Long perusteId);
+
     @PreAuthorize("hasPermission(#id, 'perusteenosa', 'LUKU')")
     Integer getLatestRevision(@P("id") final Long id);
 
