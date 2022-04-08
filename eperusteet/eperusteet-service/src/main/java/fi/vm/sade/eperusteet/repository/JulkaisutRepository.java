@@ -28,7 +28,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
             "       )" +
             "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
-            "   AND (:koulutusvienti = false OR CAST(koulutusvienti as boolean) = true) " +
+            "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
             "   AND ((:tulevat = true " +
             "                       AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
             "       OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki " +
