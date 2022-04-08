@@ -140,7 +140,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)
                 && findViitteet(perusteId, id).size() == 1) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
-            perusteenOsaService.delete(perusteenOsa.getId());
+            perusteenOsaService.delete(perusteenOsa.getId(), perusteId);
         }
         viite.setPerusteenOsa(null);
         viite.getVanhempi().getLapset().remove(viite);
