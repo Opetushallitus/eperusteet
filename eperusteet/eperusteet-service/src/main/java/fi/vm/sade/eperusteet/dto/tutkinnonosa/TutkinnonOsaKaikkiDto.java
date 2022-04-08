@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 
+import io.swagger.annotations.ApiModelProperty;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,15 +53,23 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
+
+    @ApiModelProperty("Yhteisen tutkinnon osan osa-alueet")
     private List<OsaAlueKokonaanDto> osaAlueet;
+
+    @ApiModelProperty("Ilmaisee onko kyseessä normaali vai yhteinen osa (uusi tai vanha)")
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
+
+    @ApiModelProperty("Yleinen perusteen ulkopuolella käytetty arviointiasteikko. Käytetään kaikissa uusissa perusteissa.")
     private GeneerinenArviointiasteikkoDto geneerinenArviointiasteikko;
-    
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty("Tutkinnon osan lisätarkennukset")
     private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty("Uusien reformin mukaisien perusteiden ammattitaitovaatimukset")
     private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -68,14 +77,17 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
 
     @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty("Vanhentunut rakenteeton tavoitteet. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
     private LokalisoituTekstiDto tavoitteet;
 
     @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty("Vanhentunut tutkinnon osa -kohtainen arviointi")
     private ArviointiDto arviointi;
 
     @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty("Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
     private LokalisoituTekstiDto ammattitaitovaatimukset;
 
     public LokalisoituTekstiDto getAmmattitaitovaatimukset() {
