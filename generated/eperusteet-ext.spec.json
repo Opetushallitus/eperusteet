@@ -1835,6 +1835,7 @@
         },
         "tyyppi" : {
           "type" : "string",
+          "description" : "Määrittää osaamisalueiden tyypit (vanha vai uusi)",
           "enum" : [ "OSAALUE2014", "OSAALUE2020" ]
         },
         "koodi" : {
@@ -1870,6 +1871,7 @@
         },
         "tyyppi" : {
           "type" : "string",
+          "description" : "Määrittää osaamisalueiden tyypit (vanha vai uusi)",
           "enum" : [ "OSAALUE2014", "OSAALUE2020" ]
         },
         "koodi" : {
@@ -1889,16 +1891,20 @@
           "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
         },
         "arviointi" : {
+          "description" : "OSAALUE2020-mukainen arviointi",
           "$ref" : "#/definitions/Arviointi2020Dto"
         },
         "pakollisetOsaamistavoitteet" : {
+          "description" : "OSAALUE2020-mukainen pakolliset osaamistavoitteet",
           "$ref" : "#/definitions/Osaamistavoite2020Dto"
         },
         "valinnaisetOsaamistavoitteet" : {
+          "description" : "OSAALUE2020-mukainen valinnaiset osaamistavoittet",
           "$ref" : "#/definitions/Osaamistavoite2020Dto"
         },
         "osaamistavoitteet" : {
           "type" : "array",
+          "description" : "Vanhan malliset osaamistavoitteet (OSAALUE2014)",
           "items" : {
             "$ref" : "#/definitions/OsaamistavoiteLaajaDto"
           }
@@ -2093,13 +2099,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2121,25 +2127,25 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2161,12 +2167,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2232,6 +2238,7 @@
           "format" : "int64"
         },
         "globalVersion" : {
+          "description" : "Perusteen sisältöjen viimeisin päivitysaika",
           "$ref" : "#/definitions/PerusteVersionDto"
         },
         "nimi" : {
@@ -2242,6 +2249,7 @@
         },
         "toteutus" : {
           "type" : "string",
+          "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)",
           "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO", "TUTKINTOONVALMENTAVA" ]
         },
         "koulutukset" : {
@@ -2280,7 +2288,8 @@
         },
         "siirtymaPaattyy" : {
           "type" : "string",
-          "format" : "date-time"
+          "format" : "date-time",
+          "description" : "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä."
         },
         "voimassaoloLoppuu" : {
           "type" : "string",
@@ -2288,18 +2297,12 @@
         },
         "paatospvm" : {
           "type" : "string",
-          "format" : "date-time"
-        },
-        "luotu" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "muokattu" : {
-          "type" : "string",
-          "format" : "date-time"
+          "format" : "date-time",
+          "description" : "Perusteen määräyksen päätöspäivämäärä"
         },
         "tila" : {
           "type" : "string",
+          "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen",
           "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
         },
         "tyyppi" : {
@@ -2307,10 +2310,12 @@
           "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA" ]
         },
         "koulutusvienti" : {
-          "type" : "boolean"
+          "type" : "boolean",
+          "description" : "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste"
         },
         "korvattavatDiaarinumerot" : {
           "type" : "array",
+          "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin",
           "uniqueItems" : true,
           "items" : {
             "type" : "string"
@@ -2318,15 +2323,18 @@
         },
         "osaamisalat" : {
           "type" : "array",
+          "description" : "Perusteeseen liittyvät osaamisalakoodit",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/KoodiDto"
           }
         },
         "tyotehtavatJoissaVoiToimia" : {
+          "description" : "kv-liitteen lisätieto",
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suorittaneenOsaaminen" : {
+          "description" : "kv-liitteen lisätieto",
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "tutkintonimikkeet" : {
@@ -2337,6 +2345,7 @@
         },
         "oppaanPerusteet" : {
           "type" : "array",
+          "description" : "Perusteet joihin opas liittyy",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/PerusteKevytDto"
@@ -2344,6 +2353,7 @@
         },
         "oppaanKoulutustyypit" : {
           "type" : "array",
+          "description" : "Koulutustyypit joihin opas liittyy",
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
@@ -2352,6 +2362,7 @@
         },
         "perusteenAikataulut" : {
           "type" : "array",
+          "description" : "Perusteprosessin päivämäärät",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
@@ -2496,6 +2507,12 @@
         "laajuus" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "koulutukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KoulutusDto"
+          }
         }
       }
     },
@@ -2871,39 +2888,47 @@
         },
         "osaAlueet" : {
           "type" : "array",
+          "description" : "Yhteisen tutkinnon osan osa-alueet",
           "items" : {
             "$ref" : "#/definitions/OsaAlueKokonaanDto"
           }
         },
         "tyyppi" : {
           "type" : "string",
+          "description" : "Ilmaisee onko kyseessä normaali vai yhteinen osa (uusi tai vanha)",
           "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
         },
         "valmaTelmaSisalto" : {
           "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
         },
         "geneerinenArviointiasteikko" : {
+          "description" : "Yleinen perusteen ulkopuolella käytetty arviointiasteikko. Käytetään kaikissa uusissa perusteissa.",
           "$ref" : "#/definitions/GeneerinenArviointiasteikkoDto"
         },
         "vapaatTekstit" : {
           "type" : "array",
+          "description" : "Tutkinnon osan lisätarkennukset",
           "items" : {
             "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         },
         "ammattitaitovaatimukset2019" : {
+          "description" : "Uusien reformin mukaisien perusteiden ammattitaitovaatimukset",
           "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
         },
         "ammattitaidonOsoittamistavat" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "tavoitteet" : {
+          "description" : "Vanhentunut rakenteeton tavoitteet. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.",
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "arviointi" : {
+          "description" : "Vanhentunut tutkinnon osa -kohtainen arviointi",
           "$ref" : "#/definitions/ArviointiDto"
         },
         "ammattitaitovaatimukset" : {
+          "description" : "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.",
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
