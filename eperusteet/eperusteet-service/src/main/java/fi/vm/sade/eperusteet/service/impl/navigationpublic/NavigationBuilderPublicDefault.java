@@ -49,7 +49,7 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         }
 
         NavigationNodeDto result = NavigationNodeDto
-                .of(type, sisalto.getPerusteenOsa() != null ? sisalto.getPerusteenOsa().getNimi() : null, sisalto.getId())
+                .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId())
                 .addAll(sisalto.getLapset().stream()
                         .map(this::constructNavigation)
                         .filter(Objects::nonNull)

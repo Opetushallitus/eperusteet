@@ -956,13 +956,19 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         Integer minimiLaajuus = koulutuksenOsa.getLaajuusMinimi() != null ? koulutuksenOsa.getLaajuusMinimi() : koulutuksenOsa.getLaajuusMaksimi() != null ? koulutuksenOsa.getLaajuusMaksimi() : 0;
         Integer maksimiLaajuus = koulutuksenOsa.getLaajuusMaksimi() != null ? koulutuksenOsa.getLaajuusMaksimi() : koulutuksenOsa.getLaajuusMinimi() != null ? koulutuksenOsa.getLaajuusMinimi() : 0;
+        String nimi = getTextString(docBase, koulutuksenOsa.getNimi());
+        if (koulutuksenOsa.getNimiKoodi() != null) {
+            KoodiDto nimiKoodi = mapper.map(koulutuksenOsa.getNimiKoodi(), KoodiDto.class);
+            nimi = getTextString(docBase, nimiKoodi.getNimi());
+        }
+
 
         if (minimiLaajuus.compareTo(maksimiLaajuus) == 0) {
             String nimiSuffix = String.format(", %d %s", minimiLaajuus, messages.translate("docgen.laajuus.vk", docBase.getKieli()));
-            addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
+            addHeader(docBase, nimi + nimiSuffix);
         } else {
             String nimiSuffix = String.format(", %d - %d %s", minimiLaajuus, maksimiLaajuus, messages.translate("docgen.laajuus.vk", docBase.getKieli()));
-            addHeader(docBase, getTextString(docBase, koulutuksenOsa.getNimi()) + nimiSuffix);
+            addHeader(docBase, nimi + nimiSuffix);
         }
 
         addTeksti(docBase, messages.translate("docgen.koulutustyyppi.title", docBase.getKieli()), "h5");
