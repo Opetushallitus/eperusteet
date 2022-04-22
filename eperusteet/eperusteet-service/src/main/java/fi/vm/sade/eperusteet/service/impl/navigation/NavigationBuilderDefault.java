@@ -54,9 +54,7 @@ public class NavigationBuilderDefault implements NavigationBuilder {
         }
 
         NavigationNodeDto result = NavigationNodeDto
-                .of(type, sisalto.getPerusteenOsa() != null
-                                ? mapper.map(sisalto.getPerusteenOsa(), PerusteenOsaDto.class).getNimi()
-                                : null,
+                .of(type, getPerusteenOsaNimi(mapper, sisalto.getPerusteenOsa()),
                         sisalto.getId())
                 .addAll(sisalto.getLapset().stream()
                         .map(this::constructNavigation)
