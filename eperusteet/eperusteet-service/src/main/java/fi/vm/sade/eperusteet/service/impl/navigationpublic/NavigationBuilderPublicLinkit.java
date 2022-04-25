@@ -72,11 +72,13 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
         }
 
         PerusteenSisaltoDto sisalto = sisallot.iterator().next();
-        if (sisalto != null) {
-            PerusteenOsaViiteDto.Laaja sisaltoViite = sisalto.getSisalto();
-            if (sisaltoViite != null) {
-                result.addAll(constructNavigation(sisaltoViite));
-            }
+        if (sisalto == null) {
+            return result;
+        }
+
+        PerusteenOsaViiteDto.Laaja sisaltoViite = sisalto.getSisalto();
+        if (sisaltoViite != null) {
+            result.addAll(constructNavigation(sisaltoViite));
         }
 
         return result;
