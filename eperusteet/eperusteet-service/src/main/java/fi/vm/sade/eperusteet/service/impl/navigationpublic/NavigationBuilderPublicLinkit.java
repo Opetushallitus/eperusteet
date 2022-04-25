@@ -58,13 +58,13 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
             return NavigationType.liite;
         }
 
-        if (po instanceof TekstiKappaleDto) {
-            TekstiKappaleDto tk = (TekstiKappaleDto) po;
-            if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
-                type = NavigationType.muodostuminen;
-            }
-        } else {
-            type = po.getNavigationType();
+        if (!(po instanceof TekstiKappaleDto)) {
+            return po.getNavigationType();
+        }
+
+        TekstiKappaleDto tk = (TekstiKappaleDto) po;
+        if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
+            type = NavigationType.muodostuminen;
         }
 
         return type;
