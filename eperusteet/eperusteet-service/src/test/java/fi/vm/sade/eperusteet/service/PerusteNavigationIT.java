@@ -103,59 +103,6 @@ public class PerusteNavigationIT {
                 perusteDispatcher);
     }
 
-    @Test
-    public void testYksinkertainenNavigation() {
-        NavigationNodeDto navigationNodeDto = navigationBuilderDefault.buildNavigation(42L, "fi");
-        assertThat(navigationNodeDto).isNotNull();
-        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
-        assertThat(navigationNodeDto.getChildren().get(0))
-                .extracting(NavigationNodeDto::getId, NavigationNodeDto::getType)
-                .containsExactly(100L, NavigationType.viite);
-    }
-
-    @Test
-    public void testLops2019Navigaatio() {
-        NavigationNodeDto navigationNodeDto = navigationBuilderLops2019.buildNavigation(42L, "fi");
-        assertThat(navigationNodeDto).isNotNull();
-        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
-
-        assertThat(navigationNodeDto.getChildren())
-                .extracting("type", "id")
-                .containsExactly(
-                        tuple(NavigationType.viite, 100L),
-                        tuple(NavigationType.laajaalaiset, null),
-                        tuple(NavigationType.oppiaineet, null));
-
-        assertThat(navigationNodeDto.getChildren().get(1).getChildren())
-                .extracting("type", "id", "koodi.arvo")
-                .containsExactly(
-                        tuple(NavigationType.laajaalainen, 501L, "LO1"),
-                        tuple(NavigationType.laajaalainen, 500L, "LO2"));
-
-        NavigationNodeDto oppiaine = navigationNodeDto.getChildren().get(2).getChildren().get(0);
-        assertThat(oppiaine.getChildren().get(0).getType()).isEqualTo(NavigationType.oppimaarat);
-
-        assertThat(oppiaine)
-                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
-                .returns(101L, NavigationNodeDto::getId)
-                .returns("OA", n -> n.getKoodi().getArvo());
-
-        NavigationNodeDto oppimaara = oppiaine.getChildren().get(0).getChildren().get(0);
-        assertThat(oppimaara.getChildren().get(0).getType()).isEqualTo(NavigationType.moduulit);
-
-        assertThat(oppimaara)
-                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
-                .returns(102L, NavigationNodeDto::getId)
-                .returns("OM", n -> n.getKoodi().getArvo());
-
-        List<NavigationNodeDto> moduulit = oppimaara.getChildren().get(0).getChildren();
-        assertThat(moduulit)
-                .extracting("type", "id", "koodi.arvo")
-                .containsExactly(
-                        tuple(NavigationType.moduuli, 11L, "M1"),
-                        tuple(NavigationType.moduuli, 12L, "M2"));
-    }
-
     private Lops2019Sisalto sisaltoData() {
         Lops2019Sisalto sisalto = new Lops2019Sisalto();
         Lops2019Oppiaine oa = new Lops2019Oppiaine();
@@ -226,4 +173,56 @@ public class PerusteNavigationIT {
         return peruste;
     }
 
+    @Test
+    public void testYksinkertainenNavigation() {
+        NavigationNodeDto navigationNodeDto = navigationBuilderDefault.buildNavigation(42L, "fi");
+        assertThat(navigationNodeDto).isNotNull();
+        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
+        assertThat(navigationNodeDto.getChildren().get(0))
+                .extracting(NavigationNodeDto::getId, NavigationNodeDto::getType)
+                .containsExactly(100L, NavigationType.viite);
+    }
+
+    @Test
+    public void testLops2019Navigaatio() {
+        NavigationNodeDto navigationNodeDto = navigationBuilderLops2019.buildNavigation(42L, "fi");
+        assertThat(navigationNodeDto).isNotNull();
+        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
+
+        assertThat(navigationNodeDto.getChildren())
+                .extracting("type", "id")
+                .containsExactly(
+                        tuple(NavigationType.viite, 100L),
+                        tuple(NavigationType.laajaalaiset, null),
+                        tuple(NavigationType.oppiaineet, null));
+
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren())
+                .extracting("type", "id", "koodi.arvo")
+                .containsExactly(
+                        tuple(NavigationType.laajaalainen, 501L, "LO1"),
+                        tuple(NavigationType.laajaalainen, 500L, "LO2"));
+
+        NavigationNodeDto oppiaine = navigationNodeDto.getChildren().get(2).getChildren().get(0);
+        assertThat(oppiaine.getChildren().get(0).getType()).isEqualTo(NavigationType.oppimaarat);
+
+        assertThat(oppiaine)
+                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
+                .returns(101L, NavigationNodeDto::getId)
+                .returns("OA", n -> n.getKoodi().getArvo());
+
+        NavigationNodeDto oppimaara = oppiaine.getChildren().get(0).getChildren().get(0);
+        assertThat(oppimaara.getChildren().get(0).getType()).isEqualTo(NavigationType.moduulit);
+
+        assertThat(oppimaara)
+                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
+                .returns(102L, NavigationNodeDto::getId)
+                .returns("OM", n -> n.getKoodi().getArvo());
+
+        List<NavigationNodeDto> moduulit = oppimaara.getChildren().get(0).getChildren();
+        assertThat(moduulit)
+                .extracting("type", "id", "koodi.arvo")
+                .containsExactly(
+                        tuple(NavigationType.moduuli, 11L, "M1"),
+                        tuple(NavigationType.moduuli, 12L, "M2"));
+    }
 }
