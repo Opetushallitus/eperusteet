@@ -50,18 +50,21 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
     private NavigationType getNavigationType(PerusteenOsaDto.Laaja po) {
         NavigationType type = NavigationType.viite;
-        if (po != null) {
-            if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite()) {
-                type = NavigationType.liite;
-            } else if (po instanceof TekstiKappaleDto) {
-                TekstiKappaleDto tk = (TekstiKappaleDto) po;
-                if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
-                    type = NavigationType.muodostuminen;
-                }
-            } else {
-                type = po.getNavigationType();
-            }
+        if (po == null) {
+            return type;
         }
+
+        if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite()) {
+            type = NavigationType.liite;
+        } else if (po instanceof TekstiKappaleDto) {
+            TekstiKappaleDto tk = (TekstiKappaleDto) po;
+            if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
+                type = NavigationType.muodostuminen;
+            }
+        } else {
+            type = po.getNavigationType();
+        }
+
         return type;
     }
 
