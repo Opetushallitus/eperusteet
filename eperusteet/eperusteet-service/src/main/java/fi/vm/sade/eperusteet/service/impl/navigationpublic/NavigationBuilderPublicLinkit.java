@@ -35,8 +35,21 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
     }
 
     private NavigationNodeDto constructNavigation(PerusteenOsaViiteDto.Laaja sisalto) {
-        NavigationType type = NavigationType.viite;
         PerusteenOsaDto.Laaja po = sisalto.getPerusteenOsa();
+        NavigationType type = getNavigationType(po);
+
+        NavigationNodeDto result = NavigationNodeDto
+                .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId())
+                .addAll(sisalto.getLapset().stream()
+                        .map(this::constructNavigation)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList()));
+        result.setId(sisalto.getId());
+        return result;
+    }
+
+    private NavigationType getNavigationType(PerusteenOsaDto.Laaja po) {
+        NavigationType type = NavigationType.viite;
         if (po != null) {
             if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite()) {
                 type = NavigationType.liite;
@@ -49,15 +62,7 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
                 type = po.getNavigationType();
             }
         }
-
-        NavigationNodeDto result = NavigationNodeDto
-                .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId())
-                .addAll(sisalto.getLapset().stream()
-                        .map(this::constructNavigation)
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
-        result.setId(sisalto.getId());
-        return result;
+        return type;
     }
 
     @Override
