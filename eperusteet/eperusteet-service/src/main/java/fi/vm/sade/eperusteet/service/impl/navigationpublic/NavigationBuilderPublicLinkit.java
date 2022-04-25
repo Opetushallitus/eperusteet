@@ -54,9 +54,11 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
             return type;
         }
 
-        if (po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite()) {
-            type = NavigationType.liite;
-        } else if (po instanceof TekstiKappaleDto) {
+        if (isTekstikappaleLiite(po)) {
+            return NavigationType.liite;
+        }
+
+        if (po instanceof TekstiKappaleDto) {
             TekstiKappaleDto tk = (TekstiKappaleDto) po;
             if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
                 type = NavigationType.muodostuminen;
@@ -66,6 +68,10 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
         }
 
         return type;
+    }
+
+    private boolean isTekstikappaleLiite(PerusteenOsaDto.Laaja po) {
+        return po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite();
     }
 
     @Override
