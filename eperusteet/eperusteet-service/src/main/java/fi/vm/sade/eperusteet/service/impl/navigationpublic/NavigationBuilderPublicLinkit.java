@@ -64,7 +64,7 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
         TekstiKappaleDto tk = (TekstiKappaleDto) po;
         if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
-            type = NavigationType.muodostuminen;
+            return NavigationType.muodostuminen;
         }
 
         return type;
