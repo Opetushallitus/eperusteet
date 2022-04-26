@@ -232,6 +232,15 @@ public class PerusteNavigationIT {
                         tuple(NavigationType.moduuli, 12L, "M2"));
     }
 
+    /**
+     * Testataan navigaation generointia kun rakenne on tämmöinen:
+     *  - Johdanto
+     *  - Koulutuksen järjestämisen lähtökohdat
+     *      - Arvoperusta
+     *      - Koulutuksen laajuus ja rakenne
+     *
+     *  Kaikkien nodejen pitäisi olla tekstikappaleita ja generoitua tyyppiksi "viite"
+     */
     @Test
     public void testLinkkilistaNavigation() {
         NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
@@ -245,15 +254,19 @@ public class PerusteNavigationIT {
         NavigationNodeDto johdantoNode = lapset.get(0);
         assertThat(johdantoNode.getType()).isEqualTo(NavigationType.viite);
         assertThat(johdantoNode.getId()).isEqualTo(20L);
+
+        NavigationNodeDto lahtokohdatNode = lapset.get(1);
+        assertThat(lahtokohdatNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(lahtokohdatNode.getId()).isEqualTo(30L);
     }
 
     private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
         PerusteenOsaViiteDto.Laaja johdanto = createLeafNode("Johdanto", 20L);
-
-
+        PerusteenOsaViiteDto.Laaja lahtokohdat = createNodeWithChildren("Koulutuksen järjestämisen lähtökohdat", 30L);
 
         ArrayList<PerusteenOsaViiteDto.Laaja> rootinLapset = new ArrayList<>();
         rootinLapset.add(johdanto);
+        rootinLapset.add(lahtokohdat);
 
         PerusteenOsaViiteDto.Laaja rootNode = new PerusteenOsaViiteDto.Laaja();
         rootNode.setId(10L);
@@ -271,6 +284,17 @@ public class PerusteNavigationIT {
         node.setId(id);
         node.setLapset(new ArrayList<>());
         node.setPerusteenOsa(tekstiKappale);
+        return node;
+    }
+
+    private PerusteenOsaViiteDto.Laaja createNodeWithChildren(String nimi, long id) {
+        List<PerusteenOsaViiteDto.Laaja> lapset = new ArrayList<>();
+        lapset.add(createLeafNode("Arvoperusta", id + 1));
+        lapset.add(createLeafNode("Koulutuksen laajuus ja rakenne", id + 2));
+
+        PerusteenOsaViiteDto.Laaja node = createLeafNode(nimi, id);
+        node.setLapset(lapset);
+
         return node;
     }
 }
