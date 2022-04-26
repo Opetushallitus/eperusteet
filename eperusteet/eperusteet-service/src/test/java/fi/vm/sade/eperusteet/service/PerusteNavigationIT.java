@@ -25,7 +25,6 @@ import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;
 import fi.vm.sade.eperusteet.service.impl.navigationpublic.NavigationBuilderPublicLinkit;
 import fi.vm.sade.eperusteet.service.mapping.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -264,7 +263,7 @@ public class PerusteNavigationIT {
         assertThat(arvoperustaNode.getId()).isEqualTo(31L);
 
         NavigationNodeDto laajuusNode = lahtokohdatLapset.get(1);
-        assertThat(laajuusNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(laajuusNode.getType()).isEqualTo(NavigationType.muodostuminen);
         assertThat(laajuusNode.getId()).isEqualTo(32L);
 
         NavigationNodeDto kuvausasteikkoLiiteNode = lapset.get(3);
@@ -297,7 +296,7 @@ public class PerusteNavigationIT {
      *      - Johdanto (tekstikappale, id 20)
      *      - Koulutuksen järjestämisen lähtökohdat (tekstikappale, id 30)
      *          - Arvoperusta (tekstikappale, id 31)
-     *          - Koulutuksen laajuus ja rakenne (tekstikappale, id 32)
+     *          - Koulutuksen laajuus ja rakenne (muodostuminen, id 32)
      *      - Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt (linkkilista, id 40)
      *          - Kotoutumiskoulutuksen yleiset tavoitteet (tekstikappale, id 41)
      *          - Suomen kieli ja viestintätaidot (koto_kielitaitotaso, id 41)
@@ -309,7 +308,7 @@ public class PerusteNavigationIT {
                 "Koulutuksen järjestämisen lähtökohdat",
                 30L,
                 createTekstiLeafNode("Arvoperusta", 31L),
-                createTekstiLeafNode("Koulutuksen laajuus ja rakenne", 32L));
+                createMuodostuminenLeafNode("Koulutuksen laajuus ja rakenne", 32L));
 
         PerusteenOsaViiteDto.Laaja tavoitteet = createNodeWithChildren(
                 "Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt",
@@ -333,17 +332,25 @@ public class PerusteNavigationIT {
     }
 
     private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(String nimi, long id) {
-        return createTekstiLeafNode(nimi, id, false);
+        return createTekstiLeafNode(nimi, id, false, PerusteenOsaTunniste.NORMAALI);
     }
 
     private PerusteenOsaViiteDto.Laaja createTekstiLiiteLeafNode(String nimi, long id) {
-        return createTekstiLeafNode(nimi, id, true);
+        return createTekstiLeafNode(nimi, id, true, PerusteenOsaTunniste.NORMAALI);
     }
 
-    private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(String nimi, long id, boolean hasLiite) {
+    private PerusteenOsaViiteDto.Laaja createMuodostuminenLeafNode(String nimi, long id) {
+        return createTekstiLeafNode(nimi, id, false, PerusteenOsaTunniste.RAKENNE);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(
+            String nimi,
+            long id,
+            boolean hasLiite,
+            PerusteenOsaTunniste perusteenOsaTunniste) {
         TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
         tekstiKappale.setNimi(LokalisoituTekstiDto.of(nimi));
-        tekstiKappale.setTunniste(PerusteenOsaTunniste.NORMAALI);
+        tekstiKappale.setTunniste(perusteenOsaTunniste);
         tekstiKappale.setLiite(hasLiite);
 
         PerusteenOsaViiteDto.Laaja node = new PerusteenOsaViiteDto.Laaja();
