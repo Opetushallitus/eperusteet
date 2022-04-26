@@ -248,22 +248,29 @@ public class PerusteNavigationIT {
     }
 
     private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
-        TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
-        tekstiKappale.setNimi(LokalisoituTekstiDto.of("Johdanto"));
-        tekstiKappale.setTunniste(PerusteenOsaTunniste.NORMAALI);
+        PerusteenOsaViiteDto.Laaja johdanto = createLeafNode("Johdanto", 20L);
 
-        PerusteenOsaViiteDto.Laaja johdantoLapsi = new PerusteenOsaViiteDto.Laaja();
-        johdantoLapsi.setId(20L);
-        johdantoLapsi.setLapset(new ArrayList<>());
-        johdantoLapsi.setPerusteenOsa(tekstiKappale);
+
 
         ArrayList<PerusteenOsaViiteDto.Laaja> rootinLapset = new ArrayList<>();
-        rootinLapset.add(johdantoLapsi);
+        rootinLapset.add(johdanto);
 
         PerusteenOsaViiteDto.Laaja rootNode = new PerusteenOsaViiteDto.Laaja();
         rootNode.setId(10L);
         rootNode.setLapset(rootinLapset);
 
         return rootNode;
+    }
+
+    private PerusteenOsaViiteDto.Laaja createLeafNode(String nimi, long id) {
+        TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
+        tekstiKappale.setNimi(LokalisoituTekstiDto.of(nimi));
+        tekstiKappale.setTunniste(PerusteenOsaTunniste.NORMAALI);
+
+        PerusteenOsaViiteDto.Laaja node = new PerusteenOsaViiteDto.Laaja();
+        node.setId(id);
+        node.setLapset(new ArrayList<>());
+        node.setPerusteenOsa(tekstiKappale);
+        return node;
     }
 }
