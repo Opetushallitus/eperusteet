@@ -10,13 +10,18 @@ import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
+import fi.vm.sade.eperusteet.service.impl.PerusteServiceImpl;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderDefault;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;
+import fi.vm.sade.eperusteet.service.impl.navigationpublic.NavigationBuilderPublicLinkit;
 import fi.vm.sade.eperusteet.service.mapping.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -224,5 +230,40 @@ public class PerusteNavigationIT {
                 .containsExactly(
                         tuple(NavigationType.moduuli, 11L, "M1"),
                         tuple(NavigationType.moduuli, 12L, "M2"));
+    }
+
+    @Test
+    public void testLinkkilistaNavigation() {
+        NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
+        NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
+
+        assertThat(result.getType()).isEqualTo(NavigationType.viite);
+        assertThat(result.getId()).isEqualTo(10L);
+
+        List<NavigationNodeDto> lapset = result.getChildren();
+
+        NavigationNodeDto johdantoNode = lapset.get(0);
+        assertThat(johdantoNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(johdantoNode.getId()).isEqualTo(20L);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
+        TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
+        tekstiKappale.setNimi(LokalisoituTekstiDto.of("Johdanto"));
+        tekstiKappale.setTunniste(PerusteenOsaTunniste.NORMAALI);
+
+        PerusteenOsaViiteDto.Laaja johdantoLapsi = new PerusteenOsaViiteDto.Laaja();
+        johdantoLapsi.setId(20L);
+        johdantoLapsi.setLapset(new ArrayList<>());
+        johdantoLapsi.setPerusteenOsa(tekstiKappale);
+
+        ArrayList<PerusteenOsaViiteDto.Laaja> rootinLapset = new ArrayList<>();
+        rootinLapset.add(johdantoLapsi);
+
+        PerusteenOsaViiteDto.Laaja rootNode = new PerusteenOsaViiteDto.Laaja();
+        rootNode.setId(10L);
+        rootNode.setLapset(rootinLapset);
+
+        return rootNode;
     }
 }

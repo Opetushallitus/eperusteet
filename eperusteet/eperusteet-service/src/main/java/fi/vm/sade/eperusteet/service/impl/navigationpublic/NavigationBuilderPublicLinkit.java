@@ -34,7 +34,7 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
         return Sets.newHashSet(KoulutustyyppiToteutus.VAPAASIVISTYSTYO);
     }
 
-    private NavigationNodeDto constructNavigation(PerusteenOsaViiteDto.Laaja sisalto) {
+    public NavigationNodeDto constructNavigation(PerusteenOsaViiteDto.Laaja sisalto) {
         PerusteenOsaDto.Laaja po = sisalto.getPerusteenOsa();
         NavigationType type = getNavigationType(po);
 
