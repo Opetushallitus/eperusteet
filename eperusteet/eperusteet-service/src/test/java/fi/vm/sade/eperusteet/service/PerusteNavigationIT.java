@@ -237,7 +237,7 @@ public class PerusteNavigationIT {
 
     /**
      * Testataan navigaation generointia tekstikappaleille. Generoidaan itsenäisiä nodeja sekä
-     * node jolla on lapsia. Kaikkien tyypiksi pitäisi generoitua "viite".
+     * node jolla on lapsia.
      */
     @Test
     public void testLinkkilistaNavigationForTekstikappaleet() {
@@ -266,6 +266,10 @@ public class PerusteNavigationIT {
         NavigationNodeDto laajuusNode = lahtokohdatLapset.get(1);
         assertThat(laajuusNode.getType()).isEqualTo(NavigationType.viite);
         assertThat(laajuusNode.getId()).isEqualTo(32L);
+
+        NavigationNodeDto kuvausasteikkoLiiteNode = lapset.get(3);
+        assertThat(kuvausasteikkoLiiteNode.getType()).isEqualTo(NavigationType.liite);
+        assertThat(kuvausasteikkoLiiteNode.getId()).isEqualTo(50L);
     }
 
     /**
@@ -297,6 +301,7 @@ public class PerusteNavigationIT {
      *      - Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt (linkkilista, id 40)
      *          - Kotoutumiskoulutuksen yleiset tavoitteet (tekstikappale, id 41)
      *          - Suomen kieli ja viestintätaidot (koto_kielitaitotaso, id 41)
+     *      - Kielitaidon tasojen kuvausasteikko (liite, id 50)
      */
     private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
         PerusteenOsaViiteDto.Laaja johdanto = createTekstiLeafNode("Johdanto", 20L);
@@ -312,11 +317,13 @@ public class PerusteNavigationIT {
                 createTekstiLeafNode("Kotoutumiskoulutuksen yleiset tavoitteet", 41L),
                 createKielitaitotasoLeafNode("Suomen kieli ja viestintätaidot", 42L));
 
+        PerusteenOsaViiteDto.Laaja kuvausasteikkoLiite = createTekstiLiiteLeafNode("Kielitaidon tasojen kuvausasteikko", 50L);
 
         ArrayList<PerusteenOsaViiteDto.Laaja> rootinLapset = new ArrayList<>();
         rootinLapset.add(johdanto);
         rootinLapset.add(lahtokohdat);
         rootinLapset.add(tavoitteet);
+        rootinLapset.add(kuvausasteikkoLiite);
 
         PerusteenOsaViiteDto.Laaja rootNode = new PerusteenOsaViiteDto.Laaja();
         rootNode.setId(10L);
@@ -326,9 +333,18 @@ public class PerusteNavigationIT {
     }
 
     private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(String nimi, long id) {
+        return createTekstiLeafNode(nimi, id, false);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createTekstiLiiteLeafNode(String nimi, long id) {
+        return createTekstiLeafNode(nimi, id, true);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(String nimi, long id, boolean hasLiite) {
         TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
         tekstiKappale.setNimi(LokalisoituTekstiDto.of(nimi));
         tekstiKappale.setTunniste(PerusteenOsaTunniste.NORMAALI);
+        tekstiKappale.setLiite(hasLiite);
 
         PerusteenOsaViiteDto.Laaja node = new PerusteenOsaViiteDto.Laaja();
         node.setId(id);
