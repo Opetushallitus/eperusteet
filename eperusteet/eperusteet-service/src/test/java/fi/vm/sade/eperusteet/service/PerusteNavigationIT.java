@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;
 import fi.vm.sade.eperusteet.service.impl.navigationpublic.NavigationBuilderPublicLinkit;
 import fi.vm.sade.eperusteet.service.mapping.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -265,6 +266,24 @@ public class PerusteNavigationIT {
         NavigationNodeDto laajuusNode = lahtokohdatLapset.get(1);
         assertThat(laajuusNode.getType()).isEqualTo(NavigationType.viite);
         assertThat(laajuusNode.getId()).isEqualTo(32L);
+    }
+
+    /**
+     * Jos perusteenosa on tiettyä ennaltamääritettyä tyyppiä, tehdään parent nodesta tyyppiä linkkilista.
+     * Tämä siitä syystä että tietyille "hankalille" perusteenosille ei haluttu tehdä custom yhteenvetosivua, joten
+     * alisivut päätettiin näyttää yhteenvetosivulla ainoastaan linkkeinä.
+     */
+    @Test
+    @Ignore
+    public void testNodeTypeIsLinkkiLista() {
+        NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
+        NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
+
+        List<NavigationNodeDto> lapset = result.getChildren();
+
+        NavigationNodeDto tavoitteetNode = lapset.get(2);
+        assertThat(tavoitteetNode.getId()).isEqualTo(40L);
+        assertThat(tavoitteetNode.getType()).isEqualTo(NavigationType.linkkisivu);
     }
 
     /**
