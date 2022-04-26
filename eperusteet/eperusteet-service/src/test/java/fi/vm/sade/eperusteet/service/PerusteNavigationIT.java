@@ -14,6 +14,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
@@ -30,6 +31,7 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -269,19 +271,33 @@ public class PerusteNavigationIT {
      * Testidatan hierarkia:
      *
      * - juurinode (id 10)
-     *      - Johdanto (teksiKappale, id 20)
-     *      - Koulutuksen järjestämisen lähtökohdat (teksiKappale, id 30)
-     *          - Arvoperusta (teksiKappale, id 31)
-     *          - Koulutuksen laajuus ja rakenne (teksiKappale, id 32)
-     *
+     *      - Johdanto (tekstikappale, id 20)
+     *      - Koulutuksen järjestämisen lähtökohdat (tekstikappale, id 30)
+     *          - Arvoperusta (tekstikappale, id 31)
+     *          - Koulutuksen laajuus ja rakenne (tekstikappale, id 32)
+     *      - Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt (linkkilista, id 40)
+     *          - Kotoutumiskoulutuksen yleiset tavoitteet (tekstikappale, id 41)
+     *          - Suomen kieli ja viestintätaidot (koto_kielitaitotaso, id 41)
      */
     private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
-        PerusteenOsaViiteDto.Laaja johdanto = createLeafNode("Johdanto", 20L);
-        PerusteenOsaViiteDto.Laaja lahtokohdat = createNodeWithChildren("Koulutuksen järjestämisen lähtökohdat", 30L);
+        PerusteenOsaViiteDto.Laaja johdanto = createTekstiLeafNode("Johdanto", 20L);
+        PerusteenOsaViiteDto.Laaja lahtokohdat = createNodeWithChildren(
+                "Koulutuksen järjestämisen lähtökohdat",
+                30L,
+                createTekstiLeafNode("Arvoperusta", 31L),
+                createTekstiLeafNode("Koulutuksen laajuus ja rakenne", 32L));
+
+        PerusteenOsaViiteDto.Laaja tavoitteet = createNodeWithChildren(
+                "Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt",
+                40L,
+                createTekstiLeafNode("Kotoutumiskoulutuksen yleiset tavoitteet", 41L),
+                createKielitaitotasoLeafNode("Suomen kieli ja viestintätaidot", 42L));
+
 
         ArrayList<PerusteenOsaViiteDto.Laaja> rootinLapset = new ArrayList<>();
         rootinLapset.add(johdanto);
         rootinLapset.add(lahtokohdat);
+        rootinLapset.add(tavoitteet);
 
         PerusteenOsaViiteDto.Laaja rootNode = new PerusteenOsaViiteDto.Laaja();
         rootNode.setId(10L);
@@ -290,7 +306,7 @@ public class PerusteNavigationIT {
         return rootNode;
     }
 
-    private PerusteenOsaViiteDto.Laaja createLeafNode(String nimi, long id) {
+    private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(String nimi, long id) {
         TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
         tekstiKappale.setNimi(LokalisoituTekstiDto.of(nimi));
         tekstiKappale.setTunniste(PerusteenOsaTunniste.NORMAALI);
@@ -299,16 +315,26 @@ public class PerusteNavigationIT {
         node.setId(id);
         node.setLapset(new ArrayList<>());
         node.setPerusteenOsa(tekstiKappale);
+
         return node;
     }
 
-    private PerusteenOsaViiteDto.Laaja createNodeWithChildren(String nimi, long id) {
-        List<PerusteenOsaViiteDto.Laaja> lapset = new ArrayList<>();
-        lapset.add(createLeafNode("Arvoperusta", id + 1));
-        lapset.add(createLeafNode("Koulutuksen laajuus ja rakenne", id + 2));
+    private PerusteenOsaViiteDto.Laaja createKielitaitotasoLeafNode(String nimi, long id) {
+        KotoKielitaitotasoDto kielitaitotaso = new KotoKielitaitotasoDto();
+        kielitaitotaso.setNimi(LokalisoituTekstiDto.of(nimi));
+        kielitaitotaso.setTunniste(PerusteenOsaTunniste.NORMAALI);
 
-        PerusteenOsaViiteDto.Laaja node = createLeafNode(nimi, id);
-        node.setLapset(lapset);
+        PerusteenOsaViiteDto.Laaja node = new PerusteenOsaViiteDto.Laaja();
+        node.setId(id);
+        node.setLapset(new ArrayList<>());
+        node.setPerusteenOsa(kielitaitotaso);
+
+        return node;
+    }
+
+    private PerusteenOsaViiteDto.Laaja createNodeWithChildren(String nimi, long id, PerusteenOsaViiteDto.Laaja... lapset) {
+        PerusteenOsaViiteDto.Laaja node = createTekstiLeafNode(nimi, id);
+        node.setLapset(new ArrayList<>(Arrays.asList(lapset)));
 
         return node;
     }
