@@ -233,16 +233,11 @@ public class PerusteNavigationIT {
     }
 
     /**
-     * Testataan navigaation generointia kun rakenne on tämmöinen:
-     *  - Johdanto
-     *  - Koulutuksen järjestämisen lähtökohdat
-     *      - Arvoperusta
-     *      - Koulutuksen laajuus ja rakenne
-     *
-     *  Kaikkien nodejen pitäisi olla tekstikappaleita ja generoitua tyyppiksi "viite"
+     * Testataan navigaation generointia tekstikappaleille. Generoidaan itsenäisiä nodeja sekä
+     * node jolla on lapsia. Kaikkien tyypiksi pitäisi generoitua "viite".
      */
     @Test
-    public void testLinkkilistaNavigation() {
+    public void testLinkkilistaNavigationForTekstikappaleet() {
         NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
         NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
 
@@ -258,8 +253,28 @@ public class PerusteNavigationIT {
         NavigationNodeDto lahtokohdatNode = lapset.get(1);
         assertThat(lahtokohdatNode.getType()).isEqualTo(NavigationType.viite);
         assertThat(lahtokohdatNode.getId()).isEqualTo(30L);
+
+        List<NavigationNodeDto> lahtokohdatLapset = lahtokohdatNode.getChildren();
+
+        NavigationNodeDto arvoperustaNode = lahtokohdatLapset.get(0);
+        assertThat(arvoperustaNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(arvoperustaNode.getId()).isEqualTo(31L);
+
+        NavigationNodeDto laajuusNode = lahtokohdatLapset.get(1);
+        assertThat(laajuusNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(laajuusNode.getId()).isEqualTo(32L);
     }
 
+    /**
+     * Testidatan hierarkia:
+     *
+     * - juurinode (id 10)
+     *      - Johdanto (teksiKappale, id 20)
+     *      - Koulutuksen järjestämisen lähtökohdat (teksiKappale, id 30)
+     *          - Arvoperusta (teksiKappale, id 31)
+     *          - Koulutuksen laajuus ja rakenne (teksiKappale, id 32)
+     *
+     */
     private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
         PerusteenOsaViiteDto.Laaja johdanto = createLeafNode("Johdanto", 20L);
         PerusteenOsaViiteDto.Laaja lahtokohdat = createNodeWithChildren("Koulutuksen järjestämisen lähtökohdat", 30L);
