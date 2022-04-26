@@ -76,7 +76,6 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     @ApiModelProperty("Perusteen määräyksen päätöspäivämäärä")
     private Date paatospvm;
 
-    @ApiModelProperty(hidden = true)
     private Date luotu;
     @ApiModelProperty(hidden = true)
     private Date muokattu;
