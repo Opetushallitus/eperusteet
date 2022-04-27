@@ -10,11 +10,15 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,7 +40,7 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
     public NavigationNodeDto constructNavigation(PerusteenOsaViiteDto.Laaja sisalto) {
         PerusteenOsaDto.Laaja po = sisalto.getPerusteenOsa();
-        NavigationType type = getNavigationType(po);
+        NavigationType type = getNavigationType(po, sisalto.getLapset());
 
         NavigationNodeDto result = NavigationNodeDto
                 .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId())
@@ -48,7 +52,7 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
         return result;
     }
 
-    private NavigationType getNavigationType(PerusteenOsaDto.Laaja po) {
+    private NavigationType getNavigationType(PerusteenOsaDto.Laaja po, List<PerusteenOsaViiteDto.Laaja> lapset) {
         NavigationType type = NavigationType.viite;
         if (po == null) {
             return type;
@@ -56,6 +60,10 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
         if (isTekstikappaleLiite(po)) {
             return NavigationType.liite;
+        }
+
+        if (lapset.stream().anyMatch(this::isLinkkisivuType)) {
+            return NavigationType.linkkisivu;
         }
 
         if (!(po instanceof TekstiKappaleDto)) {
@@ -72,6 +80,20 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
     private boolean isTekstikappaleLiite(PerusteenOsaDto.Laaja po) {
         return po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite();
+    }
+
+    /**
+     * Jos Navigaationoden yksikin lapsi on tiettyä ennalta määritettyä tyyppiä,
+     * laitetaan parent noden tyypiksi linkkisivu.
+     */
+    private boolean isLinkkisivuType(PerusteenOsaViiteDto.Laaja lapsi) {
+        if (lapsi.getPerusteenOsa() == null) {
+            return false;
+        }
+
+        return lapsi.getPerusteenOsa() instanceof KotoKielitaitotasoDto ||
+               lapsi.getPerusteenOsa() instanceof KotoOpintoDto ||
+               lapsi.getPerusteenOsa() instanceof KotoLaajaAlainenOsaaminenDto;
     }
 
     @Override

@@ -239,7 +239,7 @@ public class PerusteNavigationIT {
      * node jolla on lapsia.
      */
     @Test
-    public void testLinkkilistaNavigationForTekstikappaleet() {
+    public void testTekstikappaleNavigationGeneration() {
         NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
         NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
 
@@ -272,13 +272,12 @@ public class PerusteNavigationIT {
     }
 
     /**
-     * Jos perusteenosa on tiettyä ennaltamääritettyä tyyppiä, tehdään parent nodesta tyyppiä linkkilista.
+     * Jos perusteenosa on tiettyä ennaltamääritettyä tyyppiä, tehdään parent nodesta tyyppiä linkkisivu.
      * Tämä siitä syystä että tietyille "hankalille" perusteenosille ei haluttu tehdä custom yhteenvetosivua, joten
      * alisivut päätettiin näyttää yhteenvetosivulla ainoastaan linkkeinä.
      */
     @Test
-    @Ignore
-    public void testNodeTypeIsLinkkiLista() {
+    public void testNodeTypeIsLinkkisivu() {
         NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
         NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
 
@@ -297,7 +296,7 @@ public class PerusteNavigationIT {
      *      - Koulutuksen järjestämisen lähtökohdat (tekstikappale, id 30)
      *          - Arvoperusta (tekstikappale, id 31)
      *          - Koulutuksen laajuus ja rakenne (muodostuminen, id 32)
-     *      - Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt (linkkilista, id 40)
+     *      - Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt (linkkisivu, id 40)
      *          - Kotoutumiskoulutuksen yleiset tavoitteet (tekstikappale, id 41)
      *          - Suomen kieli ja viestintätaidot (koto_kielitaitotaso, id 41)
      *      - Kielitaidon tasojen kuvausasteikko (liite, id 50)
