@@ -10,20 +10,29 @@ import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
+import fi.vm.sade.eperusteet.service.impl.PerusteServiceImpl;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderDefault;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;
+import fi.vm.sade.eperusteet.service.impl.navigationpublic.NavigationBuilderPublicLinkit;
 import fi.vm.sade.eperusteet.service.mapping.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -103,59 +112,6 @@ public class PerusteNavigationIT {
                 perusteDispatcher);
     }
 
-    @Test
-    public void testYksinkertainenNavigation() {
-        NavigationNodeDto navigationNodeDto = navigationBuilderDefault.buildNavigation(42L, "fi");
-        assertThat(navigationNodeDto).isNotNull();
-        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
-        assertThat(navigationNodeDto.getChildren().get(0))
-                .extracting(NavigationNodeDto::getId, NavigationNodeDto::getType)
-                .containsExactly(100L, NavigationType.viite);
-    }
-
-    @Test
-    public void testLops2019Navigaatio() {
-        NavigationNodeDto navigationNodeDto = navigationBuilderLops2019.buildNavigation(42L, "fi");
-        assertThat(navigationNodeDto).isNotNull();
-        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
-
-        assertThat(navigationNodeDto.getChildren())
-                .extracting("type", "id")
-                .containsExactly(
-                        tuple(NavigationType.viite, 100L),
-                        tuple(NavigationType.laajaalaiset, null),
-                        tuple(NavigationType.oppiaineet, null));
-
-        assertThat(navigationNodeDto.getChildren().get(1).getChildren())
-                .extracting("type", "id", "koodi.arvo")
-                .containsExactly(
-                        tuple(NavigationType.laajaalainen, 501L, "LO1"),
-                        tuple(NavigationType.laajaalainen, 500L, "LO2"));
-
-        NavigationNodeDto oppiaine = navigationNodeDto.getChildren().get(2).getChildren().get(0);
-        assertThat(oppiaine.getChildren().get(0).getType()).isEqualTo(NavigationType.oppimaarat);
-
-        assertThat(oppiaine)
-                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
-                .returns(101L, NavigationNodeDto::getId)
-                .returns("OA", n -> n.getKoodi().getArvo());
-
-        NavigationNodeDto oppimaara = oppiaine.getChildren().get(0).getChildren().get(0);
-        assertThat(oppimaara.getChildren().get(0).getType()).isEqualTo(NavigationType.moduulit);
-
-        assertThat(oppimaara)
-                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
-                .returns(102L, NavigationNodeDto::getId)
-                .returns("OM", n -> n.getKoodi().getArvo());
-
-        List<NavigationNodeDto> moduulit = oppimaara.getChildren().get(0).getChildren();
-        assertThat(moduulit)
-                .extracting("type", "id", "koodi.arvo")
-                .containsExactly(
-                        tuple(NavigationType.moduuli, 11L, "M1"),
-                        tuple(NavigationType.moduuli, 12L, "M2"));
-    }
-
     private Lops2019Sisalto sisaltoData() {
         Lops2019Sisalto sisalto = new Lops2019Sisalto();
         Lops2019Oppiaine oa = new Lops2019Oppiaine();
@@ -226,4 +182,203 @@ public class PerusteNavigationIT {
         return peruste;
     }
 
+    @Test
+    public void testYksinkertainenNavigation() {
+        NavigationNodeDto navigationNodeDto = navigationBuilderDefault.buildNavigation(42L, "fi");
+        assertThat(navigationNodeDto).isNotNull();
+        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
+        assertThat(navigationNodeDto.getChildren().get(0))
+                .extracting(NavigationNodeDto::getId, NavigationNodeDto::getType)
+                .containsExactly(100L, NavigationType.viite);
+    }
+
+    @Test
+    public void testLops2019Navigaatio() {
+        NavigationNodeDto navigationNodeDto = navigationBuilderLops2019.buildNavigation(42L, "fi");
+        assertThat(navigationNodeDto).isNotNull();
+        assertThat(navigationNodeDto.getType()).isEqualTo(NavigationType.root);
+
+        assertThat(navigationNodeDto.getChildren())
+                .extracting("type", "id")
+                .containsExactly(
+                        tuple(NavigationType.viite, 100L),
+                        tuple(NavigationType.laajaalaiset, null),
+                        tuple(NavigationType.oppiaineet, null));
+
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren())
+                .extracting("type", "id", "koodi.arvo")
+                .containsExactly(
+                        tuple(NavigationType.laajaalainen, 501L, "LO1"),
+                        tuple(NavigationType.laajaalainen, 500L, "LO2"));
+
+        NavigationNodeDto oppiaine = navigationNodeDto.getChildren().get(2).getChildren().get(0);
+        assertThat(oppiaine.getChildren().get(0).getType()).isEqualTo(NavigationType.oppimaarat);
+
+        assertThat(oppiaine)
+                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
+                .returns(101L, NavigationNodeDto::getId)
+                .returns("OA", n -> n.getKoodi().getArvo());
+
+        NavigationNodeDto oppimaara = oppiaine.getChildren().get(0).getChildren().get(0);
+        assertThat(oppimaara.getChildren().get(0).getType()).isEqualTo(NavigationType.moduulit);
+
+        assertThat(oppimaara)
+                .returns(NavigationType.oppiaine, NavigationNodeDto::getType)
+                .returns(102L, NavigationNodeDto::getId)
+                .returns("OM", n -> n.getKoodi().getArvo());
+
+        List<NavigationNodeDto> moduulit = oppimaara.getChildren().get(0).getChildren();
+        assertThat(moduulit)
+                .extracting("type", "id", "koodi.arvo")
+                .containsExactly(
+                        tuple(NavigationType.moduuli, 11L, "M1"),
+                        tuple(NavigationType.moduuli, 12L, "M2"));
+    }
+
+    /**
+     * Testataan navigaation generointia tekstikappaleille. Generoidaan itsenäisiä nodeja sekä
+     * node jolla on lapsia.
+     */
+    @Test
+    public void testTekstikappaleNavigationGeneration() {
+        NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
+        NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
+
+        assertThat(result.getType()).isEqualTo(NavigationType.viite);
+        assertThat(result.getId()).isEqualTo(10L);
+
+        List<NavigationNodeDto> lapset = result.getChildren();
+
+        NavigationNodeDto johdantoNode = lapset.get(0);
+        assertThat(johdantoNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(johdantoNode.getId()).isEqualTo(20L);
+
+        NavigationNodeDto lahtokohdatNode = lapset.get(1);
+        assertThat(lahtokohdatNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(lahtokohdatNode.getId()).isEqualTo(30L);
+
+        List<NavigationNodeDto> lahtokohdatLapset = lahtokohdatNode.getChildren();
+
+        NavigationNodeDto arvoperustaNode = lahtokohdatLapset.get(0);
+        assertThat(arvoperustaNode.getType()).isEqualTo(NavigationType.viite);
+        assertThat(arvoperustaNode.getId()).isEqualTo(31L);
+
+        NavigationNodeDto laajuusNode = lahtokohdatLapset.get(1);
+        assertThat(laajuusNode.getType()).isEqualTo(NavigationType.muodostuminen);
+        assertThat(laajuusNode.getId()).isEqualTo(32L);
+
+        NavigationNodeDto kuvausasteikkoLiiteNode = lapset.get(3);
+        assertThat(kuvausasteikkoLiiteNode.getType()).isEqualTo(NavigationType.liite);
+        assertThat(kuvausasteikkoLiiteNode.getId()).isEqualTo(50L);
+    }
+
+    /**
+     * Jos perusteenosa on tiettyä ennaltamääritettyä tyyppiä, tehdään parent nodesta tyyppiä linkkisivu.
+     * Tämä siitä syystä että tietyille "hankalille" perusteenosille ei haluttu tehdä custom yhteenvetosivua, joten
+     * alisivut päätettiin näyttää yhteenvetosivulla ainoastaan linkkeinä.
+     */
+    @Test
+    @Ignore
+    public void testNodeTypeIsLinkkisivu() {
+        NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
+        NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
+
+        List<NavigationNodeDto> lapset = result.getChildren();
+
+        NavigationNodeDto tavoitteetNode = lapset.get(2);
+        assertThat(tavoitteetNode.getId()).isEqualTo(40L);
+        assertThat(tavoitteetNode.getType()).isEqualTo(NavigationType.linkkisivu);
+    }
+
+    /**
+     * Testidatan hierarkia:
+     *
+     * - juurinode (id 10)
+     *      - Johdanto (tekstikappale, id 20)
+     *      - Koulutuksen järjestämisen lähtökohdat (tekstikappale, id 30)
+     *          - Arvoperusta (tekstikappale, id 31)
+     *          - Koulutuksen laajuus ja rakenne (muodostuminen, id 32)
+     *      - Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt (linkkisivu, id 40)
+     *          - Kotoutumiskoulutuksen yleiset tavoitteet (tekstikappale, id 41)
+     *          - Suomen kieli ja viestintätaidot (koto_kielitaitotaso, id 41)
+     *      - Kielitaidon tasojen kuvausasteikko (liite, id 50)
+     */
+    private PerusteenOsaViiteDto.Laaja createPerusteeOsaViiteData() {
+        PerusteenOsaViiteDto.Laaja johdanto = createTekstiLeafNode("Johdanto", 20L);
+        PerusteenOsaViiteDto.Laaja lahtokohdat = createNodeWithChildren(
+                "Koulutuksen järjestämisen lähtökohdat",
+                30L,
+                createTekstiLeafNode("Arvoperusta", 31L),
+                createMuodostuminenLeafNode("Koulutuksen laajuus ja rakenne", 32L));
+
+        PerusteenOsaViiteDto.Laaja tavoitteet = createNodeWithChildren(
+                "Kotoutumiskoulutuksen tavoitteet ja keskeiset sisällöt",
+                40L,
+                createTekstiLeafNode("Kotoutumiskoulutuksen yleiset tavoitteet", 41L),
+                createKielitaitotasoLeafNode("Suomen kieli ja viestintätaidot", 42L));
+
+        PerusteenOsaViiteDto.Laaja kuvausasteikkoLiite = createTekstiLiiteLeafNode("Kielitaidon tasojen kuvausasteikko", 50L);
+
+        ArrayList<PerusteenOsaViiteDto.Laaja> rootinLapset = new ArrayList<>();
+        rootinLapset.add(johdanto);
+        rootinLapset.add(lahtokohdat);
+        rootinLapset.add(tavoitteet);
+        rootinLapset.add(kuvausasteikkoLiite);
+
+        PerusteenOsaViiteDto.Laaja rootNode = new PerusteenOsaViiteDto.Laaja();
+        rootNode.setId(10L);
+        rootNode.setLapset(rootinLapset);
+
+        return rootNode;
+    }
+
+    private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(String nimi, long id) {
+        return createTekstiLeafNode(nimi, id, false, PerusteenOsaTunniste.NORMAALI);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createTekstiLiiteLeafNode(String nimi, long id) {
+        return createTekstiLeafNode(nimi, id, true, PerusteenOsaTunniste.NORMAALI);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createMuodostuminenLeafNode(String nimi, long id) {
+        return createTekstiLeafNode(nimi, id, false, PerusteenOsaTunniste.RAKENNE);
+    }
+
+    private PerusteenOsaViiteDto.Laaja createTekstiLeafNode(
+            String nimi,
+            long id,
+            boolean hasLiite,
+            PerusteenOsaTunniste perusteenOsaTunniste) {
+        TekstiKappaleDto tekstiKappale = new TekstiKappaleDto();
+        tekstiKappale.setNimi(LokalisoituTekstiDto.of(nimi));
+        tekstiKappale.setTunniste(perusteenOsaTunniste);
+        tekstiKappale.setLiite(hasLiite);
+
+        PerusteenOsaViiteDto.Laaja node = new PerusteenOsaViiteDto.Laaja();
+        node.setId(id);
+        node.setLapset(new ArrayList<>());
+        node.setPerusteenOsa(tekstiKappale);
+
+        return node;
+    }
+
+    private PerusteenOsaViiteDto.Laaja createKielitaitotasoLeafNode(String nimi, long id) {
+        KotoKielitaitotasoDto kielitaitotaso = new KotoKielitaitotasoDto();
+        kielitaitotaso.setNimi(LokalisoituTekstiDto.of(nimi));
+        kielitaitotaso.setTunniste(PerusteenOsaTunniste.NORMAALI);
+
+        PerusteenOsaViiteDto.Laaja node = new PerusteenOsaViiteDto.Laaja();
+        node.setId(id);
+        node.setLapset(new ArrayList<>());
+        node.setPerusteenOsa(kielitaitotaso);
+
+        return node;
+    }
+
+    private PerusteenOsaViiteDto.Laaja createNodeWithChildren(String nimi, long id, PerusteenOsaViiteDto.Laaja... lapset) {
+        PerusteenOsaViiteDto.Laaja node = createTekstiLeafNode(nimi, id);
+        node.setLapset(new ArrayList<>(Arrays.asList(lapset)));
+
+        return node;
+    }
 }
