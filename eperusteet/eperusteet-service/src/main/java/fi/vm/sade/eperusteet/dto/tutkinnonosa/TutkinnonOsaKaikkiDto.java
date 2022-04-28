@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
+import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoKaikkiDto;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -62,7 +63,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 
     @ApiModelProperty("Yleinen perusteen ulkopuolella käytetty arviointiasteikko. Käytetään kaikissa uusissa perusteissa.")
-    private GeneerinenArviointiasteikkoDto geneerinenArviointiasteikko;
+    private GeneerinenArviointiasteikkoKaikkiDto geneerinenArviointiasteikko;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModelProperty("Tutkinnon osan lisätarkennukset")
