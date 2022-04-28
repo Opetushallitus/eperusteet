@@ -62,10 +62,9 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
             return NavigationType.liite;
         }
 
-        //TODO EP-3083: kunhan frontti tukee linkkisivua, tämän voi ottaa käyttöön
-//        if (lapset.stream().anyMatch(this::isLinkkisivuType)) {
-//            return NavigationType.linkkisivu;
-//        }
+        if (lapset.stream().anyMatch(this::isLinkkisivuType)) {
+            return NavigationType.linkkisivu;
+        }
 
         if (!(po instanceof TekstiKappaleDto)) {
             return po.getNavigationType();

@@ -278,7 +278,6 @@ public class PerusteNavigationIT {
      * alisivut päätettiin näyttää yhteenvetosivulla ainoastaan linkkeinä.
      */
     @Test
-    @Ignore
     public void testNodeTypeIsLinkkisivu() {
         NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
         NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
