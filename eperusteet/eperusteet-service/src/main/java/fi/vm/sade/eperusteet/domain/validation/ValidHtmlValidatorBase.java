@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.domain.validation;
 
+import com.google.common.base.CharMatcher;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -37,7 +38,7 @@ public abstract class ValidHtmlValidatorBase {
 	protected boolean isValid(TekstiPalanen palanen) {
 		if (palanen != null && palanen.getTeksti() != null && !palanen.getTeksti().isEmpty()) {
 			for (Kieli kieli : palanen.getTeksti().keySet()) {
-				if (!Jsoup.isValid(palanen.getTeksti().get(kieli), whitelist) || !isValidUrls(palanen.getTeksti().get(kieli))) {
+				if (!Jsoup.isValid(palanen.getTeksti().get(kieli), whitelist)) {
 					return false;
 				}
 			}
@@ -45,13 +46,15 @@ public abstract class ValidHtmlValidatorBase {
 		return true;
 	}
 
+	@Deprecated
 	private boolean isValidUrls(String teksti) {
 		Document doc = Jsoup.parse(teksti);
 		Elements links = doc.select("a[href]");
 		return links.stream().allMatch(link ->
 				!link.attr("routenode").isEmpty()
-						|| urlValidator.isValid(link.attr("abs:href"))
-						|| emailValidator.isValid(link.attr("href").replace("mailto:", "")));
+						|| urlValidator.isValid(CharMatcher.whitespace().trimFrom(link.attr("abs:href")))
+						|| emailValidator.isValid(CharMatcher.whitespace().trimFrom(link.attr("href").replace("mailto:", "")))
+		);
 	}
 
 }
