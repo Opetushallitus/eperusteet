@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -37,7 +38,7 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
     @Override
     public Set<KoulutustyyppiToteutus> getTyypit() {
-        return Sets.newHashSet(KoulutustyyppiToteutus.VAPAASIVISTYSTYO);
+        return Collections.emptySet();
     }
 
     public NavigationNodeDto constructNavigation(PerusteenOsaViiteDto.Laaja sisalto) {
