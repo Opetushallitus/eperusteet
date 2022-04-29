@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GeneerisenArvioinninOsaamistasonKriteeriKaikkiDto {
     private OsaamistasoDto osaamistaso;
     private List<LokalisoituTekstiDto> kriteerit = new ArrayList<>();

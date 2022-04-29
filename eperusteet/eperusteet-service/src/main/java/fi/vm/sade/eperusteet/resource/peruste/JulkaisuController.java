@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,14 @@ public class JulkaisuController {
             @PathVariable("projektiId") final long projektiId,
             @PathVariable("revision") final int revision) {
         return julkaisutService.aktivoiJulkaisu(projektiId, revision);
+    }
+
+    @RequestMapping(method = GET, value = "/{perusteId}/viimeisinjulkaisuaika")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Date viimeisinJulkaisuAika(
+            @PathVariable("perusteId") final long perusteId) {
+        return julkaisutService.viimeisinPerusteenJulkaisuaika(perusteId);
     }
 
 }

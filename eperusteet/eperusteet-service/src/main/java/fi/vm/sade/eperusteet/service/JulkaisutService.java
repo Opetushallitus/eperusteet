@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.method.P;
@@ -23,4 +24,6 @@ public interface JulkaisutService {
             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti,
             Integer sivu, Integer sivukoko);
 
+    @PreAuthorize("permitAll()")
+    Date viimeisinPerusteenJulkaisuaika(Long perusteId);
 }
