@@ -10,9 +10,11 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
+import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +95,9 @@ public class NavigationBuilderPublicLinkit implements NavigationBuilderPublic {
 
         return lapsi.getPerusteenOsa() instanceof KotoKielitaitotasoDto ||
                lapsi.getPerusteenOsa() instanceof KotoOpintoDto ||
-               lapsi.getPerusteenOsa() instanceof KotoLaajaAlainenOsaaminenDto;
+               lapsi.getPerusteenOsa() instanceof KotoLaajaAlainenOsaaminenDto ||
+               lapsi.getPerusteenOsa() instanceof OpintokokonaisuusDto ||
+               lapsi.getPerusteenOsa() instanceof KoulutuksenOsaDto;
     }
 
     @Override
