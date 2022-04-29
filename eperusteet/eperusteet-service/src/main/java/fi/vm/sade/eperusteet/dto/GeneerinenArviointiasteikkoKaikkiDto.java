@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GeneerinenArviointiasteikkoKaikkiDto {
     private Long id;
     private LokalisoituTekstiDto nimi;

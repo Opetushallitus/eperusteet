@@ -44,9 +44,11 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -278,6 +280,21 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                         throw new RuntimeException(e);
                     }
                 });
+    }
+
+    @Override
+    public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
+        JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(perusteId);
+        if (viimeisinJulkaisu != null) {
+            return viimeisinJulkaisu.getLuotu();
+        } else {
+            Peruste peruste = perusteRepository.findOne(perusteId);
+            if (peruste != null && peruste.getTila().equals(Tila.JULKAISTU)) {
+                return peruste.getGlobalVersion().getAikaleima();
+            }
+        }
+
+        return null;
     }
 
     private void kooditaValiaikaisetKoodit(Peruste peruste) {
