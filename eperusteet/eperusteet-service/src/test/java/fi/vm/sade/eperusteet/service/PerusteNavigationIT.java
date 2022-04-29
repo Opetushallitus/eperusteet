@@ -22,10 +22,9 @@ import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.service.impl.PerusteServiceImpl;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderDefault;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;
-import fi.vm.sade.eperusteet.service.impl.navigationpublic.NavigationBuilderPublicLinkit;
+import fi.vm.sade.eperusteet.service.impl.navigationpublic.NavigationBuilderPublicDefault;
 import fi.vm.sade.eperusteet.service.mapping.*;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
@@ -241,7 +240,7 @@ public class PerusteNavigationIT {
      */
     @Test
     public void testTekstikappaleNavigationGeneration() {
-        NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
+        NavigationBuilderPublicDefault navigationBuilder = new NavigationBuilderPublicDefault(new PerusteServiceImpl());
         NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
 
         assertThat(result.getType()).isEqualTo(NavigationType.viite);
@@ -279,7 +278,7 @@ public class PerusteNavigationIT {
      */
     @Test
     public void testNodeTypeIsLinkkisivu() {
-        NavigationBuilderPublicLinkit navigationBuilder = new NavigationBuilderPublicLinkit(new PerusteServiceImpl());
+        NavigationBuilderPublicDefault navigationBuilder = new NavigationBuilderPublicDefault(new PerusteServiceImpl());
         NavigationNodeDto result = navigationBuilder.constructNavigation(createPerusteeOsaViiteData());
 
         List<NavigationNodeDto> lapset = result.getChildren();
