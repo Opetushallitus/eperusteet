@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -27,4 +28,13 @@ public class GeneerinenArviointiasteikkoKaikkiDto {
     private boolean valittavissa;
     private Set<KoulutusTyyppi> koulutustyypit;
     private Set<GeneerisenArvioinninOsaamistasonKriteeriKaikkiDto> osaamistasonKriteerit = new HashSet<>();
+
+    @JsonProperty("_arviointiAsteikko")
+    public Reference arviointiasteikkoRef() {
+        if (arviointiAsteikko != null) {
+            return Reference.of(arviointiAsteikko.getId());
+        }
+
+        return null;
+    }
 }
