@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.tuva.TuvaLaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.vst.KotoKielitaitotaso;
+import fi.vm.sade.eperusteet.domain.vst.KotoLaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
 import fi.vm.sade.eperusteet.domain.vst.KotoSisalto;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
@@ -697,6 +698,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             } else if (po instanceof KotoOpinto) {
                 KotoOpinto kotoOpinto = (KotoOpinto) po;
                 addKotoSisalto(docBase, kotoOpinto, po, lapsi);
+            } else if (po instanceof KotoLaajaAlainenOsaaminen) {
+                KotoLaajaAlainenOsaaminen kotoLao = (KotoLaajaAlainenOsaaminen) po;
+                addKotoLaajaAlainenOsaaminen(docBase, kotoLao, po, lapsi);
             } else if (po instanceof TekstiKappale) {
                 TekstiKappale tk = (TekstiKappale) po;
                 if (!tk.isLiite()) {
@@ -1024,7 +1028,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                                 PerusteenOsaViite lapsi) {
 
         KoodiDto nimiKoodi = mapper.map(kotoSisalto.getNimiKoodi(), KoodiDto.class);
-        addHeader(docBase, getTextString(docBase, nimiKoodi.getNimi()));
+        if (nimiKoodi != null) {
+            addHeader(docBase, getTextString(docBase, nimiKoodi.getNimi()));
+        } else {
+            addHeader(docBase, messages.translate("nimeton-sisalto", docBase.getKieli()));
+        }
 
         String kuvaus = getTextString(docBase, kotoSisalto.getKuvaus());
         if (StringUtils.isNotEmpty(kuvaus)) {
@@ -1070,6 +1078,33 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addKotoH6Teksti(suullinenVastaanottaminen, "docgen.suullinen_vastaanottaminen.title", docBase);
             addKotoH6Teksti(suullinenTuottaminen, "docgen.suullinen_tuottaminen.title", docBase);
             addKotoH6Teksti(vuorovaikutusJaMeditaatio, "docgen.vuorovaikutus_ja_meditaatio.title", docBase);
+        });
+
+        docBase.getGenerator().increaseDepth();
+        addPerusteenOsat(docBase, lapsi);
+        docBase.getGenerator().decreaseDepth();
+        docBase.getGenerator().increaseNumber();
+    }
+
+    private void addKotoLaajaAlainenOsaaminen(DokumenttiPeruste docBase, KotoLaajaAlainenOsaaminen kotoLao, PerusteenOsa po,
+                                              PerusteenOsaViite lapsi) {
+
+        addHeader(docBase, getTextString(docBase, kotoLao.getNimi()));
+
+        String kuvaus = getTextString(docBase, kotoLao.getYleiskuvaus());
+        if (StringUtils.isNotEmpty(kuvaus)) {
+            addTeksti(docBase, kuvaus, "div");
+        }
+
+        kotoLao.getOsaamisAlueet().forEach(osaamisenAlue -> {
+
+            KoodiDto osaamisalueNimi = mapper.map(osaamisenAlue.getKoodi(), KoodiDto.class);
+            addTeksti(docBase, getTextString(docBase, osaamisalueNimi.getNimi()), "h5");
+
+            String osaamisalueKuvaus = getTextString(docBase, osaamisenAlue.getKuvaus());
+            if (StringUtils.isNotEmpty(osaamisalueKuvaus)) {
+                addTeksti(docBase, osaamisalueKuvaus, "div");
+            }
         });
 
         docBase.getGenerator().increaseDepth();
