@@ -23,12 +23,10 @@ public class GeneerisenArvioinninOsaamistasonKriteeriKaikkiDto {
     private OsaamistasoDto osaamistaso;
     private List<LokalisoituTekstiDto> kriteerit = new ArrayList<>();
 
+    private Long _osaamistaso;
+
     @JsonProperty("_osaamistaso")
     public Reference osaamistasoRef() {
-        if (osaamistaso != null) {
-            return Reference.of(osaamistaso.getId());
-        }
-        
-        return null;
+        return Reference.of(_osaamistaso);
     }
 }
