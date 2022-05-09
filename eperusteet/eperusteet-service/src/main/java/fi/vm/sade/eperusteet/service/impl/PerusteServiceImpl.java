@@ -2031,15 +2031,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 nimenLokalisointi = "docgen.tutkinnon_muodostuminen.title";
             }
 
-            TekstiKappale tk = new TekstiKappale();
-            HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, messages.translate(nimenLokalisointi, Kieli.FI));
-            tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-            tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
-            PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
-            pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
-            pov.setVanhempi(sisalto);
-            sisalto.getLapset().add(pov);
+            lisaaLaajaAlainenOsaaminenPerusopetukselle(sisalto, nimenLokalisointi, PerusteenOsaTunniste.RAKENNE);
         }
     }
 
