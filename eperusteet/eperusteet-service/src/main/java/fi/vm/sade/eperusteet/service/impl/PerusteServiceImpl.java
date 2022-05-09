@@ -2004,13 +2004,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getPerusopetuksenPerusteenSisalto().getSisalto());
-        } else if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+        if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
                 || AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
                 || LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
                 && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
-            // noop
+            return;
+        }
+
+        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getPerusopetuksenPerusteenSisalto().getSisalto());
         } else if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getAipeOpetuksenPerusteenSisalto().getSisalto());
         } else {
