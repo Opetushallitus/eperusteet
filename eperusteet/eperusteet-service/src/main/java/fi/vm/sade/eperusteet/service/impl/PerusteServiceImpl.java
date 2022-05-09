@@ -2018,7 +2018,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else {
             for (Suoritustapa st : peruste.getSuoritustavat()) {
                 PerusteenOsaViite sisalto = st.getSisalto();
-                List<PerusteenOsaViite> lapset = sisalto.getLapset();
                 TekstiKappale tk = new TekstiKappale();
                 HashMap<Kieli, String> hm = new HashMap<>();
                 if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
@@ -2032,7 +2031,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
                 pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
                 pov.setVanhempi(sisalto);
-                lapset.add(pov);
+                sisalto.getLapset().add(pov);
             }
         }
     }
