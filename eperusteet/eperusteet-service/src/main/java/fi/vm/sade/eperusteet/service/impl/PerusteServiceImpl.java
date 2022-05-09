@@ -2012,11 +2012,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), "docgen.laaja_alaiset_osaamiset.title", PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
+            lisaaKovakoodattuPerusteenOsa(
+                    peruste.getPerusopetuksenPerusteenSisalto().getSisalto(),
+                    "docgen.laaja_alaiset_osaamiset.title",
+                    PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             return;
         }
+
         if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(), "docgen.laaja_alaiset_osaamiset.title", PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
+            lisaaKovakoodattuPerusteenOsa(
+                    peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(),
+                    "docgen.laaja_alaiset_osaamiset.title",
+                    PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             return;
         }
 
@@ -2031,11 +2038,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 nimenLokalisointi = "docgen.tutkinnon_muodostuminen.title";
             }
 
-            lisaaLaajaAlainenOsaaminenPerusopetukselle(sisalto, nimenLokalisointi, PerusteenOsaTunniste.RAKENNE);
+            lisaaKovakoodattuPerusteenOsa(sisalto, nimenLokalisointi, PerusteenOsaTunniste.RAKENNE);
         }
     }
 
-    private void lisaaLaajaAlainenOsaaminenPerusopetukselle(PerusteenOsaViite sisalto, String nimenLokalisointi, PerusteenOsaTunniste tunniste) {
+    private void lisaaKovakoodattuPerusteenOsa(
+            PerusteenOsaViite sisalto,
+            String nimenLokalisointi,
+            PerusteenOsaTunniste tunniste) {
         TekstiKappale tk = new TekstiKappale();
         HashMap<Kieli, String> hm = new HashMap<>();
         hm.put(Kieli.FI, messages.translate(nimenLokalisointi, Kieli.FI));
