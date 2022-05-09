@@ -2012,11 +2012,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getPerusopetuksenPerusteenSisalto().getSisalto());
+            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getPerusopetuksenPerusteenSisalto().getSisalto(), "docgen.laaja_alaiset_osaamiset.title", PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             return;
         }
         if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getAipeOpetuksenPerusteenSisalto().getSisalto());
+            lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(), "docgen.laaja_alaiset_osaamiset.title", PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
             return;
         }
 
@@ -2043,12 +2043,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    private void lisaaLaajaAlainenOsaaminenPerusopetukselle(PerusteenOsaViite sisalto) {
+    private void lisaaLaajaAlainenOsaaminenPerusopetukselle(PerusteenOsaViite sisalto, String nimenLokalisointi, PerusteenOsaTunniste tunniste) {
         TekstiKappale tk = new TekstiKappale();
         HashMap<Kieli, String> hm = new HashMap<>();
-        hm.put(Kieli.FI, messages.translate("docgen.laaja_alaiset_osaamiset.title", Kieli.FI));
+        hm.put(Kieli.FI, messages.translate(nimenLokalisointi, Kieli.FI));
         tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-        tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
+        tk.setTunniste(tunniste);
         PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
         pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
         pov.setVanhempi(sisalto);
