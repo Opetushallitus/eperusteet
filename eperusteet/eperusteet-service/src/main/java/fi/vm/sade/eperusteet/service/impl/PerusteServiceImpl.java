@@ -2013,26 +2013,29 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getPerusopetuksenPerusteenSisalto().getSisalto());
-        } else if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+            return;
+        }
+        if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             lisaaLaajaAlainenOsaaminenPerusopetukselle(peruste.getAipeOpetuksenPerusteenSisalto().getSisalto());
-        } else {
-            for (Suoritustapa st : peruste.getSuoritustavat()) {
-                PerusteenOsaViite sisalto = st.getSisalto();
-                TekstiKappale tk = new TekstiKappale();
-                HashMap<Kieli, String> hm = new HashMap<>();
-                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
-                        || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
-                    hm.put(Kieli.FI, messages.translate("docgen.koulutuksen_muodostuminen.title", Kieli.FI));
-                } else {
-                    hm.put(Kieli.FI, messages.translate("docgen.tutkinnon_muodostuminen.title", Kieli.FI));
-                }
-                tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-                tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
-                PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
-                pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
-                pov.setVanhempi(sisalto);
-                sisalto.getLapset().add(pov);
+            return;
+        }
+
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            PerusteenOsaViite sisalto = st.getSisalto();
+            TekstiKappale tk = new TekstiKappale();
+            HashMap<Kieli, String> hm = new HashMap<>();
+            if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
+                    || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
+                hm.put(Kieli.FI, messages.translate("docgen.koulutuksen_muodostuminen.title", Kieli.FI));
+            } else {
+                hm.put(Kieli.FI, messages.translate("docgen.tutkinnon_muodostuminen.title", Kieli.FI));
             }
+            tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
+            tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
+            PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+            pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
+            pov.setVanhempi(sisalto);
+            sisalto.getLapset().add(pov);
         }
     }
 
