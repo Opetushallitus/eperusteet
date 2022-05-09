@@ -2033,7 +2033,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
                     || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
                 nimenLokalisointi = "docgen.koulutuksen_muodostuminen.title";
-
             } else {
                 nimenLokalisointi = "docgen.tutkinnon_muodostuminen.title";
             }
