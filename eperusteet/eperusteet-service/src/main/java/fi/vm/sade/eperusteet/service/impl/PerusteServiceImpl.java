@@ -2004,54 +2004,57 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            PerusteenOsaViite sisalto = peruste.getPerusopetuksenPerusteenSisalto().getSisalto();
-            TekstiKappale tk = new TekstiKappale();
-            HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, messages.translate("docgen.laaja_alaiset_osaamiset.title", Kieli.FI));
-            tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-            tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
-            PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
-            pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
-            pov.setVanhempi(sisalto);
-            sisalto.getLapset().add(pov);
-        } else if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+        if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
                 || AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
                 || LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
                 && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
-            // noop
+            return;
         }
-        else if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            PerusteenOsaViite sisalto = peruste.getAipeOpetuksenPerusteenSisalto().getSisalto();
-            TekstiKappale tk = new TekstiKappale();
-            HashMap<Kieli, String> hm = new HashMap<>();
-            hm.put(Kieli.FI, messages.translate("docgen.laaja_alaiset_osaamiset.title", Kieli.FI));
-            tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-            tk.setTunniste(PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
-            PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
-            pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
-            pov.setVanhempi(sisalto);
-            sisalto.getLapset().add(pov);
-        } else {
-            for (Suoritustapa st : peruste.getSuoritustavat()) {
-                PerusteenOsaViite sisalto = st.getSisalto();
-                List<PerusteenOsaViite> lapset = sisalto.getLapset();
-                TekstiKappale tk = new TekstiKappale();
-                HashMap<Kieli, String> hm = new HashMap<>();
-                if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
-                        || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
-                    hm.put(Kieli.FI, messages.translate("docgen.koulutuksen_muodostuminen.title", Kieli.FI));
-                } else {
-                    hm.put(Kieli.FI, messages.translate("docgen.tutkinnon_muodostuminen.title", Kieli.FI));
-                }
-                tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
-                tk.setTunniste(PerusteenOsaTunniste.RAKENNE);
-                PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
-                pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
-                pov.setVanhempi(sisalto);
-                lapset.add(pov);
+
+        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+            lisaaKovakoodattuPerusteenOsa(
+                    peruste.getPerusopetuksenPerusteenSisalto().getSisalto(),
+                    "docgen.laaja_alaiset_osaamiset.title",
+                    PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
+            return;
+        }
+
+        if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+            lisaaKovakoodattuPerusteenOsa(
+                    peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(),
+                    "docgen.laaja_alaiset_osaamiset.title",
+                    PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
+            return;
+        }
+
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            PerusteenOsaViite sisalto = st.getSisalto();
+            String nimenLokalisointi;
+            if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.VALMA)
+                    || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.TELMA)) {
+                nimenLokalisointi = "docgen.koulutuksen_muodostuminen.title";
+            } else {
+                nimenLokalisointi = "docgen.tutkinnon_muodostuminen.title";
             }
+
+            lisaaKovakoodattuPerusteenOsa(sisalto, nimenLokalisointi, PerusteenOsaTunniste.RAKENNE);
         }
+    }
+
+    private void lisaaKovakoodattuPerusteenOsa(
+            PerusteenOsaViite sisalto,
+            String nimenLokalisointi,
+            PerusteenOsaTunniste tunniste) {
+        TekstiKappale tk = new TekstiKappale();
+        HashMap<Kieli, String> hm = new HashMap<>();
+        hm.put(Kieli.FI, messages.translate(nimenLokalisointi, Kieli.FI));
+        hm.put(Kieli.SV, messages.translate(nimenLokalisointi, Kieli.SV));
+        tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
+        tk.setTunniste(tunniste);
+        PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
+        pov.setPerusteenOsa(perusteenOsaRepository.save(tk));
+        pov.setVanhempi(sisalto);
+        sisalto.getLapset().add(pov);
     }
 
     @Override
