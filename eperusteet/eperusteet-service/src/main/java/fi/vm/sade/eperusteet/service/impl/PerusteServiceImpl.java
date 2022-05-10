@@ -2048,6 +2048,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         TekstiKappale tk = new TekstiKappale();
         HashMap<Kieli, String> hm = new HashMap<>();
         hm.put(Kieli.FI, messages.translate(nimenLokalisointi, Kieli.FI));
+        hm.put(Kieli.SV, messages.translate(nimenLokalisointi, Kieli.SV));
         tk.setNimi(tekstiPalanenRepository.save(TekstiPalanen.of(hm)));
         tk.setTunniste(tunniste);
         PerusteenOsaViite pov = perusteenOsaViiteRepo.save(new PerusteenOsaViite());
