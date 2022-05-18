@@ -26,7 +26,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-TODO-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Build with Maven
         env:
@@ -34,9 +34,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           set -euo pipefail
+          git clone --recurse-submodules --depth 1 master https://github.com/Opetushallitus/eperusteet-ui.git
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          mvn --batch-mode package --file eperusteet/pom.xml
+          ls ${{ github.workspace }}
+#          mvn clean --batch-mode package --file eperusteet/pom.xml
 
       - name: Cache build results
         uses: actions/cache@v3
