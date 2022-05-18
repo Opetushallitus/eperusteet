@@ -72,30 +72,30 @@ jobs:
           path: ci-tools
           key: ${{ github.sha }}
 
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
+#  Explore-GitHub-Actions:
+#    runs-on: ubuntu-latest
+#    steps:
 #      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
 #      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
 #      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - name: Dump GitHub context
-        id: github_context_step
-        run: echo '${{ toJSON(github) }}'
-      - name: Dump job context
-        run: echo '${{ toJSON(job) }}'
-      - name: Dump steps context
-        run: echo '${{ toJSON(steps) }}'
-      - name: Dump runner context
-        run: echo '${{ toJSON(runner) }}'
-      - name: Dump env context
-        run: echo '${{ toJSON(env) }}'
-      - name: Dump secretit
-        run: echo '${{ toJSON(secrets) }}'
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+#      - name: Check out repository code
+#        uses: actions/checkout@v3
+#      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+#      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+#      - name: List files in the repository
+#        run: |
+#          ls ${{ github.workspace }}
+#      - name: Dump GitHub context
+#        id: github_context_step
+#        run: echo '${{ toJSON(github) }}'
+#      - name: Dump job context
+#        run: echo '${{ toJSON(job) }}'
+#      - name: Dump steps context
+#        run: echo '${{ toJSON(steps) }}'
+#      - name: Dump runner context
+#        run: echo '${{ toJSON(runner) }}'
+#      - name: Dump env context
+#        run: echo '${{ toJSON(env) }}'
+#      - name: Dump secretit
+#        run: echo '${{ toJSON(secrets) }}'
+#      - run: echo "🍏 This job's status is ${{ job.status }}."
