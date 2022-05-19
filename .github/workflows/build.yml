@@ -70,9 +70,12 @@ jobs:
           yarn gen:api:eperusteet
           rm -rf node_modules
           cd ../..
+          echo "----------eperusteet-ui:n viimeisimmäm commitin sha----------:
           git rev-parse HEAD
           yarn run build
           cd ..
+          echo "mentiin takaisin juureen--------------"
+          ls
           mvn clean install --batch-mode
           
 #          echo "mentiin takaisin juureen--------------"
