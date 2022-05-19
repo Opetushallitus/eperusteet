@@ -80,17 +80,16 @@ jobs:
           echo "siirryttiin eteenpäin--------------"
           ls
           mvn clean install --batch-mode
+          mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
+          mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
+          cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+          cp -vr src/main/resources/tomcat $DOCKER_BUILD_DIR/config/
+          cd ..
+          export BASE_IMAGE="baseimage-war-tomcat8-openjdk8:master"
+          ./ci-tools/common/pull-image.sh
+          ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
+#          ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
           
-#          echo "mentiin takaisin juureen--------------"
-#          ls ${{ github.workspace }}
-#          cd ${ARTIFACT_NAME}
-#          echo "siirryttiin eteenpäin--------------"
-#          ls
-#          cd ..
-#          echo "siirryttiin takaisin--------------"
-#          ls
-#
-
       - name: Cache build results
         uses: actions/cache@v3
         id: restore-build
