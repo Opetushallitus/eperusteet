@@ -50,6 +50,9 @@ jobs:
           ls ${{ github.workspace }}
           cd eperusteet
           ls
+          cd ..
+          echo "siirryttiin takaisin"
+          ls
           mvn install --batch-mode --file pom.xml
 
       - name: Cache build results
