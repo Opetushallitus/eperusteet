@@ -49,6 +49,7 @@ jobs:
           source ci-tools/common/setup-tools.sh
           ls ${{ github.workspace }}
           cd eperusteet
+          ls
           mvn install --batch-mode --file pom.xml
 
       - name: Cache build results
