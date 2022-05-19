@@ -46,12 +46,12 @@ jobs:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
-      - name: Cache ci-tools
-        uses: actions/cache@v3
-        id: ci-tools
-        with:
-          path: ci-tools
-          key: ${{ github.sha }}
+#      - name: Cache ci-tools
+#        uses: actions/cache@v3
+#        id: ci-tools
+#        with:
+#          path: ci-tools
+#          key: ${{ github.sha }}
 
       - name: Build with Maven
         env:
@@ -79,7 +79,7 @@ jobs:
           cd ${ARTIFACT_NAME}
           echo "siirryttiin eteenpäin--------------"
           ls
-          mvn clean install --batch-mode
+          mvn clean verify --batch-mode
           mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
           mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
