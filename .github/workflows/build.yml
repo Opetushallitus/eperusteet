@@ -50,7 +50,7 @@ jobs:
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
           ls ${{ github.workspace }}
-          mvn clean --batch-mode package --file eperusteet/pom.xml
+          mvn install --batch-mode --file eperusteet/pom.xml
 
       - name: Cache build results
         uses: actions/cache@v3
