@@ -47,13 +47,27 @@ jobs:
           git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
+          export ARTIFACT_NAME="eperusteet"
+          export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
+          cd eperusteet-ui
+          yarn install --silent
+          cd eperusteet-frontend-utils/vue
+          yarn install --silent
+          yarn gen:api:eperusteet
+          rm -rf node_modules
+          cd ../..
+          git rev-parse HEAD
+          yarn run build
+          cd ..
+          echo "mentiin takaisin juureen--------------"
           ls ${{ github.workspace }}
-          cd eperusteet
+          cd ${ARTIFACT_NAME}
+          echo "siirryttiin eteenpäin--------------"
           ls
           cd ..
-          echo "siirryttiin takaisin"
+          echo "siirryttiin takaisin--------------"
           ls
-          mvn install --batch-mode --file pom.xml
+#          mvn install --batch-mode --file pom.xml
 
       - name: Cache build results
         uses: actions/cache@v3
