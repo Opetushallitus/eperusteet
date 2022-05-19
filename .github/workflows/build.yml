@@ -22,11 +22,10 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Cache Maven repository
-        uses: actions/cache@v3
+      - name: Set up Node 10
+        uses: actions/setup-node@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          node-version: 10
 
       - name: Build with Maven
         env:
@@ -46,6 +45,12 @@ jobs:
         with:
           path: eperusteet/eperusteet-service/target
           key: ${{ github.sha }}
+
+      - name: Cache Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
       - name: Cache ci-tools
         uses: actions/cache@v3
