@@ -31,8 +31,8 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-testi-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+#          restore-keys: |
+#            ${{ runner.os }}-maven-
 
       - name: Print yarn cache directory path
         id: yarn-cache-dir-path
