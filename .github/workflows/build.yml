@@ -59,15 +59,17 @@ jobs:
           git rev-parse HEAD
           yarn run build
           cd ..
-          echo "mentiin takaisin juureen--------------"
-          ls ${{ github.workspace }}
-          cd ${ARTIFACT_NAME}
-          echo "siirryttiin eteenpäin--------------"
-          ls
-          cd ..
-          echo "siirryttiin takaisin--------------"
-          ls
-#          mvn install --batch-mode --file pom.xml
+          mvn clean install --batch-mode
+          
+#          echo "mentiin takaisin juureen--------------"
+#          ls ${{ github.workspace }}
+#          cd ${ARTIFACT_NAME}
+#          echo "siirryttiin eteenpäin--------------"
+#          ls
+#          cd ..
+#          echo "siirryttiin takaisin--------------"
+#          ls
+#
 
       - name: Cache build results
         uses: actions/cache@v3
