@@ -76,6 +76,9 @@ jobs:
           cd ..
           echo "mentiin takaisin juureen--------------"
           ls
+          cd ${ARTIFACT_NAME}
+          echo "siirryttiin eteenpäin--------------"
+          ls
           mvn clean install --batch-mode
           
 #          echo "mentiin takaisin juureen--------------"
