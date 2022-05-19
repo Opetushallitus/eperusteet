@@ -70,7 +70,7 @@ jobs:
           yarn gen:api:eperusteet
           rm -rf node_modules
           cd ../..
-          echo "----------eperusteet-ui:n viimeisimmäm commitin sha----------:
+          echo "----------eperusteet-ui:n viimeisimman commitin sha----------"
           git rev-parse HEAD
           yarn run build
           cd ..
