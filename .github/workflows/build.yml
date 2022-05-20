@@ -158,8 +158,6 @@ jobs:
       - name: Build with Maven
         run: |
           git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
-#          git clone https://github.com/Opetushallitus/ci-tools.git
-#          source ci-tools/common/setup-tools.sh
           export ARTIFACT_NAME="eperusteet"
           export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
           
