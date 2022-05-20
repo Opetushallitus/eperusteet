@@ -86,7 +86,7 @@ jobs:
           cd ..
           
           cd ${ARTIFACT_NAME}
-          mvn clean verify -DskipTests --batch-mode
+          mvn clean verify --batch-mode
           
           mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
           mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
