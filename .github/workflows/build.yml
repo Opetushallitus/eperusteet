@@ -181,7 +181,7 @@ jobs:
           cd ..
           
           cd ${ARTIFACT_NAME}/eperusteet-app
-          mvn clean test --batch-mode
+          mvn clean integration-test --batch-mode
 
   test-eperusteet-service:
     runs-on: ubuntu-latest
@@ -210,7 +210,7 @@ jobs:
       - name: Build with Maven
         run: |
           cd eperusteet/eperusteet-service
-          mvn clean test --batch-mode        
+          mvn clean integration-test --batch-mode        
 
   build_image:
     needs: [build_and_deploy, test-eperusteet-ui, test-eperusteet-service]
