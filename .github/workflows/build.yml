@@ -14,7 +14,42 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  build_and_deploy:
+  build-eperusteet-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Cache Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: |
+          git clone https://github.com/Opetushallitus/ci-tools.git
+          source ci-tools/common/setup-tools.sh
+          export ARTIFACT_NAME="eperusteet"
+
+          cd ${ARTIFACT_NAME}/eperusteet-service
+          mvn clean package -DskipTests -DskipITs --batch-mode
+
+      - name: Cache eperusteet-service build results
+        uses: actions/cache@v3
+        id: restore-service-build
+        with:
+          path: eperusteet/eperusteet-service/target
+          key: ${{ github.sha }}
+
+  build-eperusteet-ui:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -84,20 +119,9 @@ jobs:
           yarn run build
           cd ..
           
-          cd ${ARTIFACT_NAME}
+          cd ${ARTIFACT_NAME}/eperusteet-app
           mvn clean package -DskipTests -DskipITs --batch-mode
-          
-#          mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
-#          mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
-#          cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-#          cp -vr src/main/resources/tomcat $DOCKER_BUILD_DIR/config/
-#          cd ..
-#
-#          export BASE_IMAGE="baseimage-war-tomcat8-openjdk8:master"
-#          ./ci-tools/common/pull-image.sh
-#          ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
-#          ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
-          
+
       - name: Cache eperusteet-service build results
         uses: actions/cache@v3
         id: restore-service-build
@@ -212,8 +236,8 @@ jobs:
           cd eperusteet/eperusteet-service
           mvn clean integration-test --batch-mode        
 
-  build_image:
-    needs: [build_and_deploy, test-eperusteet-ui, test-eperusteet-service]
+  build-image:
+    needs: [build-eperusteet-service, build-eperusteet-ui, test-eperusteet-ui, test-eperusteet-service]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
