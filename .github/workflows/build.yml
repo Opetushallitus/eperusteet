@@ -98,11 +98,18 @@ jobs:
 #          ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
 #          ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
           
-      - name: Cache build results
+      - name: Cache eperusteet-service build results
         uses: actions/cache@v3
-        id: restore-build
+        id: restore-service-build
         with:
           path: eperusteet/eperusteet-service/target
+          key: ${{ github.sha }}
+
+      - name: Cache eperusteet-app build results
+        uses: actions/cache@v3
+        id: restore-app-build
+        with:
+          path: eperusteet/eperusteet-app/target
           key: ${{ github.sha }}
 
   test-eperusteet-ui:
@@ -209,11 +216,20 @@ jobs:
     needs: [build_and_deploy, test-eperusteet-ui, test-eperusteet-service]
     runs-on: ubuntu-latest
     steps:
-      - name: Cache build results
+      - uses: actions/checkout@v3
+
+      - name: Get eperusteet-service build results
         uses: actions/cache@v3
-        id: restore-build
+        id: restore-service-build
         with:
           path: eperusteet/eperusteet-service/target
+          key: ${{ github.sha }}
+
+      - name: Get eperusteet-app build results
+        uses: actions/cache@v3
+        id: restore-app-build
+        with:
+          path: eperusteet/eperusteet-app/target
           key: ${{ github.sha }}
 
       - name: Build image
