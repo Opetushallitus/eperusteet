@@ -283,10 +283,6 @@
       <name>JBoss Repository</name>
       <url>http://repository.jboss.org/nexus/content/groups/public-jboss/</url>
     </repository>
-    <repository>
-      <id>public</id>
-      <url>http://maven.nuxeo.org/nexus/content/repositories/public/</url>
-    </repository>
   </repositories>
   <distributionManagement>
     <repository>
