@@ -163,5 +163,5 @@ jobs:
           cd ..
           export BASE_IMAGE="baseimage-war-tomcat8-openjdk8:master"
           ./ci-tools/common/pull-image.sh
-          ./ci-tools/build/build-war.sh ${ARTIFACT_NAME}
-          ./ci-tools/build/upload-image.sh ${ARTIFACT_NAME}
+          ./ci-tools/github-build/build-war.sh ${ARTIFACT_NAME}
+          ./ci-tools/github-build/upload-image.sh ${ARTIFACT_NAME}
