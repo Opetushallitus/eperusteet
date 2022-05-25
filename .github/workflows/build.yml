@@ -154,6 +154,10 @@ jobs:
         run: |
           cd eperusteet/eperusteet-service 
           mvn clean compile -P generate-openapi
+          cp target/openapi/eperusteet.spec.json ../../generated
+          
+          mvn clean compile -P generate-openapi-ext 
+          cp target/openapi/eperusteet-ext.spec.json ../../generated
 
   build-image:
     needs: [build-and-test-eperusteet-service, build-and-test-eperusteet-ui, generate-spec-file]
