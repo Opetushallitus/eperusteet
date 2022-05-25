@@ -12,6 +12,7 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ARTIFACT_NAME: eperusteet
 
 jobs:
   build-and-test-eperusteet-service:
@@ -35,11 +36,7 @@ jobs:
 
       - name: Build with Maven
         run: |
-          git clone https://github.com/Opetushallitus/ci-tools.git
-          source ci-tools/common/setup-tools.sh
-          export ARTIFACT_NAME="eperusteet"
-
-          cd ${ARTIFACT_NAME}/eperusteet-service
+          cd eperusteet/eperusteet-service
           mvn clean verify --batch-mode
 
       - name: Cache eperusteet-service build results
@@ -104,7 +101,6 @@ jobs:
           git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          export ARTIFACT_NAME="eperusteet"
           export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
           
           cd eperusteet-ui
@@ -177,7 +173,6 @@ jobs:
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          export ARTIFACT_NAME="eperusteet"
           
           cd ${ARTIFACT_NAME}
           mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
