@@ -96,11 +96,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Cache yo npm
+        uses: actions/cache@v3
+        with:
+          path: eperusteet/eperusteet/eperusteet-app/yo/node_modules
+          key: ${{ runner.os }}-nodeyo-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nodeyo-
+
       - name: Build with Maven
         run: |
           git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
-          git clone https://github.com/Opetushallitus/ci-tools.git
-          source ci-tools/common/setup-tools.sh
           export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
           
           cd eperusteet-ui
