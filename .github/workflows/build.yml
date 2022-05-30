@@ -158,6 +158,9 @@ jobs:
           
           mvn clean compile -P generate-openapi-ext 
           cp target/openapi/eperusteet-ext.spec.json ../../generated
+          
+          git commit -m "github actions generated spec files"
+          git push origin ${{ github.ref_name }}
 
   build-image:
     needs: [build-and-test-eperusteet-service, build-and-test-eperusteet-ui, generate-spec-file]
