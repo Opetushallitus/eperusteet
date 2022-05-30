@@ -159,6 +159,7 @@ jobs:
           mvn clean compile -P generate-openapi-ext 
           cp target/openapi/eperusteet-ext.spec.json ../../generated
           
+          ls ../../generated          
           git config --global user.name "GitHub Actions runner"
           git config --global user.email "<>"
           git commit -m "github actions generated spec files [skip actions]"
