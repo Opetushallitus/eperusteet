@@ -528,6 +528,21 @@
         }
       }
     },
+    "ArviointiAsteikkoDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "osaamistasot" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamistasoDto"
+          }
+        }
+      }
+    },
     "ArviointiDto" : {
       "type" : "object",
       "properties" : {
@@ -554,7 +569,7 @@
         }
       }
     },
-    "GeneerinenArviointiasteikkoDto" : {
+    "GeneerinenArviointiasteikkoKaikkiDto" : {
       "type" : "object",
       "properties" : {
         "id" : {
@@ -568,7 +583,7 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "arviointiAsteikko" : {
-          "$ref" : "#/definitions/Reference"
+          "$ref" : "#/definitions/ArviointiAsteikkoDto"
         },
         "julkaistu" : {
           "type" : "boolean"
@@ -588,22 +603,28 @@
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "$ref" : "#/definitions/GeneerisenArvioinninOsaamistasonKriteeriDto"
+            "$ref" : "#/definitions/GeneerisenArvioinninOsaamistasonKriteeriKaikkiDto"
           }
+        },
+        "_arviointiAsteikko" : {
+          "$ref" : "#/definitions/Reference"
         }
       }
     },
-    "GeneerisenArvioinninOsaamistasonKriteeriDto" : {
+    "GeneerisenArvioinninOsaamistasonKriteeriKaikkiDto" : {
       "type" : "object",
       "properties" : {
         "osaamistaso" : {
-          "$ref" : "#/definitions/Reference"
+          "$ref" : "#/definitions/OsaamistasoDto"
         },
         "kriteerit" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/LokalisoituTekstiDto"
           }
+        },
+        "_osaamistaso" : {
+          "$ref" : "#/definitions/Reference"
         }
       }
     },
@@ -2099,13 +2120,26 @@
     "Page" : {
       "type" : "object",
       "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "totalElements" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
           "type" : "integer",
-          "format" : "int64"
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2120,6 +2154,19 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "PagePerusteenJulkaisuData" : {
+      "type" : "object",
+      "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -2133,19 +2180,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteenJulkaisuData" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2160,19 +2194,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2299,6 +2320,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "tila" : {
           "type" : "string",
@@ -2903,7 +2928,7 @@
         },
         "geneerinenArviointiasteikko" : {
           "description" : "Yleinen perusteen ulkopuolella käytetty arviointiasteikko. Käytetään kaikissa uusissa perusteissa.",
-          "$ref" : "#/definitions/GeneerinenArviointiasteikkoDto"
+          "$ref" : "#/definitions/GeneerinenArviointiasteikkoKaikkiDto"
         },
         "vapaatTekstit" : {
           "type" : "array",
