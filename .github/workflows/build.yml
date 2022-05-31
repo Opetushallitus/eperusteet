@@ -3,11 +3,6 @@ name: Eperusteet build
 on:
   workflow_dispatch:
   push:
-    branches:
-      - EP-3136-github-actions
-# Workflow ajetaan jos jokin muu kuin markdown tiedosto muuttui
-    paths-ignore:
-      - '**.md'
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
