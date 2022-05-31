@@ -1,7 +1,5 @@
 name: Eperusteet build
-#TODO muuta kunhan valmis
 on: [workflow_dispatch, push]
-
 
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
