@@ -123,43 +123,44 @@ jobs:
           path: eperusteet/eperusteet-app/target
           key: ${{ github.sha }}
 
-  generate-spec-file:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up JDK 8
-        uses: actions/setup-java@v3
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-
-      - name: Cache Maven repository
-        uses: actions/cache@v3
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
-      - name: Generate api
-        run: |
-          cd eperusteet/eperusteet-service 
-          mvn clean compile -P generate-openapi
-          cp target/openapi/eperusteet.spec.json ../../generated
-          
-          mvn clean compile -P generate-openapi-ext 
-          cp target/openapi/eperusteet-ext.spec.json ../../generated
-          
-          git config --global user.name "GitHub Actions runner"
-          git config --global user.email "<>"
-          git add ../../generated/eperusteet-ext.spec.json
-          git add ../../generated/eperusteet.spec.json
-          git commit -m "github actions generated spec files [skip actions]"
-          git push origin ${{ github.ref_name }}
+#  generate-spec-file:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#
+#      - name: Set up JDK 8
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '8'
+#          distribution: 'temurin'
+#
+#      - name: Cache Maven repository
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/.m2/repository
+#          key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
+#          restore-keys: |
+#            ${{ runner.os }}-maven-
+#
+#      - name: Generate api
+#        run: |
+#          cd eperusteet/eperusteet-service
+#          mvn clean compile -P generate-openapi
+#          cp target/openapi/eperusteet.spec.json ../../generated
+#
+#          mvn clean compile -P generate-openapi-ext
+#          cp target/openapi/eperusteet-ext.spec.json ../../generated
+#
+#          git config --global user.name "GitHub Actions runner"
+#          git config --global user.email "<>"
+#          git add ../../generated/eperusteet-ext.spec.json
+#          git add ../../generated/eperusteet.spec.json
+#          git commit -m "github actions generated spec files [skip actions]"
+#          git push origin ${{ github.ref_name }}
 
   build-image:
-    needs: [build-and-test-eperusteet-service, build-and-test-eperusteet-ui, generate-spec-file]
+#    needs: [build-and-test-eperusteet-service, build-and-test-eperusteet-ui, generate-spec-file]
+    needs: [build-and-test-eperusteet-service, build-and-test-eperusteet-ui]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
