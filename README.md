@@ -170,7 +170,7 @@ Lokit löytyvät AWS:n cloudwatchista
 
 ### 4.4. Continuous integration
 
-Buildipalveluna käytetään Github Actionsia. Pushaaminen remoteen aiheuttaa sen että
+Buildipalveluna käytetään Github Actionsia ([build.yml](/.github/workflows/build.yml)). Pushaaminen remoteen aiheuttaa sen että
 eperusteet-app ja eperusteet-service buildataan, servicen api:sta generoidaan json tiedosto
 uusia käyttöliittymiä varten. Tämän jälkeen luodaan kontti-image OPH:n deploytyökaluja varten.
 
