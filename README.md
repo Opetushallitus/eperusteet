@@ -12,11 +12,12 @@ laadintaan ja julkaisuun.
 
 ## 2. Arkkitehtuuri
 
-Javalla ja Springillä toteutettu web service. Tarjoaa rajapinnan eperusteet-ui:lle ja ulkoisille palveluille. Tallentaa 
+Javalla ja Springillä toteutettu web service (eperusteet-service kansio). Tarjoaa rajapinnan eperusteet-ui:lle ja ulkoisille palveluille. Tallentaa 
 tiedot postgreSQL-kantaan. 
 
-Sisältää myös vanhan eperusteet käyttöliittymän (eperusteet-app kansio) mutta tämän on korvannut
-uusi eperusteet-ui.
+Sisältää myös vanhan eperusteet käyttöliittymän (eperusteet-app kansio) mutta tämän on jo osin korvannut
+uusi [eperusteet-ui.](https://github.com/Opetushallitus/eperusteet-ui) Uudesta käyttöliittymästä ei kuitenkaan vielä 
+aivan kaikkea toiminallisuutta löydy, mistä johtuen vanha pyörii edelleen tuotannossa.
 
 ## 3. Kehitysympäristö
 
@@ -106,13 +107,16 @@ mvn jetty:run -Djetty.port=8080
 
 #### &nbsp;&nbsp;API-generointi
 
-Jos muutat tietomallia tai rajapintoja aja tämä:
+~~Jos muutat tietomallia tai rajapintoja aja tämä:~~
 
 ```
 cd eperusteet/eperusteet-service  
 mvn clean compile -Pgenerate-openapi
 ```
-Tämän jälkeen kopio `eperusteet/eperusteet-service/target/openapi/eperusteet.spec.json`-tiedoston sisältö tiedostoon `eperusteet/generated/eperusteet.spec.json`
+~~Tämän jälkeen kopio `eperusteet/eperusteet-service/target/openapi/eperusteet.spec.json`-tiedoston sisältö tiedostoon `eperusteet/generated/eperusteet.spec.json`~~
+
+Päivitys 30.5.2022: API generoidaan buildin yhteydessä github actionsissa joten sitä 
+ei tarvitse enää tehdä käsin.
 
 
 ### eperusteet-app (vanha käyttöliittymä)
@@ -147,6 +151,9 @@ joillakin on tullut ide:n sekoilua koko repon avauksen tapauksessa.
 
 ### 3.6. Versiohallinta
 
+Git käytäntönä projektissa on suosittu kehityshaaran squashausta päähaaraan
+mergettäessä.
+
 ## 4. Ympäristöt
 
 ### 4.1. Testiympäristöt 
@@ -159,11 +166,13 @@ Testiympäristöjen swaggerit löytyvät seuraavista osoitteista
 
 ### 4.3. Lokit
 
-
+Lokit löytyvät AWS:n cloudwatchista
 
 ### 4.4. Continuous integration
 
-https://app.travis-ci.com/github/Opetushallitus/eperusteet
+Buildipalveluna käytetään Github Actionsia ([build.yml](/.github/workflows/build.yml)). Pushaaminen remoteen aiheuttaa sen että
+eperusteet-app ja eperusteet-service buildataan, servicen api:sta generoidaan json tiedosto
+uusia käyttöliittymiä varten. Tämän jälkeen luodaan kontti-image OPH:n deploytyökaluja varten.
 
 ## ePerusteet-projektit
 

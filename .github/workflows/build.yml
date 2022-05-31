@@ -1,0 +1,195 @@
+name: Eperusteet build
+on: [workflow_dispatch, push]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ARTIFACT_NAME: eperusteet
+
+jobs:
+  build-and-test-eperusteet-service:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Cache Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: |
+          cd eperusteet/eperusteet-service
+          mvn clean verify --batch-mode
+
+      - name: Cache eperusteet-service build results
+        uses: actions/cache@v3
+        id: restore-service-build
+        with:
+          path: eperusteet/eperusteet-service/target
+          key: ${{ github.sha }}
+
+  build-and-test-eperusteet-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Set up Node 10
+        uses: actions/setup-node@v3
+        with:
+          node-version: '10'
+
+      - name: Cache Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Print yarn cache directory path
+        id: yarn-cache-dir-path
+        run: |
+          yarn cache dir
+          echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache yarn
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Print npm cache directory
+        id: npm-cache-dir
+        run: |
+          npm config get cache
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache npm
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache yo npm
+        uses: actions/cache@v3
+        with:
+          path: eperusteet/eperusteet/eperusteet-app/yo/node_modules
+          key: ${{ runner.os }}-nodeyo-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nodeyo-
+
+      - name: Build with Maven
+        run: |
+          git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
+          export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
+          
+          cd eperusteet-ui
+          yarn install --silent
+          cd eperusteet-frontend-utils/vue
+          yarn install --silent
+          yarn gen:api:eperusteet
+          rm -rf node_modules
+          cd ../..
+          echo "----------eperusteet-ui:n viimeisimman commitin sha----------"
+          git rev-parse HEAD
+          yarn run build
+          cd ..
+          
+          cd ${ARTIFACT_NAME}/eperusteet-app
+          mvn clean verify --batch-mode
+
+      - name: Cache eperusteet-app build results
+        uses: actions/cache@v3
+        id: restore-app-build
+        with:
+          path: eperusteet/eperusteet-app/target
+          key: ${{ github.sha }}
+
+  generate-spec-file:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Cache Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Generate api
+        run: |
+          cd eperusteet/eperusteet-service 
+          mvn clean compile -P generate-openapi
+          cp target/openapi/eperusteet.spec.json ../../generated
+          
+          mvn clean compile -P generate-openapi-ext 
+          cp target/openapi/eperusteet-ext.spec.json ../../generated
+          
+          git config --global user.name "GitHub Actions runner"
+          git config --global user.email "<>"
+          git add ../../generated/eperusteet-ext.spec.json
+          git add ../../generated/eperusteet.spec.json
+          git commit -m "github actions generated spec files [skip actions]"
+          git push origin ${{ github.ref_name }}
+
+  build-image:
+    needs: [build-and-test-eperusteet-service, build-and-test-eperusteet-ui, generate-spec-file]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get eperusteet-service build results
+        uses: actions/cache@v3
+        id: restore-service-build
+        with:
+          path: eperusteet/eperusteet-service/target
+          key: ${{ github.sha }}
+
+      - name: Get eperusteet-app build results
+        uses: actions/cache@v3
+        id: restore-app-build
+        with:
+          path: eperusteet/eperusteet-app/target
+          key: ${{ github.sha }}
+
+      - name: Build image
+        run: |
+          git clone https://github.com/Opetushallitus/ci-tools.git
+          source ci-tools/common/setup-tools.sh
+          
+          cd ${ARTIFACT_NAME}
+          mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
+          mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
+          cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+          cp -vr src/main/resources/tomcat $DOCKER_BUILD_DIR/config/
+          cd ..
+          export BASE_IMAGE="baseimage-war-tomcat8-openjdk8:master"
+          ./ci-tools/common/pull-image.sh
+          ./ci-tools/github-build/build-war.sh ${ARTIFACT_NAME}
+          ./ci-tools/github-build/upload-image.sh ${ARTIFACT_NAME}
