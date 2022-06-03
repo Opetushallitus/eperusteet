@@ -163,8 +163,6 @@ public class PerusteenOsaViite implements
     @OrderColumn
     @Getter
     @Setter
-    @BatchSize(size = 100)
-    @ElementCollection
     private List<PerusteenOsaViite> lapset = new ArrayList<>();
 
     public PerusteenOsaViite() {
