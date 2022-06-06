@@ -33,7 +33,8 @@ public enum KoulutustyyppiToteutus {
     TPO("taiteenperusopetus"),
     LOPS2019("lops2019"),
     VAPAASIVISTYSTYO("vapaasivistystyo"),
-    TUTKINTOONVALMENTAVA("tutkintoonvalmentava");
+    TUTKINTOONVALMENTAVA("tutkintoonvalmentava"),
+    KOTOUTUMISKOULUTUS("kotoutumiskoulutus");
 
     private final String tyyppi;
 

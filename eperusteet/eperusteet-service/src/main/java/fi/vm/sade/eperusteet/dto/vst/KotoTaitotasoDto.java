@@ -26,5 +26,5 @@ public class KotoTaitotasoDto {
     private Integer tyoelamaOpintoMaksimiLaajuus;
     private LokalisoituTekstiDto suullinenVastaanottaminen;
     private LokalisoituTekstiDto suullinenTuottaminen;
-    private LokalisoituTekstiDto vuorovaikutusJaMeditaatio;
+    private LokalisoituTekstiDto vuorovaikutusJaMediaatio;
 }

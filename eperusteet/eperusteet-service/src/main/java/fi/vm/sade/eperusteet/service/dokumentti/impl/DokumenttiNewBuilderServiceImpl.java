@@ -1056,7 +1056,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             String opiskelijanTyoelamataidot = getTextString(docBase, taitotaso.getOpiskelijanTyoelamataidot());
             String suullinenVastaanottaminen = getTextString(docBase, taitotaso.getSuullinenVastaanottaminen());
             String suullinenTuottaminen = getTextString(docBase, taitotaso.getSuullinenTuottaminen());
-            String vuorovaikutusJaMeditaatio = getTextString(docBase, taitotaso.getVuorovaikutusJaMeditaatio());
+            String vuorovaikutusJaMediaatio = getTextString(docBase, taitotaso.getVuorovaikutusJaMediaatio());
 
             if (StringUtils.isNotEmpty(kielenkayttotarkoitus)
                     || StringUtils.isNotEmpty(aihealueet)
@@ -1065,7 +1065,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     || StringUtils.isNotEmpty(opiskelijanTyoelamataidot)
                     || StringUtils.isNotEmpty(suullinenVastaanottaminen)
                     || StringUtils.isNotEmpty(suullinenTuottaminen)
-                    || StringUtils.isNotEmpty(vuorovaikutusJaMeditaatio)) {
+                    || StringUtils.isNotEmpty(vuorovaikutusJaMediaatio)) {
                 addTeksti(docBase, messages.translate("docgen.keskeiset-sisallot.title", docBase.getKieli()), "h5");
             }
 
@@ -1077,7 +1077,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addKotoH6Teksti(opiskelijanTyoelamataidot, "docgen.opiskelijan_tyoelamataidot.title", docBase);
             addKotoH6Teksti(suullinenVastaanottaminen, "docgen.suullinen_vastaanottaminen.title", docBase);
             addKotoH6Teksti(suullinenTuottaminen, "docgen.suullinen_tuottaminen.title", docBase);
-            addKotoH6Teksti(vuorovaikutusJaMeditaatio, "docgen.vuorovaikutus_ja_meditaatio.title", docBase);
+            addKotoH6Teksti(vuorovaikutusJaMediaatio, "docgen.vuorovaikutus_ja_mediaatio.title", docBase);
         });
 
         docBase.getGenerator().increaseDepth();
