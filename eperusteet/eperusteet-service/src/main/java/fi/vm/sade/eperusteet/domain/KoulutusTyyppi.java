@@ -86,7 +86,7 @@ public enum KoulutusTyyppi {
     }
 
     public boolean isVapaaSivistystyo() {
-        return isOneOf(VAPAASIVISTYSTYO, MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS, VAPAASIVISTYSTYOLUKUTAITO);
+        return isOneOf(VAPAASIVISTYSTYO, VAPAASIVISTYSTYOLUKUTAITO);
     }
 
     public static List<String> ammatilliset() {

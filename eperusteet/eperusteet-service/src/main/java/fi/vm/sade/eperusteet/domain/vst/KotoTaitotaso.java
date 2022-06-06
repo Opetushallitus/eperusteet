@@ -85,5 +85,5 @@ public class KotoTaitotaso extends AbstractAuditedEntity {
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen vuorovaikutusJaMeditaatio;
+    private TekstiPalanen vuorovaikutusJaMediaatio;
 }

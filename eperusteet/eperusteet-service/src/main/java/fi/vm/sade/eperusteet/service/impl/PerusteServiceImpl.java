@@ -216,6 +216,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
+import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 
 /**
@@ -2133,7 +2134,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         } else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
             AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();
             peruste.setSisalto(sisalto);
-        } else if (koulutustyyppi.isVapaaSivistystyo()) {
+        } else if (koulutustyyppi.isVapaaSivistystyo() || koulutustyyppi == MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
         } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
             peruste.setSisalto(new TutkintoonvalmentavaSisalto());

@@ -90,7 +90,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "    INNER JOIN jp.peruste p " +
             "WHERE p.tyyppi = 'NORMAALI' " +
             "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', " +
-            "       'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_10', 'koulutustyyppi_40') " +
+            "       'koulutustyyppi_5', 'koulutustyyppi_18', " +
+            "       'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_40') " +
             "   AND (p.voimassaoloLoppuu IS NULL " +
             "       OR p.voimassaoloLoppuu > NOW() " +
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
