@@ -289,7 +289,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             return viimeisinJulkaisu.getLuotu();
         } else {
             Peruste peruste = perusteRepository.findOne(perusteId);
-            if (peruste != null && peruste.getTila().equals(Tila.JULKAISTU)) {
+            if (peruste != null && (peruste.getTila().equals(Tila.JULKAISTU) || peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN))) {
                 return peruste.getGlobalVersion().getAikaleima();
             }
         }
