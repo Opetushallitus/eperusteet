@@ -39,7 +39,7 @@ jobs:
         id: restore-service-build
         with:
           path: eperusteet/eperusteet-service/target
-          key: ${{ github.sha }}-service
+          key: ${{ github.run_number }}-${{ github.run_attempt }}-service
 
   build-and-test-eperusteet-ui:
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
         id: restore-app-build
         with:
           path: eperusteet/eperusteet-app/target
-          key: ${{ github.sha }}-app
+          key: ${{ github.run_number }}-${{ github.run_attempt }}-app
 
 #  generate-spec-file:
 #    runs-on: ubuntu-latest
@@ -173,14 +173,14 @@ jobs:
         id: restore-service-build
         with:
           path: eperusteet/eperusteet-service/target
-          key: ${{ github.sha }}-service
+          key: ${{ github.run_number }}-${{ github.run_attempt }}-service
 
       - name: Get eperusteet-app build results
         uses: actions/cache@v3
         id: restore-app-build
         with:
           path: eperusteet/eperusteet-app/target
-          key: ${{ github.sha }}-app
+          key: ${{ github.run_number }}-${{ github.run_attempt }}-app
 
       - name: Build image
         run: |
