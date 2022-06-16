@@ -15,11 +15,14 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -150,14 +153,14 @@ public class ValidatorPeruste implements Validator {
         return suoritustapa.getTutkinnonOsat();
     }
 
-    private List<TutkinnonOsa> koodittomatTutkinnonosat(Suoritustapa suoritustapa) {
-        List<TutkinnonOsa> koodittomatTutkinnonOsat = new ArrayList<>();
+    private List<TutkinnonOsaViite> koodittomatTutkinnonosat(Suoritustapa suoritustapa) {
+        List<TutkinnonOsaViite> koodittomatTutkinnonOsat = new ArrayList<>();
 
         if (suoritustapa.getTutkinnonOsat() != null) {
             for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
                 TutkinnonOsaDto osaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
                 if (osaDto.getKoodi() == null && StringUtils.isEmpty(osaDto.getKoodiUri())) {
-                    koodittomatTutkinnonOsat.add(viite.getTutkinnonOsa());
+                    koodittomatTutkinnonOsat.add(viite);
                 }
             }
         }
@@ -585,8 +588,13 @@ public class ValidatorPeruste implements Validator {
                             List<LokalisoituTekstiDto> nimet = new ArrayList<>();
                             for (TutkinnonOsaViite viite : vapaatOsat) {
                                 if (viite.getTutkinnonOsa().getNimi() != null) {
-                                    nimet.add(new LokalisoituTekstiDto(viite.getTutkinnonOsa().getNimi().getId(),
-                                            viite.getTutkinnonOsa().getNimi().getTeksti()));
+                                    nimet.add(new NavigableLokalisoituTekstiDto(
+                                            viite.getTutkinnonOsa().getNimi().getId(),
+                                            viite.getTutkinnonOsa().getNimi().getTeksti(),
+                                            NavigationNodeDto.of(
+                                                    NavigationType.tutkinnonosaviite,
+                                                    LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
+                                                    viite.getId())));
                                 }
                             }
                             updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
@@ -595,13 +603,18 @@ public class ValidatorPeruste implements Validator {
                     }
 
                     // Tarkistetaan koodittomat tutkinnon osat
-                    List<TutkinnonOsa> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
+                    List<TutkinnonOsaViite> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
                     if (!koodittomatTutkinnonOsat.isEmpty()) {
                         List<LokalisoituTekstiDto> nimet = new ArrayList<>();
-                        for (TutkinnonOsa tutkinnonOsa : koodittomatTutkinnonOsat) {
-                            if (tutkinnonOsa.getNimi() != null) {
-                                nimet.add(new LokalisoituTekstiDto(tutkinnonOsa.getNimi().getId(),
-                                        tutkinnonOsa.getNimi().getTeksti()));
+                        for (TutkinnonOsaViite viite : koodittomatTutkinnonOsat) {
+                            if (viite.getTutkinnonOsa().getNimi() != null) {
+                                nimet.add(new NavigableLokalisoituTekstiDto(
+                                        viite.getTutkinnonOsa().getNimi().getId(),
+                                        viite.getTutkinnonOsa().getNimi().getTeksti(),
+                                        NavigationNodeDto.of(
+                                                NavigationType.tutkinnonosaviite,
+                                                LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
+                                                viite.getId())));
                             }
                         }
                         updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);

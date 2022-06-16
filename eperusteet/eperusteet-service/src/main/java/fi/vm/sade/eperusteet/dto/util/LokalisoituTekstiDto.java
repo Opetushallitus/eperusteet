@@ -105,8 +105,8 @@ public class LokalisoituTekstiDto {
     }
     
     @JsonValue
-    public Map<String, String> asMap() {
-        HashMap<String, String> map = new HashMap<>();
+    public Map<String, Object> asMap() {
+        HashMap<String, Object> map = new HashMap<>();
         if (id != null) {
             map.put("_id", id.toString());
         }
