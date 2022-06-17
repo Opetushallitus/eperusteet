@@ -588,13 +588,7 @@ public class ValidatorPeruste implements Validator {
                             List<LokalisoituTekstiDto> nimet = new ArrayList<>();
                             for (TutkinnonOsaViite viite : vapaatOsat) {
                                 if (viite.getTutkinnonOsa().getNimi() != null) {
-                                    nimet.add(new NavigableLokalisoituTekstiDto(
-                                            viite.getTutkinnonOsa().getNimi().getId(),
-                                            viite.getTutkinnonOsa().getNimi().getTeksti(),
-                                            NavigationNodeDto.of(
-                                                    NavigationType.tutkinnonosaviite,
-                                                    LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
-                                                    viite.getId())));
+                                    nimet.add(new NavigableLokalisoituTekstiDto(viite));
                                 }
                             }
                             updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
@@ -608,13 +602,7 @@ public class ValidatorPeruste implements Validator {
                         List<LokalisoituTekstiDto> nimet = new ArrayList<>();
                         for (TutkinnonOsaViite viite : koodittomatTutkinnonOsat) {
                             if (viite.getTutkinnonOsa().getNimi() != null) {
-                                nimet.add(new NavigableLokalisoituTekstiDto(
-                                        viite.getTutkinnonOsa().getNimi().getId(),
-                                        viite.getTutkinnonOsa().getNimi().getTeksti(),
-                                        NavigationNodeDto.of(
-                                                NavigationType.tutkinnonosaviite,
-                                                LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
-                                                viite.getId())));
+                                nimet.add(new NavigableLokalisoituTekstiDto(viite));
                             }
                         }
                         updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
@@ -630,8 +618,7 @@ public class ValidatorPeruste implements Validator {
                                 OsaAlueDto alueDto = mapper.map(oa, OsaAlueDto.class);
                                 if (alueDto.getKoodiArvo() == null || alueDto.getKoodiArvo().isEmpty() ||
                                         alueDto.getKoodiUri() == null || alueDto.getKoodiUri().isEmpty()) {
-                                    koodittomatOsaalueet.add(new LokalisoituTekstiDto(tosa.getId(),
-                                            tosa.getNimi().getTeksti()));
+                                    koodittomatOsaalueet.add(new NavigableLokalisoituTekstiDto(tov));
                                     break;
                                 }
                             }
@@ -657,7 +644,7 @@ public class ValidatorPeruste implements Validator {
 
                         // Tarkistetaan onko sama koodi useammassa tutkinnon osassa
                         if (tosa.getNimi() != null && uniikitKoodit.contains(uri)) {
-                            uniikitKooditTosat.add(new LokalisoituTekstiDto(tosa.getNimi().getId(), tosa.getNimi().getTeksti()));
+                            uniikitKooditTosat.add(new NavigableLokalisoituTekstiDto(tov));
                         } else {
                             uniikitKoodit.add(uri);
                         }
@@ -675,8 +662,7 @@ public class ValidatorPeruste implements Validator {
                             if (koodi != null && koodi.getKoodiUri().equals(uri)) {
                                 tutkinnonOsienKoodit.add(osaDto.getKoodiArvo());
                             } else {
-                                virheellisetKoodistonimet.add(new LokalisoituTekstiDto(tosa.getNimi().getId(),
-                                        tosa.getNimi().getTeksti()));
+                                virheellisetKoodistonimet.add(new NavigableLokalisoituTekstiDto(tov));
                             }
                         }
                     }

@@ -2,22 +2,16 @@ package fi.vm.sade.eperusteet.dto.util;
 
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import java.util.HashMap;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 
-public class NavigableLokalisoituTekstiDto extends LokalisoituTekstiDto{
+public class NavigableLokalisoituTekstiDto extends LokalisoituTekstiDto {
 
     @Setter
     @Getter
@@ -26,6 +20,16 @@ public class NavigableLokalisoituTekstiDto extends LokalisoituTekstiDto{
     public NavigableLokalisoituTekstiDto(Long id, Map<Kieli, String> values, NavigationNodeDto navigationNode) {
         super(id, values);
         this.navigationNode = navigationNode;
+    }
+
+    public NavigableLokalisoituTekstiDto(TutkinnonOsaViite viite) {
+        this(
+                viite.getTutkinnonOsa().getNimi().getId(),
+                viite.getTutkinnonOsa().getNimi().getTeksti(),
+                NavigationNodeDto.of(
+                        NavigationType.tutkinnonosaviite,
+                        LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
+                        viite.getId()));
     }
 
     public NavigableLokalisoituTekstiDto(Long id, UUID tunniste, Map<Kieli, String> values) {
