@@ -116,8 +116,7 @@ jobs:
           yarn run build
           cd ..
           
-          cd ${ARTIFACT_NAME}/eperusteet-app
-          sudo apt-get install -y libpng16-dev
+          cd ${ARTIFACT_NAME}/eperusteet-app   
           mvn clean verify --batch-mode
 
       - name: Cache eperusteet-app build results

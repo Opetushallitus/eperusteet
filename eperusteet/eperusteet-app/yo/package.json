@@ -112,6 +112,7 @@
     "node": ">= 10.15.0"
   },
   "resolutions": {
-    "angular-translate/angular": "1.6.6"
+    "angular-translate/angular": "1.6.6",
+    "imagemin-mozjpeg": "^7.0.0"
   }
 }
