@@ -116,7 +116,7 @@ jobs:
           yarn run build
           cd ..
           
-          cd ${ARTIFACT_NAME}/eperusteet-app
+          cd ${ARTIFACT_NAME}/eperusteet-app   
           mvn clean verify --batch-mode
 
       - name: Cache eperusteet-app build results
