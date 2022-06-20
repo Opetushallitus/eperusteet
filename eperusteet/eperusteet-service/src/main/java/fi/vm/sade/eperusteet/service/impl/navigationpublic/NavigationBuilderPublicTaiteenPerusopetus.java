@@ -42,10 +42,10 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
 
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
-        NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
+        NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
 
         List<PerusteenOsaViiteDto.Laaja> viitteet = getLapsiViitteet(peruste.getTpoOpetuksenSisalto().getSisalto().getLapset());
 
@@ -53,7 +53,7 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
             Optional<PerusteenOsaViiteDto.Laaja> viite = viitteet.stream().filter(filteredViite -> filteredViite.getId().equals(navigationNodeDto.getId())).findFirst();
 
             if (viite.isPresent() && viite.get().getPerusteenOsa() instanceof TaiteenalaDto) {
-                TaiteenalaDto taiteenaladto = (TaiteenalaDto)viite.get().getPerusteenOsa();
+                TaiteenalaDto taiteenaladto = (TaiteenalaDto) viite.get().getPerusteenOsa();
 
                 navigationNodeDto.addAll(taiteenaladto.getOsaavainMap().keySet().stream().map(alaosa -> {
                     KevytTekstiKappaleDto tekstikappale = taiteenaladto.getOsaavainMap().get(alaosa);

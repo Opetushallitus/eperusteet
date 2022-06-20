@@ -101,8 +101,8 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
 
         Set<PerusteenSisaltoDto> sisallot = peruste.getSisallot();
         NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);

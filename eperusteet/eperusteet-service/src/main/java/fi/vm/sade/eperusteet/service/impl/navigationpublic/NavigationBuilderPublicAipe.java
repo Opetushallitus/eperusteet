@@ -22,8 +22,8 @@ public class NavigationBuilderPublicAipe {
     @Autowired
     private PerusteService perusteService;
 
-    public List<NavigationNodeDto> buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
+    public List<NavigationNodeDto> buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
         return peruste.getAipeOpetuksenPerusteenSisalto().getVaiheet().stream().map(vaihe -> NavigationNodeDto.of(NavigationType.aipevaihe, vaihe.getNimi() != null ? vaihe.getNimi().orElseGet(() -> LokalisoituTekstiDto.of("tuntematon")) : LokalisoituTekstiDto.of("tuntematon"), vaihe.getId())
                 .addAll(oppiaineet(vaihe.getOppiaineet(), kieli)))
                 .collect(Collectors.toList());

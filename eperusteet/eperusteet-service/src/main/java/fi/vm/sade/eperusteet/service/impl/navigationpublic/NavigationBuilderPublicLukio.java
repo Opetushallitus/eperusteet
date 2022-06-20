@@ -26,14 +26,14 @@ public class NavigationBuilderPublicLukio {
     @Autowired
     private PerusteService perusteService;
 
-    public NavigationNodeDto buildNavigation(Long perusteId, NavigationNodeDto rootNode) {
+    public NavigationNodeDto buildNavigation(Long perusteId, NavigationNodeDto rootNode, boolean esikatselu) {
         return NavigationNodeDto.of(NavigationType.root)
                 .addAll(rootNode.getChildren().stream().filter(node -> !node.getType().equals(NavigationType.lukiorakenne)))
-                .add(oppiaineet(perusteId));
+                .add(oppiaineet(perusteId, esikatselu));
     }
 
-    private NavigationNodeDto oppiaineet(Long perusteId) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
+    private NavigationNodeDto oppiaineet(Long perusteId, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
         LukioOppiainePuuDto lukioOppiainePuuDto = peruste.getLukiokoulutuksenPerusteenSisalto().getRakenne();
         return NavigationNodeDto.of(NavigationType.lukiooppiaineet_2015)
                 .addAll(lukioOppiainePuuDto.getOppiaineet().stream()

@@ -162,13 +162,13 @@ public class NavigationBuilderPublicLops2019 implements NavigationBuilderPublic 
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
-        NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
+        NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
         return NavigationNodeDto.of(NavigationType.root)
-            .addAll(basicNavigation.getChildren())
-            .add(laajaAlaiset(peruste))
-            .add(oppiaineet(peruste));
+                .addAll(basicNavigation.getChildren())
+                .add(laajaAlaiset(peruste))
+                .add(oppiaineet(peruste));
     }
 }

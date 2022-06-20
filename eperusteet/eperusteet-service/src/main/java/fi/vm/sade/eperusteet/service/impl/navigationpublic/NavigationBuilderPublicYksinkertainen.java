@@ -37,17 +37,17 @@ public class NavigationBuilderPublicYksinkertainen implements NavigationBuilderP
     private PerusteService perusteService;
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
-        NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
+        NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
 
         if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.AIKUISTENPERUSOPETUS)) {
-            return basicNavigation.addAll(navigationBuilderAipe.buildNavigation(perusteId, kieli));
+            return basicNavigation.addAll(navigationBuilderAipe.buildNavigation(perusteId, kieli, esikatselu));
         }
 
         if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).equals(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS)) {
-            return navigationBuilderLukio.buildNavigation(perusteId, basicNavigation);
+            return navigationBuilderLukio.buildNavigation(perusteId, basicNavigation, esikatselu);
         }
 
         return basicNavigation;
