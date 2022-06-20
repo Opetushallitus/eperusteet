@@ -108,6 +108,9 @@ public interface PerusteService {
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id);
 
     @PreAuthorize("permitAll()")
+    PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, boolean useCurrentData);
+
+    @PreAuthorize("permitAll()")
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer rev, boolean useCurrentData);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS') ")
@@ -306,7 +309,7 @@ public interface PerusteService {
     NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigationPublic(@P("perusteId") Long perusteId, String kieli);
+    NavigationNodeDto buildNavigationPublic(@P("perusteId") Long perusteId, String kieli, boolean esikatselu);
 
     @PreAuthorize("isAuthenticated()")
     List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi);

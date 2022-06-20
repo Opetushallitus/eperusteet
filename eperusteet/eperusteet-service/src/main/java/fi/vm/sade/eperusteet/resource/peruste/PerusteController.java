@@ -212,9 +212,10 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/navigaatio/public", method = GET)
     public NavigationNodeDto getNavigationPublic(
             @PathVariable final Long perusteId,
-            @RequestParam(value = "kieli", required = false, defaultValue = "fi") final String kieli
+            @RequestParam(value = "kieli", required = false, defaultValue = "fi") final String kieli,
+            @RequestParam(required = false) boolean esikatselu
     ) {
-        return service.buildNavigationPublic(perusteId, kieli);
+        return service.buildNavigationPublic(perusteId, kieli, esikatselu);
     }
 
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)

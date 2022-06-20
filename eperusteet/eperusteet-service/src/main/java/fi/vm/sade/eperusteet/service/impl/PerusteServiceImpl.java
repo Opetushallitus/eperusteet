@@ -779,6 +779,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, boolean esikatselu) {
+        return getJulkaistuSisalto(id, null, esikatselu);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
         return getJulkaistuSisalto(id, null, false);
     }
@@ -2598,9 +2604,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli) {
+    public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
-                .buildNavigation(perusteId, kieli);
+                .buildNavigation(perusteId, kieli, esikatselu);
         return siirraLiitteetLoppuun(navigationNodeDto);
     }
 

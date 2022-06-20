@@ -36,10 +36,10 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
         NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
         return NavigationNodeDto.of(NavigationType.root)
                 .addAll(basicNavigation.getChildren())
                 .addAll(vuosiluokat(peruste, kieli))

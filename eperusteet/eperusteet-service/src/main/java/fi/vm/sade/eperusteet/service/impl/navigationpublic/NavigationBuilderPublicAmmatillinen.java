@@ -34,9 +34,9 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId);
-        NavigationNodeDto tekstit = dispatcher.get(NavigationBuilderPublic.class).buildNavigation(perusteId, kieli);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
+        NavigationNodeDto tekstit = dispatcher.get(NavigationBuilderPublic.class).buildNavigation(perusteId, kieli, esikatselu);
         return NavigationNodeDto.of(NavigationType.root)
                 .add(tutkinnonOsat(peruste))
                 .addAll(tekstit.getChildren());

@@ -29,11 +29,11 @@ public class NavigationBuilderPublicLops implements NavigationBuilderPublic {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+        NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
         return NavigationNodeDto.of(NavigationType.root)
-                .addAll(navigationBuilderLukio.buildNavigation(perusteId, basicNavigation));
+                .addAll(navigationBuilderLukio.buildNavigation(perusteId, basicNavigation, esikatselu));
     }
 
 }
