@@ -87,7 +87,10 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void updateProjektiTila(Long id, ProjektiTila tila);
-    
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void avaaPerusteProjekti(Long id);
+
     @PreAuthorize("isAuthenticated()")
     DiaarinumeroHakuDto onkoDiaarinumeroKaytossa(Diaarinumero diaarinumero);
 

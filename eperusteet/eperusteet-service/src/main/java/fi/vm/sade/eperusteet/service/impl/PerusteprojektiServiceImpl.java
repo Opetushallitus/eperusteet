@@ -984,6 +984,16 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         repository.save(projekti);
     }
 
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public void avaaPerusteProjekti(Long id) {
+        Perusteprojekti projekti = repository.findOne(id);
+        projekti.setTila(LAADINTA);
+        projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
+        repository.save(projekti);
+    }
+
     private void validoiLukio(Peruste peruste, ProjektiTila tila, TilaUpdateStatus updateStatus) {
         LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
         LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();

@@ -185,6 +185,14 @@ public class PerusteprojektiController {
         service.updateProjektiTila(id, ProjektiTila.of(tila));
     }
 
+    @RequestMapping(value = "/{id}/projekti/avaa", method = POST)
+    @ResponseStatus(HttpStatus.OK)
+    public void avaaPerusteProjekti(
+            @PathVariable("id") final long id
+    ) {
+        service.avaaPerusteProjekti(id);
+    }
+
     @RequestMapping(method = POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
