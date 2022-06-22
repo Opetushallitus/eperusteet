@@ -43,6 +43,10 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
     }
 
     private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViiteSuppeaDto viite, TutkinnonOsaKaikkiDto tosa) {
+        if (viite == null) {
+            return null;
+        }
+
         NavigationNodeDto result = NavigationNodeDto.of(
                 NavigationType.tutkinnonosaviite,
                 tosa.getNimi(),
@@ -62,7 +66,8 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
                                 peruste.getSuoritustavat().stream()
                                         .flatMap(st -> st.getTutkinnonOsat().stream())
                                         .filter(viite -> viite.getTutkinnonOsa().getIdLong().equals(tosa.getId()))
-                                        .findFirst().get(), tosa))
+                                        .findFirst().orElse(null), tosa))
+                        .filter(t -> t != null)
                         .collect(Collectors.toList()));
     }
 
