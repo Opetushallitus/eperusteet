@@ -58,11 +58,11 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
                 null,
                 peruste.getId())
                 .addAll(peruste.getTutkinnonOsat().stream()
-                        .map(tosa -> buildTutkinnonOsa(peruste.getSuoritustavat().stream()
-                                .map(st -> st.getTutkinnonOsat().stream()
+                        .map(tosa -> buildTutkinnonOsa(
+                                peruste.getSuoritustavat().stream()
+                                        .flatMap(st -> st.getTutkinnonOsat().stream())
                                         .filter(viite -> viite.getTutkinnonOsa().getIdLong().equals(tosa.getId()))
-                                        .findFirst().get()
-                                ).findFirst().get(), tosa))
+                                        .findFirst().get(), tosa))
                         .collect(Collectors.toList()));
     }
 
