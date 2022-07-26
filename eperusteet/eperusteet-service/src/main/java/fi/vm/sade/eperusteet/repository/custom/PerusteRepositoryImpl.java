@@ -312,6 +312,8 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
                         .collect(Collectors.toSet());
                 pred = cb.and(pred, cb.or(root.get(Peruste_.tila).in(perusteTilat), cb.isNotEmpty(root.get(Peruste_.julkaisut))));
             }
+
+            pred = cb.and(pred, cb.notEqual(root.get(Peruste_.tila), PerusteTila.POISTETTU));
         }
 
         if (!StringUtils.isEmpty(pq.getPerusteTyyppi())) {

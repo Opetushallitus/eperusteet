@@ -20,7 +20,10 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
     String julkaisutQuery = "FROM ( " +
             "   SELECT * " +
             "   FROM julkaistu_peruste_Data_view data" +
-            "   WHERE koulutustyyppi IN (:koulutustyypit) " +
+            "   WHERE (" +
+            "           koulutustyyppi IN (:koulutustyypit) " +
+            "           OR exists (select 1 from jsonb_array_elements(oppaankoulutustyypit) okt where okt->>0 in (:koulutustyypit))" +
+            "         ) " +
             "   AND (:nimi LIKE '' " +
             "           OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')) " +
             "           OR EXISTS (SELECT 1 FROM json_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
@@ -29,16 +32,20 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "       )" +
             "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
             "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
-            "   AND ((:tulevat = true " +
-            "                       AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
-            "       OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki " +
-            "           AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
-            "       OR (:siirtymat = true " +
+            "   AND tyyppi = :tyyppi " +
+            "   AND (" +
+            "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
+            "           OR (" +
+            "               ((:tulevat = true AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
+            "               OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
+            "               OR (:siirtymat = true " +
             "                       AND (data.\"voimassaoloLoppuu\" IS NOT NULL AND data.\"siirtymaPaattyy\" IS NOT NULL " +
-            "                           AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
-            "       OR (:voimassa = true " +
+            "                       AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
+            "               OR (:voimassa = true " +
             "                       AND (CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
-            "                           AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
+            "                       AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
+            "              )" +
+            "       )" +
             "   order by nimi->>:kieli asc, ?#{#pageable} " +
             ") t";
 
@@ -56,6 +63,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("siirtymat") boolean siirtymat,
             @Param("poistuneet") boolean poistuneet,
             @Param("koulutusvienti") boolean koulutusvienti,
+            @Param("tyyppi") String tyyppi,
             Pageable pageable);
 
     @Query(nativeQuery = true,

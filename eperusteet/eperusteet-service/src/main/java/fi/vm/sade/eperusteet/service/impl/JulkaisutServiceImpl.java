@@ -266,12 +266,23 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, boolean tulevat,
+    public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
                                                             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti,
                                                             Integer sivu, Integer sivukoko) {
         Pageable pageable = new PageRequest(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
-        return julkaisutRepository.findAllJulkisetJulkaisut(koulutustyyppi, nimi, kieli, currentMillis, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, pageable)
+        return julkaisutRepository.findAllJulkisetJulkaisut(
+                koulutustyyppi,
+                nimi,
+                kieli,
+                currentMillis,
+                tulevat,
+                voimassa,
+                siirtyma,
+                poistuneet,
+                koulutusvienti,
+                tyyppi,
+                pageable)
                 .map(obj -> {
                     try {
                         return objectMapper.readValue(obj, PerusteenJulkaisuData.class);
