@@ -86,6 +86,11 @@
           "required" : false,
           "type" : "boolean"
         }, {
+          "name" : "tyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
           "name" : "sivu",
           "in" : "query",
           "required" : false,
@@ -2142,11 +2147,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "last" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -2182,11 +2187,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "last" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -2538,6 +2543,10 @@
           "items" : {
             "$ref" : "#/definitions/KoulutusDto"
           }
+        },
+        "julkaistu" : {
+          "type" : "string",
+          "format" : "date-time"
         }
       }
     },
