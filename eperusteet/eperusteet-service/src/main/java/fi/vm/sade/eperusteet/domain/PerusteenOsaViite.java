@@ -154,7 +154,7 @@ public class PerusteenOsaViite implements
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private TutkintoonvalmentavaSisalto tuvaSisalto;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
     private PerusteenOsa perusteenOsa;
@@ -225,7 +225,7 @@ public class PerusteenOsaViite implements
     public PerusteenOsaViite copy(final boolean deep) {
         final PerusteenOsaViite pov = new PerusteenOsaViite();
         if (this.getPerusteenOsa() != null) {
-            pov.setPerusteenOsa(this.getPerusteenOsa());
+            pov.setPerusteenOsa(this.getPerusteenOsa().copy());
         }
 
         final List<PerusteenOsaViite> uudetLapset = new ArrayList<>();
