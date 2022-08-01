@@ -133,9 +133,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nodeyo-
 
+      - name: Check if UI has same branch
+        id: ui_branch_status
+        run: |
+          if [ "$(curl -s -o /dev/null -I -w '%{http_code}' https://github.com/Opetushallitus/eperusteet-ui/tree/${{ github.ref_name }})" == "200" ] 
+          then
+            echo branch found
+            echo "EPERUSTEET_UI_GIT_BRANCH=-b ${{ github.ref_name }}" >> $GITHUB_ENV
+          else
+            echo "EPERUSTEET_UI_GIT_BRANCH=" >> $GITHUB_ENV
+            echo branch not found
+          fi
+
       - name: Build with Maven
         run: |
-          git clone --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
+          echo "EPERUSTEET_SPECFILE=https://raw.githubusercontent.com/Opetushallitus/eperusteet/${{ github.ref_name }}/generated/eperusteet.spec.json" >> $GITHUB_ENV
+          git clone ${{ env.EPERUSTEET_UI_GIT_BRANCH }} --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
           export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
           
           cd eperusteet-ui
