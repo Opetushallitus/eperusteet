@@ -31,7 +31,6 @@ import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 /**
- *
  * @author jhyoty
  */
 @Entity
@@ -39,8 +38,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Table(name = "perusteenosa")
 public abstract class PerusteenOsa
-    extends AbstractAuditedEntity
-    implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity, HistoriaTapahtuma {
+        extends AbstractAuditedEntity
+        implements Serializable, Mergeable<PerusteenOsa>, WithPerusteTila, ReferenceableEntity, HistoriaTapahtuma, Poistettava {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -95,6 +94,7 @@ public abstract class PerusteenOsa
         this.id = id;
     }
 
+    @Override
     public TekstiPalanen getNimi() {
         return nimi;
     }
@@ -142,6 +142,11 @@ public abstract class PerusteenOsa
             TekstiKappale otherTk = (TekstiKappale) other;
             tk.setLiite(otherTk.isLiite());
         }
+    }
+
+    @Override
+    public PoistetunTyyppi getPoistetunTyyppi() {
+        return null;
     }
 
 }

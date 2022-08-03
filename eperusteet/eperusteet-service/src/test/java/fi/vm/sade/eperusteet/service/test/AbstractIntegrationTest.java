@@ -15,8 +15,10 @@
  */
 package fi.vm.sade.eperusteet.service.test;
 
+import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -37,10 +39,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @ActiveProfiles(profiles = "test")
 public class AbstractIntegrationTest {
 
+    @Autowired
+    public PerusteprojektiTestUtils ppTestUtils;
+
     @Before
     public void setUpSecurityContext() {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
+        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test", "test"));
         SecurityContextHolder.setContext(ctx);
 
         // PerusteUpdateStoreImpl @scope:n takia
