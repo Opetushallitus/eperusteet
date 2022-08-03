@@ -20,7 +20,9 @@ import fi.vm.sade.eperusteet.domain.RevisionInfo_;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;
@@ -123,6 +125,22 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     public int getLatestRevisionId() {
         //enverssissä ei ole suoraan suurimman revisionumeron palautusta, workaround
         return AuditReaderFactory.get(entityManager).getRevisionNumberForDate(DateTime.now().plusDays(1).toDate()).intValue();
+    }
+
+    @Override
+    public T getLatestNotNull(ID id) {
+        List<Revision> revisions = this.getRevisions(id);
+        revisions = revisions.stream()
+                .sorted(Comparator.comparing(Revision::getPvm).reversed())
+                .collect(Collectors.toList());
+
+        for (Revision revision : revisions) {
+            T last = this.findRevision(id, revision.getNumero());
+            if (last != null) {
+                return last;
+            }
+        }
+        return null;
     }
 
 }

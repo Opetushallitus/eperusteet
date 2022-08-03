@@ -140,8 +140,13 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
         }
     }
 
-    @Override
-    public NavigationType getNavigationType() {
-        return NavigationType.tekstikappale;
-    }
-}
+     @Override
+     public NavigationType getNavigationType() {
+         return NavigationType.tekstikappale;
+     }
+
+     @Override
+     public PoistetunTyyppi getPoistetunTyyppi() {
+         return PoistetunTyyppi.TEKSTIKAPPALE;
+     }
+ }

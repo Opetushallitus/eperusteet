@@ -751,6 +751,7 @@
                                         </location>
                                         <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>
                                         <location>${eperusteet.resources}.peruste.LukiokoulutusJulkisetPerusteenSisallotController</location>
+                                        <location>${eperusteet.resources}.peruste.PoistettuSisaltoController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>

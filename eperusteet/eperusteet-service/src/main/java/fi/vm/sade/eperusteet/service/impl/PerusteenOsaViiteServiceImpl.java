@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
+import fi.vm.sade.eperusteet.service.PoistoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -79,6 +80,9 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Autowired
     private PerusteenMuokkaustietoService muokkausTietoService;
+
+    @Autowired
+    private PoistoService poistoService;
 
     @Override
     @Transactional(readOnly = false)
@@ -140,6 +144,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)
                 && findViitteet(perusteId, id).size() == 1) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
+            poistoService.remove(perusteId, perusteenOsa);
             perusteenOsaService.delete(perusteenOsa.getId(), perusteId);
         }
         viite.setPerusteenOsa(null);
