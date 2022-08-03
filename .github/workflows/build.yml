@@ -62,17 +62,20 @@ jobs:
 
       - name: Generate api
         run: |
-          cd eperusteet/eperusteet-service
-          mvn clean compile -P generate-openapi
-          cp target/openapi/eperusteet.spec.json ../../generated
-          mvn clean compile -P generate-openapi-ext
-          cp target/openapi/eperusteet-ext.spec.json ../../generated
-          git config --global user.name "GitHub Actions runner"
-          git config --global user.email "<>"
-          git add ../../generated/eperusteet-ext.spec.json
-          git add ../../generated/eperusteet.spec.json
-          git commit -m "github actions generated spec files [skip actions]"
-          git push origin ${{ github.ref_name }}
+          if [ "${{ github.ref_name }})" != "master" ]
+          then
+            cd eperusteet/eperusteet-service
+            mvn clean compile -P generate-openapi
+            cp target/openapi/eperusteet.spec.json ../../generated
+            mvn clean compile -P generate-openapi-ext
+            cp target/openapi/eperusteet-ext.spec.json ../../generated
+            git config --global user.name "GitHub Actions runner"
+            git config --global user.email "<>"
+            git add ../../generated/eperusteet-ext.spec.json
+            git add ../../generated/eperusteet.spec.json
+            git commit -m "github actions generated spec files [skip actions]"
+            git push origin ${{ github.ref_name }}
+          fi  
 
   build-and-test-eperusteet-ui:
     needs: [generate-spec-file]
