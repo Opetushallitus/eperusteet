@@ -62,7 +62,7 @@ jobs:
 
       - name: Generate api
         run: |
-          if [ "${{ github.ref_name }})" != "master" ]
+          if [ "${{ github.ref_name }}" != "master" ]
           then
             cd eperusteet/eperusteet-service
             mvn clean compile -P generate-openapi
