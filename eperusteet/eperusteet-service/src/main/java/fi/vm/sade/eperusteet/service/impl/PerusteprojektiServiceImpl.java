@@ -96,6 +96,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -263,6 +264,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private JulkaisutService julkaisutService;
+
+    @Autowired
+    private LiiteService liiteService;
 
     @Override
     @Transactional(readOnly = true)
@@ -809,6 +813,10 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.saveAndFlush(perusteprojekti);
+
+        if (perusteprojektiDto.getPerusteId() != null) {
+            liiteService.copyLiitteetForPeruste(peruste.getId(), perusteprojektiDto.getPerusteId());
+        }
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);
     }

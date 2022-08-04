@@ -55,4 +55,6 @@ public interface LiiteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     void paivitaLisatieto(@P("perusteId") final Long perusteId, UUID id, String lisatieto);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void copyLiitteetForPeruste(Long perusteId, Long pohjaPerusteId);
 }
