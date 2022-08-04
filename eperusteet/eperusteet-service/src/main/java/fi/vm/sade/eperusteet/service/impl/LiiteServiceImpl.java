@@ -84,6 +84,14 @@ public class LiiteServiceImpl implements LiiteService {
     }
 
     @Override
+    public void copyLiitteetForPeruste(Long perusteId, Long pohjaPerusteId) {
+        Peruste peruste = perusteet.findOne(perusteId);
+        liitteet.findByPerusteId(pohjaPerusteId).forEach(liite -> {
+            peruste.attachLiite(liite);
+        });
+    }
+
+    @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {

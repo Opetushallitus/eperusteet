@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.OpasService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -75,6 +76,9 @@ public class OpasServiceImpl implements OpasService {
     @Dto
     private DtoMapper mapper;
 
+    @Autowired
+    private LiiteService liiteService;
+
     @Override
     public OpasDto get(Long id) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -109,6 +113,10 @@ public class OpasServiceImpl implements OpasService {
 
         perusteprojekti.setPeruste(peruste);
         perusteprojekti = repository.saveAndFlush(perusteprojekti);
+
+        if (opasDto.getPohjaId() != null) {
+            liiteService.copyLiitteetForPeruste(peruste.getId(), opasDto.getPohjaId());
+        }
 
         return mapper.map(perusteprojekti, OpasDto.class);
     }
