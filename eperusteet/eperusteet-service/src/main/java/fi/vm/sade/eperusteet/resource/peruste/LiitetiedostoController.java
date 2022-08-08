@@ -19,19 +19,28 @@ import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
+import fi.vm.sade.eperusteet.service.util.Pair;
+import io.swagger.annotations.Api;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import javax.activation.MimetypesFileTypeMap;
-import javax.servlet.http.HttpServletRequest;
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
-import fi.vm.sade.eperusteet.service.util.Pair;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.Tika;
@@ -94,9 +103,11 @@ public class LiitetiedostoController {
             @P("perusteId") Long perusteId,
             @RequestParam("nimi") String nimi,
             @RequestParam("file") Part file,
+            @RequestParam Integer width,
+            @RequestParam Integer height,
             UriComponentsBuilder ucb
     ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
-        Pair<UUID, String> res = upload(perusteId, nimi, file.getInputStream(), file.getSize(), LiiteTyyppi.KUVA, IMAGE_TYPES);
+        Pair<UUID, String> res = upload(perusteId, nimi, file.getInputStream(), file.getSize(), LiiteTyyppi.KUVA, IMAGE_TYPES, width, height, file);
         UUID uuid = res.getFirst();
         String extension = res.getSecond();
 
@@ -255,7 +266,20 @@ public class LiitetiedostoController {
             InputStream is,
             long koko,
             LiiteTyyppi tyyppi,
-            Set<String> tyypit
+            Set<String> tyypit) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+        return upload(perusteId, nimi, is, koko, tyyppi, tyypit, null, null, null);
+    }
+
+    private Pair<UUID, String> upload(
+            Long perusteId,
+            String nimi,
+            InputStream is,
+            long koko,
+            LiiteTyyppi tyyppi,
+            Set<String> tyypit,
+            Integer width,
+            Integer height,
+            Part file
     ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
         try (PushbackInputStream pis = new PushbackInputStream(is, BUFSIZE)) {
             byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
@@ -272,7 +296,27 @@ public class LiitetiedostoController {
                 throw new HttpMediaTypeNotSupportedException(mime + " ei ole tuettu");
             }
 
-            return Pair.of(liitteet.add(perusteId, tyyppi, mime, nimi, koko, pis), extension);
+            if (width != null && height != null && file != null) {
+                String mediaType = tika.detect(buf);
+                ByteArrayOutputStream os = scaleImage(file, mediaType, width, height);
+                return Pair.of(liitteet.add(perusteId, tyyppi, mime, nimi, os.size(), new PushbackInputStream(new ByteArrayInputStream(os.toByteArray()))), extension);
+            } else {
+                return Pair.of(liitteet.add(perusteId, tyyppi, mime, nimi, koko, pis), extension);
+            }
+
         }
     }
+
+    private ByteArrayOutputStream scaleImage(@RequestParam("file") Part file, String tyyppi, Integer width, Integer height) throws IOException {
+        BufferedImage a = ImageIO.read(file.getInputStream());
+        BufferedImage preview = new BufferedImage(width, height, a.getType());
+        preview.createGraphics().drawImage(a.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(preview, tyyppi.replace("image/", ""), os);
+
+        return os;
+    }
+
+
 }
