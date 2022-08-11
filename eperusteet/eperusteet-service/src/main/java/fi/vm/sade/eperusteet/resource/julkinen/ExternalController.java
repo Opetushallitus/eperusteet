@@ -45,7 +45,7 @@ public class ExternalController {
     @ResponseBody
     @ApiOperation(value = "Perusteiden haku")
     public ResponseEntity<Page<PerusteenJulkaisuData>> getPerusteet(
-            @RequestParam("koulutustyyppi") final List<String> koulutustyyppi,
+            @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyyppi,
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) final String kieli,
             @RequestParam(value = "tulevat", defaultValue = "true", required = false) final boolean tulevat,
@@ -54,9 +54,10 @@ public class ExternalController {
             @RequestParam(value = "poistuneet", defaultValue = "false", required = false) final boolean poistuneet,
             @RequestParam(value = "koulutusvienti", defaultValue = "false", required = false) final boolean koulutusvienti,
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
+            @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, sivu, sivukoko));
+        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, sivu, sivukoko));
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {

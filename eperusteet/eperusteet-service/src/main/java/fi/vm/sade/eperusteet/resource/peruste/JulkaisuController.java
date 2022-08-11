@@ -57,9 +57,10 @@ public class JulkaisuController {
             @RequestParam(value = "poistuneet", defaultValue = "false", required = false) final boolean poistuneet,
             @RequestParam(value = "koulutusvienti", defaultValue = "false", required = false) final boolean koulutusvienti,
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
+            @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, sivu, sivukoko));
+        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, sivu, sivukoko));
     }
 
     @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")
