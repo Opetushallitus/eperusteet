@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
 import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -68,6 +69,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -267,10 +269,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
-                                                            boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti,
+                                                            boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
                                                             Integer sivu, Integer sivukoko) {
         Pageable pageable = new PageRequest(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
+        if (CollectionUtils.isEmpty((koulutustyyppi))) {
+            koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
+        }
         return julkaisutRepository.findAllJulkisetJulkaisut(
                 koulutustyyppi,
                 nimi,
@@ -282,6 +287,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 poistuneet,
                 koulutusvienti,
                 tyyppi,
+                diaarinumero,
                 pageable)
                 .map(obj -> {
                     try {

@@ -33,6 +33,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
             "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
             "   AND tyyppi = :tyyppi " +
+            "   AND (:diaarinumero like '' OR LOWER(diaarinumero) LIKE LOWER(:diaarinumero)) " +
             "   AND (" +
             "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
             "           OR (" +
@@ -64,6 +65,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("poistuneet") boolean poistuneet,
             @Param("koulutusvienti") boolean koulutusvienti,
             @Param("tyyppi") String tyyppi,
+            @Param("diaarinumero") String diaarinumero,
             Pageable pageable);
 
     @Query(nativeQuery = true,

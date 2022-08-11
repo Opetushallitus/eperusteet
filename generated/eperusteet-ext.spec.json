@@ -44,7 +44,7 @@
         "parameters" : [ {
           "name" : "koulutustyyppi",
           "in" : "query",
-          "required" : true,
+          "required" : false,
           "type" : "array",
           "items" : {
             "type" : "string"
@@ -87,6 +87,11 @@
           "type" : "boolean"
         }, {
           "name" : "tyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "diaarinumero",
           "in" : "query",
           "required" : false,
           "type" : "string"
