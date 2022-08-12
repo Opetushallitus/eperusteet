@@ -12600,15 +12600,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12640,15 +12649,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12680,15 +12698,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12720,15 +12747,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12760,15 +12796,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12800,15 +12845,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12840,15 +12894,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12880,15 +12943,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12920,15 +12992,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12960,15 +13041,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13000,15 +13090,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13040,15 +13139,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13080,15 +13188,24 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+<<<<<<< HEAD
           "type" : "boolean"
         },
         "last" : {
+=======
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 747e1d78f... github actions generated spec files [skip actions]
         "size" : {
           "type" : "integer",
           "format" : "int32"
