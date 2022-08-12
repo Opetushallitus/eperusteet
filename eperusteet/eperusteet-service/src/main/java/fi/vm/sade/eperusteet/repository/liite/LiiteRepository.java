@@ -20,8 +20,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -38,4 +40,9 @@ public interface LiiteRepository extends JpaRepository<Liite, UUID>, LiiteReposi
 
     @Query("SELECT l FROM Peruste o JOIN o.liitteet l WHERE o.id = ?1 AND l.id = ?2")
     Liite findOne(Long perusteId, UUID id);
+
+    @Transactional
+    @Query("UPDATE Liite l SET l.lisatieto = ?2 WHERE l.id = ?1")
+    @Modifying
+    void updateLisatieto(UUID id, String lisatieto);
 }
