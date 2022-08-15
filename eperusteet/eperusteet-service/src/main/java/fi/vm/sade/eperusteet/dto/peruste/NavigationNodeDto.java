@@ -42,7 +42,9 @@ public class NavigationNodeDto implements KoodillinenDto {
     }
 
     public NavigationNodeDto meta(String key, Object value) {
-        meta.put(key, value);
+        if (value != null) {
+            meta.put(key, value);
+        }
         return this;
     }
 
