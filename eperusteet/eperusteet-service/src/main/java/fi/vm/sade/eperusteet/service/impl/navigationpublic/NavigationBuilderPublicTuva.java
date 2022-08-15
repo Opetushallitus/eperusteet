@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -35,6 +36,16 @@ public class NavigationBuilderPublicTuva extends NavigationBuilderPublicDefault 
             }
 
             return perusteenOsaDto.getNimi();
+        }
+
+        return null;
+    }
+
+    @Override
+    public KoodiDto getPerusteenosaMetaKoodi(PerusteenOsaDto perusteenOsaDto) {
+        if (perusteenOsaDto != null && perusteenOsaDto instanceof KoulutuksenOsaDto) {
+            KoulutuksenOsaDto koulutuksenOsaDto = (KoulutuksenOsaDto) perusteenOsaDto;
+            return koulutuksenOsaDto.getNimiKoodi();
         }
 
         return null;
