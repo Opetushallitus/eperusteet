@@ -93,11 +93,17 @@ public class PerusteprojektiController {
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
         return page;
     }
-    
+
     @RequestMapping(value = "/omat", method = GET)
     @ResponseBody
     public ResponseEntity<List<PerusteprojektiListausDto>> getOmatPerusteprojektit() {
         return new ResponseEntity<>(service.getOmatProjektit(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/omat/julkaistut", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<PerusteprojektiListausDto>> getOmatJulkaistutPerusteprojektit() {
+        return new ResponseEntity<>(service.getOmatJulkaistut(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/virheelliset", method = GET)

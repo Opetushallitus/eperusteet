@@ -98,6 +98,10 @@ public interface PerusteprojektiService {
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
     List<PerusteprojektiListausDto> getOmatProjektit();
 
+    @PreAuthorize("isAuthenticated()")
+    @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
+    List<PerusteprojektiListausDto> getOmatJulkaistut();
+
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(@P("id") Long perusteProjektiId);
 

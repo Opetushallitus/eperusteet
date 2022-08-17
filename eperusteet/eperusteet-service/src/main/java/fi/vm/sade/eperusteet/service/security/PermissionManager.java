@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.authorization.PerusteprojektiPermissionRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -618,5 +619,17 @@ public class PermissionManager {
             return Collections.singleton(c.iterator().next());
         }
         return new HashSet<>(c);
+    }
+
+    public Set<String> kayttajanOrganisaatiot() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .filter(Objects::nonNull)
+                .map(GrantedAuthority::getAuthority)
+                .filter(Objects::nonNull)
+                .map(x -> x.split("_"))
+                .filter(x -> x.length > 0)
+                .map(x -> x[x.length - 1])
+                .collect(Collectors.toSet());
     }
 }

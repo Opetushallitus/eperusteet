@@ -109,6 +109,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
@@ -267,6 +268,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private LiiteService liiteService;
+
+    @Autowired
+    private PermissionManager permissionManager;
 
     @Override
     @Transactional(readOnly = true)
@@ -600,22 +604,21 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
     public List<PerusteprojektiListausDto> getOmatProjektit() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        Set<String> orgs = authentication.getAuthorities().stream()
-                .filter(Objects::nonNull)
-                .map(GrantedAuthority::getAuthority)
-                .filter(Objects::nonNull)
-                .map(x -> x.split("_"))
-                .filter(x -> x.length > 0)
-                .map(x -> x[x.length - 1])
-                .collect(Collectors.toSet());
-        String user = authentication.getName();
+        Set<String> orgs = permissionManager.kayttajanOrganisaatiot();
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
         return mapper.mapAsList(repository.findOmatPerusteprojektit(user, orgs), PerusteprojektiListausDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
+    @PreAuthorize("isAuthenticated()")
+    public List<PerusteprojektiListausDto> getOmatJulkaistut() {
+        Set<String> orgs = permissionManager.kayttajanOrganisaatiot();
+        String user = SecurityContextHolder.getContext().getAuthentication().getName();
+        return mapper.mapAsList(repository.findOmatJulkaistutPerusteprojektit(user, orgs), PerusteprojektiListausDto.class);
+    }
+
+    @Override
     public PerusteprojektiDto get(Long id) {
         Perusteprojekti p = repository.findOne(id);
         return mapper.map(p, PerusteprojektiDto.class);
