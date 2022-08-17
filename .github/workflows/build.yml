@@ -80,6 +80,8 @@ jobs:
   build-and-test-eperusteet-ui:
     needs: [generate-spec-file]
     runs-on: ubuntu-latest
+    env:
+        EPERUSTEET_SPECFILE: https://raw.githubusercontent.com/Opetushallitus/eperusteet/${{ github.ref_name }}/generated/eperusteet.spec.json
     steps:
       - uses: actions/checkout@v3
 
@@ -150,7 +152,6 @@ jobs:
 
       - name: Build with Maven
         run: |
-          echo "EPERUSTEET_SPECFILE=https://raw.githubusercontent.com/Opetushallitus/eperusteet/${{ github.ref_name }}/generated/eperusteet.spec.json" >> $GITHUB_ENV
           git clone ${{ env.EPERUSTEET_UI_GIT_BRANCH }} --recurse-submodules --depth 1 https://github.com/Opetushallitus/eperusteet-ui.git
           export EPERUSTEET_SERVICE_DIR=${{ github.workspace }}/eperusteet/eperusteet-service
           
