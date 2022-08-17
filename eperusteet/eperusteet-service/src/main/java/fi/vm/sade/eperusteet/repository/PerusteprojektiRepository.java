@@ -76,7 +76,7 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
     List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs);
 
     @Query("SELECT p from Perusteprojekti p " +
-            "WHERE (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0) " +
+            "WHERE p.tila <> 'POISTETTU' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0) " +
             "AND (p.luoja = ?1 OR p.ryhmaOid IN (?2)) AND p.peruste.tyyppi != 'Opas'")
     List<Perusteprojekti> findOmatJulkaistutPerusteprojektit(String userOid, Set<String> orgs);
 

@@ -619,6 +619,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
         Perusteprojekti p = repository.findOne(id);
         return mapper.map(p, PerusteprojektiDto.class);
