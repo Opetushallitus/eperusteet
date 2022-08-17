@@ -7748,6 +7748,23 @@
         }
       }
     },
+    "/perusteprojektit/omat/julkaistut" : {
+      "get" : {
+        "tags" : [ "Perusteprojektit" ],
+        "operationId" : "getOmatJulkaistutPerusteprojektit",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/PerusteprojektiListausDto"
+              }
+            }
+          }
+        }
+      }
+    },
     "/perusteprojektit/perusteHaku" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
