@@ -64,6 +64,7 @@ public class Liite implements Serializable {
 
     @Getter
     @Basic(fetch = FetchType.LAZY, optional = false)
+    @Column(updatable = false, nullable = false)
     @Lob
     @NotNull
     private Blob data;

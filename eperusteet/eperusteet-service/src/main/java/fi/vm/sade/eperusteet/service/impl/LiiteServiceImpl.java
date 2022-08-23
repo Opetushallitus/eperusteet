@@ -42,6 +42,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.persistence.EntityManager;
+
 /**
  *
  * @author jhyoty
@@ -54,6 +56,9 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Autowired
     private PerusteRepository perusteet;
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     @Dto
@@ -78,9 +83,9 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     public void paivitaLisatieto(Long perusteId, UUID id, String lisatieto) {
-        Liite liite = liitteet.findOne(perusteId, id);
-        liite.setLisatieto(lisatieto);
-        liitteet.save(liite);
+        if (liitteet.findOne(perusteId, id) != null) {
+            liitteet.updateLisatieto(id, lisatieto);
+        }
     }
 
     @Override
