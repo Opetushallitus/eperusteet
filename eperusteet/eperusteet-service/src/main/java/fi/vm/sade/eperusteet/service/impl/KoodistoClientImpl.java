@@ -312,6 +312,7 @@ public class KoodistoClientImpl implements KoodistoClient {
                 .metadata(koodinimi.getTekstit().entrySet().stream()
                         .map((k) -> KoodistoMetadataDto.of(k.getValue(), k.getKey().toString().toUpperCase(), k.getValue()))
                         .toArray(KoodistoMetadataDto[]::new))
+                .versio("1")
                 .build();
         KoodistoKoodiDto lisattyKoodi = addKoodi(uusiKoodi);
         if (lisattyKoodi == null
