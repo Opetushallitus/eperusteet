@@ -2331,6 +2331,10 @@
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
         },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
         "luotu" : {
           "type" : "string",
           "format" : "date-time"
