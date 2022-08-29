@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -643,10 +644,12 @@ public class ValidatorPeruste implements Validator {
                         String arvo = osaDto.getKoodiArvo();
 
                         // Tarkistetaan onko sama koodi useammassa tutkinnon osassa
-                        if (tosa.getNimi() != null && uniikitKoodit.contains(uri)) {
-                            uniikitKooditTosat.add(new NavigableLokalisoituTekstiDto(tov));
-                        } else {
-                            uniikitKoodit.add(uri);
+                        if (!ObjectUtils.isEmpty(uri)) {
+                            if (tosa.getNimi() != null && uniikitKoodit.contains(uri)) {
+                                uniikitKooditTosat.add(new NavigableLokalisoituTekstiDto(tov));
+                            } else {
+                                uniikitKoodit.add(uri);
+                            }
                         }
 
                         if (tosa.getNimi() != null
