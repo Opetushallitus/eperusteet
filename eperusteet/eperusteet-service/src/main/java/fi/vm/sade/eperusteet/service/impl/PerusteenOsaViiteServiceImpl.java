@@ -111,6 +111,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
                 TutkinnonOsa uusi = new TutkinnonOsa(to);
                 uusi.asetaAlkuperainenPeruste(peruste);
                 uusi.asetaTila(PerusteTila.LUONNOS);
+                uusi.setKoodi(null);
                 tov.setTutkinnonOsa(tutkinnonOsaRepository.save(uusi));
                 muokkausTietoService.addMuokkaustieto(perusteId, tov, MuokkausTapahtuma.KOPIOINTI);
                 return mapper.map(tov, TutkinnonOsaViiteDto.class);

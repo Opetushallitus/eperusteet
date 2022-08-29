@@ -479,6 +479,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         List<TutkinnonOsaViiteDto> peruste1viitteet = perusteService.getTutkinnonOsat(peruste1.getId(), Suoritustapakoodi.REFORMI);
         assertThat(peruste1viitteet).hasSize(2);
         assertThat(peruste1viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste1.getId(), peruste1.getId());
+        assertThat(peruste1viitteet).extracting("tutkinnonOsaDto.koodi").doesNotContainNull();
 
         perusteService.attachTutkinnonOsa(peruste2.getId(), Suoritustapakoodi.REFORMI, tutkinnonOsaViiteDto1);
         List<TutkinnonOsaViiteDto> peruste2viitteet = perusteService.getTutkinnonOsat(peruste2.getId(), Suoritustapakoodi.REFORMI);
@@ -486,12 +487,20 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         assertThat(peruste2viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste1.getId());
         assertThat(peruste2viitteet).extracting("tutkinnonOsaDto.id").containsExactly(tutkinnonOsaViiteDto1.getTutkinnonOsa().getIdLong());
 
-        TutkinnonOsaViiteDto kopio = perusteService.attachTutkinnonOsa(peruste3.getId(), Suoritustapakoodi.REFORMI, tutkinnonOsaViiteDto2, mapper.map(peruste1, PerusteKevytDto.class));
+        TutkinnonOsaViiteLuontiDto luontiDto = new TutkinnonOsaViiteLuontiDto();
+        luontiDto.setNimi(tutkinnonOsaViiteDto2.getNimi());
+        luontiDto.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
+        luontiDto.setTutkinnonOsa(tutkinnonOsaViiteDto2.getTutkinnonOsa());
+        TutkinnonOsaViiteDto kopio = perusteService.attachTutkinnonOsa(peruste3.getId(), Suoritustapakoodi.REFORMI, luontiDto, mapper.map(peruste1, PerusteKevytDto.class));
         perusteenOsaViiteService.kloonaaTutkinnonOsa(peruste3.getId(), Suoritustapakoodi.REFORMI, kopio.getId());
         List<TutkinnonOsaViiteDto> peruste3viitteet = perusteService.getTutkinnonOsat(peruste3.getId(), Suoritustapakoodi.REFORMI);
         assertThat(peruste3viitteet).hasSize(1);
         assertThat(peruste3viitteet).extracting("tutkinnonOsaDto.alkuperainenPeruste.id").containsExactly(peruste3.getId());
         assertThat(peruste3viitteet).extracting("tutkinnonOsaDto.id").isNotIn(tutkinnonOsaViiteDto1.getTutkinnonOsa().getIdLong(), tutkinnonOsaViiteDto2.getTutkinnonOsa().getIdLong());
+        assertThat(peruste3viitteet).extracting("tutkinnonOsaDto.koodi").containsOnlyNulls();
+
+        peruste1viitteet = perusteService.getTutkinnonOsat(peruste1.getId(), Suoritustapakoodi.REFORMI);
+        assertThat(peruste1viitteet).extracting("tutkinnonOsaDto.koodi").doesNotContainNull();
     }
 
     @Test
