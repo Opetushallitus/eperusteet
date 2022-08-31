@@ -142,7 +142,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Async
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
-    public void teeJulkaisut(boolean julkaiseKaikki, boolean pakkojulkaisu, String tyyppi, String koulutustyyppi, String tiedote) {
+    public void teeJulkaisut(boolean julkaiseKaikki, String tyyppi, String koulutustyyppi, String tiedote) {
         List<Long> perusteet = perusteRepository.findJulkaistutPerusteet(PerusteTyyppi.of(tyyppi), koulutustyyppi).stream()
                 .filter(peruste -> julkaiseKaikki || CollectionUtils.isEmpty(peruste.getJulkaisut()))
                 .map(Peruste::getId)
@@ -152,7 +152,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         for (Long perusteId : perusteet) {
             try {
-                teeJulkaisu(perusteId, pakkojulkaisu, tiedote);
+                teeJulkaisu(perusteId, tiedote);
             } catch (RuntimeException ex) {
                 log.error(ex.getLocalizedMessage(), ex);
             }
@@ -166,19 +166,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
     }
 
-    private void teeJulkaisu(Long perusteId, boolean pakkojulkaisu, String tiedote) {
+    private void teeJulkaisu(Long perusteId, String tiedote) {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(perusteId);
             List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPeruste(peruste);
-
-            if (!pakkojulkaisu) {
-                PerusteVersion version = peruste.getGlobalVersion();
-                if (julkaisut.stream().anyMatch(julkaisu -> julkaisu.getLuotu().compareTo(version.getAikaleima()) > 0)) {
-                    log.info("Perusteella jo julkaisu: " + peruste.getId());
-                    return true;
-                }
-            }
 
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
 

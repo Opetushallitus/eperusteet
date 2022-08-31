@@ -1191,11 +1191,6 @@
           "required" : true,
           "type" : "boolean"
         }, {
-          "name" : "force",
-          "in" : "query",
-          "required" : true,
-          "type" : "boolean"
-        }, {
           "name" : "tyyppi",
           "in" : "query",
           "required" : true,
@@ -13294,6 +13289,10 @@
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
         },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
         "luotu" : {
           "type" : "string",
           "format" : "date-time"
@@ -13437,6 +13436,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",
@@ -13601,6 +13604,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",
@@ -13789,6 +13796,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",
@@ -14017,6 +14028,10 @@
           "type" : "string",
           "format" : "date-time",
           "description" : "Perusteen määräyksen päätöspäivämäärä"
+        },
+        "viimeisinJulkaisuAika" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "luotu" : {
           "type" : "string",

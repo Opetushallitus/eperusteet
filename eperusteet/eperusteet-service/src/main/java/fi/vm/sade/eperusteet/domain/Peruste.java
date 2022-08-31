@@ -37,6 +37,7 @@ import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -314,6 +315,17 @@ public class Peruste extends AbstractAuditedEntity
     @OneToMany(mappedBy = "peruste", fetch = FetchType.LAZY)
     @Getter
     private List<JulkaistuPeruste> julkaisut;
+
+    public Optional<Date> getViimeisinJulkaisuAika() {
+        if (CollectionUtils.isNotEmpty(julkaisut)) {
+            return julkaisut.stream()
+                    .sorted(Comparator.comparing(JulkaistuPeruste::getLuotu).reversed())
+                    .map(JulkaistuPeruste::getLuotu)
+                    .findFirst();
+        }
+
+        return Optional.empty();
+    }
 
     public Set<PerusteenSisalto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {

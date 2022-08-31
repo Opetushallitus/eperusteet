@@ -110,13 +110,12 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "JOIN FETCH p.suoritustavat s " +
             "JOIN FETCH s.tutkinnonOsat t " +
             "WHERE p.perusteprojekti.tila = :projektitila " +
-            "AND p.globalVersion.aikaleima >= :aikaleima " +
             "AND p.tyyppi = :perustetyyppi " +
             "AND p.koulutustyyppi IN (:koulutustyypit) " +
             "AND s.suoritustapakoodi = :suoritustapakoodi " +
             "AND t.tutkinnonOsa.ammattitaitovaatimukset2019 IS NOT NULL")
     List<Peruste> findAmmattitaitovaatimusPerusteelliset(
-            @Param("projektitila") ProjektiTila projektitila, @Param("aikaleima") Date aikaleima, @Param("perustetyyppi") PerusteTyyppi perustetyyppi,
+            @Param("projektitila") ProjektiTila projektitila, @Param("perustetyyppi") PerusteTyyppi perustetyyppi,
             @Param("koulutustyypit") List<String> koulutustyypit, @Param("suoritustapakoodi") Suoritustapakoodi suoritustapakoodi);
 
     @Query("SELECT DISTINCT p FROM Peruste p " +

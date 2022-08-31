@@ -427,7 +427,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                         DokumenttiDto latest = findLatest(p.getId(), kieli, st.getSuoritustapakoodi(), GeneratorVersion.UUSI);
                         if (latest != null
                                 && latest.getAloitusaika() != null
-                                && latest.getAloitusaika().before(p.getGlobalVersion().getAikaleima())) {
+                                && latest.getAloitusaika().before(p.getViimeisinJulkaisuAika().orElse(p.getGlobalVersion().getAikaleima()))) {
                             paivitettavat.add(latest);
                         }
 
@@ -435,7 +435,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                         if (latestKvliite != null
                                 && !DokumenttiTila.EI_OLE.equals(latestKvliite.getTila())
                                 && (latestKvliite.getAloitusaika() == null || latestKvliite.getAloitusaika()
-                                .before(p.getGlobalVersion().getAikaleima()))) {
+                                .before(p.getViimeisinJulkaisuAika().orElse(p.getGlobalVersion().getAikaleima())))) {
                             paivitettavat.add(latestKvliite);
                         }
                         return true;
