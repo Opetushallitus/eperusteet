@@ -28,6 +28,7 @@ public class PerusteenJulkaisuData {
     private String koulutustyyppi;
     private Integer laajuus;
     private List<KoulutusDto> koulutukset;
+    private Set<SuoritustapaDto> suoritustavat;
     private Date julkaistu;
 
 }
