@@ -14299,6 +14299,13 @@
             "$ref" : "#/definitions/KoulutusDto"
           }
         },
+        "suoritustavat" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/SuoritustapaDto"
+          }
+        },
         "julkaistu" : {
           "type" : "string",
           "format" : "date-time"
