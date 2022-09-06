@@ -902,5 +902,21 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>local</id>
+            <properties>
+                <eperusteet.devdb.user>oph</eperusteet.devdb.user>
+                <eperusteet.devdb.password>test</eperusteet.devdb.password>
+                <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/eperusteet</eperusteet.devdb.jdbcurl>
+
+                <eperusteet-amosaa.devdb.user>oph</eperusteet-amosaa.devdb.user>
+                <eperusteet-amosaa.devdb.password>test</eperusteet-amosaa.devdb.password>
+                <eperusteet-amosaa.devdb.jdbcurl>jdbc:postgresql://localhost:5433/amosaa</eperusteet-amosaa.devdb.jdbcurl>
+
+                <eperusteet-ylops.devdb.user>oph</eperusteet-ylops.devdb.user>
+                <eperusteet-ylops.devdb.password>test</eperusteet-ylops.devdb.password>
+                <eperusteet-ylops.devdb.jdbcurl>jdbc:postgresql://localhost:5434/ylops</eperusteet-ylops.devdb.jdbcurl>
+            </properties>
+        </profile>
     </profiles>
 </project>
