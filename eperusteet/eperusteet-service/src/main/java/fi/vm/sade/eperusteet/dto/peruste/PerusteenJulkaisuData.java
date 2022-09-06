@@ -30,5 +30,6 @@ public class PerusteenJulkaisuData {
     private List<KoulutusDto> koulutukset;
     private Set<SuoritustapaDto> suoritustavat;
     private Date julkaistu;
+    private Long luotu;
 
 }
