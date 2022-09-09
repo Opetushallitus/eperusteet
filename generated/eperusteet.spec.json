@@ -14248,6 +14248,10 @@
     "PerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "nimi" : {
           "type" : "object",
           "additionalProperties" : {
@@ -14263,10 +14267,6 @@
           "format" : "int64"
         },
         "siirtymaPaattyy" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "perusteId" : {
           "type" : "integer",
           "format" : "int64"
         },
