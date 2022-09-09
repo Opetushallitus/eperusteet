@@ -2138,6 +2138,19 @@
           "type" : "integer",
           "format" : "int64"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2151,19 +2164,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2178,6 +2178,19 @@
           "type" : "integer",
           "format" : "int64"
         },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2191,19 +2204,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2502,6 +2502,10 @@
     "PerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "nimi" : {
           "type" : "object",
           "additionalProperties" : {
@@ -2517,10 +2521,6 @@
           "format" : "int64"
         },
         "siirtymaPaattyy" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "perusteId" : {
           "type" : "integer",
           "format" : "int64"
         },
