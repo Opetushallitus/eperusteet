@@ -348,6 +348,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         vaiheDto.setId(vaiheId);
         AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+        uusivaihe.getOppiaineet().clear();
+        uusivaihe.getOppiaineet().addAll(vaihe.getOppiaineet());
 
         if (PerusteTila.VALMIS.equals(peruste.getTila())) {
             AIPEVaihe.validateChange(vaihe, uusivaihe, false);
