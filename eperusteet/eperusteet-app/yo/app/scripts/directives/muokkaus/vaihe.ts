@@ -219,25 +219,30 @@ angular.module("eperusteApp").directive("muokkausVaihe", () => {
             Editointikontrollit.registerCallback({
                 async edit() {},
                 async save() {
-                    if ($scope.isNew) {
-                        $scope.editableModel = await $scope.editableModel.post();
-                    } else {
-                        $scope.editableModel = await $scope.editableModel.save();
-                    }
-
-                    Notifikaatiot.onnistui("tallennus-onnistui");
-                    AIPEService.clearCache();
-                    $state.go(
-                        $state.current,
-                        {
-                            suoritustapa: $stateParams.suoritustapa,
-                            osanTyyppi: $stateParams.osanTyyppi,
-                            osanId: $scope.editableModel.id
-                        },
-                        {
-                            reload: true
+                    try {
+                        if ($scope.isNew) {
+                            $scope.editableModel = await $scope.editableModel.post();
+                        } else {
+                            $scope.editableModel = await $scope.editableModel.save();
                         }
-                    );
+
+                        Notifikaatiot.onnistui("tallennus-onnistui");
+                        AIPEService.clearCache();
+                        $state.go(
+                            $state.current,
+                            {
+                                suoritustapa: $stateParams.suoritustapa,
+                                osanTyyppi: $stateParams.osanTyyppi,
+                                osanId: $scope.editableModel.id
+                            },
+                            {
+                                reload: true
+                            }
+                        );
+                    }
+                    catch (err) {
+                            Notifikaatiot.serverCb(err);
+                    }
                 },
                 cancel() {
                     if ($scope.isNew && $scope.data) {
