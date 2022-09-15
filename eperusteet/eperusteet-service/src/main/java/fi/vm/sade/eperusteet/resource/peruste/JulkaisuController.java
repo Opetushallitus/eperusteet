@@ -1,16 +1,13 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
-import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Supplier;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
@@ -58,9 +55,10 @@ public class JulkaisuController {
             @RequestParam(value = "koulutusvienti", defaultValue = "false", required = false) final boolean koulutusvienti,
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
             @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
+            @RequestParam(value = "koodi", defaultValue = "", required = false) final String koodi,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, sivu, sivukoko));
+        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, sivu, sivukoko));
     }
 
     @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")

@@ -20,7 +20,6 @@ import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.impl.AbstractLockService;
-import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

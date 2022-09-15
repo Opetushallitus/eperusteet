@@ -55,9 +55,10 @@ public class ExternalController {
             @RequestParam(value = "koulutusvienti", defaultValue = "false", required = false) final boolean koulutusvienti,
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
             @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
+            @RequestParam(value = "koodi", defaultValue = "", required = false) final String koodi,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, sivu, sivukoko));
+        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, sivu, sivukoko));
     }
 
     private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {

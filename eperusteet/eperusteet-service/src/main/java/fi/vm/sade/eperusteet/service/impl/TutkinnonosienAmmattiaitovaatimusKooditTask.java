@@ -1,8 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.repository.SkeduloituajoRepository;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;

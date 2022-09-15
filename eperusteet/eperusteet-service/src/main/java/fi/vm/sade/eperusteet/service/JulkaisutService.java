@@ -22,7 +22,7 @@ public interface JulkaisutService {
     Page<PerusteenJulkaisuData> getJulkisetJulkaisut(
             List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
-            Integer sivu, Integer sivukoko);
+            String koodi, Integer sivu, Integer sivukoko);
 
     @PreAuthorize("permitAll()")
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
