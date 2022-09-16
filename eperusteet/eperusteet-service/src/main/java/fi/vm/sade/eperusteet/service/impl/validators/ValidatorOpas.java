@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.Validator;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +28,26 @@ public class ValidatorOpas implements Validator {
 
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
 
-        if (ProjektiTila.JULKAISTU.equals(projekti.getTila())
-                && projekti.getPeruste().getKoulutustyyppi() == null
-                && projekti.getPeruste().getOppaanKoulutustyypit().isEmpty()) {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("oppaan-koulutustyyppi-pakollinen");
+        if (ProjektiTila.JULKAISTU.equals(projekti.getTila())) {
+            if (projekti.getPeruste().getKoulutustyyppi() == null
+                    && projekti.getPeruste().getOppaanKoulutustyypit().isEmpty()) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-koulutustyyppi-pakollinen");
+            }
+            if (projekti.getPeruste().getNimi() == null
+                    || projekti.getPeruste().getNimi().getTeksti().isEmpty()) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-nimi-pakollinen");
+            }
+            if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-voimassaolon-alku-pakollinen");
+            }
+            if (projekti.getPeruste().getVoimassaoloLoppuu() != null &&
+                    projekti.getPeruste().getVoimassaoloLoppuu().before(DateTime.now().toDate())) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-voimassaolon-paattyminen-menneisyydessa");
+            }
         }
         return updateStatus;
     }
