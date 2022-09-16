@@ -1,10 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.Validator;
@@ -34,10 +30,12 @@ public class ValidatorOpas implements Validator {
                 updateStatus.setVaihtoOk(false);
                 updateStatus.addStatus("oppaan-koulutustyyppi-pakollinen");
             }
-            if (projekti.getPeruste().getNimi() == null
-                    || projekti.getPeruste().getNimi().getTeksti().isEmpty()) {
+            boolean hasNimiKaikillaKielilla = projekti.getPeruste().getKielet().stream()
+                    .allMatch(kieli -> projekti.getPeruste().getNimi().getTeksti() != null
+                            && projekti.getPeruste().getNimi().getTeksti().containsKey(kieli));
+            if (!hasNimiKaikillaKielilla) {
+                updateStatus.addStatus("oppaan-nimea-ei-ole-kaikilla-kielilla");
                 updateStatus.setVaihtoOk(false);
-                updateStatus.addStatus("oppaan-nimi-pakollinen");
             }
             if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
                 updateStatus.setVaihtoOk(false);
