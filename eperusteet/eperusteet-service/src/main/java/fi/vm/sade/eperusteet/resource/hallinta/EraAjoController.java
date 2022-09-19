@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.resource.hallinta;
 
 import fi.vm.sade.eperusteet.service.ScheduledTask;
-import fi.vm.sade.eperusteet.service.impl.TutkinnonosienAmmattiaitovaatimusKooditTask;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;

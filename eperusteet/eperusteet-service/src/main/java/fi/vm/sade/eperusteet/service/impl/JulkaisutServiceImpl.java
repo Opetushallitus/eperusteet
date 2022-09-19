@@ -12,7 +12,6 @@ import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteVersion;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -41,21 +40,12 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -70,6 +60,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -138,6 +139,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public JulkaisuBaseDto teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
@@ -243,6 +245,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public JulkaisuBaseDto aktivoiJulkaisu(long projektiId, int revision) {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
@@ -269,7 +272,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
                                                             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
-                                                            Integer sivu, Integer sivukoko) {
+                                                            String koodi, Integer sivu, Integer sivukoko) {
         Pageable pageable = new PageRequest(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
         if (CollectionUtils.isEmpty((koulutustyyppi))) {
@@ -287,6 +290,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 koulutusvienti,
                 tyyppi,
                 diaarinumero,
+                koodi,
                 pageable)
                 .map(obj -> {
                     try {
