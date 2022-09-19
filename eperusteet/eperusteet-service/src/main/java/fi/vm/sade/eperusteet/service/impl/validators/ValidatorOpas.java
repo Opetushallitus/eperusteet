@@ -1,14 +1,11 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.Validator;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +24,28 @@ public class ValidatorOpas implements Validator {
 
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
 
-        if (ProjektiTila.JULKAISTU.equals(projekti.getTila())
-                && projekti.getPeruste().getKoulutustyyppi() == null
-                && projekti.getPeruste().getOppaanKoulutustyypit().isEmpty()) {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("oppaan-koulutustyyppi-pakollinen");
+        if (ProjektiTila.JULKAISTU.equals(projekti.getTila())) {
+            if (projekti.getPeruste().getKoulutustyyppi() == null
+                    && projekti.getPeruste().getOppaanKoulutustyypit().isEmpty()) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-koulutustyyppi-pakollinen");
+            }
+            boolean hasNimiKaikillaKielilla = projekti.getPeruste().getKielet().stream()
+                    .allMatch(kieli -> projekti.getPeruste().getNimi().getTeksti() != null
+                            && projekti.getPeruste().getNimi().getTeksti().containsKey(kieli));
+            if (!hasNimiKaikillaKielilla) {
+                updateStatus.addStatus("oppaan-nimea-ei-ole-kaikilla-kielilla");
+                updateStatus.setVaihtoOk(false);
+            }
+            if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-voimassaolon-alku-pakollinen");
+            }
+            if (projekti.getPeruste().getVoimassaoloLoppuu() != null &&
+                    projekti.getPeruste().getVoimassaoloLoppuu().before(DateTime.now().toDate())) {
+                updateStatus.setVaihtoOk(false);
+                updateStatus.addStatus("oppaan-voimassaolon-paattyminen-menneisyydessa");
+            }
         }
         return updateStatus;
     }
