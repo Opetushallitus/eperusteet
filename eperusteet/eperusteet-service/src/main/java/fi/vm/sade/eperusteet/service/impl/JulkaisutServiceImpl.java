@@ -158,16 +158,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         // Validoinnit
-        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
-        ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
-        List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPerusteOrderByRevisionDesc(perusteprojekti.getPeruste());
-        if (julkaisut != null && julkaisut.size() > 0) {
-            JulkaistuPeruste last = julkaisut.get(0);
-            if (last.getData().getHash() == perusteDataJson.hashCode()) {
-                throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
-            }
-        }
-
         TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
 
         if (!salliVirheelliset && !status.isVaihtoOk()) {
@@ -179,6 +169,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
 
         kooditaValiaikaisetKoodit(peruste);
+        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
+        ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
         long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
         Set<Long> dokumentit = new HashSet<>();
