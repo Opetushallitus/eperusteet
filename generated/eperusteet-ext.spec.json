@@ -2206,6 +2206,22 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
+=======
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 59da87686 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2246,6 +2262,22 @@
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
+=======
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+>>>>>>> 59da87686 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"

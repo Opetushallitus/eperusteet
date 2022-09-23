@@ -15,8 +15,6 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -496,6 +494,14 @@ public class ValidatorPeruste implements Validator {
                         .map(Koodi::getUri)
                         .collect(Collectors.toSet());
                 List<TutkintonimikeKoodiDto> tutkintonimikkeet = tutkintonimikeKoodiService.getTutkintonimikekoodit(peruste.getId());
+
+                for (TutkintonimikeKoodiDto tutkintonimike : tutkintonimikkeet) {
+                    if (StringUtils.isEmpty(tutkintonimike.getNimi())) {
+                        updateStatus.addStatus("tutkintonimikkeen-nimi-puuttuu");
+                        updateStatus.setVaihtoOk(false);
+                        break;
+                    }
+                }
 
                 { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa
                     Set<String> tutkintonimikkeidenOsaamisalat = tutkintonimikkeet.stream()

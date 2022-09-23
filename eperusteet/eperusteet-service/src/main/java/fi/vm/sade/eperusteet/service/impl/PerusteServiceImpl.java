@@ -1995,6 +1995,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+        if (!hasValidTutkintonimikkeet(tutkintonimikeKoodiDtos)) {
+            throw new BusinessRuleViolationException("tyhja-tutkintonimike-ei-sallittu");
+        }
+
         tutkintonimikeKoodiDtos = tutkintonimikeKoodiDtos.stream().map(tutkintonimike -> {
             if (tutkintonimike.getTutkintonimikeUri() == null) {
                 KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", tutkintonimike.getNimi(), 5);
@@ -2140,6 +2144,22 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("peruste-puuttuu");
         }
         return peruste;
+    }
+
+    private boolean hasValidTutkintonimikkeet(List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+        for (TutkintonimikeKoodiDto tutkintonimike : tutkintonimikeKoodiDtos) {
+            if (tutkintonimike.getNimi() == null
+                    || tutkintonimike.getNimi().getTekstit() == null
+                    || tutkintonimike.getNimi().getTekstit().isEmpty()) {
+                return false;
+            }
+            for (Map.Entry<Kieli, String> teksti : tutkintonimike.getNimi().getTekstit().entrySet()) {
+                if (StringUtils.isEmpty(teksti.getValue()) && teksti.getKey().equals(Kieli.FI)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
