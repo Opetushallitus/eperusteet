@@ -147,13 +147,13 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
         taiteenalaDto = perusteenOsaService.update(taiteenalaDto);
 
         assertThatThrownBy(() -> {
-            perusteService.getJulkaistuSisalto(perusteDto.getId());
+            perusteService.getJulkaistuSisalto(perusteDto.getId(), false);
         }).isInstanceOf(BusinessRuleViolationException.class)
                 .hasMessageContaining("perustetta-ei-loydy");
 
         ppTestUtils.julkaise(pp.getId());
 
-        PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId());
+        PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId(), false);
         assertThat(tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset()).hasSize(1);
         assertThat((TaiteenalaDto) tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset().get(0).getPerusteenOsa())
                 .extracting(

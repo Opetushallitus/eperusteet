@@ -44,10 +44,12 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
@@ -112,6 +114,12 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer rev, boolean useCurrentData);
+
+    @PreAuthorize("permitAll")
+    List<TutkinnonOsaKaikkiDto> getJulkaistutTutkinnonOsat(Long perusteId, boolean useCurrentData);
+
+    @PreAuthorize("permitAll")
+    Set<TutkinnonOsaViiteSuppeaDto> getJulkaistutTutkinnonOsaViitteet(Long perusteId, boolean useCurrentData);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS') ")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
