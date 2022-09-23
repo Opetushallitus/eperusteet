@@ -26,7 +26,9 @@ import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
@@ -384,6 +386,24 @@ public class PerusteController {
             @RequestParam(value = "rev", required = false) final Integer rev,
             @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
         return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev, useCurrentData));
+    }
+
+    @RequestMapping(value = "/{perusteId}/kaikki/tutkinnonosat", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteen tutkinnon osien haku julkaistusta datasta")
+    public ResponseEntity<List<TutkinnonOsaKaikkiDto>> getJulkaistutTutkinnonOsat(
+            @PathVariable("perusteId") final long id,
+            @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
+        return handleGet(id, 3600, () -> service.getJulkaistutTutkinnonOsat(id, useCurrentData));
+    }
+
+    @RequestMapping(value = "/{perusteId}/kaikki/tutkinnonosaviitteet", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "perusteen tutkinnon osien viitteiden haku julkaistusta datasta")
+    public ResponseEntity<Set<TutkinnonOsaViiteSuppeaDto>> getJulkaistutTutkinnonOsaViitteet(
+            @PathVariable("perusteId") final long id,
+            @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
+        return handleGet(id, 3600, () -> service.getJulkaistutTutkinnonOsaViitteet(id, useCurrentData));
     }
 
     @RequestMapping(value = "/{perusteId}/suoritustavat/{suoritustapakoodi}", method = GET)

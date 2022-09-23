@@ -93,6 +93,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -107,6 +108,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
@@ -167,6 +169,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -665,14 +668,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         List<Peruste> loydetyt = perusteRepository.findAllAmosaaYhteisetPohjat();
 
         if (loydetyt.size() == 1) {
-            return getJulkaistuSisalto(loydetyt.get(0).getId());
+            return getJulkaistuSisalto(loydetyt.get(0).getId(), false);
         } else {
             Optional<Peruste> op = loydetyt.stream()
                     .filter((p) -> p.getVoimassaoloAlkaa() != null && p.getVoimassaoloAlkaa().before(new Date()))
                     .reduce((current, next) -> next.getVoimassaoloAlkaa().after(current.getVoimassaoloAlkaa()) ? next : current);
 
             if (op.isPresent()) {
-                return getJulkaistuSisalto(op.get().getId());
+                return getJulkaistuSisalto(op.get().getId(), false);
             }
         }
 
@@ -790,7 +793,24 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
-        return getJulkaistuSisalto(id, null, false);
+        Peruste peruste = perusteRepository.getOne(id);
+
+        if (peruste == null) {
+            return null;
+        }
+
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        if (julkaisu != null) {
+            ObjectNode data = julkaisu.getData().getData();
+            try {
+                return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
+            } catch (JsonProcessingException e) {
+                log.error(Throwables.getStackTraceAsString(e));
+                throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -821,6 +841,43 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return getKaikkiSisalto(id, perusteRev);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TutkinnonOsaKaikkiDto> getJulkaistutTutkinnonOsat(Long perusteId, boolean useCurrentData) {
+        PerusteKaikkiDto peruste;
+        if (useCurrentData) {
+            peruste = getJulkaistuSisalto(perusteId, true);
+        } else {
+            peruste = getJulkaistuSisalto(perusteId);
+        }
+
+        if (peruste != null) {
+            return peruste.getTutkinnonOsat();
+        }
+
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<TutkinnonOsaViiteSuppeaDto> getJulkaistutTutkinnonOsaViitteet(Long perusteId, boolean useCurrentData) {
+        PerusteKaikkiDto peruste;
+        if (useCurrentData) {
+            peruste = getJulkaistuSisalto(perusteId, true);
+        } else {
+            peruste = getJulkaistuSisalto(perusteId);
+        }
+
+        if (peruste != null) {
+            return peruste.getSuoritustavat().stream()
+                    .map(SuoritustapaLaajaDto::getTutkinnonOsat)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+        }
+
+        return null;
     }
 
     @Override
