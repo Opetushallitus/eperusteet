@@ -448,7 +448,7 @@
     "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Perusteen tietojen haku",
+        "summary" : "Perusteen osaamisalakuvauksien haku",
         "description" : "",
         "operationId" : "getJulkaistutOsaamisalaKuvaukset",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -481,7 +481,7 @@
     "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Perusteen tietojen haku",
+        "summary" : "Perusteen osan haku",
         "description" : "",
         "operationId" : "getJulkaistuPerusteenOsa",
         "produces" : [ "application/json;charset=UTF-8" ],
