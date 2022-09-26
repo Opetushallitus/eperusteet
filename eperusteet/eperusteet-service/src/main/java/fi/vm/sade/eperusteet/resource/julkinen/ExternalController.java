@@ -72,7 +72,7 @@ public class ExternalController {
 
     @RequestMapping(value = "/peruste/{perusteId}/perusteenosa/{perusteenOsaId}", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Perusteen tietojen haku")
+    @ApiOperation(value = "Perusteen osan haku")
     public ResponseEntity<PerusteenOsaDto> getJulkaistuPerusteenOsa(
             @PathVariable("perusteId") final long perusteId,
             @PathVariable("perusteenOsaId") final long perusteenOsaId) {
@@ -85,7 +85,7 @@ public class ExternalController {
 
     @RequestMapping(value = "/peruste/{perusteId}/osaamisalakuvaukset", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Perusteen tietojen haku")
+    @ApiOperation(value = "Perusteen osaamisalakuvauksien haku")
     public ResponseEntity<Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>>> getJulkaistutOsaamisalaKuvaukset(
             @PathVariable("perusteId") final long perusteId) {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
