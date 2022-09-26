@@ -39,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
@@ -54,13 +55,6 @@ import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipOutputStream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.method.P;
@@ -68,6 +62,13 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.zip.ZipOutputStream;
 
 /**
  *
@@ -121,6 +122,9 @@ public interface PerusteService {
     @PreAuthorize("permitAll")
     Set<TutkinnonOsaViiteSuppeaDto> getJulkaistutTutkinnonOsaViitteet(Long perusteId, boolean useCurrentData);
 
+    @PreAuthorize("permitAll")
+    PerusteenOsaDto getJulkaistuPerusteenOsa(Long perusteId, Long perusteOsaId);
+
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS') ")
     PerusteDto update(@P("perusteId") Long perusteId, PerusteDto perusteDto);
 
@@ -173,6 +177,9 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(@P("perusteId") final Long perusteId);
+
+    @PreAuthorize("permitAll()")
+    Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getJulkaistutOsaamisalaKuvaukset(final Long perusteId);
 
     @Deprecated
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")

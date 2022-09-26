@@ -91,6 +91,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
@@ -162,7 +163,34 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.utils.CollectionUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+import org.joda.time.DateTime;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.ApplicationListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.method.P;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
@@ -191,34 +219,6 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
-
-import fi.vm.sade.eperusteet.utils.CollectionUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationListener;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.method.P;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
@@ -740,6 +740,24 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+    private void gatherOsaamisalaKuvaukset(PerusteenOsaViiteDto.Laaja pov, Map<String, List<TekstiKappaleDto>> stosaamisalat) {
+        PerusteenOsaDto perusteenOsa = pov.getPerusteenOsa();
+        if (perusteenOsa instanceof TekstiKappaleDto) {
+            TekstiKappaleDto tk = (TekstiKappaleDto) perusteenOsa;
+            KoodiDto osaamisala = tk.getOsaamisala();
+            if (osaamisala != null) {
+                if (!stosaamisalat.containsKey(osaamisala.getUri())) {
+                    stosaamisalat.put(osaamisala.getUri(), new ArrayList<>());
+                }
+                stosaamisalat.get(osaamisala.getUri()).add(tk);
+            }
+        }
+
+        for (PerusteenOsaViiteDto.Laaja lapsi : pov.getLapset()) {
+            gatherOsaamisalaKuvaukset(lapsi, stosaamisalat);
+        }
+    }
+
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
@@ -756,6 +774,27 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Set<Suoritustapa> suoritustavat = peruste.getSuoritustavat();
 
         for (Suoritustapa st : suoritustavat) {
+            Map<String, List<TekstiKappaleDto>> osaamisalat = new HashMap<>();
+            osaamisalakuvaukset.put(st.getSuoritustapakoodi(), osaamisalat);
+            gatherOsaamisalaKuvaukset(st.getSisalto(), osaamisalat);
+        }
+
+        return osaamisalakuvaukset;
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional(readOnly = true)
+    public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getJulkaistutOsaamisalaKuvaukset(final Long perusteId) {
+        PerusteKaikkiDto peruste = getJulkaistuSisalto(perusteId);
+        if (peruste == null) {
+            throw new EntityNotFoundException();
+        }
+
+        Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> osaamisalakuvaukset = new HashMap<>();
+        Set<SuoritustapaLaajaDto> suoritustavat = peruste.getSuoritustavat();
+
+        for (SuoritustapaLaajaDto st : suoritustavat) {
             Map<String, List<TekstiKappaleDto>> osaamisalat = new HashMap<>();
             osaamisalakuvaukset.put(st.getSuoritustapakoodi(), osaamisalat);
             gatherOsaamisalaKuvaukset(st.getSisalto(), osaamisalat);
@@ -786,12 +825,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, boolean esikatselu) {
         return getJulkaistuSisalto(id, null, esikatselu);
     }
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
         Peruste peruste = perusteRepository.getOne(id);
 
@@ -815,6 +856,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev, boolean useCurrentData) {
         Peruste peruste;
         if (perusteRev != null) {
@@ -845,6 +887,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public List<TutkinnonOsaKaikkiDto> getJulkaistutTutkinnonOsat(Long perusteId, boolean useCurrentData) {
         PerusteKaikkiDto peruste;
         if (useCurrentData) {
@@ -862,6 +905,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
     public Set<TutkinnonOsaViiteSuppeaDto> getJulkaistutTutkinnonOsaViitteet(Long perusteId, boolean useCurrentData) {
         PerusteKaikkiDto peruste;
         if (useCurrentData) {
@@ -878,6 +922,25 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public PerusteenOsaDto getJulkaistuPerusteenOsa(Long perusteId, Long perusteenOsaId) {
+        PerusteKaikkiDto peruste = getJulkaistuSisalto(perusteId);
+        if (peruste == null) {
+            return null;
+        }
+        return CollectionUtil.treeToStream(peruste.getSisallot().stream().findFirst().get().getSisalto(), PerusteenOsaViiteDto.Laaja::getLapset)
+                .filter(viite -> viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getId().equals(perusteenOsaId))
+                .map(viite -> (PerusteenOsaDto) viite.getPerusteenOsa())
+                .findFirst()
+                .orElse(peruste.getTutkinnonOsat().stream()
+                        .filter(tutkinnonOsa -> tutkinnonOsa.getId().equals(perusteenOsaId))
+                        .map(tutkinnonosa -> (PerusteenOsaDto) tutkinnonosa)
+                        .findFirst()
+                        .orElse(null));
     }
 
     @Override
