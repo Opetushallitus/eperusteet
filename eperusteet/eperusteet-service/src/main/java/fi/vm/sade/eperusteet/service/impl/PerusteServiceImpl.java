@@ -1995,7 +1995,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
-        if (!hasValidTutkintonimikkeet(tutkintonimikeKoodiDtos)) {
+        if (!hasValidTutkintonimikkeet(perusteId, tutkintonimikeKoodiDtos)) {
             throw new BusinessRuleViolationException("tyhja-tutkintonimike-ei-sallittu");
         }
 
@@ -2146,17 +2146,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return peruste;
     }
 
-    private boolean hasValidTutkintonimikkeet(List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+    private boolean hasValidTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+        Peruste peruste = getPeruste(perusteId);
         for (TutkintonimikeKoodiDto tutkintonimike : tutkintonimikeKoodiDtos) {
-            if (tutkintonimike.getNimi() == null
-                    || tutkintonimike.getNimi().getTekstit() == null
-                    || tutkintonimike.getNimi().getTekstit().isEmpty()) {
+            boolean hasTutkintonimikkeetPerusteenKielilla = peruste.getKielet().stream()
+                    .allMatch(kieli -> tutkintonimike.getNimi() != null && StringUtils.isNotEmpty(tutkintonimike.getNimi().get(kieli)));
+            if (!hasTutkintonimikkeetPerusteenKielilla) {
                 return false;
-            }
-            for (Map.Entry<Kieli, String> teksti : tutkintonimike.getNimi().getTekstit().entrySet()) {
-                if (StringUtils.isEmpty(teksti.getValue()) && teksti.getKey().equals(Kieli.FI)) {
-                    return false;
-                }
             }
         }
         return true;
