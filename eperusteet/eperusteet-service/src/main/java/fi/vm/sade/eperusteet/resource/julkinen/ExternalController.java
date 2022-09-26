@@ -1,17 +1,22 @@
 package fi.vm.sade.eperusteet.resource.julkinen;
 
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +43,11 @@ public class ExternalController {
     @ApiOperation(value = "Perusteen tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getPeruste(
             @PathVariable("perusteId") final long id) {
-        return handleGet(id, 3600, () -> perusteService.getJulkaistuSisalto(id, null, false));
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(id);
+        if (peruste == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(peruste);
     }
 
     @RequestMapping(method = GET, value = "/perusteet")
@@ -61,8 +70,25 @@ public class ExternalController {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, sivu, sivukoko));
     }
 
-    private <T> ResponseEntity<T> handleGet(Long perusteId, int age, Supplier<T> response) {
-        return CacheableResponse.create(perusteService.getPerusteVersion(perusteId), age, response::get);
+    @RequestMapping(value = "/peruste/{perusteId}/perusteenosa/{perusteenOsaId}", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteen tietojen haku")
+    public ResponseEntity<PerusteenOsaDto> getJulkaistuPerusteenOsa(
+            @PathVariable("perusteId") final long perusteId,
+            @PathVariable("perusteenOsaId") final long perusteenOsaId) {
+        PerusteenOsaDto perusteenOsa = perusteService.getJulkaistuPerusteenOsa(perusteId, perusteenOsaId);
+        if (perusteenOsa == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(perusteenOsa);
+    }
+
+    @RequestMapping(value = "/peruste/{perusteId}/osaamisalakuvaukset", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteen tietojen haku")
+    public ResponseEntity<Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>>> getJulkaistutOsaamisalaKuvaukset(
+            @PathVariable("perusteId") final long perusteId) {
+        return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
     }
 
 }
