@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
+import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -495,12 +496,9 @@ public class ValidatorPeruste implements Validator {
                         .collect(Collectors.toSet());
                 List<TutkintonimikeKoodiDto> tutkintonimikkeet = tutkintonimikeKoodiService.getTutkintonimikekoodit(peruste.getId());
 
-                for (TutkintonimikeKoodiDto tutkintonimike : tutkintonimikkeet) {
-                    if (StringUtils.isEmpty(tutkintonimike.getNimi())) {
-                        updateStatus.addStatus("tutkintonimikkeen-nimi-puuttuu");
-                        updateStatus.setVaihtoOk(false);
-                        break;
-                    }
+                if (!ValidatorUtil.hasValidTutkintonimikkeet(peruste, tutkintonimikkeet)) {
+                    updateStatus.addStatus("tyhja-tutkintonimike-ei-sallittu");
+                    updateStatus.setVaihtoOk(false);
                 }
 
                 { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa

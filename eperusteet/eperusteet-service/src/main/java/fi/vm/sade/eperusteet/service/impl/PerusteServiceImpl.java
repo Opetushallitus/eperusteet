@@ -160,6 +160,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
@@ -1995,7 +1996,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
-        if (!hasValidTutkintonimikkeet(perusteId, tutkintonimikeKoodiDtos)) {
+        if (!ValidatorUtil.hasValidTutkintonimikkeet(getPeruste(perusteId), tutkintonimikeKoodiDtos)) {
             throw new BusinessRuleViolationException("tyhja-tutkintonimike-ei-sallittu");
         }
 
@@ -2144,18 +2145,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("peruste-puuttuu");
         }
         return peruste;
-    }
-
-    private boolean hasValidTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
-        Peruste peruste = getPeruste(perusteId);
-        for (TutkintonimikeKoodiDto tutkintonimike : tutkintonimikeKoodiDtos) {
-            boolean hasTutkintonimikkeetPerusteenKielilla = peruste.getKielet().stream()
-                    .allMatch(kieli -> tutkintonimike.getNimi() != null && StringUtils.isNotEmpty(tutkintonimike.getNimi().get(kieli)));
-            if (!hasTutkintonimikkeetPerusteenKielilla) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
