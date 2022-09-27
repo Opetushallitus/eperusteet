@@ -160,6 +160,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
@@ -1995,6 +1996,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     public void updateTutkintonimikkeet(Long perusteId, List<TutkintonimikeKoodiDto> tutkintonimikeKoodiDtos) {
+        if (!ValidatorUtil.hasValidTutkintonimikkeet(getPeruste(perusteId), tutkintonimikeKoodiDtos)) {
+            throw new BusinessRuleViolationException("tyhja-tutkintonimike-ei-sallittu");
+        }
+
         tutkintonimikeKoodiDtos = tutkintonimikeKoodiDtos.stream().map(tutkintonimike -> {
             if (tutkintonimike.getTutkintonimikeUri() == null) {
                 KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", tutkintonimike.getNimi(), 5);

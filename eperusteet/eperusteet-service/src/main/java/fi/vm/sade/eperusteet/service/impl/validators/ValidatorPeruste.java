@@ -15,8 +15,6 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -32,6 +30,7 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
+import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -496,6 +495,11 @@ public class ValidatorPeruste implements Validator {
                         .map(Koodi::getUri)
                         .collect(Collectors.toSet());
                 List<TutkintonimikeKoodiDto> tutkintonimikkeet = tutkintonimikeKoodiService.getTutkintonimikekoodit(peruste.getId());
+
+                if (!ValidatorUtil.hasValidTutkintonimikkeet(peruste, tutkintonimikkeet)) {
+                    updateStatus.addStatus("tyhja-tutkintonimike-ei-sallittu");
+                    updateStatus.setVaihtoOk(false);
+                }
 
                 { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa
                     Set<String> tutkintonimikkeidenOsaamisalat = tutkintonimikkeet.stream()
