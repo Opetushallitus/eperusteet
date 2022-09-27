@@ -2206,8 +2206,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-<<<<<<< HEAD
-=======
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -2221,7 +2219,6 @@
         "last" : {
           "type" : "boolean"
         },
->>>>>>> 59da87686 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2235,19 +2232,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2262,8 +2246,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-<<<<<<< HEAD
-=======
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -2277,7 +2259,6 @@
         "last" : {
           "type" : "boolean"
         },
->>>>>>> 59da87686 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2291,19 +2272,6 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
