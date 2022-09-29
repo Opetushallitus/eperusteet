@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.resource.julkinen;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
@@ -89,6 +91,19 @@ public class ExternalController {
     public ResponseEntity<Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>>> getJulkaistutOsaamisalaKuvaukset(
             @PathVariable("perusteId") final long perusteId) {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
+    }
+
+    @RequestMapping(value = "/peruste/{perusteId}/query", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteen tietojen haku JsonPathilla")
+    public ResponseEntity<Object> getPerusteWithQuery(
+            @PathVariable("perusteId") final long id,
+            @RequestParam(value = "query") final String query) {
+        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, query);
+        if (result == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(result);
     }
 
 }

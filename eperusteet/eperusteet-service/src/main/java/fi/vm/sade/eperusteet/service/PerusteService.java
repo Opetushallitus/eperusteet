@@ -15,6 +15,8 @@
  */
 package fi.vm.sade.eperusteet.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
@@ -109,6 +111,9 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id);
+
+    @PreAuthorize("permitAll()")
+    Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query);
 
     @PreAuthorize("permitAll()")
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, boolean useCurrentData);
