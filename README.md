@@ -25,7 +25,7 @@ aivan kaikkea toiminallisuutta löydy, mistä johtuen vanha pyörii edelleen tuo
 
 Asenna haluammallasi tavalla
 
-- JDK 8
+- Amazon Corretto JDK 8
 - Maven 3
 - Docker
 - luo [dev-settingsin](/dev-settings.md) mukaiset käyttäjäkohtaisten asetusten tiedostot annettuihin polkuihin ja täytä omilla tiedoilla 
@@ -65,7 +65,7 @@ Tietokantojen lokaalia pyöritystä varten luo koneellesi esim projektin juureen
 version: "3.1"
 services:
   eperusteet:
-    image: postgres:10.7
+    image: postgres:12.10
     environment:
       POSTGRES_USER: oph
       POSTGRES_PASSWORD: test
@@ -75,7 +75,7 @@ services:
     #volumes:
     #  - "./eperusteet:/var/lib/postgresql/data"
   eperusteet-amosaa:
-    image: postgres:10.7
+    image: postgres:12.10
     environment:
       POSTGRES_USER: oph
       POSTGRES_PASSWORD: test
@@ -85,7 +85,7 @@ services:
     #volumes:
     #  - "./eperusteet:/var/lib/postgresql/data"
   eperusteet-ylops:
-    image: postgres:10.7
+    image: postgres:12.10
     environment:
       POSTGRES_USER: oph
       POSTGRES_PASSWORD: test
@@ -102,7 +102,7 @@ Tämän jälkeen palvelun saa käyntiin seuraavilla komennoilla:
 
 ```bash
 cd eperusteet/eperusteet-service
-mvn jetty:run -Djetty.port=8080
+mvn jetty:run -Plocal
 ```
 
 #### &nbsp;&nbsp;API-generointi
