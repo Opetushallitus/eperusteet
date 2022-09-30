@@ -46,7 +46,7 @@ Jos on tarve kehittää vanhaa käyttöliittymää asenna:
 
   ```
   cd eperusteet/eperusteet-service
-  mvn clean install -Poph
+  mvn clean install -Plocal
   ```
 ### 3.3. Migraatiot
 
