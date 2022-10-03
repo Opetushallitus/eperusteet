@@ -8,5 +8,6 @@ permalink: /changelog
 ---
 
   Päivämäärä | Muutokset
-  -------- | ------------ 
+  ---------- | ------------ 
   07.04.2022 | External rajapinnat luotu
+  03.10.2022 | ePerusteet API - lisätty osaamisalakuvauksien ja yksittäisen perusteen osan haku
