@@ -5,8 +5,10 @@ import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -22,6 +24,7 @@ public class AmosaaClientImpl implements AmosaaClient {
     private OphClientHelper ophClientHelper;
 
     @Override
+    @Cacheable("amosaatilastot")
     public List<Object> getTilastot() {
 
         List<Object> tulos = new ArrayList<>();

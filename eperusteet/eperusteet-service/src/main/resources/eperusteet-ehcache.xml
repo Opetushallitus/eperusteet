@@ -354,4 +354,14 @@
            eternal="false"
            timeToLiveSeconds="600"
            overflowToDisk="false"/>
+    <cache name="amosaatilastot"
+           maxElementsInMemory="1"
+           eternal="false"
+           timeToLiveSeconds="86400"
+           overflowToDisk="false"/>
+    <cache name="ylopstilastot"
+           maxElementsInMemory="1"
+           eternal="false"
+           timeToLiveSeconds="86400"
+           overflowToDisk="false"/>
 </ehcache>
