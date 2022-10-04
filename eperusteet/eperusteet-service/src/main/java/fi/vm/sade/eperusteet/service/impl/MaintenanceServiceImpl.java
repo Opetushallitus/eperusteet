@@ -60,7 +60,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private YllapitoRepository yllapitoRepository;
 
     @Autowired
-    CacheManager cacheManager;
+    private CacheManager cacheManager;
 
     @Autowired
     @Dto
