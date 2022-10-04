@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.service.YlopsClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +20,7 @@ public class YlopsClientImpl implements YlopsClient {
     private OphClientHelper ophClientHelper;
 
     @Override
+    @Cacheable("ylopstilastot")
     public JsonNode getTilastot() {
         return ophClientHelper.get(ylopsServiceUrl, ylopsServiceUrl + TILASTOT_URL, JsonNode.class);
     }

@@ -1,22 +1,16 @@
 package fi.vm.sade.eperusteet.resource;
 
-
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.*;
-import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,16 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -55,18 +43,9 @@ public class MaintenanceController {
     @Autowired
     private PerusteService perusteService;
 
-    @Autowired
-    private PerusteprojektiService perusteprojektiService;
-
-    @Autowired
-    private Lops2019Service lops2019Service;
-
-    @Autowired
-    CacheManager cacheManager;
-
     @RequestMapping(value = "/cacheclear/{cache}", method = GET)
     public ResponseEntity clearCache(@PathVariable final String cache) {
-        cacheManager.getCache(cache).clear();
+        maintenanceService.clearCache(cache);
         return ResponseEntity.status(HttpStatus.OK)
                 .build();
     }
