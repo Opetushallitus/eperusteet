@@ -10,7 +10,6 @@ import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.*;
@@ -20,6 +19,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -42,9 +42,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private JulkaisutRepository julkaisutRepository;
 
     @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
-
-    @Autowired
     private PerusteRepository perusteRepository;
 
     @Autowired
@@ -61,6 +58,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     private YllapitoRepository yllapitoRepository;
+
+    @Autowired
+    CacheManager cacheManager;
 
     @Autowired
     @Dto
@@ -182,5 +182,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             julkaisutRepository.save(julkaisu);
             return true;
         });
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void clearCache(String cache) {
+        Objects.requireNonNull(cacheManager.getCache(cache)).clear();
     }
 }

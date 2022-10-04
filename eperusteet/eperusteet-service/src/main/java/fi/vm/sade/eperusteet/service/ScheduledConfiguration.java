@@ -11,14 +11,11 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,19 +32,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     private final ThreadPoolTaskScheduler scheduler;
 
     @Autowired
-    private ThreadPoolTaskExecutor pool;
-
-    @Autowired
     private List<ScheduledTask> tasks = new ArrayList<>();
-
-    @Autowired
-    private AmosaaClient amosaaClient;
-
-    @Autowired
-    private YlopsClient ylopsClient;
-
-    @Autowired
-    CacheManager cacheManager;
 
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
@@ -71,7 +56,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     }
 
     @Scheduled(cron = "0 0 3 * * *")
-    public void scheduledValidationTask() {
+    public void scheduledTasks() {
         if (!isUpdating.get()) {
             if (isUpdating.compareAndSet(false, true)) {
                 log.debug("Starting " + tasks.size() + " background jobs.");
@@ -115,46 +100,10 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
         }
     }
 
-    @Scheduled(cron = "* * 6 * * * ")
-    public void scheduledAmosaaTilastotCaching() {
-        log.info("Starting daily Amosaa tilastot caching.");
-        try {
-            SecurityContextHolder.getContext().setAuthentication(useAdminAuth());
-            clearCache("amosaatilastot");
-            amosaaClient.getTilastot();
-            SecurityContextHolder.getContext().setAuthentication(null);
-        }
-        catch (Exception e) {
-            log.info("Fatal error occurred while creating cache for Amosaa tilastot");
-        }
-    }
-
-    @Scheduled(cron = "0 0 5 * * *")
-    public void scheduledYlopsTilastotCaching() {
-        log.info("Starting daily Ylops tilastot caching.");
-        try {
-            SecurityContextHolder.getContext().setAuthentication(useAdminAuth());
-            clearCache("ylopstilastot");
-            ylopsClient.getTilastot();
-            SecurityContextHolder.getContext().setAuthentication(null);
-        }
-        catch (Exception e) {
-            log.info("Fatal error occurred while creating cache for Ylops tilastot");
-        }
-    }
-
     private Authentication useAdminAuth() {
         // Käytetään pääkäyttäjän oikeuksia.
         return new UsernamePasswordAuthenticationToken("system",
                 "ROLE_ADMIN", AuthorityUtils.createAuthorityList("ROLE_ADMIN",
                 "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
-    }
-
-    private void clearCache(String cacheName) {
-        // Varmista, että käytetty cache on varmasti tyhjä
-        Cache cache = cacheManager.getCache(cacheName);
-        if (cache != null) {
-            cache.clear();
-        }
     }
 }
