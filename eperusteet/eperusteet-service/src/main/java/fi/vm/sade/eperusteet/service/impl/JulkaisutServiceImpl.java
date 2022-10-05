@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -119,6 +120,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private TutkintonimikeKoodiRepository tutkintonimikeKoodiRepository;
+
+    @Autowired
+    private AmmattitaitovaatimusService ammattitaitovaatimusService;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
     private static final List<String> pdfEnabled = Arrays.asList(
@@ -345,7 +349,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
         });
 
-
+        ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getPerusteprojekti().getId(), peruste.getId());
     }
 
     private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {
