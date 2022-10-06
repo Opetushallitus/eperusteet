@@ -17,10 +17,12 @@
     "analyze": "xdg-open .bundle_stats.html",
     "build:analyze": "npm run build && npm run analyze",
     "analyze-stats": "./node_modules/webpack/bin/webpack.js --config webpack.prod.js --json | webpack-bundle-size-analyzer",
-    "analyze-sourcemap": "npm run build && source-map-explorer dist/app.js"
+    "analyze-sourcemap": "npm run build && source-map-explorer dist/app.js",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "dependencies": {
-    "angular": "1.6.6",
+    "angular": "1.8.0",
     "angular-animate": "1.6.6",
     "angular-cache": "4.4.2",
     "angular-cookies": "1.6.6",
@@ -28,13 +30,13 @@
     "angular-i18n": "1.6.6",
     "angular-loading-bar": "0.9.0",
     "angular-local-storage": "0.7.1",
-    "angular-moment": "1.0.0-beta.3",
+    "angular-moment": "1.0.0",
     "angular-resource": "1.6.6",
     "angular-route": "1.6.6",
     "angular-sanitize": "1.6.6",
     "angular-spinner": "0.8.0",
-    "angular-translate": "2.18.1",
-    "angular-translate-loader-static-files": "2.15.2",
+    "angular-translate": "2.18.2",
+    "angular-translate-loader-static-files": "2.18.0",
     "angular-ui-bootstrap": "2.5.0",
     "angular-ui-router": "0.4.2",
     "angular-ui-sortable": "https://github.com/nkala/ui-sortable.git#v0.13.4xx",
@@ -42,24 +44,25 @@
     "angular-ui-utils": "0.1.1",
     "angularjs-slider": "5.8.7",
     "babel-plugin-angularjs-annotate": "0.8.2",
-    "ckeditor": "4.7.0",
+    "ckeditor": "4.11.0",
     "eperusteet-frontend-utils": "Opetushallitus/eperusteet-frontend-utils#master",
     "es6-promise": "4.1.1",
     "file-saver": "^2.0.2",
     "fork-ts-checker-webpack-plugin": "3.1.1",
-    "jquery": "2.1.4",
+    "jquery": "3.5.0",
     "jquery-sticky": "1.0.4",
-    "jquery-ui": "1.12.1",
+    "jquery-ui": "1.13.2",
     "js-xlsx": "SheetJS/js-xlsx",
-    "lodash": "3.10.1",
-    "mathjax": "2.7.1",
-    "moment": "2.22.2",
+    "lodash": "4.17.21",
+    "mathjax": "2.7.4",
+    "moment": "2.29.4",
     "ng-file-upload": "12.2.13",
     "restangular": "1.6.1",
     "ui-select": "0.19.8",
     "webpack-bundle-size-analyzer": "2.7.0",
     "webpack-node-externals": "1.6.0",
-    "webpack-visualizer-plugin": "0.1.11"
+    "webpack-visualizer-plugin": "0.1.11",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "@types/angular": "1.6.6",
@@ -112,5 +115,6 @@
   },
   "resolutions": {
     "angular-translate/angular": "1.6.6"
-  }
+  },
+  "snyk": true
 }
