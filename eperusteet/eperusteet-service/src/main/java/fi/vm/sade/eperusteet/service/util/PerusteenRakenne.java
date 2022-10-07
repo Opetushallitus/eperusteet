@@ -294,25 +294,6 @@ public class PerusteenRakenne {
             if (osaamisalaaEiPerusteella) {
                 validointi.ongelmat.add(new Ongelma("ryhman-osaamisalaa-ei-perusteella", nimi, syvyys));
             }
-
-            { // Osaamisalalta löytyy kaikki vaadittavat tutkintonimikkeet
-                Set<String> vaaditut = ctx.context.getOsaamisalanTutkintonimikekoodit(roa.getUri());
-                if (vaaditut.size() > 1) {
-                    Set<String> actual = new HashSet<>();
-                    if (rakenne.getOsat() != null) {
-                        actual = rakenne.getOsat().stream()
-                                .filter(osa -> osa instanceof RakenneModuuli)
-                                .map(osa -> (RakenneModuuli) osa)
-                                .filter(ryhma -> ryhma.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE && ryhma.getTutkintonimike() != null)
-                                .map(ryhma -> ryhma.getTutkintonimike().getUri())
-                                .collect(Collectors.toSet());
-                    }
-
-                    if (!vaaditut.equals(actual)) {
-                        validointi.ongelmat.add(new Ongelma("ryhman-osaamisalalta-puuttuu-vaaditut-tutkintonimikekuvaukset", nimi, syvyys));
-                    }
-                }
-            }
         }
     }
 }
