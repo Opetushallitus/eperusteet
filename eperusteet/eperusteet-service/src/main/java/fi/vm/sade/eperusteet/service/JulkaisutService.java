@@ -7,7 +7,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.domain.Page;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface JulkaisutService {

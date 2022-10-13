@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.service.yl;
 
 import fi.vm.sade.eperusteet.dto.util.TaiteenalaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;

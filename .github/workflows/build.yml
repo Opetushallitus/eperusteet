@@ -15,11 +15,11 @@ jobs:
       - name: workflow number debug
         run: echo "${{ github.run_id }} ${{ github.run_number }} ${{ github.run_attempt }}"
         
-      - name: Set up JDK 8
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: '8'
-          distribution: 'temurin'
+          java-version: '11'
+          distribution: 'corretto'
 
       - name: Cache Maven repository
         uses: actions/cache@v3
@@ -46,11 +46,11 @@ jobs:
     # steps:
       # - uses: actions/checkout@v3
 
-      # - name: Set up JDK 8
+      # - name: Set up JDK 11
         # uses: actions/setup-java@v3
         # with:
-          # java-version: '8'
-          # distribution: 'temurin'
+          # java-version: '11'
+          # distribution: 'corretto'
 
       # - name: Cache Maven repository
         # uses: actions/cache@v3
@@ -85,11 +85,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up JDK 8
+      - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: '8'
-          distribution: 'temurin'
+          java-version: '11'
+          distribution: 'corretto'
 
       - name: Set up Node 10
         uses: actions/setup-node@v3
@@ -208,7 +208,7 @@ jobs:
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           cp -vr src/main/resources/tomcat $DOCKER_BUILD_DIR/config/
           cd ..
-          export BASE_IMAGE="baseimage-war-tomcat8-openjdk8:master"
+          export BASE_IMAGE="baseimage-war-tomcat8-openjdk11-corretto:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-war.sh ${ARTIFACT_NAME}
           ./ci-tools/github-build/upload-image.sh ${ARTIFACT_NAME}
