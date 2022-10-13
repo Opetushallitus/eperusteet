@@ -911,6 +911,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         Perusteprojekti projekti = repository.findOne(id);
         Peruste peruste = projekti.getPeruste();
 
+        if (projekti.getTila().equals(ProjektiTila.POISTETTU) && tila.equals(LAADINTA) && peruste.getViimeisinJulkaisuAika().isPresent()) {
+            peruste.asetaTila(PerusteTila.VALMIS);
+            projekti.setTila(ProjektiTila.JULKAISTU);
+            return new TilaUpdateStatus();
+        }
+
         TilaUpdateStatus updateStatus;
 
         if (projekti.getTila().equals(ProjektiTila.POISTETTU)) {
