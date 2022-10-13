@@ -68,9 +68,9 @@ public enum ProjektiTila {
         public Set<ProjektiTila> mahdollisetTilat(PerusteTyyppi tyyppi) {
             // EP-1387
             if (tyyppi.equals(PerusteTyyppi.OPAS)) {
-                return EnumSet.of(LAADINTA);
+                return EnumSet.of(LAADINTA, POISTETTU);
             } else {
-                return EnumSet.noneOf(ProjektiTila.class);
+                return EnumSet.of(POISTETTU);
             }
         }
     };
