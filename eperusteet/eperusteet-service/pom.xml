@@ -20,7 +20,7 @@
         <logback.version>1.2.3</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
         <jackson.version>2.11.4</jackson.version>
-        <jackson.databind.version>2.10.5.1</jackson.databind.version>
+        <jackson.databind.version>2.12.7.1</jackson.databind.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
@@ -476,7 +476,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.12.288</version>
+            <version>1.12.322</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
