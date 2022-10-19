@@ -17,15 +17,20 @@
 package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TyoryhmaHenkiloDto implements Serializable {
     private Long id;
     private String kayttajaOid;
@@ -36,6 +41,4 @@ public class TyoryhmaHenkiloDto implements Serializable {
         this.nimi = nimi;
     }
 
-    public TyoryhmaHenkiloDto() {
-    }
 }

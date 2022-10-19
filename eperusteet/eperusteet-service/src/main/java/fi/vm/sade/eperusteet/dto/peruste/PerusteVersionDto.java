@@ -16,7 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -26,15 +29,9 @@ import java.util.Date;
  * Date: 12.11.2015
  * Time: 20.04
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PerusteVersionDto {
     private Date aikaleima;
-
-    public PerusteVersionDto() {
-    }
-
-    public PerusteVersionDto(Date aikaleima) {
-        this.aikaleima = aikaleima;
-    }
 }

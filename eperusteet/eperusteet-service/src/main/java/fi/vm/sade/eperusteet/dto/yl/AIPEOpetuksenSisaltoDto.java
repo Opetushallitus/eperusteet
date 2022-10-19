@@ -20,14 +20,19 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AIPEOpetuksenSisaltoDto implements PerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
     private List<LaajaalainenOsaaminenDto> laajaalaisetosaamiset = new ArrayList<>();

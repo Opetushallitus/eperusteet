@@ -329,7 +329,7 @@
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
-            <version>1.5.2</version>
+            <version>1.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -568,10 +568,10 @@
                 <configuration>
                     <scan>0</scan>
                     <httpConnector>
-                        <port>8090</port>
+                        <port>8080</port>
                     </httpConnector>
                     <webApp>
-                        <contextPath>/eperusteet-amosaa-service</contextPath>
+                        <contextPath>/eperusteet-service</contextPath>
                         <jettyEnvXml>${basedir}/src/test/config/jetty-env.xml</jettyEnvXml>
                     </webApp>
                 </configuration>

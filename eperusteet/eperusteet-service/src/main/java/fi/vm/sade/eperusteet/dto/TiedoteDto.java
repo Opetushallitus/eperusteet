@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,12 +22,10 @@ import java.util.Set;
  * @author mikkom
  */
 @Data
-@Getter
-@Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Builder
 public class TiedoteDto {
     private Long id;
     private Reference perusteprojekti;

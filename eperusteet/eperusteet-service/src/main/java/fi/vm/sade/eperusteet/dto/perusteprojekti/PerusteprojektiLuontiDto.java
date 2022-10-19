@@ -32,11 +32,11 @@ import java.util.Date;
  *
  * @author harrik
  */
-@Getter
-@Setter
-@Builder
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PerusteprojektiLuontiDto extends PerusteprojektiDto {
     private String koulutustyyppi;

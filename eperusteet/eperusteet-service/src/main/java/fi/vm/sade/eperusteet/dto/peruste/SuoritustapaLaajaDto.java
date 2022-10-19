@@ -23,7 +23,11 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import java.util.Set;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
@@ -31,8 +35,9 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.*;
 /**
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(NON_NULL)
 public class SuoritustapaLaajaDto implements PerusteenSisaltoDto {
     private Suoritustapakoodi suoritustapakoodi;

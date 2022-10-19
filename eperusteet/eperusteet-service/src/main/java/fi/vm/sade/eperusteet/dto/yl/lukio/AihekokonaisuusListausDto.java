@@ -3,7 +3,10 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -15,17 +18,15 @@ import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterB
 /**
  * Created by jsikio
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AihekokonaisuusListausDto implements Serializable, Lokalisoitava {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
     private Long jnro;
     private Date muokattu;
-
-    public AihekokonaisuusListausDto() {
-    }
 
     public AihekokonaisuusListausDto(Long id, Long nimiId, Long kuvausId, Long jnro, Date muokattu) {
         this.id = id;

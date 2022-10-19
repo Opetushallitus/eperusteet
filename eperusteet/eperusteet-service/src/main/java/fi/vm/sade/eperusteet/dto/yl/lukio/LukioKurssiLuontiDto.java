@@ -31,11 +31,10 @@ import java.util.Optional;
  * Date: 29.9.15
  * Time: 14.54
  */
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class LukioKurssiLuontiDto implements Serializable {
     @NotNull
     private LukiokurssiTyyppi tyyppi;

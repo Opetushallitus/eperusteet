@@ -18,7 +18,11 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.stream.Stream;
@@ -30,13 +34,12 @@ import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterB
  * Date: 5.10.15
  * Time: 20.41
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class KurssinOppiaineNimettyDto extends KurssinOppiaineDto implements Lokalisoitava {
     protected LokalisoituTekstiDto oppiaineNimi;
-
-    public KurssinOppiaineNimettyDto() {
-    }
 
     public KurssinOppiaineNimettyDto(Long oppiaineId, Integer jarjestys, Long oppiaineNimiId) {
         super(oppiaineId, jarjestys);

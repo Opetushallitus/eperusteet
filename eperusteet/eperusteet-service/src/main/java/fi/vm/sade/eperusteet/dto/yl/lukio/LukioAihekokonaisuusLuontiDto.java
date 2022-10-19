@@ -18,8 +18,12 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -29,24 +33,14 @@ import java.util.Optional;
 /**
  * User: jsikio
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class LukioAihekokonaisuusLuontiDto extends UpdateDto<LukioAihekokonaisuusLuontiDto> implements Serializable {
     @NotNull
     private LokalisoituTekstiDto otsikko;
     private Optional<LokalisoituTekstiDto> yleiskuvaus;
     private Long jnro;
-
-
-    public LukioAihekokonaisuusLuontiDto() {
-    }
-
-    public LukioAihekokonaisuusLuontiDto(LokalisoituTekstiDto otsikko,
-                                         Optional<LokalisoituTekstiDto> yleiskuvaus,
-                                         Long jnro) {
-        this.otsikko = otsikko;
-        this.yleiskuvaus = yleiskuvaus;
-        this.jnro = jnro;
-    }
 }

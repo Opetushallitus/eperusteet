@@ -19,7 +19,11 @@ package fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -27,8 +31,10 @@ import lombok.Setter;
  * Date: 21.10.15
  * Time: 20.02
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonTypeName("opetuksenyleisettavoitteet")
 public class OpetuksenYleisetTavoitteetSuppeaDto extends PerusteenOsaDto.Suppea {
     private LokalisoituTekstiDto otsikko;

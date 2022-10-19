@@ -16,20 +16,21 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class MuodostumisSaantoDto {
 
     private Laajuus laajuus;
     private Koko koko;
-
-    public MuodostumisSaantoDto() {
-    }
 
     public MuodostumisSaantoDto(Laajuus laajuus) {
         this.laajuus = laajuus;
@@ -41,13 +42,9 @@ public class MuodostumisSaantoDto {
         this.laajuus = null;
     }
 
-    public MuodostumisSaantoDto(MuodostumisSaantoDto.Laajuus laajuus, MuodostumisSaantoDto.Koko koko) {
-        this.koko = koko;
-        this.laajuus = laajuus;
-    }
-
-    @Getter
-    @Setter
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
     public static class Laajuus {
 
@@ -55,32 +52,16 @@ public class MuodostumisSaantoDto {
         private Integer maksimi;
         private LaajuusYksikko yksikko;
 
-        public Laajuus(Integer minimi, Integer maksimi, LaajuusYksikko yksikko) {
-            this.minimi = minimi;
-            this.maksimi = maksimi;
-            this.yksikko = yksikko;
-        }
-
-        public Laajuus() {
-        }
-
     }
 
-    @Getter
-    @Setter
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
     public static class Koko {
 
         Integer minimi;
         Integer maksimi;
 
-        public Koko(Integer minimi, Integer maksimi) {
-            this.minimi = minimi;
-            this.maksimi = maksimi;
-        }
-
-        public Koko() {
-
-        }
     }
 }

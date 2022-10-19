@@ -19,6 +19,8 @@ package fi.vm.sade.eperusteet.dto.yl.lukio.julkinen;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -35,9 +37,9 @@ import static fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto.lo
  * Date: 2.11.15
  * Time: 12.57
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class LukiokurssiJulkisetTiedotDto implements Serializable, Lokalisoitava {
     private Long id;
     private Long oppiaineId;

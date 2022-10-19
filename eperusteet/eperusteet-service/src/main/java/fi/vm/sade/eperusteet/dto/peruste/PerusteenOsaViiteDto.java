@@ -19,7 +19,11 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.dto.Reference;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -28,8 +32,9 @@ import java.util.List;
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
 
@@ -38,16 +43,13 @@ public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
     private Reference perusteenOsaRef;
     private R perusteenOsa;
 
-    public PerusteenOsaViiteDto() {
-
-    }
-
     public PerusteenOsaViiteDto(R perusteenOsa) {
         this.perusteenOsa = perusteenOsa;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    @AllArgsConstructor
     public static class Matala extends PerusteenOsaViiteDto<PerusteenOsaDto.Laaja> {
         private List<Reference> lapset;
 
@@ -59,15 +61,23 @@ public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
         }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Puu<R extends PerusteenOsaDto, L extends Puu<R, L>> extends PerusteenOsaViiteDto<R> {
         private List<L> lapset;
     }
 
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    @NoArgsConstructor
     public static class Laaja extends Puu<PerusteenOsaDto.Laaja, Laaja> {
     }
 
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    @NoArgsConstructor
     public static class Suppea extends Puu<PerusteenOsaDto.Suppea, Suppea> {
     }
 

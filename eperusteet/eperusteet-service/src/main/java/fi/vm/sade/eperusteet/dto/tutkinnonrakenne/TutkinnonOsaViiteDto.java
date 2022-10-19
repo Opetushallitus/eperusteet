@@ -26,17 +26,19 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
-@AllArgsConstructor
 public class TutkinnonOsaViiteDto implements ReferenceableDto, Sortable {
 
     private Long id;
@@ -51,9 +53,6 @@ public class TutkinnonOsaViiteDto implements ReferenceableDto, Sortable {
     private Date muokattu;
     private LokalisoituTekstiDto nimi;
     private TutkinnonOsaTyyppi tyyppi;
-
-    public TutkinnonOsaViiteDto() {
-    }
 
     public TutkinnonOsaViiteDto(BigDecimal laajuus, Integer jarjestys, LokalisoituTekstiDto nimi, TutkinnonOsaTyyppi tyyppi) {
         this.laajuus = laajuus;

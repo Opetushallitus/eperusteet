@@ -29,12 +29,11 @@ import java.util.Date;
  *
  * @author harrik
  */
-@Getter
-@Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Builder
 public class KoodistoKoodiDto {
     private String koodiUri;
     private String koodiArvo;

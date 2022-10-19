@@ -6,12 +6,11 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode(of = "osaamistaso")
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "osaamistaso")
+@Builder
 public class GeneerisenArvioinninOsaamistasonKriteeriDto {
     private Reference osaamistaso;
     private List<LokalisoituTekstiDto> kriteerit = new ArrayList<>();

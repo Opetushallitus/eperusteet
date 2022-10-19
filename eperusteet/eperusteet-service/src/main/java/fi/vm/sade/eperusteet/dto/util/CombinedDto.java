@@ -17,7 +17,10 @@
 package fi.vm.sade.eperusteet.dto.util;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -26,8 +29,9 @@ import lombok.Setter;
  * @param <A> First dto to be combined
  * @param <B> Second dto
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CombinedDto<A, B> {
     @JsonUnwrapped
     private A a;
@@ -35,11 +39,4 @@ public class CombinedDto<A, B> {
     @JsonUnwrapped
     private B b;
 
-    public CombinedDto(A a, B b) {
-        this.a = a;
-        this.b = b;
-    }
-
-    public CombinedDto() {
-    }
 }

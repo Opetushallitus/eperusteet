@@ -19,14 +19,19 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import java.util.List;
 import java.util.Set;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PerusopetuksenPerusteenSisaltoDto implements PerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
     private Set<LaajaalainenOsaaminenDto> laajaalaisetosaamiset;

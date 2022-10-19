@@ -18,7 +18,11 @@ package fi.vm.sade.eperusteet.dto.arviointi;
 
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -27,8 +31,9 @@ import java.util.List;
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArvioinninKohdealueDto {
     private LokalisoituTekstiDto otsikko;
     private List<ArvioinninKohdeDto> arvioinninKohteet;

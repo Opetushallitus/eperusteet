@@ -16,7 +16,10 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -25,8 +28,9 @@ import java.util.List;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OsaamisenArviointiDto {
     private Long id;
     private LokalisoituTekstiDto kohde;

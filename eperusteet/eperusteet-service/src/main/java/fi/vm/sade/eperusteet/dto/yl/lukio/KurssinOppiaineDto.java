@@ -16,7 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -26,17 +29,10 @@ import java.io.Serializable;
  * Date: 29.9.15
  * Time: 18.08
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class KurssinOppiaineDto implements Serializable {
     private Long oppiaineId;
     private Integer jarjestys;
-
-    public KurssinOppiaineDto() {
-    }
-
-    public KurssinOppiaineDto(Long oppiaineId, Integer jarjestys) {
-        this.oppiaineId = oppiaineId;
-        this.jarjestys = jarjestys;
-    }
 }

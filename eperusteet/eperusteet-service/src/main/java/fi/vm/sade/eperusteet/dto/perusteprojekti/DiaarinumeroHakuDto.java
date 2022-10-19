@@ -17,15 +17,20 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class DiaarinumeroHakuDto implements Serializable {
     private Boolean loytyi;
     private ProjektiTila tila;

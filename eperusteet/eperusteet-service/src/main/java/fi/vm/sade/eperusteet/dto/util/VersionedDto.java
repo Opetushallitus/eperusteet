@@ -21,6 +21,7 @@ package fi.vm.sade.eperusteet.dto.util;
  *
  * @author harrik
  */
+
 public interface VersionedDto {
     Integer getVersioId();
     void setVersionId(Integer id);
