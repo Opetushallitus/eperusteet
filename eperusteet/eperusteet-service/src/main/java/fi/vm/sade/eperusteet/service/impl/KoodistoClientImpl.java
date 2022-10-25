@@ -84,7 +84,6 @@ public class KoodistoClientImpl implements KoodistoClient {
     private String koodistoServiceUrl;
 
     private static final String KOODISTO_API = "/rest/json/";
-    private static final String KOODISTO_REST_API = "/rest";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
     private static final String RINNASTEINEN = "relaatio/rinnasteinen/";
@@ -141,7 +140,11 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto get(String koodistoUri, String koodiUri) {
-        return self.get(koodistoUri, koodiUri, null);
+        // yritetään hakea ensin cachesta
+        Optional<KoodistoKoodiDto> koodistoKoodi = this.self.getAll(koodistoUri).stream()
+                .filter(koodi -> koodi.getKoodiUri().equals(koodiUri))
+                .findFirst();
+        return koodistoKoodi.orElseGet(() -> self.get(koodistoUri, koodiUri, null));
     }
 
     @Override
@@ -442,5 +445,4 @@ public class KoodistoClientImpl implements KoodistoClient {
             log.error(e.getMessage());
         }
     }
-
 }
