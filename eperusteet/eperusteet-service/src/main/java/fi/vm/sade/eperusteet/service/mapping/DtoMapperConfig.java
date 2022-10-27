@@ -578,7 +578,7 @@ public class DtoMapperConfig {
                     @Override
                     public void mapBtoA(OsaamisalaDto osaamisalaDto, Koodi koodi, MappingContext context) {
                         super.mapBtoA(osaamisalaDto, koodi, context);
-                        if (!osaamisalaDto.getOsaamisalakoodiUri().contains("temporary")) {
+                        if (osaamisalaDto.getOsaamisalakoodiUri() != null && !osaamisalaDto.getOsaamisalakoodiUri().contains("temporary")) {
                             koodi.setKoodisto("osaamisala");
                             koodi.setUri(osaamisalaDto.getOsaamisalakoodiUri());
                         }
