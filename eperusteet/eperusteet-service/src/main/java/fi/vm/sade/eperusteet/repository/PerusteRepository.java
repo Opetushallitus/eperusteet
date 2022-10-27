@@ -47,9 +47,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     List<Peruste> findAllValmiitByDiaarinumero(Diaarinumero diaarinumero);
 
     @Query("SELECT p from Peruste p " +
-            "LEFT JOIN p.julkaisut j " +
             "WHERE p.tyyppi = 'AMOSAA_YHTEINEN' " +
-            "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) ")
+            "and (p.tila = 'VALMIS') ")
     List<Peruste> findAllAmosaaYhteisetPohjat();
 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero IN (?1)")
