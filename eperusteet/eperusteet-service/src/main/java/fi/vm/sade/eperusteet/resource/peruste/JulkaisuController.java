@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +35,6 @@ public class JulkaisuController {
     private JulkaisutService julkaisutService;
 
     @RequestMapping(method = GET, value = "/{perusteId}/julkaisu")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public List<JulkaisuBaseDto> getJulkaisut(
             @PathVariable("perusteId") final long id) {
         return julkaisutService.getJulkaisut(id);
@@ -80,11 +79,15 @@ public class JulkaisuController {
     }
 
     @RequestMapping(method = GET, value = "/{perusteId}/viimeisinjulkaisuaika")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
     public Date viimeisinJulkaisuAika(
             @PathVariable("perusteId") final long perusteId) {
         return julkaisutService.viimeisinPerusteenJulkaisuaika(perusteId);
+    }
+
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu/onkoMuutoksia")
+    public boolean onkoMuutoksia(
+            @PathVariable("perusteId") final long perusteId) {
+        return julkaisutService.onkoMuutoksia(perusteId);
     }
 
 }

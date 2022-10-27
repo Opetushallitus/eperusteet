@@ -26,4 +26,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("permitAll()")
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    boolean onkoMuutoksia(long perusteId);
 }
