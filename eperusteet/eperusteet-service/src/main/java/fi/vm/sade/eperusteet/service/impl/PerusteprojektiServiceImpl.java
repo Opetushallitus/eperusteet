@@ -705,7 +705,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                     }
                 }).ifPresent(tree -> {
                     for (JsonNode node : tree) {
-                        String oid = node.get("oidHenkilo").asText();
+                        String oid = node.get("oid").asText();
                         // Todo: Tämä on erittäin hidas jos lista on iso
                         KayttajanTietoDto kayttaja = kayttajanTietoService.hae(oid);
                         KayttajanProjektitiedotDto kayttajanProjektitiedot = kayttajanTietoService.haePerusteprojekti(oid, id);
