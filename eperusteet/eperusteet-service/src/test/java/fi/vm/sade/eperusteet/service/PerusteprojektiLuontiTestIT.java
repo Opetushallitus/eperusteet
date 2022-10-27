@@ -15,6 +15,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.groups.Tuple.tuple;
 
 
@@ -55,7 +57,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     private PerusteenOsaViiteService povService;
 
     @Autowired
-    private PerusteRepository repo;
+    private PerusteRepository perusteRepository;
 
     @Autowired
     private PlatformTransactionManager manager;
@@ -329,9 +331,51 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback
+    public void testAmosaaJaettujaPohjiaSaaOllaVainYksi() {
+        assertThatThrownBy(() -> perusteService.getAmosaaYhteinenPohja()).isInstanceOf(BusinessRuleViolationException.class);
+
+        PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
+            ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
+        });
+
+        Peruste p1 = perusteRepository.findOne(amosaaPohja1.getPeruste().getIdLong());
+        p1.asetaTila(PerusteTila.VALMIS);
+        perusteRepository.save(p1);
+        assertThat(perusteService.getAmosaaYhteinenPohja()).isNotNull();
+
+        PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
+            ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
+        });
+        assertThat(perusteService.getAmosaaYhteinenPohja()).isNotNull();
+
+        Peruste p2 = perusteRepository.findOne(amosaaPohja2.getPeruste().getIdLong());
+        p2.asetaTila(PerusteTila.VALMIS);
+        perusteRepository.save(p2);
+        assertThatThrownBy(() -> perusteService.getAmosaaYhteinenPohja()).isInstanceOf(BusinessRuleViolationException.class);
+    }
+
+    @Test
+    @Rollback
+    public void testAmosaaJaetutEivatTuleJulkiseenHakuun() {
+        PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
+            ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
+        });
+        PerusteDto perusteDto = ppTestUtils.initPeruste(amosaaPohja1.getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        });
+        ppTestUtils.luoValidiKVLiite(perusteDto.getId());
+        Peruste p1 = perusteRepository.findOne(amosaaPohja1.getPeruste().getIdLong());
+        perusteRepository.save(p1);
+        p1.asetaTila(PerusteTila.VALMIS);
+        PerusteQuery pquery = new PerusteQuery();
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        assertThat(perusteet.getTotalElements()).isEqualTo(0);
+    }
+
+    @Test
+    @Rollback
     public void testAmosaaJaettuPohja() {
-        PerusteKaikkiDto pohja = perusteService.getAmosaaYhteinenPohja();
-        assertThat(pohja).isNull();
+        assertThatThrownBy(() -> perusteService.getAmosaaYhteinenPohja()).isInstanceOf(BusinessRuleViolationException.class);
 
         PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
@@ -349,7 +393,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
 
-        pohja = perusteService.getAmosaaYhteinenPohja();
+        PerusteKaikkiDto pohja = perusteService.getAmosaaYhteinenPohja();
         assertThat(pohja).isNotNull().hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
         PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
@@ -358,17 +402,13 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto2 = ppTestUtils.initPeruste(amosaaPohja2.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
         });
-        ppTestUtils.luoValidiKVLiite(perusteDto2.getId());
-        ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VIIMEISTELY);
-        ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.VALMIS);
-        ppTestUtils.asetaTila(amosaaPohja2.getId(), ProjektiTila.JULKAISTU);
 
         perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
         PerusteKaikkiDto amosaaYhteinen = perusteService.getAmosaaYhteinenPohja();
         assertThat(amosaaYhteinen)
                 .isNotNull()
-                .hasFieldOrPropertyWithValue("id", perusteDto2.getId());
+                .hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
         // Kaikki tulevat sisäiseen hakuun
         pquery = new PerusteQuery();

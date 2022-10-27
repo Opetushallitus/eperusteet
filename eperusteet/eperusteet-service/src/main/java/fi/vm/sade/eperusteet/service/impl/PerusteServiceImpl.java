@@ -667,19 +667,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteKaikkiDto getAmosaaYhteinenPohja() {
         List<Peruste> loydetyt = perusteRepository.findAllAmosaaYhteisetPohjat();
 
-        if (loydetyt.size() == 1) {
-            return getJulkaistuSisalto(loydetyt.get(0).getId(), false);
-        } else {
-            Optional<Peruste> op = loydetyt.stream()
-                    .filter((p) -> p.getVoimassaoloAlkaa() != null && p.getVoimassaoloAlkaa().before(new Date()))
-                    .reduce((current, next) -> next.getVoimassaoloAlkaa().after(current.getVoimassaoloAlkaa()) ? next : current);
-
-            if (op.isPresent()) {
-                return getJulkaistuSisalto(op.get().getId(), false);
-            }
+        if (loydetyt.size() != 1) {
+            throw new BusinessRuleViolationException("amosaa-pohjia-väärä-määrä");
         }
-
-        return null;
+        return getJulkaistuSisalto(loydetyt.stream().findFirst().get().getId(), true);
     }
 
     @Override
@@ -859,6 +850,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev, boolean useCurrentData) {
         Peruste peruste;
+
         if (perusteRev != null) {
             peruste = perusteRepository.findRevision(id, perusteRev);
         } else {
@@ -878,7 +870,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 log.error(Throwables.getStackTraceAsString(e));
                 throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
             }
-        } else if (!peruste.getPerusteprojekti().isEsikatseltavissa() && !Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
+        }
+        else if (!peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN)
+                && !peruste.getPerusteprojekti().isEsikatseltavissa()
+                && !Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
             throw new BusinessRuleViolationException("perustetta-ei-loydy");
         }
 
