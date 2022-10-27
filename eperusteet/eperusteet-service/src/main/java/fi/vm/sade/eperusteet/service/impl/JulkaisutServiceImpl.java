@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
@@ -51,6 +52,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.skyscreamer.jsonassert.JSONCompare;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -168,6 +172,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             throw new BusinessRuleViolationException("projekti-ei-validi");
         }
 
+        long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
+        if (julkaisutCount > 0 && !onkoMuutoksia(peruste.getId())) {
+            throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
+        }
+
         // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
         peruste.asetaTila(PerusteTila.VALMIS);
         peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
@@ -176,7 +185,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
         ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
-        long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
         Set<Long> dokumentit = new HashSet<>();
 
         if (pdfEnabled.contains(peruste.getKoulutustyyppi())) {
@@ -238,6 +246,33 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
 
         return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
+    }
+
+    @Override
+    public boolean onkoMuutoksia(long perusteId) {
+        try {
+            Peruste peruste = perusteRepository.findOne(perusteId);
+            JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+
+            if (viimeisinJulkaisu == null) {
+                return false;
+            }
+
+            ObjectNode data = viimeisinJulkaisu.getData().getData();
+            String julkaistu = generoiOpetussuunnitelmaKaikkiDtotoString(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
+            String nykyinen = generoiOpetussuunnitelmaKaikkiDtotoString(perusteService.getKaikkiSisalto(peruste.getId()));
+
+            return JSONCompare.compareJSON(julkaistu, nykyinen, JSONCompareMode.LENIENT).failed();
+        } catch (IOException | JSONException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            throw new BusinessRuleViolationException("onko-muutoksia-julkaisuun-verrattuna-tarkistus-epaonnistui");
+        }
+    }
+
+    private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
+        perusteKaikkiDto.setViimeisinJulkaisuAika(null);
+        perusteKaikkiDto.setTila(null);
+        return objectMapper.writeValueAsString(perusteKaikkiDto);
     }
 
     @Override

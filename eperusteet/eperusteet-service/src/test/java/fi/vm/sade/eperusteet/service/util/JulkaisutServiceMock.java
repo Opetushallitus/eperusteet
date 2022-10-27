@@ -36,4 +36,9 @@ public class JulkaisutServiceMock implements JulkaisutService {
     public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
         return null;
     }
+
+    @Override
+    public boolean onkoMuutoksia(long perusteId) {
+        return false;
+    }
 }
