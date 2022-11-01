@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.util.ObjectUtils;
 
 import java.text.Normalizer;
@@ -34,6 +35,7 @@ import java.util.stream.Stream;
  *
  * @author jhyoty
  */
+@ToString
 public class LokalisoituTekstiDto {
     private static final Map<Kieli,String> emptyMap = new EnumMap<>(Kieli.class);
 

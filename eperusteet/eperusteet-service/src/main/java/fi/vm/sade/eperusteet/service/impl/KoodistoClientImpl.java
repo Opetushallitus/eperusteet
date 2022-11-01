@@ -301,6 +301,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
 
         if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > KOODISTO_TEKSTI_MAX_LENGTH)) {
+            log.error("tallennettava koodinimi: {}", koodinimi);
             throw new BusinessRuleViolationException("koodi-arvo-liian-pitka");
         }
 
