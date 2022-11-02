@@ -44,6 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.Arrays;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -103,7 +105,7 @@ public class OpasController {
             @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
     })
     public Page<PerusteprojektiKevytDto> getAllOppaatKevyt(PerusteprojektiQueryDto pquery) {
-        pquery.setTyyppi(PerusteTyyppi.OPAS);
+        pquery.setTyyppi(Arrays.asList(PerusteTyyppi.OPAS));
         PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         Page<PerusteprojektiKevytDto> page = service.findProjektiBy(p, pquery);
         return page;
