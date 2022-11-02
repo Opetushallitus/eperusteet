@@ -168,15 +168,14 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         Predicate diaarissa = cb.equal(targetDiaari, diaarihaku);
         Predicate result = cb.or(nimessa, diaarissa);
 
-        if (pq.getTyyppi() == null) {
+        if (CollectionUtils.isEmpty(pq.getTyyppi())) {
             result = cb.and(result, cb.notEqual(tyyppi, PerusteTyyppi.OPAS));
-        }
-        else {
-            result = cb.and(result, cb.equal(tyyppi, pq.getTyyppi()));
+        } else {
+            result = cb.and(result, tyyppi.in(pq.getTyyppi()));
         }
 
         if (!ObjectUtils.isEmpty(pq.getKoulutustyyppi())) {
-            if (PerusteTyyppi.OPAS.equals(pq.getTyyppi())) {
+            if (pq.getTyyppi().contains(PerusteTyyppi.OPAS)) {
                 SetJoin<Peruste, KoulutusTyyppi> koulutustyypit = joined.join(Peruste_.oppaanKoulutustyypit, JoinType.LEFT);
 
                 result = cb.and(result, cb.or(
@@ -192,7 +191,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
             }
         }
 
-        if (PerusteTyyppi.OPAS.equals(pq.getTyyppi()) && !CollectionUtils.isEmpty(pq.getPerusteet())) {
+        if (pq.getTyyppi().contains(PerusteTyyppi.OPAS) && !CollectionUtils.isEmpty(pq.getPerusteet())) {
             SetJoin<Peruste, Peruste> perusteet = joined.join(Peruste_.oppaanPerusteet);
             result = cb.and(result, perusteet.get(Peruste_.id).in(pq.getPerusteet()));
         }

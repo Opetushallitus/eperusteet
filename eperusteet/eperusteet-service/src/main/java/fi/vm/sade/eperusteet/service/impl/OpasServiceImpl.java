@@ -47,6 +47,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 
 /**
@@ -134,7 +136,7 @@ public class OpasServiceImpl implements OpasService {
 
     @Override
     public Page<PerusteprojektiKevytDto> findProjektiBy(PageRequest p, PerusteprojektiQueryDto pquery) {
-        pquery.setTyyppi(PerusteTyyppi.OPAS);
+        pquery.setTyyppi(Arrays.asList(PerusteTyyppi.OPAS));
         Page<Perusteprojekti> projektit = repository.findBy(p, pquery);
         Page<PerusteprojektiKevytDto> result = projektit.map(pp -> {
             PerusteprojektiKevytDto ppk = mapper.map(pp, PerusteprojektiKevytDto.class);
