@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.pdfbox.preflight.PreflightDocument;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.apache.pdfbox.preflight.exception.SyntaxValidationException;
@@ -155,7 +156,7 @@ public class DokumenttiUtils {
     }
 
     public static String unescapeHtml5(String string) {
-        return Jsoup.clean(stripNonValidXMLCharacters(string), ValidHtml.WhitelistType.NORMAL.getWhitelist());
+        return StringEscapeUtils.unescapeHtml4((Jsoup.clean(stripNonValidXMLCharacters(string), ValidHtml.WhitelistType.NORMAL.getWhitelist())));
     }
 
     public static String stripNonValidXMLCharacters(String in) {
