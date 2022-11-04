@@ -30,7 +30,6 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -303,7 +302,9 @@ public class PerusteenOsaViite implements
 
     @Override
     public NavigationType getNavigationType() {
+        if (this.perusteenOsa != null) {
+            return this.perusteenOsa.getNavigationType();
+        }
         return NavigationType.viite;
     }
-
 }

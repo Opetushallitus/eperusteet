@@ -126,7 +126,6 @@ import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
@@ -158,7 +157,6 @@ import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import fi.vm.sade.eperusteet.service.mapping.Koodisto;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
@@ -236,28 +234,11 @@ import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 @Transactional
 public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
 
-    private static final String KOODISTO_REST_URL = "https://virkailija.opintopolku.fi/koodisto-service/rest/json/";
-    private static final String KOODISTO_RELAATIO_YLA = "relaatio/sisaltyy-ylakoodit/";
-    private static final String KOODISTO_RELAATIO_ALA = "relaatio/sisaltyy-alakoodit/";
-    private static final String KOULUTUSALALUOKITUS = "koulutusalaoph2002";
-    private static final String OPINTOALALUOKITUS = "opintoalaoph2002";
-
-    private static final List<String> ERIKOISTAPAUKSET = new ArrayList<>(Arrays.asList(new String[]{"koulutus_357802",
-        "koulutus_327110", "koulutus_354803", "koulutus_324111", "koulutus_354710",
-        "koulutus_324125", "koulutus_357709", "koulutus_327124", "koulutus_355904", "koulutus_324129", "koulutus_358903",
-        "koulutus_327127",
-        "koulutus_355412", "koulutus_324126", "koulutus_355413", "koulutus_324127", "koulutus_358412", "koulutus_327126",
-        "koulutus_354708",
-        "koulutus_324123", "koulutus_357707", "koulutus_327122"}));
-
     @Autowired
     private PerusteDispatcher dispatcher;
 
     @Autowired
     private PerusteRepository perusteRepository;
-
-    @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
 
     @Autowired
     private KVLiiteRepository kvliiteRepository;
@@ -292,10 +273,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     @Dto
     private DtoMapper mapper;
-
-    @Autowired
-    @Koodisto
-    private DtoMapper koodistoMapper;
 
     @Autowired
     private SuoritustapaRepository suoritustapaRepository;
@@ -1264,9 +1241,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (perusteDto.getOppaanSisalto() != null) {
             opasSisaltoService.update(id, perusteDto.getOppaanSisalto());
         }
-
         perusteRepository.save(current);
-        muokkausTietoService.addMuokkaustieto(id, current, MuokkausTapahtuma.PAIVITYS);
 
         return mapper.map(current, PerusteDto.class);
     }
