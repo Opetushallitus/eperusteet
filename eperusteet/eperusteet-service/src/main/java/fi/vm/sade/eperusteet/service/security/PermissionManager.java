@@ -544,7 +544,7 @@ public class PermissionManager {
         return permissionMap;
     }
 
-    private boolean isUserAdmin() {
+    public boolean isUserAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(authority -> authority.equals(OPH_ADMIN));
     }
