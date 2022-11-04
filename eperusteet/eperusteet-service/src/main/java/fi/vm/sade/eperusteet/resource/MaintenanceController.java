@@ -77,6 +77,11 @@ public class MaintenanceController {
         maintenanceService.teeJulkaisut(julkaiseKaikki, tyyppi, koulutustyyppi, tiedote);
     }
 
+    @RequestMapping(value = "/julkaise/{perusteId}", method = GET)
+    public void teeJulkaisu(@PathVariable final Long perusteId, @RequestParam(value = "tiedote", defaultValue = "Ylläpidon suorittama julkaisu") String tiedote) {
+        maintenanceService.teeJulkaisu(perusteId, tiedote);
+    }
+
     @RequestMapping(value = "/export/{perusteId}", method = GET, produces = "application/zip")
     public ResponseEntity<StreamingResponseBody> viePeruste(@PathVariable final Long perusteId) {
         String archiveFilename = new SimpleDateFormat("yyyyMMddHHmmss'.zip'").format(new Date());

@@ -147,10 +147,25 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         for (Long perusteId : perusteet) {
             try {
-                teeJulkaisu(perusteId, tiedote);
+                julkaisePeruste(perusteId, tiedote);
             } catch (RuntimeException ex) {
                 log.error(ex.getLocalizedMessage(), ex);
             }
+        }
+
+        log.info("julkaisut tehty");
+    }
+
+    @Override
+    @Async
+    @IgnorePerusteUpdateCheck
+    @Transactional(propagation = Propagation.NEVER)
+    public void teeJulkaisu(long perusteId, String tiedote) {
+
+        try {
+            julkaisePeruste(perusteId, tiedote);
+        } catch (RuntimeException ex) {
+            log.error(ex.getLocalizedMessage(), ex);
         }
 
         log.info("julkaisut tehty");
@@ -161,7 +176,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
     }
 
-    private void teeJulkaisu(Long perusteId, String tiedote) {
+    private void julkaisePeruste(Long perusteId, String tiedote) {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(perusteId);

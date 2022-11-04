@@ -24,6 +24,11 @@ public class MaintenanceServiceMock implements MaintenanceService {
     }
 
     @Override
+    public void teeJulkaisu(long perusteId, String tiedote) {
+
+    }
+
+    @Override
     public List<YllapitoDto> getSallitutYllapidot() {
         return null;
     }
