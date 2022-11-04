@@ -1223,6 +1223,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     current.setSisalto(updated.getVstSisalto());
                 }
             }
+
+            if (permissionManager.isUserAdmin()) {
+                current.setTyyppi(updated.getTyyppi());
+            }
         }
 
         perusteRepository.save(current);
