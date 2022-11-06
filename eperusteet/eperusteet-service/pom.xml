@@ -19,7 +19,7 @@
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <logback.version>1.2.3</logback.version>
         <postgresql.version>9.4.1211</postgresql.version>
-        <jackson.version>2.11.4</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
         <jackson.databind.version>2.10.5.1</jackson.databind.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
