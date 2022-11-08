@@ -180,6 +180,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
         peruste.asetaTila(PerusteTila.VALMIS);
         peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
+        perusteRepository.save(peruste);
 
         kooditaValiaikaisetKoodit(peruste);
         PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());

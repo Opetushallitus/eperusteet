@@ -300,6 +300,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteprojektiId, Long perusteId) {
         return Stream.concat(
                 addAmmattitaitovaatimuskooditToKoodisto(perusteId).stream(),
