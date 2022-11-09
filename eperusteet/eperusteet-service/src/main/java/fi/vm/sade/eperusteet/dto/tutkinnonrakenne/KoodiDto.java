@@ -53,6 +53,7 @@ public class KoodiDto {
         return result;
     }
 
+    @JsonIgnore
     public boolean isTemporary() {
         return uri != null && uri.startsWith("temporary_");
     }
