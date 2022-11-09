@@ -1,13 +1,41 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.yl.KeskeinenSisaltoalue;
+import fi.vm.sade.eperusteet.domain.yl.Koodillinen;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.Nimetty;
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
+import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
@@ -38,13 +66,27 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.Stack;
 import java.util.stream.Collectors;
 
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.*;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.KOMMENTOINTI;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.POISTETTU;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.VALMIS;
+import static fi.vm.sade.eperusteet.domain.ProjektiTila.jalkeen;
 import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
-import static fi.vm.sade.eperusteet.service.util.Util.*;
+import static fi.vm.sade.eperusteet.service.util.Util.and;
+import static fi.vm.sade.eperusteet.service.util.Util.empty;
+import static fi.vm.sade.eperusteet.service.util.Util.emptyString;
 import static java.util.stream.Collectors.toMap;
 
 @Component
@@ -165,6 +207,15 @@ public class ValidatorPeruste implements Validator {
             }
         }
         return koodittomatTutkinnonOsat;
+    }
+
+    private List<TutkinnonOsaViite> arvioinnitIlmanOtsikoita(Suoritustapa suoritustapa) {
+        return suoritustapa.getTutkinnonOsat().stream()
+                .filter(viite -> viite.getTutkinnonOsa().getArviointi() != null
+                        && viite.getTutkinnonOsa().getArviointi().getArvioinninKohdealueet() != null
+                        && viite.getTutkinnonOsa().getArviointi().getArvioinninKohdealueet().stream().anyMatch(arvkd -> Objects.isNull(arvkd.getKoodi()) && arvkd.getOtsikko() == null)
+                        )
+                .collect(Collectors.toList());
     }
 
     @SuppressWarnings("ServiceMethodEntity")
@@ -599,6 +650,18 @@ public class ValidatorPeruste implements Validator {
                             updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
                             updateStatus.setVaihtoOk(false);
                         }
+
+                        List<TutkinnonOsaViite> arvioinnitIlmanOtsikoita = arvioinnitIlmanOtsikoita(suoritustapa);
+                        if (!arvioinnitIlmanOtsikoita.isEmpty()) {
+                            List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                            for (TutkinnonOsaViite viite : arvioinnitIlmanOtsikoita) {
+                                if (viite.getTutkinnonOsa().getNimi() != null) {
+                                    nimet.add(new NavigableLokalisoituTekstiDto(viite));
+                                }
+                            }
+                            updateStatus.addStatus("tutkinnon-osan-arvioinnin-kohdealueelta-puuttuu-otsikko", suoritustapa.getSuoritustapakoodi(), nimet);
+                            updateStatus.setVaihtoOk(false);
+                        }
                     }
 
                     // Tarkistetaan koodittomat tutkinnon osat
@@ -699,6 +762,7 @@ public class ValidatorPeruste implements Validator {
                     updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta");
                     updateStatus.setVaihtoOk(false);
                 }
+
             }
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
