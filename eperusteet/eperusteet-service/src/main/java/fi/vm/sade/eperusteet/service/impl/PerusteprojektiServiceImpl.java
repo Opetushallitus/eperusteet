@@ -1000,6 +1000,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public void updateProjektiTila(Long id, ProjektiTila tila) {
         Perusteprojekti projekti = repository.findOne(id);
         projekti.setTila(tila);
+        if (tila.equals(ProjektiTila.VALMIS)) {
+            projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
+        }
         repository.save(projekti);
     }
 
