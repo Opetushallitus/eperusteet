@@ -78,7 +78,7 @@ public class MaintenanceController {
     }
 
     @RequestMapping(value = "/julkaise/{perusteId}", method = GET)
-    public void teeJulkaisu(@PathVariable final Long perusteId, @RequestParam(value = "tiedote", defaultValue = "Ylläpidon suorittama julkaisu") String tiedote) {
+    public void teeMaintenanceJulkaisu(@PathVariable final Long perusteId, @RequestParam(value = "tiedote", defaultValue = "Ylläpidon suorittama julkaisu") String tiedote) {
         maintenanceService.teeJulkaisu(perusteId, tiedote);
     }
 
