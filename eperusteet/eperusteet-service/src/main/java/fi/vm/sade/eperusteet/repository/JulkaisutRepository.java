@@ -83,6 +83,14 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("nykyhetki") Long nykyhetki
     );
 
+    @Query(nativeQuery = true,
+            value = "SELECT CAST(jsonb_path_query(jpd.data, CAST(:query AS jsonpath)) AS text) " +
+                    "FROM julkaistu_peruste jp " +
+                    "INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id " +
+                    "WHERE jp.peruste_id = :perusteId " +
+                    "AND luotu = (SELECT MAX(luotu) FROM julkaistu_peruste WHERE peruste_id = jp.peruste_id)")
+    String findJulkaisutByJsonPath(@Param("perusteId") Long perusteId, @Param("query") String query);
+
     List<JulkaistuPeruste> findAllByPerusteId(Long id);
 
     List<JulkaistuPeruste> findAllByPerusteOrderByRevisionDesc(@Param("peruste") Peruste peruste);

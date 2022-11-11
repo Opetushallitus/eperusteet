@@ -91,6 +91,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
@@ -820,6 +821,24 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query) {
+        Peruste peruste = perusteRepository.getOne(id);
+
+        if (peruste == null) {
+            return null;
+        }
+
+        try {
+            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
+        } catch (JsonProcessingException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
     }
 
     @Override
