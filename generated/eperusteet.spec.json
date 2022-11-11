@@ -1278,6 +1278,29 @@
         }
       }
     },
+    "/maintenance/julkaise/{perusteId}" : {
+      "get" : {
+        "tags" : [ "Maintenance" ],
+        "operationId" : "teeJulkaisu",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "tiedote",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
     "/maintenance/julkaisut" : {
       "get" : {
         "tags" : [ "Maintenance" ],
@@ -11045,12 +11068,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -12782,30 +12805,14 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12820,15 +12827,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -12838,30 +12845,14 @@
     "PageKoodistoKoodiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12876,15 +12867,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -12894,30 +12885,14 @@
     "PageKoulutuskoodiStatusDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12932,15 +12907,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -12950,30 +12925,14 @@
     "PagePerusteBaseDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -12988,15 +12947,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13006,30 +12965,14 @@
     "PagePerusteHakuDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13044,15 +12987,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13062,30 +13005,14 @@
     "PagePerusteHakuInternalDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13100,15 +13027,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13118,30 +13045,14 @@
     "PagePerusteInfoDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13156,15 +13067,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13174,30 +13085,14 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13212,15 +13107,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13230,30 +13125,14 @@
     "PagePerusteprojektiKevytDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13268,15 +13147,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13286,30 +13165,14 @@
     "PageTiedoteDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13324,15 +13187,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13342,30 +13205,14 @@
     "PageTilaUpdateStatus" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13380,15 +13227,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13398,30 +13245,14 @@
     "PageTutkinnonOsaDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13436,15 +13267,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13454,30 +13285,14 @@
     "PageTutkinnonOsaViiteKontekstiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
+        "totalElements" : {
           "type" : "integer",
-          "format" : "int32"
+          "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
-        },
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13492,15 +13307,15 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"

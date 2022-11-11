@@ -703,7 +703,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "MUU_KOULUTUS" ]
           }
         },
         "osaamistasonKriteerit" : {
@@ -2235,19 +2235,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2261,8 +2248,9 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-<<<<<<< HEAD
-=======
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -2270,13 +2258,9 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         }
       }
     },
@@ -2291,19 +2275,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2317,8 +2288,9 @@
         "number" : {
           "type" : "integer",
           "format" : "int32"
-<<<<<<< HEAD
-=======
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -2326,13 +2298,9 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> 685e518a1 (github actions generated spec files [skip actions])
         }
       }
     },
@@ -2525,7 +2493,7 @@
           "uniqueItems" : true,
           "items" : {
             "type" : "string",
-            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA" ]
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "MUU_KOULUTUS" ]
           }
         },
         "perusteenAikataulut" : {
