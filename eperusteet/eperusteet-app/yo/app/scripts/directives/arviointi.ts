@@ -19,6 +19,10 @@ angular
             ArviointiPreferences.setting("asteikko", kohdealue.$$newkohde.arviointiasteikko);
         };
 
+        $scope.uudenKohdealueenNimiValid = () => {
+            return !!$scope.uudenKohdealueenNimi && !!$scope.uudenKohdealueenNimi[YleinenData.kieli];
+        }
+
         $scope.kohdealue = {
             uusi: function() {
                 if (!$scope.uudenKohdealueenNimi) {
@@ -375,7 +379,8 @@ angular
             $scope.estaEventti($event);
         };
 
-        $scope.hyvaksyMuutos = function($event) {
+        $scope.hyvaksyMuutos = function($event, editoitava) {
+            $scope.editoitava = editoitava;
             $scope.estaEventti($event);
             $scope.sisaltoteksti = angular.copy($scope.editoitava);
             $scope.asetaMuokkaustila(false);
