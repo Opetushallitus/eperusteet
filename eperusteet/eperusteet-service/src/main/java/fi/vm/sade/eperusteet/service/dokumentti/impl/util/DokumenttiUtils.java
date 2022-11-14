@@ -156,7 +156,7 @@ public class DokumenttiUtils {
     }
 
     public static String unescapeHtml5(String string) {
-        return StringEscapeUtils.unescapeHtml4((Jsoup.clean(stripNonValidXMLCharacters(string), ValidHtml.WhitelistType.NORMAL.getWhitelist())));
+        return StringEscapeUtils.unescapeHtml4((Jsoup.clean(stripNonValidXMLCharacters(string), ValidHtml.WhitelistType.NORMAL_PDF.getWhitelist())));
     }
 
     public static String stripNonValidXMLCharacters(String in) {

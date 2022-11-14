@@ -44,17 +44,8 @@ public @interface ValidHtml {
     enum WhitelistType {
         MINIMAL(Whitelist.none()),
         SIMPLIFIED(Whitelist.none().addTags("p", "strong", "em", "i", "s", "ol", "li", "ul")),
-        NORMAL(Whitelist.none()
-                .addTags("p", "span", "strong", "em", "i", "s", "ol", "li", "ul", "blockquote", "table", "caption",
-                        "tbody", "tr", "td", "hr", "pre", "th", "thead", "a", "abbr", "comment", "figcaption", "br")
-                .addAttributes("table", "align", "border", "cellpadding", "cellspacing", "style", "summary")
-                .addAttributes("th", "scope", "colspan", "rowspan", "style")
-                .addAttributes("td", "colspan", "rowspan", "style", "data-colwidth")
-                .addAttributes("a", "href", "target", "rel", "routenode")
-                .addAttributes("img", "data-uid", "src", "alt", "height", "width", "style", "figcaption")
-                .addAttributes("abbr", "data-viite")
-                .addAttributes("figure", "class")
-                .addAttributes("span", "kommentti", "class"));
+        NORMAL(getNormalWhiteList()),
+        NORMAL_PDF(getNormalWhiteList().removeAttributes("a", "routenode"));
 
         private final Whitelist whitelist;
 
@@ -64,6 +55,20 @@ public @interface ValidHtml {
 
         public Whitelist getWhitelist() {
             return whitelist;
+        }
+
+        private static Whitelist getNormalWhiteList() {
+            return Whitelist.none()
+                    .addTags("p", "span", "strong", "em", "i", "s", "ol", "li", "ul", "blockquote", "table", "caption",
+                            "tbody", "tr", "td", "hr", "pre", "th", "thead", "a", "abbr", "comment", "figcaption", "br")
+                    .addAttributes("table", "align", "border", "cellpadding", "cellspacing", "style", "summary")
+                    .addAttributes("th", "scope", "colspan", "rowspan", "style")
+                    .addAttributes("td", "colspan", "rowspan", "style", "data-colwidth")
+                    .addAttributes("a", "href", "target", "rel", "routenode")
+                    .addAttributes("img", "data-uid", "src", "alt", "height", "width", "style", "figcaption")
+                    .addAttributes("abbr", "data-viite")
+                    .addAttributes("figure", "class")
+                    .addAttributes("span", "kommentti", "class");
         }
     }
 }
