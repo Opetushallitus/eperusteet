@@ -297,7 +297,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             log.error(Throwables.getStackTraceAsString(e));
             julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.VIRHE);
             self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
-            throw e;
+            throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
         }
 
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
