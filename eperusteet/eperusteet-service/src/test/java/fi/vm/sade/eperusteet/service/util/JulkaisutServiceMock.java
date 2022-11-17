@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
+import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -18,8 +20,17 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public JulkaisuBaseDto teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    public void teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    }
+
+    @Override
+    public JulkaisuTila viimeisinJulkaisuTila(Long perusteId) {
         return null;
+    }
+
+    @Override
+    public void teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+
     }
 
     @Override
@@ -40,5 +51,10 @@ public class JulkaisutServiceMock implements JulkaisutService {
     @Override
     public boolean onkoMuutoksia(long perusteId) {
         return false;
+    }
+
+    @Override
+    public void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila) {
+
     }
 }

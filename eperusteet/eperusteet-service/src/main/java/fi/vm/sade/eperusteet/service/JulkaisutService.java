@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
+import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import java.util.Date;
@@ -13,7 +15,13 @@ public interface JulkaisutService {
     List<JulkaisuBaseDto> getJulkaisut(long id);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
-    JulkaisuBaseDto teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+    void teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    JulkaisuTila viimeisinJulkaisuTila(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    void teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision);
@@ -29,4 +37,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     boolean onkoMuutoksia(long perusteId);
+
+    @PreAuthorize("isAuthenticated()")
+    void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila);
 }

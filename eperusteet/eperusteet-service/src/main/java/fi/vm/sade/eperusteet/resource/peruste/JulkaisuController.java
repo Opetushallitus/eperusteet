@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -63,10 +64,10 @@ public class JulkaisuController {
     @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public JulkaisuBaseDto teeJulkaisu(
+    public void teeJulkaisu(
             @PathVariable("projektiId") final long projektiId,
             @RequestBody JulkaisuBaseDto julkaisuBaseDto) {
-        return julkaisutService.teeJulkaisu(projektiId, julkaisuBaseDto);
+        julkaisutService.teeJulkaisu(projektiId, julkaisuBaseDto);
     }
 
     @RequestMapping(method = POST, value = "/{projektiId}/aktivoi/{revision}")
@@ -76,6 +77,12 @@ public class JulkaisuController {
             @PathVariable("projektiId") final long projektiId,
             @PathVariable("revision") final int revision) {
         return julkaisutService.aktivoiJulkaisu(projektiId, revision);
+    }
+
+    @RequestMapping(method = GET, value = "/{perusteId}/viimeisinjulkaisutila")
+    public JulkaisuTila viimeisinJulkaisuTila(
+            @PathVariable("perusteId") final long perusteId) {
+        return julkaisutService.viimeisinJulkaisuTila(perusteId);
     }
 
     @RequestMapping(method = GET, value = "/{perusteId}/viimeisinjulkaisuaika")

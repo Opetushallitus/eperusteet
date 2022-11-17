@@ -14,37 +14,24 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.dokumentti.impl;
+package fi.vm.sade.eperusteet.service.config;
 
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
-/**
- * @author isaul
- */
 @Configuration
 @EnableAsync
 @Profile("!test")
-public class DokumenttiAsyncConfig implements AsyncConfigurer {
+public class AsyncConfig  {
 
-    @Bean(value = "schedulingExecutor")
-    public Executor createScheduledExecutor() {
-        return Executors.newSingleThreadExecutor();
-    }
-
-
-    @Override
-    @Bean(name = "docTaskExecutor")
-    public Executor getAsyncExecutor() {
+    @Bean(name = "julkaisuTaskExecutor")
+    public Executor julkaisuTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(1);
@@ -54,8 +41,4 @@ public class DokumenttiAsyncConfig implements AsyncConfigurer {
         return new DelegatingSecurityContextAsyncTaskExecutor(executor);
     }
 
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new DokumenttiExceptionHandler();
-    }
 }
