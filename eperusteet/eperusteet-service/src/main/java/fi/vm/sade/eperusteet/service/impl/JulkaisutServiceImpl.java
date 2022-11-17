@@ -162,7 +162,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisut.add(JulkaisuBaseDto.builder()
                     .tila(julkaisuPerusteTila.getJulkaisutila())
                     .luotu(julkaisuPerusteTila.getMuokattu())
-                    .revision(julkaisut.stream().mapToInt(JulkaisuBaseDto::getRevision).max().orElse(-1) + 1)
+                    .revision(julkaisut.stream().mapToInt(JulkaisuBaseDto::getRevision).max().orElse(0) + 1)
                     .build());
         }
 
@@ -273,7 +273,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             List<JulkaistuPeruste> vanhatJulkaisut = julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste());
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-            julkaisu.setRevision(vanhatJulkaisut.stream().mapToInt(JulkaistuPeruste::getRevision).max().orElse(-1) + 1);
+            julkaisu.setRevision(vanhatJulkaisut.stream().mapToInt(JulkaistuPeruste::getRevision).max().orElse(0) + 1);
             julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
             julkaisu.setLuoja(username);
             julkaisu.setLuotu(new Date());
@@ -294,13 +294,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
         } catch(Exception e) {
-            log.debug(Throwables.getStackTraceAsString(e));
+            log.error(Throwables.getStackTraceAsString(e));
             julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.VIRHE);
             self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
             throw e;
         }
 
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
+        self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
     }
 
     @Override
