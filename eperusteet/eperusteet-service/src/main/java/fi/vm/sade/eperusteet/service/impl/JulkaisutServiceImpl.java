@@ -7,6 +7,8 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
+import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
+import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
@@ -28,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -57,12 +60,15 @@ import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -128,6 +134,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Autowired
     private AmmattitaitovaatimusService ammattitaitovaatimusService;
 
+    @Autowired
+    private JulkaisuPerusteTilaRepository julkaisuPerusteTilaRepository;
+
+    @Autowired
+    @Lazy
+    private JulkaisutService self;
+
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
     private static final List<String> pdfEnabled = Arrays.asList(
             "koulutustyyppi_1", "koulutustyyppi_5", "koulutustyyppi_6", "koulutustyyppi_11",
@@ -143,110 +156,151 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         List<JulkaistuPeruste> one = julkaisutRepository.findAllByPeruste(peruste);
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(one, JulkaisuBaseDto.class);
+
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(id);
+        if (julkaisuPerusteTila != null && !julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.JULKAISTU)) {
+            julkaisut.add(JulkaisuBaseDto.builder()
+                    .tila(julkaisuPerusteTila.getJulkaisutila())
+                    .luotu(julkaisuPerusteTila.getMuokattu())
+                    .revision(julkaisut.stream().mapToInt(JulkaisuBaseDto::getRevision).max().orElse(-1) + 1)
+                    .build());
+        }
+
         return taytaKayttajaTiedot(julkaisut);
     }
 
     @Override
     @IgnorePerusteUpdateCheck
-    public JulkaisuBaseDto teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    public void teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
-        if (perusteprojekti == null) {
-            throw new BusinessRuleViolationException("projektia-ei-ole");
-        }
-
-        Peruste peruste = perusteprojekti.getPeruste();
-
-        if (peruste == null) {
-            throw new BusinessRuleViolationException("perustetta-ei-ole");
-        }
-
-        if (julkaisuBaseDto.getPeruste() != null && !Objects.equals(peruste.getId(), julkaisuBaseDto.getPeruste().getId())) {
-            throw new BusinessRuleViolationException("vain-oman-perusteen-voi-julkaista");
-        }
-
-        // Validoinnit
-        TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
-
-        if (!salliVirheelliset && !status.isVaihtoOk()) {
-            throw new BusinessRuleViolationException("projekti-ei-validi");
-        }
-
-        long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
-        if (julkaisutCount > 0 && !onkoMuutoksia(peruste.getId())) {
+        List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste()), JulkaisuBaseDto.class);
+        if (julkaisut.size() > 0 && !onkoMuutoksia(perusteprojekti.getPeruste().getId())) {
             throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
         }
 
-        // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
-        peruste.asetaTila(PerusteTila.VALMIS);
-        peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
-        perusteRepository.save(peruste);
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteprojekti.getPeruste().getId());
+        if (julkaisuPerusteTila == null) {
+            julkaisuPerusteTila = new JulkaisuPerusteTila();
+            julkaisuPerusteTila.setPerusteId(perusteprojekti.getPeruste().getId());
+        }
 
-        kooditaValiaikaisetKoodit(peruste);
-        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
-        ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
+        julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.KESKEN);
+        saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
-        Set<Long> dokumentit = new HashSet<>();
+        self.teeJulkaisuAsync(projektiId, julkaisuBaseDto);
+    }
 
-        if (pdfEnabled.contains(peruste.getKoulutustyyppi())) {
+    @Override
+    public JulkaisuTila viimeisinJulkaisuTila(Long perusteId) {
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteId);
+        return julkaisuPerusteTila != null ? julkaisuPerusteTila.getJulkaisutila() : JulkaisuTila.JULKAISEMATON;
+    }
 
-            Set<Suoritustapakoodi> suoritustavat = peruste.getSuoritustavat().stream().map(Suoritustapa::getSuoritustapakoodi).collect(toSet());
-            if (suoritustavat.isEmpty()) {
-                if (peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
-                    suoritustavat.add(Suoritustapakoodi.OPAS);
-                } else {
-                    suoritustavat.add(Suoritustapakoodi.REFORMI);
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Async("julkaisuTaskExecutor")
+    public void teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+        log.debug("teeJulkaisu: {}", projektiId);
+
+        Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
+            if (perusteprojekti == null) {
+                throw new BusinessRuleViolationException("projektia-ei-ole");
+            }
+
+        Peruste peruste = perusteprojekti.getPeruste();
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(peruste.getId());
+
+        try {
+
+            if (julkaisuBaseDto.getPeruste() != null && !Objects.equals(peruste.getId(), julkaisuBaseDto.getPeruste().getId())) {
+                throw new BusinessRuleViolationException("vain-oman-perusteen-voi-julkaista");
+            }
+
+            // Validoinnit
+            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
+
+            if (!salliVirheelliset && !status.isVaihtoOk()) {
+                throw new BusinessRuleViolationException("projekti-ei-validi");
+            }
+
+            // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
+            peruste.asetaTila(PerusteTila.VALMIS);
+            peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
+            perusteRepository.save(peruste);
+
+            kooditaValiaikaisetKoodit(peruste);
+            PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
+            ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
+
+            Set<Long> dokumentit = new HashSet<>();
+
+            if (pdfEnabled.contains(peruste.getKoulutustyyppi())) {
+
+                Set<Suoritustapakoodi> suoritustavat = peruste.getSuoritustavat().stream().map(Suoritustapa::getSuoritustapakoodi).collect(toSet());
+                if (suoritustavat.isEmpty()) {
+                    if (peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                        suoritustavat.add(Suoritustapakoodi.OPAS);
+                    } else {
+                        suoritustavat.add(Suoritustapakoodi.REFORMI);
+                    }
+                }
+
+                dokumentit.addAll(suoritustavat.stream()
+                        .map(suoritustapa -> peruste.getKielet().stream()
+                                .map(kieli -> {
+                                    try {
+                                        DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                                peruste.getId(),
+                                                kieli,
+                                                suoritustapa,
+                                                GeneratorVersion.UUSI
+                                        );
+                                        dokumenttiService.generateWithDto(createDtoFor);
+                                        return createDtoFor.getId();
+                                    } catch (DokumenttiException e) {
+                                        log.error(e.getLocalizedMessage(), e);
+                                    }
+
+                                    return null;
+                                })
+                                .collect(toSet()))
+                        .filter(id -> id != null)
+                        .flatMap(Collection::stream)
+                        .collect(toSet()));
+            }
+
+            List<JulkaistuPeruste> vanhatJulkaisut = julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste());
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            JulkaistuPeruste julkaisu = new JulkaistuPeruste();
+            julkaisu.setRevision(vanhatJulkaisut.stream().mapToInt(JulkaistuPeruste::getRevision).max().orElse(-1) + 1);
+            julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
+            julkaisu.setLuoja(username);
+            julkaisu.setLuotu(new Date());
+            julkaisu.setPeruste(peruste);
+
+            if (!dokumentit.isEmpty()) {
+                julkaisu.setDokumentit(dokumentit);
+            }
+
+            julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
+            julkaisu = julkaisutRepository.save(julkaisu);
+            {
+                Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
+                if (amosaaperusteet != null) {
+                    amosaaperusteet.removeAll();
                 }
             }
 
-            dokumentit.addAll(suoritustavat.stream()
-                    .map(suoritustapa -> peruste.getKielet().stream()
-                            .map(kieli -> {
-                                try {
-                                    DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                            peruste.getId(),
-                                            kieli,
-                                            suoritustapa,
-                                            GeneratorVersion.UUSI
-                                    );
-                                    dokumenttiService.generateWithDto(createDtoFor);
-                                    return createDtoFor.getId();
-                                } catch (DokumenttiException e) {
-                                    log.error(e.getLocalizedMessage(), e);
-                                }
-
-                                return null;
-                            })
-                            .collect(toSet()))
-                    .filter(id -> id != null)
-                    .flatMap(Collection::stream)
-                    .collect(toSet()));
+            muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
+        } catch(Exception e) {
+            log.debug(Throwables.getStackTraceAsString(e));
+            julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.VIRHE);
+            self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
+            throw e;
         }
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-        julkaisu.setRevision((int) julkaisutCount);
-        julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
-        julkaisu.setLuoja(username);
-        julkaisu.setLuotu(new Date());
-        julkaisu.setPeruste(peruste);
-
-        if (!dokumentit.isEmpty()) {
-            julkaisu.setDokumentit(dokumentit);
-        }
-
-        julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
-        julkaisu = julkaisutRepository.save(julkaisu);
-        {
-            Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
-            if (amosaaperusteet != null) {
-                amosaaperusteet.removeAll();
-            }
-        }
-
-        muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
-
-        return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
+        julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
     }
 
     @Override
@@ -268,6 +322,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("onko-muutoksia-julkaisuun-verrattuna-tarkistus-epaonnistui");
         }
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila) {
+        julkaisuPerusteTilaRepository.save(julkaisuPerusteTila);
     }
 
     private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
@@ -390,7 +451,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {
         Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
-                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).collect(Collectors.toList()))
+                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).filter(Objects::nonNull).collect(Collectors.toList()))
                 .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
         julkaisut.forEach(julkaisu -> julkaisu.setKayttajanTieto(kayttajatiedot.get(julkaisu.getLuoja())));
         return julkaisut;
