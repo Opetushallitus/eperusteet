@@ -301,7 +301,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
-        self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        saveJulkaisuPerusteTila(julkaisuPerusteTila);
     }
 
     @Override
