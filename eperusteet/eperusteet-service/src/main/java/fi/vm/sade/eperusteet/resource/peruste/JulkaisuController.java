@@ -35,7 +35,7 @@ public class JulkaisuController {
     @Autowired
     private JulkaisutService julkaisutService;
 
-    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu")
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisut")
     public List<JulkaisuBaseDto> getJulkaisut(
             @PathVariable("perusteId") final long id) {
         return julkaisutService.getJulkaisut(id);
