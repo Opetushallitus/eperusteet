@@ -229,7 +229,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
             perusteRepository.save(peruste);
 
-            kooditaValiaikaisetKoodit(peruste);
+            kooditaValiaikaisetKoodit(peruste.getId());
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
@@ -411,7 +411,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         return null;
     }
 
-    private void kooditaValiaikaisetKoodit(Peruste peruste) {
+    @Override
+    public void kooditaValiaikaisetKoodit(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
         peruste.getKoodit().stream()
                 .filter(koodi -> koodi.isTemporary())
                 .forEach(koodi -> {

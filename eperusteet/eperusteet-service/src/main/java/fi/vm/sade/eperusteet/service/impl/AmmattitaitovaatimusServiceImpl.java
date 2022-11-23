@@ -16,6 +16,8 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
@@ -214,6 +216,28 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .collect(Collectors.toList());
     }
 
+    private List<Ammattitaitovaatimus2019> getVaatimuksetFromOsaAlueet(Peruste peruste) {
+        return getTutkinnonOsaViitteet(peruste).stream()
+                .map(TutkinnonOsaViite::getTutkinnonOsa)
+                .map(TutkinnonOsa::getOsaAlueet)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .map(OsaAlue::getAllOsaamistavoitteet)
+                .flatMap(Collection::stream)
+                .map(Osaamistavoite::getTavoitteet2020)
+                .filter(Objects::nonNull)
+                .map(av -> {
+                    List<Ammattitaitovaatimus2019> v = new ArrayList<>(av.getVaatimukset());
+                    v.addAll(av.getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                    return v.stream();
+                })
+                .flatMap(x -> x)
+                .collect(Collectors.toList());
+    }
+
     private List<ArvioinninKohdealue> getArvioinninKohdealueet(Peruste peruste) {
         return peruste.getSuoritustavat().stream()
                 .map(Suoritustapa::getTutkinnonOsat)
@@ -310,10 +334,16 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
     @Override
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteId) {
-        List<KoodiDto> koodit = new ArrayList<>();
         Peruste peruste = perusteRepository.findOne(perusteId);
+        return Stream.concat(
+                        checkAndAddAmmattitaitovaatimukskoodit(getVaatimukset(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).stream(),
+                        checkAndAddAmmattitaitovaatimukskoodit(getVaatimuksetFromOsaAlueet(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).stream())
+                .collect(Collectors.toList());
 
-        List<Ammattitaitovaatimus2019> vaatimukset = getVaatimukset(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList());
+    }
+
+    private List<KoodiDto> checkAndAddAmmattitaitovaatimukskoodit(List<Ammattitaitovaatimus2019> vaatimukset) {
+        List<KoodiDto> koodit = new ArrayList<>();
 
         if (vaatimukset.isEmpty()) {
             return koodit;

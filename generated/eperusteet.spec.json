@@ -4523,6 +4523,25 @@
         }
       }
     },
+    "/perusteet/{perusteId}/koodita" : {
+      "get" : {
+        "tags" : [ "Julkaisut" ],
+        "operationId" : "kooditaPeruste",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/kuvat" : {
       "get" : {
         "tags" : [ "Liitetiedostot" ],
@@ -12854,6 +12873,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -12862,9 +12884,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -12894,6 +12913,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -12902,9 +12924,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -12934,6 +12953,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -12942,9 +12964,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -12974,6 +12993,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -12982,9 +13004,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13014,6 +13033,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13022,9 +13044,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13054,6 +13073,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13062,9 +13084,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13094,6 +13113,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13102,9 +13124,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13134,6 +13153,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13142,9 +13164,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13174,6 +13193,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13182,9 +13204,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13214,6 +13233,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13222,9 +13244,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13254,6 +13273,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13262,9 +13284,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13294,6 +13313,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13302,9 +13324,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
@@ -13334,6 +13353,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13342,9 +13364,6 @@
           "format" : "int32"
         },
         "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
           "type" : "boolean"
         }
       }
