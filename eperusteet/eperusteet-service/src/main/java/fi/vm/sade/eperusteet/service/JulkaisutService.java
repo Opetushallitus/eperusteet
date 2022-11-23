@@ -38,6 +38,9 @@ public interface JulkaisutService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     boolean onkoMuutoksia(long perusteId);
 
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void kooditaValiaikaisetKoodit(Long perusteId);
+
     @PreAuthorize("isAuthenticated()")
     void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila);
 }

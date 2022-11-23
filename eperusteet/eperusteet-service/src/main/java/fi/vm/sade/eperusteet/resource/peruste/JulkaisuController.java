@@ -97,4 +97,10 @@ public class JulkaisuController {
         return julkaisutService.onkoMuutoksia(perusteId);
     }
 
+    @RequestMapping(method = GET, value = "/{perusteId}/koodita")
+    public void kooditaPeruste(
+            @PathVariable("perusteId") final long perusteId) {
+        julkaisutService.kooditaValiaikaisetKoodit(perusteId);
+    }
+
 }

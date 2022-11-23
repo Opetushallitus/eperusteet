@@ -32,6 +32,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
@@ -164,6 +166,15 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
             return osaamistavoitteet;
         }
         return null;
+    }
+
+    public List<Osaamistavoite> getAllOsaamistavoitteet() {
+        List<Osaamistavoite> tavoitteet = new ArrayList<>();
+        tavoitteet.addAll(Optional.ofNullable(getOsaamistavoitteet()).orElse(Collections.emptyList()));
+        tavoitteet.add(getPakollisetOsaamistavoitteet());
+        tavoitteet.add(getValinnaisetOsaamistavoitteet());
+
+        return tavoitteet.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public void setOsaamistavoitteet(List<Osaamistavoite> osaamistavoitteet) {

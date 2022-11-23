@@ -16,6 +16,10 @@ import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.validation.ValidMaxLengthValidator;
 import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
@@ -31,10 +35,13 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
@@ -208,6 +215,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
     public void test_addAmmattitaitovaatimuskooditToKoodisto() {
 
         PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
@@ -215,19 +223,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         });
         PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
 
-        Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
-        Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
-        kohdealue.setVaatimukset(Arrays.asList(
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti1")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti1")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti2")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "teksti3")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "tekstiOn")),
-                Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, "tekstiOn2"))
-        ));
-        vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
-
+        Ammattitaitovaatimukset2019 vaatimukset = ammattitaitovaatimukset2019("teksti1", "teksti1", "teksti2", "teksti2", "teksti3", "tekstiOn", "tekstiOn2");
 
         Peruste peruste = perusteRepository.findOne(aPeruste.getId());
         TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
@@ -238,12 +234,12 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
         List<KoodiDto> lisatytKoodit = ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
         assertThat(lisatytKoodit).hasSize(3);
-        assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder("ammattitaitovaatimukset_0", "ammattitaitovaatimukset_1", "ammattitaitovaatimukset_2");
+        assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder(
+                "ammattitaitovaatimukset_0",
+                "ammattitaitovaatimukset_1",
+                "ammattitaitovaatimukset_2");
 
-        List<Ammattitaitovaatimus2019> tallennetutVaatimukset = tovRepository.findOne(tosa.getId()).getTutkinnonOsa().getAmmattitaitovaatimukset2019().getKohdealueet().stream()
-                .map(kohdealue2 -> kohdealue.getVaatimukset())
-                .flatMap(x -> x.stream())
-                .collect(Collectors.toList());
+        List<Ammattitaitovaatimus2019> tallennetutVaatimukset = tutkinnonosienAmmattitaitovaatimukset(tovRepository.findOne(tosa.getId()).getTutkinnonOsa());
 
         assertThat(tallennetutVaatimukset).hasSize(7);
         assertThat(tallennetutVaatimukset).extracting("koodi.uri")
@@ -255,6 +251,98 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                         "ammattitaitovaatimukset_2",
                         "ammattitaitovaatimukset_on",
                         "ammattitaitovaatimukset_on2");
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
+    public void test_addOsaalaueenAmmattitaitovaatimuskooditToKoodisto() {
+
+        PerusteprojektiDto aProjekti = ppTestUtils.createPerusteprojekti(config -> {
+            config.setReforminMukainen(true);
+        });
+        PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
+
+        Peruste peruste = perusteRepository.findOne(aPeruste.getId());
+        TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
+        TutkinnonOsaViite tov = tovRepository.findOne(tosa.getId());
+        tov.getTutkinnonOsa().setOsaAlueet(osaAlueet());
+        tovRepository.save(tov);
+        em.flush();
+
+        List<KoodiDto> lisatytKoodit = ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
+        assertThat(lisatytKoodit).hasSize(3);
+        assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder(
+                "ammattitaitovaatimukset_0",
+                "ammattitaitovaatimukset_1",
+                "ammattitaitovaatimukset_2");
+
+        List<Ammattitaitovaatimus2019> tallennetutVaatimukset = osaAlueidenAmmattitaitovaatimukset(tovRepository.findOne(tosa.getId()).getTutkinnonOsa().getOsaAlueet());
+
+        assertThat(tallennetutVaatimukset).hasSize(4);
+        assertThat(tallennetutVaatimukset).extracting("koodi.uri")
+                .containsExactlyInAnyOrder(
+                        "ammattitaitovaatimukset_0",
+                        "ammattitaitovaatimukset_1",
+                        "ammattitaitovaatimukset_2",
+                        "ammattitaitovaatimukset_on");
+    }
+
+    private List<Ammattitaitovaatimus2019> osaAlueidenAmmattitaitovaatimukset(List<OsaAlue> osaAlueet) {
+        return osaAlueet.stream().map(OsaAlue::getAllOsaamistavoitteet)
+                .flatMap(Collection::stream)
+                .map(Osaamistavoite::getTavoitteet2020)
+                .filter(Objects::nonNull)
+                .map(av -> {
+                    List<Ammattitaitovaatimus2019> v = new ArrayList<>(av.getVaatimukset());
+                    v.addAll(av.getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                    return v.stream();
+                })
+                .flatMap(x -> x)
+                .collect(Collectors.toList());
+    }
+
+    private List<Ammattitaitovaatimus2019> tutkinnonosienAmmattitaitovaatimukset(TutkinnonOsa tutkinnonosa) {
+        return Arrays.asList(tutkinnonosa).stream()
+                .map(TutkinnonOsa::getAmmattitaitovaatimukset2019)
+                .filter(Objects::nonNull)
+                .map(av -> {
+                    List<Ammattitaitovaatimus2019> v = new ArrayList<>(av.getVaatimukset());
+                    v.addAll(av.getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                    return v.stream();
+                })
+                .flatMap(x -> x)
+                .collect(Collectors.toList());
+    }
+
+    private Ammattitaitovaatimukset2019 ammattitaitovaatimukset2019(String... vaatimuksetTekstit) {
+        Ammattitaitovaatimukset2019 vaatimukset = new Ammattitaitovaatimukset2019();
+        vaatimukset.setVaatimukset(Arrays.asList(Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, vaatimuksetTekstit[0]))));
+
+        Ammattitaitovaatimus2019Kohdealue kohdealue = new Ammattitaitovaatimus2019Kohdealue();
+        kohdealue.setVaatimukset(Arrays.stream(vaatimuksetTekstit).skip(1).map(vaatimus -> Ammattitaitovaatimus2019.of(TekstiPalanen.of(Kieli.FI, vaatimus))).collect(Collectors.toList()));
+        vaatimukset.setKohdealueet(Lists.newArrayList(kohdealue));
+
+        return vaatimukset;
+    }
+
+    private List<OsaAlue> osaAlueet() {
+        OsaAlue osaAlue = new OsaAlue();
+        osaAlue.setTyyppi(OsaAlueTyyppi.OSAALUE2020);
+        osaAlue.setPakollisetOsaamistavoitteet(osaamistavoite("tekstiOn", "tavoite2"));
+        osaAlue.setValinnaisetOsaamistavoitteet(osaamistavoite("tavoite3", "tavoite4"));
+        return Arrays.asList(osaAlue);
+    }
+
+    private Osaamistavoite osaamistavoite(String... vaatimuksetTekstit) {
+        Osaamistavoite osaamistavoite = new Osaamistavoite();
+        osaamistavoite.setTavoitteet2020(ammattitaitovaatimukset2019(vaatimuksetTekstit));
+        return osaamistavoite;
     }
 
     @Test
