@@ -441,16 +441,22 @@ public abstract class TestUtils {
         return tiedoteDto;
     }
 
-    public static List<KoodistoKoodiDto> createMockAmmattitaitovaatimuksetKoodistoKoodit() {
-        return Arrays.asList(
-                KoodistoKoodiLaajaDto.builder()
+    public static Map<String, List<KoodistoKoodiDto>> createMockAmmattitaitovaatimuksetKoodistoKoodit() {
+        Map<String, List<KoodistoKoodiDto>> koodistoMap = new HashMap<>();
+        koodistoMap.put("ammattitaitovaatimukset", Arrays.asList(KoodistoKoodiLaajaDto.builder()
                         .koodiUri("ammattitaitovaatimukset_on")
                         .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tekstiOn", "fi", "")})
                         .build(),
                 KoodistoKoodiLaajaDto.builder()
                         .koodiUri("ammattitaitovaatimukset_on2")
                         .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tekstiOn2", "fi", "")})
-                        .build()
-        );
+                        .build()));
+
+        koodistoMap.put("osaamistavoitteet", Arrays.asList(KoodistoKoodiLaajaDto.builder()
+                .koodiUri("osaamistavoitteet_on")
+                .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tavoite1on", "fi", "")})
+                .build()));
+
+        return koodistoMap;
     }
 }

@@ -31,4 +31,5 @@ public class KoodistoUriArvo {
     public static final String TUTKINTOKOULUTUKSEEN_VALMENTAVAKOULUTUS_LAAJAALAINENOSAAMINEN = "tutkintokoulutukseenvalmentavakoulutuslaajaalainenosaaminen";
     public static final String KOULUTUKSENOSATTUVA = "koulutuksenosattuva";
 
+
 }

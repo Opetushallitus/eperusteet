@@ -272,19 +272,19 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         List<KoodiDto> lisatytKoodit = ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
         assertThat(lisatytKoodit).hasSize(3);
         assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder(
-                "ammattitaitovaatimukset_0",
-                "ammattitaitovaatimukset_1",
-                "ammattitaitovaatimukset_2");
+                "osaamistavoitteet_0",
+                "osaamistavoitteet_1",
+                "osaamistavoitteet_2");
 
         List<Ammattitaitovaatimus2019> tallennetutVaatimukset = osaAlueidenAmmattitaitovaatimukset(tovRepository.findOne(tosa.getId()).getTutkinnonOsa().getOsaAlueet());
 
         assertThat(tallennetutVaatimukset).hasSize(4);
         assertThat(tallennetutVaatimukset).extracting("koodi.uri")
                 .containsExactlyInAnyOrder(
-                        "ammattitaitovaatimukset_0",
-                        "ammattitaitovaatimukset_1",
-                        "ammattitaitovaatimukset_2",
-                        "ammattitaitovaatimukset_on");
+                        "osaamistavoitteet_0",
+                        "osaamistavoitteet_1",
+                        "osaamistavoitteet_2",
+                        "osaamistavoitteet_on");
     }
 
     private List<Ammattitaitovaatimus2019> osaAlueidenAmmattitaitovaatimukset(List<OsaAlue> osaAlueet) {
@@ -334,7 +334,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
     private List<OsaAlue> osaAlueet() {
         OsaAlue osaAlue = new OsaAlue();
         osaAlue.setTyyppi(OsaAlueTyyppi.OSAALUE2020);
-        osaAlue.setPakollisetOsaamistavoitteet(osaamistavoite("tekstiOn", "tavoite2"));
+        osaAlue.setPakollisetOsaamistavoitteet(osaamistavoite("tavoite1on", "tavoite2"));
         osaAlue.setValinnaisetOsaamistavoitteet(osaamistavoite("tavoite3", "tavoite4"));
         return Arrays.asList(osaAlue);
     }

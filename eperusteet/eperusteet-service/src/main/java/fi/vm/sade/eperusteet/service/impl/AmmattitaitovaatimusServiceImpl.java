@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.AmmattitaitovaatimusQueryDto;
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
@@ -336,20 +337,20 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         return Stream.concat(
-                        checkAndAddAmmattitaitovaatimukskoodit(getVaatimukset(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).stream(),
-                        checkAndAddAmmattitaitovaatimukskoodit(getVaatimuksetFromOsaAlueet(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).stream())
+                        checkAndAddAmmattitaitovaatimukskoodit(KoodistoUriArvo.AMMATTITAITOVAATIMUKSET, getVaatimukset(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).stream(),
+                        checkAndAddAmmattitaitovaatimukskoodit(KoodistoUriArvo.OSAAMISTAVOITTEET, getVaatimuksetFromOsaAlueet(peruste).stream().filter(vaatimus -> vaatimus.getKoodi() == null).collect(Collectors.toList())).stream())
                 .collect(Collectors.toList());
 
     }
 
-    private List<KoodiDto> checkAndAddAmmattitaitovaatimukskoodit(List<Ammattitaitovaatimus2019> vaatimukset) {
+    private List<KoodiDto> checkAndAddAmmattitaitovaatimukskoodit(String koodisto, List<Ammattitaitovaatimus2019> vaatimukset) {
         List<KoodiDto> koodit = new ArrayList<>();
 
         if (vaatimukset.isEmpty()) {
             return koodit;
         }
 
-        List<KoodistoKoodiDto> ammattitaitovaatimukset = koodistoClient.getAll("ammattitaitovaatimukset");
+        List<KoodistoKoodiDto> ammattitaitovaatimukset = koodistoClient.getAll(koodisto);
         Map<Long, KoodistoKoodiDto> olemassaOlevatKoodit = new LinkedHashMap<>();
 
         Map<Map<Kieli, String>, List<Ammattitaitovaatimus2019>> uniqueVaatimukset = new LinkedHashMap<>();
@@ -372,12 +373,12 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         });
 
         Stack<Long> koodiStack = new Stack<>();
-        koodiStack.addAll(koodistoClient.nextKoodiId("ammattitaitovaatimukset", uniqueVaatimukset.keySet().size()));
+        koodiStack.addAll(koodistoClient.nextKoodiId(koodisto, uniqueVaatimukset.keySet().size()));
 
         for (Map<Kieli, String> teksti : uniqueVaatimukset.keySet()) {
 
             LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, teksti);
-            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("ammattitaitovaatimukset", lokalisoituTekstiDto, koodiStack.pop());
+            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(koodisto, lokalisoituTekstiDto, koodiStack.pop());
 
             if (lisattyKoodi == null) {
                 log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
@@ -404,7 +405,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             KoodistoKoodiDto koodistoKoodi = olemassaOlevatKoodit.get(ammattitaitovaatimus2019Id);
 
             Koodi koodi = new Koodi();
-            koodi.setKoodisto("ammattitaitovaatimukset");
+            koodi.setKoodisto(koodisto);
             koodi.setUri(koodistoKoodi.getKoodiUri());
             koodi.setVersio(koodistoKoodi.getVersio() != null ? Long.valueOf(koodistoKoodi.getVersio()) : null);
 

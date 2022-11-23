@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
@@ -132,14 +133,7 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public List<KoodistoKoodiDto> getAll(String koodisto) {
-
-        switch (koodisto) {
-            case "ammattitaitovaatimukset":
-                return createMockAmmattitaitovaatimuksetKoodistoKoodit();
-            default:
-                return Collections.emptyList();
-        }
-
+        return Optional.ofNullable(createMockAmmattitaitovaatimuksetKoodistoKoodit().get(koodisto)).orElse(Collections.emptyList());
     }
 
     @Override
