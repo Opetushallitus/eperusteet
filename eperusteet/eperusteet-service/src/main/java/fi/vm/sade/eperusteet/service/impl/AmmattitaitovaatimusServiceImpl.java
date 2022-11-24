@@ -327,10 +327,31 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     @Override
     @IgnorePerusteUpdateCheck
     public List<KoodiDto> addAmmattitaitovaatimuskooditToKoodisto(Long perusteprojektiId, Long perusteId) {
-        return Stream.concat(
+        List<KoodiDto> koodit =  Stream.concat(
                 addAmmattitaitovaatimuskooditToKoodisto(perusteId).stream(),
                 addArvioinninKohdealueetToKoodisto(perusteId).stream())
                 .collect(Collectors.toList());
+
+        lisaaTutkinnonOsienKoodiRelaatiot(perusteId);
+
+        return koodit;
+    }
+
+    private void lisaaTutkinnonOsienKoodiRelaatiot(Long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+
+        Map<String, List<String>> tutkinnonosienKoodit = getTutkinnonOsaViitteet(peruste).stream()
+                .map(TutkinnonOsaViite::getTutkinnonOsa)
+                .filter(tutkinnonosa -> tutkinnonosa.getKoodi() != null && tutkinnonosa.getKoodi().getUri() != null)
+                .collect(Collectors.toMap(t -> t.getKoodi().getUri(), t -> t.getKaikkiKoodit().stream()
+                        .map(Koodi::getUri)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList())));
+
+        tutkinnonosienKoodit.forEach((tutkinnonosanKoodi, tutkinnonosanKoodit) -> {
+            addAlarelaatiot(tutkinnonosanKoodi, tutkinnonosanKoodit);
+        });
+
     }
 
     @Override
@@ -475,7 +496,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika) {
 
         Date vrtAika = projektiPaivitysAika == null ? new DateTime(1970, 1, 1, 0, 0).toDate() : projektiPaivitysAika;
-        List<Peruste> perusteet = perusteet = perusteRepository.findByTilaAikaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, vrtAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
+        List<Peruste> perusteet = perusteRepository.findByTilaAikaTyyppiKoulutustyyppi(ProjektiTila.JULKAISTU, vrtAika, PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset());
 
         log.debug("Löytyi {} kpl perusteita", perusteet.size());
         perusteet.forEach(peruste -> {

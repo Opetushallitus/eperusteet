@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
+import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -34,6 +35,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
@@ -338,5 +340,47 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
 
     public void asetaAlkuperainenPeruste(Peruste peruste) {
         this.alkuperainenPeruste = peruste;
+    }
+
+    public List<Koodi> getKaikkiKoodit() {
+        List<Koodi> koodit = new ArrayList<>();
+        koodit.addAll(getAmmattitaitovaatimuksienKoodit());
+        koodit.addAll(getOsaAlueidenKoodit());
+
+        return koodit;
+    }
+
+    private List<Koodi> getAmmattitaitovaatimuksienKoodit() {
+        return Optional.ofNullable(Arrays.asList(ammattitaitovaatimukset2019)).orElse(Collections.emptyList()).stream()
+                .filter(Objects::nonNull)
+                .flatMap(av -> {
+                    List<Ammattitaitovaatimus2019> v = new ArrayList<>(av.getVaatimukset());
+                    v.addAll(av.getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                    return v.stream();
+                })
+                .map(Ammattitaitovaatimus2019::getKoodi)
+                .collect(Collectors.toList());
+    }
+
+    private List<Koodi> getOsaAlueidenKoodit() {
+        return Optional.ofNullable(getOsaAlueet()).orElse(Collections.emptyList()).stream()
+                .filter(Objects::nonNull)
+                .map(OsaAlue::getAllOsaamistavoitteet)
+                .flatMap(Collection::stream)
+                .map(Osaamistavoite::getTavoitteet2020)
+                .filter(Objects::nonNull)
+                .flatMap(av -> {
+                    List<Ammattitaitovaatimus2019> v = new ArrayList<>(av.getVaatimukset());
+                    v.addAll(av.getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                    return v.stream();
+                })
+                .map(Ammattitaitovaatimus2019::getKoodi)
+                .collect(Collectors.toList());
     }
 }
