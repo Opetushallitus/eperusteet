@@ -103,4 +103,10 @@ public class JulkaisuController {
         julkaisutService.kooditaValiaikaisetKoodit(perusteId);
     }
 
+    @RequestMapping(method = GET, value = "/{perusteId}/nollaajulkaisutila")
+    public void nollaaJulkaisuTila(
+            @PathVariable("perusteId") final long perusteId) {
+        julkaisutService.nollaaJulkaisuTila(perusteId);
+    }
+
 }
