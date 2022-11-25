@@ -11,6 +11,7 @@ import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -21,6 +22,8 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtmlValidator;
+import fi.vm.sade.eperusteet.domain.validation.ValidMaxLengthValidator;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -158,7 +161,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(one, JulkaisuBaseDto.class);
 
         JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(id);
-        if (julkaisuPerusteTila != null && !julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.JULKAISTU)) {
+        if (julkaisuPerusteTila != null
+                && (julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.KESKEN) || julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.VIRHE))) {
             julkaisut.add(JulkaisuBaseDto.builder()
                     .tila(julkaisuPerusteTila.getJulkaisutila())
                     .luotu(julkaisuPerusteTila.getMuokattu())
@@ -179,16 +183,22 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
         }
 
-        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteprojekti.getPeruste().getId());
-        if (julkaisuPerusteTila == null) {
-            julkaisuPerusteTila = new JulkaisuPerusteTila();
-            julkaisuPerusteTila.setPerusteId(perusteprojekti.getPeruste().getId());
-        }
-
+        JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteprojekti.getPeruste().getId());
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.KESKEN);
         saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
         self.teeJulkaisuAsync(projektiId, julkaisuBaseDto);
+    }
+
+    private JulkaisuPerusteTila getOrCreateTila(Long perusteId) {
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteId);
+        if (julkaisuPerusteTila == null) {
+            julkaisuPerusteTila = new JulkaisuPerusteTila();
+            julkaisuPerusteTila.setPerusteId(perusteId);
+            julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISEMATON);
+        }
+
+        return julkaisuPerusteTila;
     }
 
     @Override
@@ -209,7 +219,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
 
         Peruste peruste = perusteprojekti.getPeruste();
-        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(peruste.getId());
+        JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(peruste.getId());
 
         try {
 
@@ -284,8 +294,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
 
             julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
-            julkaisu = julkaisutRepository.save(julkaisu);
-            {
+            julkaisu = julkaisutRepository.saveAndFlush(julkaisu);
+
+            if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
                 Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
                 if (amosaaperusteet != null) {
                     amosaaperusteet.removeAll();
@@ -450,6 +461,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         });
 
         ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getPerusteprojekti().getId(), peruste.getId());
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void nollaaJulkaisuTila(Long perusteId) {
+        JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteId);
+        julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISEMATON);
+        saveJulkaisuPerusteTila(julkaisuPerusteTila);
     }
 
     private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {
