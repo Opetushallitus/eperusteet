@@ -346,6 +346,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
         List<Koodi> koodit = new ArrayList<>();
         koodit.addAll(getAmmattitaitovaatimuksienKoodit());
         koodit.addAll(getOsaAlueidenKoodit());
+        koodit.addAll(getOsaAlueidenOsaamistavoiteKoodit());
 
         return koodit;
     }
@@ -366,6 +367,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     }
 
     private List<Koodi> getOsaAlueidenKoodit() {
+        return Optional.ofNullable(getOsaAlueet()).orElse(Collections.emptyList()).stream()
+                .filter(Objects::nonNull)
+                .map(OsaAlue::getKoodi)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    private List<Koodi> getOsaAlueidenOsaamistavoiteKoodit() {
         return Optional.ofNullable(getOsaAlueet()).orElse(Collections.emptyList()).stream()
                 .filter(Objects::nonNull)
                 .map(OsaAlue::getAllOsaamistavoitteet)
