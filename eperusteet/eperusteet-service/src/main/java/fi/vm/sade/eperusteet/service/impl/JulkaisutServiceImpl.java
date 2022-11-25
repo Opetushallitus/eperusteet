@@ -69,6 +69,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -84,6 +85,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
@@ -143,6 +145,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Autowired
     @Lazy
     private JulkaisutService self;
+
+    private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 5 * 60;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
     private static final List<String> pdfEnabled = Arrays.asList(
@@ -204,6 +208,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     public JulkaisuTila viimeisinJulkaisuTila(Long perusteId) {
         JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteId);
+
+        if (julkaisuPerusteTila != null &&
+                julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.KESKEN)
+                && (new Date().getTime() - julkaisuPerusteTila.getMuokattu().getTime()) / 1000 > JULKAISUN_ODOTUSAIKA_SEKUNNEISSA) {
+            log.error("Julkaisu kesti yli {} sekuntia, perusteella {}", JULKAISUN_ODOTUSAIKA_SEKUNNEISSA, perusteId);
+            julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.VIRHE);
+            saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        }
+
         return julkaisuPerusteTila != null ? julkaisuPerusteTila.getJulkaisutila() : JulkaisuTila.JULKAISEMATON;
     }
 
@@ -408,6 +421,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
         JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(perusteId);
         if (viimeisinJulkaisu != null) {
