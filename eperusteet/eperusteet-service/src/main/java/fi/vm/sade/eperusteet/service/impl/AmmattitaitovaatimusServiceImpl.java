@@ -53,11 +53,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.Stack;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -356,11 +358,10 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .collect(Collectors.toMap(t -> t.getKoodi().getUri(), t -> t.getKaikkiKoodit().stream()
                         .map(Koodi::getUri)
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList())));
+                        .collect(Collectors.toList()), (uri1, uri2) -> new ArrayList<>(Stream.concat(uri1.stream(), uri2.stream()).collect(Collectors.toSet()))));
 
         tutkinnonosienKoodit.forEach(this::addAlarelaatiot);
         osaAlueidenKoodit.forEach(this::addAlarelaatiot);
-
     }
 
     @Override
