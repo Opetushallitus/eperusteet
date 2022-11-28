@@ -256,4 +256,20 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
     public NavigationType getNavigationType() {
         return NavigationType.osaalue;
     }
+
+    public List<Koodi> getKaikkiKoodit() {
+        return getAllOsaamistavoitteet().stream()
+                .map(Osaamistavoite::getTavoitteet2020)
+                .filter(Objects::nonNull)
+                .flatMap(av -> {
+                    List<Ammattitaitovaatimus2019> v = new ArrayList<>(av.getVaatimukset());
+                    v.addAll(av.getKohdealueet().stream()
+                            .map(Ammattitaitovaatimus2019Kohdealue::getVaatimukset)
+                            .flatMap(Collection::stream)
+                            .collect(Collectors.toList()));
+                    return v.stream();
+                })
+                .map(Ammattitaitovaatimus2019::getKoodi)
+                .collect(Collectors.toList());
+    }
 }

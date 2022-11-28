@@ -348,9 +348,18 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                         .filter(Objects::nonNull)
                         .collect(Collectors.toList())));
 
-        tutkinnonosienKoodit.forEach((tutkinnonosanKoodi, tutkinnonosanKoodit) -> {
-            addAlarelaatiot(tutkinnonosanKoodi, tutkinnonosanKoodit);
-        });
+        Map<String, List<String>> osaAlueidenKoodit = getTutkinnonOsaViitteet(peruste).stream()
+                .map(TutkinnonOsaViite::getTutkinnonOsa)
+                .filter(tutkinnonosa -> tutkinnonosa.getKoodi() != null && tutkinnonosa.getKoodi().getUri() != null)
+                .map(TutkinnonOsa::getOsaAlueet)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toMap(t -> t.getKoodi().getUri(), t -> t.getKaikkiKoodit().stream()
+                        .map(Koodi::getUri)
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList())));
+
+        tutkinnonosienKoodit.forEach(this::addAlarelaatiot);
+        osaAlueidenKoodit.forEach(this::addAlarelaatiot);
 
     }
 
