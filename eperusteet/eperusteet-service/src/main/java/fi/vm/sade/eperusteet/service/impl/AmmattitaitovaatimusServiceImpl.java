@@ -348,7 +348,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .collect(Collectors.toMap(t -> t.getKoodi().getUri(), t -> t.getKaikkiKoodit().stream()
                         .map(Koodi::getUri)
                         .filter(Objects::nonNull)
-                        .collect(Collectors.toList())));
+                        .collect(Collectors.toList()), (uri1, uri2) -> new ArrayList<>(Stream.concat(uri1.stream(), uri2.stream()).collect(Collectors.toSet()))));
 
         Map<String, List<String>> osaAlueidenKoodit = getTutkinnonOsaViitteet(peruste).stream()
                 .map(TutkinnonOsaViite::getTutkinnonOsa)
