@@ -97,6 +97,12 @@ public class OsaAlueServiceImpl implements OsaAlueService {
 
     @Override
     public OsaAlueLaajaDto addOsaAlue(Long perusteId, Long viiteId, OsaAlueLaajaDto osaAlueDto) {
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.getOne(viiteId);
+
+        if (viite.getTutkinnonOsa().getAlkuperainenPeruste() != null && viite.getSuoritustapa().getPerusteet().stream().noneMatch(p -> p.getId().equals(viite.getTutkinnonOsa().getAlkuperainenPeruste().getId()))) {
+            throw new BusinessRuleViolationException("osa-alueen-lisays-ei-sallittu");
+        }
+
         OsaAlueLaajaDto uusiOsaAlueDto = addOsaAlue(viiteId, osaAlueDto);
         OsaAlue osaAlue = mapper.map(uusiOsaAlueDto, OsaAlue.class);
         muokkausTietoService.addMuokkaustieto(perusteId, osaAlue, MuokkausTapahtuma.LUONTI);
@@ -132,6 +138,12 @@ public class OsaAlueServiceImpl implements OsaAlueService {
 
     @Override
     public OsaAlueLaajaDto updateOsaAlue(Long perusteId, Long viiteId, Long osaAlueId, OsaAlueLaajaDto osaAlueDto) {
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteId);
+
+        if (viite.getTutkinnonOsa().getAlkuperainenPeruste() != null && viite.getSuoritustapa().getPerusteet().stream().noneMatch(p -> p.getId().equals(viite.getTutkinnonOsa().getAlkuperainenPeruste().getId()))) {
+            throw new BusinessRuleViolationException("osa-alueen-muokkaus-ei-sallittu");
+        }
+
         OsaAlueLaajaDto uusiOsaAlueDto = updateOsaAlue(viiteId, osaAlueId, osaAlueDto);
         OsaAlue osaAlue = mapper.map(uusiOsaAlueDto, OsaAlue.class);
         muokkausTietoService.addMuokkaustieto(perusteId, osaAlue, MuokkausTapahtuma.PAIVITYS);

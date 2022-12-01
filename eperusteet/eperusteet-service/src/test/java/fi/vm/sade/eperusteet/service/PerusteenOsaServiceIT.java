@@ -19,21 +19,25 @@ import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
 import fi.vm.sade.eperusteet.domain.vst.TavoiteAlueTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -55,14 +59,6 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolationException;
 import org.assertj.core.util.Maps;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,7 +68,18 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.validation.ConstraintViolationException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  *
@@ -105,6 +112,12 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private OsaAlueService osaAlueService;
+
+    @Autowired
+    private PerusteenOsaViiteService perusteenOsaViiteService;
 
     @Before
     public void setUp() {
@@ -210,6 +223,25 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi("tutkinnonosat_111")).hasSize(2);
         assertThat(perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi("tutkinnonosat_222")).hasSize(1);
         assertThat(perusteenOsaService.getTutkinnonOsaKaikkiDtoByKoodi("tutkinnonosat_333")).hasSize(0);
+    }
+
+    @Test
+    public void test_tutkinnonOsanOsaalue_muokkauseiSallittu() {
+        PerusteprojektiDto pp1 = ppTestUtils.createPerusteprojekti(ppl -> {
+        });
+        PerusteDto perusteDto1 = ppTestUtils.initPeruste(pp1.getPeruste().getIdLong());
+        TutkinnonOsaViiteDto viiteDto = luoTutkinnonOsaOsaAlueella(perusteDto1.getId(), Suoritustapakoodi.REFORMI);
+        viiteDto = perusteService.getTutkinnonOsaViite(perusteDto1.getId(),  Suoritustapakoodi.REFORMI, viiteDto.getId());
+
+        TutkinnonOsaViiteDto copyViite = perusteService.getTutkinnonOsaViite(perusteDto1.getId(),  Suoritustapakoodi.REFORMI, viiteDto.getId());
+        copyViite.setId(null);
+
+        PerusteprojektiDto pp2 = ppTestUtils.createPerusteprojekti(ppl -> {});
+        PerusteDto perusteDto2 = ppTestUtils.initPeruste(pp2.getPeruste().getIdLong());
+        TutkinnonOsaViiteDto viiteDto2 = perusteService.attachTutkinnonOsa(perusteDto2.getId(), Suoritustapakoodi.REFORMI, copyViite, mapper.map(mapper.map(perusteDto2, Peruste.class), PerusteKevytDto.class));
+
+        assertThatThrownBy(() -> perusteService.updateTutkinnonOsa(perusteDto2.getId(), Suoritustapakoodi.REFORMI, viiteDto2)).hasMessage("tutkinnon-osan-muokkaus-ei-sallittu");
+        assertThatThrownBy(() -> osaAlueService.updateOsaAlue(perusteDto2.getId(), viiteDto2.getId(), viiteDto2.getTutkinnonOsaDto().getOsaAlueet().get(0).getId(), new OsaAlueLaajaDto())).hasMessage("osa-alueen-muokkaus-ei-sallittu");
     }
 
     @Test
@@ -525,6 +557,25 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
         dto.setTutkinnonOsaDto(tosa);
         TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
+        return lisatty;
+    }
+
+    private TutkinnonOsaViiteDto luoTutkinnonOsaOsaAlueella(
+            Long id,
+            Suoritustapakoodi suoritustapakoodi
+    ) {
+        TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(
+                BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.NORMAALI);
+        TutkinnonOsaDto tosa = new TutkinnonOsaDto();
+        tosa.setNimi(dto.getNimi());
+        tosa.setOsaAlueet(new ArrayList<>());
+
+        dto.setTutkinnonOsaDto(tosa);
+        TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
+
+        OsaAlueLaajaDto osaalue = new OsaAlueLaajaDto();
+        osaalue.setTyyppi(OsaAlueTyyppi.OSAALUE2020);
+        osaAlueService.addOsaAlue(id, lisatty.getId(), osaalue);
         return lisatty;
     }
 
