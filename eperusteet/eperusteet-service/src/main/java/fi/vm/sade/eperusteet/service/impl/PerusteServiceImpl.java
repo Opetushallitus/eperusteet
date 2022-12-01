@@ -1857,6 +1857,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
 
+        if (viite.getTutkinnonOsa().getAlkuperainenPeruste() != null && !viite.getTutkinnonOsa().getAlkuperainenPeruste().getId().equals(id)) {
+            throw new BusinessRuleViolationException("tutkinnon-osan-muokkaus-ei-sallittu");
+        }
+
         TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa);
         muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.PAIVITYS);
         onApplicationEvent(PerusteUpdatedEvent.of(this, id));
