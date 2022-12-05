@@ -693,7 +693,7 @@
                         <dependency>
                             <groupId>fi.vm.sade.eperusteet</groupId>
                             <artifactId>eperusteet-backend-utils</artifactId>
-                            <version>${eperusteet.backend-utils.version}</version>
+                            <version>2.4-SNAPSHOT</version>
                         </dependency>
                     </dependencies>
                 </plugin>
