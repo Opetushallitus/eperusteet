@@ -1975,9 +1975,8 @@
         "koodiArvo" : {
           "type" : "string"
         },
-        "kieli" : {
-          "type" : "string",
-          "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
+        "kielikoodi" : {
+          "$ref" : "#/definitions/KoodiDto"
         },
         "valmaTelmaSisalto" : {
           "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
@@ -2011,9 +2010,8 @@
         "koodiArvo" : {
           "type" : "string"
         },
-        "kieli" : {
-          "type" : "string",
-          "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
+        "kielikoodi" : {
+          "$ref" : "#/definitions/KoodiDto"
         },
         "valmaTelmaSisalto" : {
           "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
@@ -2227,13 +2225,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2249,31 +2247,31 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         }
       }
     },
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2289,18 +2287,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         }
       }
     },

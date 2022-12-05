@@ -112,8 +112,10 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
      */
     @Getter
     @Setter
-    @Enumerated(EnumType.STRING)
-    private Kieli kieli;
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ValidKoodisto(koodisto = KoodistoUriArvo.KIELIKOODISTO_OPETUSHALLINTO)
+    private Koodi kielikoodi;
 
     @Getter
     @Setter
@@ -131,7 +133,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
         this.osaamistavoitteet = new ArrayList<>();
         this.valmaTelmaSisalto = null;
         this.koodi = o.koodi;
-        this.kieli = o.kieli;
+        this.kielikoodi = o.kielikoodi;
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
         if (CollectionUtils.isNotEmpty(o.getOsaamistavoitteet())) {
@@ -197,7 +199,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
             this.setGeneerinenArviointiasteikko(updated.getGeneerinenArviointiasteikko());
             this.setPakollisetOsaamistavoitteet(updated.getPakollisetOsaamistavoitteet());
             this.setValinnaisetOsaamistavoitteet(updated.getValinnaisetOsaamistavoitteet());
-            this.setKieli(updated.kieli);
+            this.setKielikoodi(updated.kielikoodi);
 
             if (updated.getOsaamistavoitteet() != null) {
                 this.setOsaamistavoitteet(mergeOsaamistavoitteet(this.getOsaamistavoitteet(), updated.getOsaamistavoitteet()));
