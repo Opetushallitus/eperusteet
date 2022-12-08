@@ -1529,11 +1529,6 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         List<OsaAlue> osaAlueet = osa.getOsaAlueet();
 
         osaAlueet.stream()
-                .filter(osaAlue -> {
-                    String osaAlueKieli = osaAlue.getKielikoodi() != null ? mapper.map(osaAlue.getKielikoodi(), KoodiDto.class).getArvo().toLowerCase() : null;
-                    return osaAlueKieli == null || (osaAlueKieli.equals(docBase.getKieli().toString())
-                            && docBase.getPeruste().getKielet().stream().map(Kieli::toString).anyMatch(kieli -> kieli.equals(osaAlueKieli)));
-                })
                 .forEach(osaAlue -> {
 
                     String nimi = getTextString(docBase, osaAlue.getNimi());

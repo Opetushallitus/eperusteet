@@ -114,7 +114,7 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @ValidKoodisto(koodisto = KoodistoUriArvo.KIELIKOODISTO_OPETUSHALLINTO)
+    @ValidKoodisto(koodisto = KoodistoUriArvo.KIELIVALIKOIMA)
     private Koodi kielikoodi;
 
     @Getter
