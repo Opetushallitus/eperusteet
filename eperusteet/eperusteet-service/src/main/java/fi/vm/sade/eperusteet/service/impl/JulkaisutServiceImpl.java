@@ -296,7 +296,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             List<JulkaistuPeruste> vanhatJulkaisut = julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste());
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-            julkaisu.setRevision(vanhatJulkaisut.stream().mapToInt(JulkaistuPeruste::getRevision).max().orElse(0) + 1);
+            julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
             julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
             julkaisu.setLuoja(username);
             julkaisu.setLuotu(new Date());
@@ -373,10 +373,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         Peruste peruste = perusteprojekti.getPeruste();
         JulkaistuPeruste vanhaJulkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, revision);
-        long julkaisutCount = julkaisutRepository.countByPeruste(peruste);
 
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-        julkaisu.setRevision((int) julkaisutCount);
+        julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
         julkaisu.setTiedote(vanhaJulkaisu.getTiedote());
         julkaisu.setDokumentit(Sets.newHashSet(vanhaJulkaisu.getDokumentit()));
         julkaisu.setPeruste(peruste);
@@ -495,6 +494,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     private JulkaisuBaseDto taytaKayttajaTiedot(JulkaisuBaseDto julkaisu) {
         return taytaKayttajaTiedot(Arrays.asList(julkaisu)).get(0);
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public int seuraavaVapaaJulkaisuNumero(long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        List<JulkaistuPeruste> vanhatJulkaisut = julkaisutRepository.findAllByPeruste(peruste);
+        return vanhatJulkaisut.stream().mapToInt(JulkaistuPeruste::getRevision).max().orElse(0) + 1;
     }
 
 }
