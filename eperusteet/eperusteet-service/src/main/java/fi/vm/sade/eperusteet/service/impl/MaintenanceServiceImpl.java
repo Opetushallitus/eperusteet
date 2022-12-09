@@ -66,6 +66,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Dto
     private DtoMapper mapper;
 
+    @Autowired
+    private JulkaisutService julkaisutService;
+
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
@@ -186,7 +189,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-            julkaisu.setRevision(julkaisut.size());
+            julkaisu.setRevision(julkaisutService.seuraavaVapaaJulkaisuNumero(perusteId));
             julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));
             julkaisu.setLuoja("maintenance");
             julkaisu.setLuotu(new Date());
