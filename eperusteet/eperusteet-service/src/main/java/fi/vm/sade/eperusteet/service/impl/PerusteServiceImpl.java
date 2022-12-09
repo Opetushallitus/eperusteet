@@ -2553,6 +2553,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 pohjaLiite = kvliite;
             }
             else {
+                while (pohjaLiite.getPohja() != null) {
+                    pohjaLiite = pohjaLiite.getPohja();
+                }
                 kvliiteDto.setPeriytynyt(true);
             }
 
