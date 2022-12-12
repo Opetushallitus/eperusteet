@@ -844,20 +844,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
-    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer perusteRev, boolean useCurrentData) {
-        Peruste peruste;
-
-        if (perusteRev != null) {
-            peruste = perusteRepository.findRevision(id, perusteRev);
-        } else {
-            peruste = perusteRepository.getOne(id);
-        }
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean useCurrentData) {
+        Peruste peruste = perusteRepository.getOne(id);
 
         if (peruste == null) {
             return null;
         }
 
-        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        JulkaistuPeruste julkaisu = null;
+        if (julkaisuRevisio != null) {
+            julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+        } else {
+            julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        }
+
         if (!useCurrentData && julkaisu != null) {
             ObjectNode data = julkaisu.getData().getData();
             try {
@@ -873,7 +873,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("perustetta-ei-loydy");
         }
 
-        return getKaikkiSisalto(id, perusteRev);
+        return getKaikkiSisalto(id);
     }
 
     @Override
@@ -938,20 +938,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getKaikkiSisalto(final Long id) {
-        return getKaikkiSisalto(id, null);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
-    public PerusteKaikkiDto getKaikkiSisalto(final Long id, Integer perusteRev) {
-        Peruste peruste;
+        Peruste peruste = perusteRepository.findOne(id);
         boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
-        if (perusteRev != null) {
-            peruste = perusteRepository.findRevision(id, perusteRev);
-        } else {
-            peruste = perusteRepository.findOne(id);
-        }
 
         if (peruste == null) {
             return null;
@@ -959,7 +947,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         PerusteKaikkiDto perusteDto = null;
 
-        if (perusteRev == null && !hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
+        if (!hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
             throw new AccessDeniedException("ei-riittavia-oikeuksia");
         }
 
@@ -2735,9 +2723,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu) {
+    public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
-                .buildNavigation(perusteId, kieli, esikatselu);
+                .buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
         return siirraLiitteetLoppuun(navigationNodeDto);
     }
 

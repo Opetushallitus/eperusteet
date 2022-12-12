@@ -64,7 +64,7 @@ import static org.junit.Assert.*;
  *
  * @author harrik
  */
-@DirtiesContext
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
 
     @Autowired

@@ -42,10 +42,10 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
 
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, esikatselu);
         NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
 
         List<PerusteenOsaViiteDto.Laaja> viitteet = getLapsiViitteet(peruste.getTpoOpetuksenSisalto().getSisalto().getLapset());
 
