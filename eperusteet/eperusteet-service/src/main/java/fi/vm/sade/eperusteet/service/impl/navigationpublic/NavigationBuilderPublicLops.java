@@ -28,9 +28,9 @@ public class NavigationBuilderPublicLops implements NavigationBuilderPublic {
     }
 
     @Override
-    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu) {
+    public NavigationNodeDto buildNavigation(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationBuilderPublic basicBuilder = dispatcher.get(NavigationBuilderPublic.class);
-        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu);
+        NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
         return NavigationNodeDto.of(NavigationType.root)
                 .addAll(navigationBuilderLukio.buildNavigation(perusteId, basicNavigation, esikatselu));
     }

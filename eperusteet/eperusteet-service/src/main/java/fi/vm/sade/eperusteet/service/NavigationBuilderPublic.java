@@ -16,7 +16,7 @@ public interface NavigationBuilderPublic extends NavigationBuilder {
     }
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli, boolean esikatselu);
+    NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio);
 
     default LokalisoituTekstiDto getPerusteenOsaNimi(PerusteenOsaDto perusteenOsaDto) {
         return perusteenOsaDto != null ? perusteenOsaDto.getNimi() : null;
