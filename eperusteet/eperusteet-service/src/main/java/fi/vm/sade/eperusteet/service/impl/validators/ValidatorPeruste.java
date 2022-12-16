@@ -60,11 +60,11 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -796,7 +796,7 @@ public class ValidatorPeruste implements Validator {
             if (tila == ProjektiTila.JULKAISTU) {
                 if (!projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
                     Diaarinumero diaarinumero = projekti.getPeruste().getDiaarinumero();
-                    if (diaarinumero == null) {
+                    if (diaarinumero == null || StringUtils.isBlank(diaarinumero.getDiaarinumero())) {
                         updateStatus.addStatus("peruste-ei-diaarinumeroa", ValidointiKategoria.PERUSTE);
                         updateStatus.setVaihtoOk(false);
                     }

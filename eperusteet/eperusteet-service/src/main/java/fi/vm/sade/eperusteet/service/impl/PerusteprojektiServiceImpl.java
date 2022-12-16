@@ -133,7 +133,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -145,8 +144,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -754,10 +751,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                             KoulutusTyyppi.TELMA,
                             KoulutusTyyppi.VALMA)) {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
-            }
-
-            if (perusteprojektiDto.getDiaarinumero() == null) {
-                throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
             }
 
             DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
