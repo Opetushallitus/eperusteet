@@ -23,7 +23,11 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -34,17 +38,16 @@ import java.util.UUID;
  * Date: 19.10.15
  * Time: 13.17
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonTypeName("aihekokonaisuudet")
 public class AihekokonaisuudetLaajaDto extends Laaja {
     private UUID uuidTunniste;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto yleiskuvaus;
     private List<AihekokonaisuusDto> aihekokonaisuudet;
-
-    public AihekokonaisuudetLaajaDto() {
-    }
 
     public AihekokonaisuudetLaajaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);

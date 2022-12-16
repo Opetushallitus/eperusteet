@@ -20,16 +20,20 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.VersionedDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 import org.springframework.util.CollectionUtils;
 
-@Getter
-@Setter
-@Builder
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RakenneModuuliDto extends AbstractRakenneOsaDto implements VersionedDto {
 
     private LokalisoituTekstiDto nimi;
@@ -39,9 +43,6 @@ public class RakenneModuuliDto extends AbstractRakenneOsaDto implements Versione
     private KoodiDto tutkintonimike;
     private List<AbstractRakenneOsaDto> osat;
     private Integer versioId;
-
-    public RakenneModuuliDto() {
-    }
 
     @Override
     public Integer getVersioId() {

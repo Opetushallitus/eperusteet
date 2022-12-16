@@ -19,15 +19,20 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TutkinnonOsaTilaDto {
     private Long id;
     private Date luotu;

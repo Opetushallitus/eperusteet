@@ -20,15 +20,20 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties
 public class PerusteprojektiInfoDto implements Serializable {
     private Long id;

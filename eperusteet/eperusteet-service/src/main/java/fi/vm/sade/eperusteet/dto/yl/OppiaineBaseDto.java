@@ -21,7 +21,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -32,8 +35,9 @@ import java.util.UUID;
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Long id;
     private UUID tunniste;

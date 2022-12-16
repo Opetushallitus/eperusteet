@@ -31,7 +31,11 @@ import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collections;
@@ -43,8 +47,10 @@ import java.util.Set;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class PerusteKaikkiDto extends PerusteBaseDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     Set<SuoritustapaLaajaDto> suoritustavat;

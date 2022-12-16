@@ -19,6 +19,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,11 +28,10 @@ import lombok.Setter;
  *
  * @author nkala
  */
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class KVLiiteTasoDto {
     String codeUri;
     String codeValue;

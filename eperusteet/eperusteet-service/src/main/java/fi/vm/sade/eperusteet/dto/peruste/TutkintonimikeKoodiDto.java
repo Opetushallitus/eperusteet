@@ -20,7 +20,9 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Map;
@@ -31,10 +33,10 @@ import java.util.Map;
  *
  * @author nkala
  */
-@Getter
-@Setter
-@Builder
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class TutkintonimikeKoodiDto {
     private Long id;
     private Reference peruste;
@@ -45,9 +47,6 @@ public class TutkintonimikeKoodiDto {
     private String tutkintonimikeUri;
     private String tutkintonimikeArvo;
     private LokalisoituTekstiDto nimi;
-
-    public TutkintonimikeKoodiDto() {
-    }
 
     @Deprecated
     public TutkintonimikeKoodiDto(Reference peruste, String tutkinnonOsaArvo, String osaamisalaArvo, String tutkintonimikeArvo) {

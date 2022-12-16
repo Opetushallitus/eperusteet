@@ -16,7 +16,11 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -25,8 +29,10 @@ import java.util.Set;
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class OppiaineDto extends OppiaineBaseUpdateDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;

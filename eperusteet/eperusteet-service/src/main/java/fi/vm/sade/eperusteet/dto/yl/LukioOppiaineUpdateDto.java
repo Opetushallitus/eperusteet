@@ -16,15 +16,17 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * User: tommiratamaa
  * Date: 3.11.2015
  * Time: 19.27
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class LukioOppiaineUpdateDto extends OppiaineBaseUpdateDto {
 }

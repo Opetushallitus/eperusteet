@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.dto.yl.*;
 import java.util.List;
 
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**

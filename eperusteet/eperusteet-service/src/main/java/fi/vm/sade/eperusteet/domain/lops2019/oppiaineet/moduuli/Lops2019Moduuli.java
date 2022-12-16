@@ -1,23 +1,36 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.Copyable;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.StructurallyComparable;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -25,7 +38,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static fi.vm.sade.eperusteet.service.util.Util.identityEquals;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity

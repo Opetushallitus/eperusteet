@@ -36,7 +36,11 @@ import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -45,8 +49,9 @@ import java.util.Date;
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class PerusteenOsaDto implements ReferenceableDto {
     private Long id;
     private Date luotu;
@@ -61,15 +66,14 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Boolean kaannettava;
 
-    public PerusteenOsaDto() {
-    }
-
     public PerusteenOsaDto( LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         this.nimi = nimi;
         this.tila = tila;
         this.tunniste = tunniste;
     }
 
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     @JsonTypeInfo(use = Id.NAME, include = As.EXISTING_PROPERTY, property = "osanTyyppi")
     @JsonSubTypes(value = {
             @JsonSubTypes.Type(value = TekstiKappaleDto.class),
@@ -97,8 +101,8 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
         }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static class Suppea extends PerusteenOsaDto {
         private String osanTyyppi;
 

@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import java.util.List;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**

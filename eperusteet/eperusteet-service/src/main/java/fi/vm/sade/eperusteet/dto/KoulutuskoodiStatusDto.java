@@ -17,14 +17,19 @@
 package fi.vm.sade.eperusteet.dto;
 
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class KoulutuskoodiStatusDto {
     private Long id;
     private PerusteprojektiListausDto perusteprojekti;

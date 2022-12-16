@@ -21,7 +21,11 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
@@ -31,8 +35,9 @@ import java.util.Set;
  * Date: 11.11.2015
  * Time: 10.54
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class PerusteKevytDto {
     private Long id;
     private LokalisoituTekstiDto nimi;

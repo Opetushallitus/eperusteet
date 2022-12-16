@@ -4,7 +4,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -13,7 +16,7 @@ import java.util.UUID;
  *
  * @author jhyoty
  */
-@EqualsAndHashCode
+@Data
 public class Reference {
 
     private final String id;

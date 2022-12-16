@@ -38,15 +38,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiable, Identifiable {
 
     private Long id;

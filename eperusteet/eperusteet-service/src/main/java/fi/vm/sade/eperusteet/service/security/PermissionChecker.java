@@ -16,7 +16,7 @@
 package fi.vm.sade.eperusteet.service.security;
 
 import java.io.Serializable;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 

@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto.yl.lukio.julkinen;
 
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.io.Serializable;
@@ -36,9 +38,9 @@ import static fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LokalisoitavaOsaDto.lo
  * Date: 2.11.15
  * Time: 12.44
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class LukioOppiaineOppimaaraNodeDto implements Serializable, Lokalisoitava {
     private Long id;
     private Long parentId;

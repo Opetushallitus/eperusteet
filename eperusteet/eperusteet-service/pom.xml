@@ -13,12 +13,13 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <hibernate.version>4.3.11.Final</hibernate.version>
+        <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
         <spring.version>5.3.7</spring.version>
         <spring.security.version>5.4.7</spring.security.version>
         <spring.data.jpa.version>1.11.23.RELEASE</spring.data.jpa.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <logback.version>1.2.3</logback.version>
-        <postgresql.version>9.4.1211</postgresql.version>
+        <postgresql.version>42.5.1</postgresql.version>
         <jackson.version>2.11.4</jackson.version>
         <jackson.databind.version>2.10.5.1</jackson.databind.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
@@ -40,6 +41,10 @@
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <hibernate.export.type>CREATE</hibernate.export.type>
         <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <lombok.version>1.18.4</lombok.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -242,6 +247,28 @@
             <version>1.1</version>
         </dependency>
         <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.activation</groupId>
+            <artifactId>jakarta.activation</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate.version}</version>
@@ -307,12 +334,12 @@
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
             <artifactId>orika-core</artifactId>
-            <version>1.5.2</version>
+            <version>1.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
+            <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -328,7 +355,7 @@
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-http</artifactId>
-            <version>0.5.0-SNAPSHOT</version>
+            <version>0.6.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
@@ -476,7 +503,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.12.288</version>
+            <version>1.12.319</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -510,55 +537,52 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <debug>true</debug>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <parameters>true</parameters>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${hibernate.jpamodel.version}</version>
+                        </path>
+                        <path>
+                            <groupId>javax.xml.bind</groupId>
+                            <artifactId>jaxb-api</artifactId>
+                            <version>2.3.0</version>
+                        </path>
+                        <path>
+                            <groupId>javax.annotation</groupId>
+                            <artifactId>javax.annotation-api</artifactId>
+                            <version>1.3.1</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <arg>--add-modules</arg>
+                        <arg>java.datatransfer,java.desktop,java.xml</arg>
+                    </compilerArgs>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <configuration>
-                    <path>/eperusteet-service</path>
-                    <contextReloadable>false</contextReloadable>
-                    <contextFile>${basedir}/src/test/config/context.xml</contextFile>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.postgresql</groupId>
-                        <artifactId>postgresql</artifactId>
-                        <version>${postgresql.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.4.39.v20210325</version>
+                <version>10.0.12</version>
                 <configuration>
+                    <scan>0</scan>
                     <httpConnector>
                         <port>8080</port>
                     </httpConnector>
-                    <scanIntervalSeconds>0</scanIntervalSeconds>
                     <webApp>
                         <contextPath>/eperusteet-service</contextPath>
+                        <jettyEnvXml>${basedir}/src/test/config/jetty-env.xml</jettyEnvXml>
                     </webApp>
-                    <contextXml>${basedir}/src/test/config/jetty-env.xml</contextXml>
-                    <systemProperties>
-                        <systemProperty>
-                            <name>user</name>
-                            <value>${eperusteet.devdb.user}</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <name>password</name>
-                            <value>${eperusteet.devdb.password}</value>
-                        </systemProperty>
-                        <systemProperty>
-                            <name>url</name>
-                            <value>${eperusteet.devdb.jdbcurl}</value>
-                        </systemProperty>
-                    </systemProperties>
                 </configuration>
                 <dependencies>
                     <dependency>

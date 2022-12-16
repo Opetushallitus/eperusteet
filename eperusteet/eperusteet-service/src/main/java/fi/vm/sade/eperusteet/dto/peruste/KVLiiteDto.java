@@ -18,15 +18,19 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class KVLiiteDto {
     private Long id;
     private LokalisoituTekstiDto suorittaneenOsaaminen;

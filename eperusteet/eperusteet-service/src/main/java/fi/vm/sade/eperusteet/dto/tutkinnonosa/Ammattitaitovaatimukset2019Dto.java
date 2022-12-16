@@ -7,11 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Ammattitaitovaatimukset2019Dto {
     private Long id;
     private LokalisoituTekstiDto kohde;

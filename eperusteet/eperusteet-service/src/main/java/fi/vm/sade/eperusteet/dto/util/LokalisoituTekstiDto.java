@@ -19,14 +19,17 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.ObjectUtils;
 
-import java.text.Normalizer;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,6 +39,7 @@ import java.util.stream.Stream;
  * @author jhyoty
  */
 @ToString
+@Data
 public class LokalisoituTekstiDto {
     private static final Map<Kieli,String> emptyMap = new EnumMap<>(Kieli.class);
 

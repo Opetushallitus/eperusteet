@@ -19,7 +19,10 @@ package fi.vm.sade.eperusteet.dto.yl;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Optional;
@@ -29,8 +32,9 @@ import java.util.UUID;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AIPEKurssiBaseDto implements AIPEHasId {
     private Long id;
     private UUID tunniste;

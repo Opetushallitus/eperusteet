@@ -20,15 +20,19 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import java.util.Map;
 
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author ohel
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class MaarayskirjeDto {
     private Long id;
     private Map<Kieli, String> url;

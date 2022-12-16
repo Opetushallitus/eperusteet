@@ -35,7 +35,10 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -44,11 +47,12 @@ import org.springframework.util.CollectionUtils;
 /**
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonTypeName("tutkinnonosa")
 @Builder
-@AllArgsConstructor
 public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto tavoitteet;
     private ArviointiDto arviointi;
@@ -66,9 +70,6 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
     private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
     private Reference geneerinenArviointiasteikko;
     private PerusteKevytDto alkuperainenPeruste;
-
-    public TutkinnonOsaDto() {
-    }
 
     public TutkinnonOsaDto (LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);

@@ -18,7 +18,10 @@ package fi.vm.sade.eperusteet.dto.yl.lukio.julkinen;
 
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -31,8 +34,9 @@ import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterB
  * Date: 2.11.15
  * Time: 12.49
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LokalisoitavaOsaDto implements Serializable, Lokalisoitava {
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto teksti;

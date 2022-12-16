@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,8 +18,7 @@ import java.util.Set;
 /**
  * Yhdistää arviointiasteikon ja geneerisen arvioinnin jaetuksi rakenteeksi.
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Arviointi2020Dto {

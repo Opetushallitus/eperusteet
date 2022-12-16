@@ -23,14 +23,21 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonTypeName("tekstikappale")
 public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto teksti;
@@ -40,9 +47,6 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     private KoodiDto tutkintonimike;
     private List<KoodiDto> koodit;
     private Boolean liite;
-
-    public TekstiKappaleDto() {
-    }
 
     public TekstiKappaleDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);

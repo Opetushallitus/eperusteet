@@ -20,7 +20,11 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -36,8 +40,9 @@ import java.util.stream.Stream;
  * Date: 6.10.15
  * Time: 12.53
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukiokurssiTarkasteleDto implements Serializable, Lokalisoitava {
     @NotNull
     private Long id;

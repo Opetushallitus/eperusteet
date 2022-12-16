@@ -17,15 +17,20 @@
 package fi.vm.sade.eperusteet.dto.kayttaja;
 
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class HenkiloTietoDto {
     String kutsumanimi;
     String sukunimi;

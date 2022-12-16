@@ -18,7 +18,11 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -26,8 +30,10 @@ import lombok.Setter;
  * Date: 3.11.2015
  * Time: 18.43
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class OppiaineBaseUpdateDto extends OppiaineBaseDto {
     private String koodiUri;
     private String koodiArvo;

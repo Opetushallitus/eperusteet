@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface OsaAlueService {
