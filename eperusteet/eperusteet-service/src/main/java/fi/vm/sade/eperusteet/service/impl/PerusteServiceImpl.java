@@ -905,7 +905,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste = getJulkaistuSisalto(perusteId);
         }
 
-        if (peruste != null) {
+        if (peruste != null && !CollectionUtils.isEmpty(peruste.getSuoritustavat())) {
             return peruste.getSuoritustavat().stream()
                     .map(SuoritustapaLaajaDto::getTutkinnonOsat)
                     .flatMap(Collection::stream)
