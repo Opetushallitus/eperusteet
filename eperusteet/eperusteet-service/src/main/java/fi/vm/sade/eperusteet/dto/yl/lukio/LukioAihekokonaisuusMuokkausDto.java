@@ -18,7 +18,11 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -28,8 +32,10 @@ import java.util.Optional;
 /**
  * User: jsikio
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukioAihekokonaisuusMuokkausDto extends UpdateDto<LukioAihekokonaisuusMuokkausDto> implements Serializable {
     @NotNull
     private Long id;

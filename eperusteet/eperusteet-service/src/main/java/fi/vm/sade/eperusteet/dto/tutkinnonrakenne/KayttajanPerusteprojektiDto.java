@@ -16,10 +16,17 @@
 
 package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  *
  * @author nkala
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class KayttajanPerusteprojektiDto {
     Boolean passivoitu;
     String tehtavanimike;

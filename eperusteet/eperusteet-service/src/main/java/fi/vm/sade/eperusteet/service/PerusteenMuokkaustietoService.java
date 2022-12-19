@@ -6,7 +6,7 @@ import fi.vm.sade.eperusteet.domain.PerusteenMuokkaustieto;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
 import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.Date;

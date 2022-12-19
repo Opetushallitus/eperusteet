@@ -36,7 +36,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 
@@ -44,8 +48,10 @@ import org.springframework.util.StringUtils;
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private final String osanTyyppi = "tutkinnonosa";
 

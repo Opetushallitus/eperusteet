@@ -16,20 +16,19 @@
 
 package fi.vm.sade.eperusteet.dto.util;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class BooleanDto {
-
-    public BooleanDto(boolean vastaus) {
-        this.vastaus = vastaus;
-    }
-
     boolean vastaus;
 }

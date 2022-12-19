@@ -5,13 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaiteenalaOsaViiteDto {
     private Long id;
@@ -25,9 +29,6 @@ public class TaiteenalaOsaViiteDto {
 
     private Date muokattu;
     private LokalisoituTekstiDto nimi;
-
-    public TaiteenalaOsaViiteDto() {
-    }
 
     public TaiteenalaOsaViiteDto(Integer jarjestys, LokalisoituTekstiDto nimi) {
         this.jarjestys = jarjestys;

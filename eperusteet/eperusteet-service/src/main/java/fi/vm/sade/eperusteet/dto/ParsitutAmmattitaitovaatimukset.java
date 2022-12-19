@@ -1,15 +1,20 @@
 package fi.vm.sade.eperusteet.dto;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ParsitutAmmattitaitovaatimukset {
     Long projektiId;
     Long perusteId;

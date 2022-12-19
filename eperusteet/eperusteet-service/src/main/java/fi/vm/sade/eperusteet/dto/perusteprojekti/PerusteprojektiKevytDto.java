@@ -27,11 +27,15 @@ import java.util.Set;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties
 public class PerusteprojektiKevytDto implements Serializable  {
     private Long id;
@@ -46,9 +50,6 @@ public class PerusteprojektiKevytDto implements Serializable  {
     private Date luotu;
     private PerusteVersionDto globalVersion;
     private PerusteBaseDto peruste;
-
-    public PerusteprojektiKevytDto() {
-    }
 
     public PerusteprojektiKevytDto(Long id, String nimi, Diaarinumero perusteDiaari, Diaarinumero diaarinumero,
                                    String koulutustyyppi, PerusteTyyppi tyyppi, ProjektiTila tila) {

@@ -8,11 +8,10 @@ import lombok.experimental.SuperBuilder;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class GeneerinenArviointiasteikkoDto {
     private Long id;
     private LokalisoituTekstiDto nimi;

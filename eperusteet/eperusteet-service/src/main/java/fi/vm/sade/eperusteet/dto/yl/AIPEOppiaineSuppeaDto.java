@@ -16,7 +16,11 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -26,8 +30,10 @@ import java.util.Optional;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AIPEOppiaineSuppeaDto extends AIPEOppiaineBaseDto {
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;

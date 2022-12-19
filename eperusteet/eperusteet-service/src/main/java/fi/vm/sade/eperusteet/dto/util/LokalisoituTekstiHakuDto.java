@@ -17,7 +17,10 @@
 package fi.vm.sade.eperusteet.dto.util;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -25,19 +28,12 @@ import lombok.Setter;
  * Date: 5.10.15
  * Time: 20.20
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LokalisoituTekstiHakuDto {
     private long id;
     private Kieli kieli;
     private String teksti;
 
-    public LokalisoituTekstiHakuDto() {
-    }
-
-    public LokalisoituTekstiHakuDto(long id, Kieli kieli, String teksti) {
-        this.id = id;
-        this.kieli = kieli;
-        this.teksti = teksti;
-    }
 }

@@ -20,7 +20,10 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.IdHolder;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -31,8 +34,9 @@ import java.io.Serializable;
  * Date: 29.9.15
  * Time: 16.08
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukiokurssiMuokkausDto implements Serializable, IdHolder {
     @NotNull
     private Long id;

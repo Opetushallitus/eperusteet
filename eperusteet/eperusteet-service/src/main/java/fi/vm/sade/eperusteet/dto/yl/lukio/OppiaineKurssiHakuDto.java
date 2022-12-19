@@ -16,6 +16,8 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
+import jdk.jfr.Enabled;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 /**
@@ -24,6 +26,7 @@ import lombok.Getter;
  * Time: 15.43
  */
 @Getter
+@EqualsAndHashCode
 public class OppiaineKurssiHakuDto {
     private final Long oppiaineId;
     private final Long kurssiId;

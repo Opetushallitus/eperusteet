@@ -17,15 +17,19 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TutkinnonOsaKoosteDto {
     private LokalisoituTekstiDto nimi;
     private String koodiArvo;

@@ -19,7 +19,10 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokurssiTyyppi;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -35,8 +38,9 @@ import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterB
  * Date: 29.9.15
  * Time: 15.51
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
     private List<KurssinOppiaineNimettyDto> oppiaineet = new ArrayList<>();
     private Long id;
@@ -46,9 +50,6 @@ public class LukiokurssiListausDto implements Serializable, Lokalisoitava {
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
     private Date muokattu;
-
-    public LukiokurssiListausDto() {
-    }
 
     public LukiokurssiListausDto(Long id, LukiokurssiTyyppi tyyppi,
                                  String koodiArvo, Long lokalisoituKoodiId,

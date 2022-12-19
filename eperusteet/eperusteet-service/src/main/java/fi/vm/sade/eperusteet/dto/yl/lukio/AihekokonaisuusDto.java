@@ -16,7 +16,10 @@
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -25,8 +28,9 @@ import java.util.UUID;
 /**
  * Created by jsikio on 28.9.2015.
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AihekokonaisuusDto implements Serializable {
     private UUID tunniste;
     private Long id;

@@ -17,7 +17,10 @@
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.IdHolder;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
@@ -30,15 +33,13 @@ import java.util.List;
  * Date: 9.10.15
  * Time: 10.00
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukiokurssiOppaineMuokkausDto implements Serializable, IdHolder {
     @NotNull
     private Long id;
     private List<KurssinOppiaineDto> oppiaineet = new ArrayList<>();
-
-    public LukiokurssiOppaineMuokkausDto() {
-    }
 
     public LukiokurssiOppaineMuokkausDto(Long id) {
         this.id = id;

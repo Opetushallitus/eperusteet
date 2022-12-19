@@ -8,9 +8,15 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.util.Map;
 import java.util.UUID;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@EqualsAndHashCode(callSuper = true)
 public class NavigableLokalisoituTekstiDto extends LokalisoituTekstiDto {
 
     @Setter

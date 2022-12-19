@@ -22,7 +22,11 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.UUID;
@@ -32,16 +36,15 @@ import java.util.UUID;
  * Date: 21.10.15
  * Time: 20.02
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonTypeName("opetuksenyleisettavoitteet")
 public class OpetuksenYleisetTavoitteetLaajaDto extends PerusteenOsaDto.Laaja {
     private UUID uuidTunniste;
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto kuvaus;
-
-    public OpetuksenYleisetTavoitteetLaajaDto() {
-    }
 
     public OpetuksenYleisetTavoitteetLaajaDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
         super(nimi, tila, tunniste);

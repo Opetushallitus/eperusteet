@@ -19,7 +19,10 @@ package fi.vm.sade.eperusteet.dto.perusteprojekti;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -29,8 +32,9 @@ import java.io.Serializable;
  * Date: 11.11.2015
  * Time: 10.49
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties
 public class PerusteprojektiListausDto implements Serializable  {
     private Long id;

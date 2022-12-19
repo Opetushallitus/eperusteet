@@ -19,15 +19,19 @@ package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 import java.util.List;
 
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OsaAlueLaajaDto extends OsaAlueDto {
     private Arviointi2020Dto arviointi;
     private Osaamistavoite2020Dto pakollisetOsaamistavoitteet;

@@ -18,15 +18,21 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class RakenneOsaDto extends AbstractRakenneOsaDto {
     private String erikoisuus;
     private Reference tutkinnonOsaViite;

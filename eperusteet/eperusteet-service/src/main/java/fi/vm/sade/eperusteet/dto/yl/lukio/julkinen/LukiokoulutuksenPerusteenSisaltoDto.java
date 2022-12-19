@@ -20,7 +20,10 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -30,8 +33,9 @@ import java.io.Serializable;
  * Date: 12.11.2015
  * Time: 12.21
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class LukiokoulutuksenPerusteenSisaltoDto implements Serializable, PerusteenSisaltoDto {
     private PerusteenOsaViiteDto.Laaja sisalto;
     private AihekokonaisuudetLaajaDto aihekokonaisuudet;

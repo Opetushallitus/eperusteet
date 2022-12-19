@@ -18,6 +18,8 @@ package fi.vm.sade.eperusteet.dto.yl.lukio.julkinen;
 
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -31,9 +33,9 @@ import lombok.Setter;
  * Date: 2.11.15
  * Time: 12.43
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class LukioOppiainePuuDto implements Lokalisoitava {
     private Long perusteId;
     private List<LukioOppiaineOppimaaraNodeDto> oppiaineet = new ArrayList<>();

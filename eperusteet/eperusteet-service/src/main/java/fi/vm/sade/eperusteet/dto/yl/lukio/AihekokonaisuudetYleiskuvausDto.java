@@ -17,7 +17,11 @@ package fi.vm.sade.eperusteet.dto.yl.lukio;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -26,8 +30,10 @@ import java.util.Date;
 /**
  * Created by jsikio on 28.9.2015.
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AihekokonaisuudetYleiskuvausDto extends UpdateDto<AihekokonaisuudetYleiskuvausDto> implements Serializable {
     private LokalisoituTekstiDto otsikko;
     private LokalisoituTekstiDto yleiskuvaus;

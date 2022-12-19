@@ -17,7 +17,11 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Optional;
@@ -26,8 +30,10 @@ import java.util.Optional;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AIPEVaiheSuppeaDto extends AIPEVaiheBaseDto {
     private Optional<LokalisoituTekstiDto> nimi;
 }

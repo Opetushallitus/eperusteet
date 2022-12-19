@@ -16,7 +16,11 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -26,8 +30,10 @@ import java.util.Optional;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
     private Optional<TekstiOsaDto> siirtymaEdellisesta;
     private Optional<TekstiOsaDto> tehtava;

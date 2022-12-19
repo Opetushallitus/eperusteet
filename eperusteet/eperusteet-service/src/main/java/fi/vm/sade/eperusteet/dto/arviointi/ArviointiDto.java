@@ -17,15 +17,21 @@ package fi.vm.sade.eperusteet.dto.arviointi;
 
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author jhyoty
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArviointiDto {
 
     private Long id;

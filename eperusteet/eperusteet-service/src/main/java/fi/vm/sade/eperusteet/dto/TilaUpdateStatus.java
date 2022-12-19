@@ -23,7 +23,11 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.*;
@@ -37,6 +41,9 @@ import static java.util.Arrays.asList;
  *
  * @author harrik
  */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
     @Getter
     @Setter
@@ -65,10 +72,12 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         }
     }
 
+    @Data
+    @NoArgsConstructor
     public static class TilaUpdateStatusBuilderForSuoritustapa {
-        private final TilaUpdateStatusBuilder builder;
+        private TilaUpdateStatusBuilder builder;
         @Getter
-        private final Suoritustapakoodi suoritustapa;
+        private Suoritustapakoodi suoritustapa;
 
         public TilaUpdateStatusBuilderForSuoritustapa(TilaUpdateStatusBuilder builder, Suoritustapakoodi suoritustapa) {
             this.builder = builder;
@@ -109,6 +118,8 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         }
     }
 
+    @Data
+    @EqualsAndHashCode(callSuper = true)
     public static class TilallinenTilaUpdateStatusBuilderForSuoritustapa extends TilaUpdateStatusBuilderForSuoritustapa {
         private final ProjektiTila targetTila;
         private Set<ProjektiTila> tilat = new HashSet<>();
@@ -187,8 +198,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet, validointiKategoria, validointiStatusType));
     }
 
-    @Getter
-    @Setter
+    @Data
     public static class Status {
         String viesti;
         PerusteprojektiListausDto perusteprojekti;

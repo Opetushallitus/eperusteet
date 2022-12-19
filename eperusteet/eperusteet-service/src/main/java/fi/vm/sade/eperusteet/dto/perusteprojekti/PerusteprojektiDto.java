@@ -21,7 +21,10 @@ import fi.vm.sade.eperusteet.domain.ProjektiKuvaus;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -33,8 +36,9 @@ import java.util.List;
  *
  * @author harrik
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonIgnoreProperties
 public class PerusteprojektiDto implements Serializable {
     private Long id;
@@ -68,6 +72,4 @@ public class PerusteprojektiDto implements Serializable {
         this.ryhmaOid = ryhmaOid;
     }
 
-    public PerusteprojektiDto() {
-    }
 }

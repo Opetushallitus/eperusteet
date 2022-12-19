@@ -30,12 +30,11 @@ import java.util.Map;
  *
  * @author nkala
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"koodisto", "uri", "versio"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class KoodiDto {
     private Long id;
@@ -53,6 +52,7 @@ public class KoodiDto {
         return result;
     }
 
+    @JsonIgnore
     public boolean isTemporary() {
         return uri != null && uri.startsWith("temporary_");
     }

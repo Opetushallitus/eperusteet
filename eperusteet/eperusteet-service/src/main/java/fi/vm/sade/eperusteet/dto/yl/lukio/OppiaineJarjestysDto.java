@@ -16,7 +16,10 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -24,19 +27,12 @@ import lombok.Setter;
  * Date: 12.10.15
  * Time: 18.53
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class OppiaineJarjestysDto {
     private Long id;
     private Long oppiaineId; // parent
     private Long jarjestys;
 
-    public OppiaineJarjestysDto() {
-    }
-
-    public OppiaineJarjestysDto(Long id, Long oppiaineId, Long jarjestys) {
-        this.id = id;
-        this.oppiaineId = oppiaineId;
-        this.jarjestys = jarjestys;
-    }
 }

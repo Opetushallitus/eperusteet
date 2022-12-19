@@ -18,28 +18,24 @@ package fi.vm.sade.eperusteet.dto.kayttaja;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  *
  * @author harrik
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SuosikkiDto implements Serializable {
     private Long id;
     private String nimi;
     private String sisalto;
     private Date lisatty;
-
-    public SuosikkiDto(Long id, String nimi, String sisalto, Date lisatty) {
-        this.id = id;
-        this.nimi = nimi;
-        this.sisalto = sisalto;
-        this.lisatty = lisatty;
-    }
-
-    public SuosikkiDto() {
-    }
 }

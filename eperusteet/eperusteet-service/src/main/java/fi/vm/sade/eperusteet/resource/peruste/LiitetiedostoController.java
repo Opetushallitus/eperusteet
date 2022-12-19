@@ -51,7 +51,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -182,38 +182,9 @@ public class LiitetiedostoController {
             HttpServletResponse response
     ) throws IOException {
         UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));
-        String extension = FilenameUtils.getExtension(fileName);
-
-        if (topLevelMediaType == null) {
-            topLevelMediaType = "application";
-        }
-
         LiiteDto dto = liitteet.get(perusteId, id);
 
-        // Liitteen tiedostopääte voidaan pakottaa uudelleenohjauksella
-        /*
-        String requestURI = request.getRequestURI();
-        if (dto != null && ObjectUtils.isEmpty(extension) && !ObjectUtils.isEmpty(requestURI)) {
-            try {
-                MimeTypes mimeTypes = MimeTypes.getDefaultMimeTypes();
-                String realExtension = mimeTypes.forName(dto.getMime()).getExtension();
-                response.addHeader("Location", requestURI + realExtension);
-                response.setStatus(HttpStatus.MOVED_PERMANENTLY.value());
-                return;
-            } catch (MimeTypeException e) {
-                log.error(e.getLocalizedMessage(), e);
-            }
-        }
-        */
-
-        boolean isCorrectExtension = true;
-
-        // Tarkistetaan tiedostopääte jos asetettu kutsuun
-        if (!ObjectUtils.isEmpty(extension) && dto != null) {
-            isCorrectExtension = Objects.equals(dto.getMime(), new MimetypesFileTypeMap().getContentType(fileName));
-        }
-
-        if (dto != null && isCorrectExtension) {
+        if (dto != null) {
             if (DOCUMENT_TYPES.contains(dto.getMime())) {
                 response.setHeader("Content-disposition",
                         "inline; filename=\"" + dto.getNimi() + ".pdf\"");
