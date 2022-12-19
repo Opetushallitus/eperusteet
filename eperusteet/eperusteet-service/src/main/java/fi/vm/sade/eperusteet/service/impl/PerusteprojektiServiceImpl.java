@@ -131,9 +131,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -145,8 +145,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -154,7 +152,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -756,21 +753,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 throw new BusinessRuleViolationException("Opetussuunnitelmalla täytyy olla yksikkö");
             }
 
-            if (perusteprojektiDto.getDiaarinumero() == null) {
-                throw new BusinessRuleViolationException("Diaarinumeroa ei ole asetettu");
-            }
+            if (StringUtils.isNotBlank(perusteprojektiDto.getDiaarinumero())) {
+                DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
+                boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getLoytyi();
 
-            DiaarinumeroHakuDto diaariHaku = onkoDiaarinumeroKaytossa(new Diaarinumero(perusteprojektiDto.getDiaarinumero()));
-            boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getLoytyi();
-
-            if (korvaava) {
-                Perusteprojekti jyrattava = repository.findOne(diaariHaku.getId());
-                perusteprojekti.setPaatosPvm(jyrattava.getPaatosPvm());
-                perusteprojekti.setToimikausiAlku(jyrattava.getToimikausiAlku());
-                perusteprojekti.setToimikausiLoppu(jyrattava.getToimikausiLoppu());
+                if (korvaava) {
+                    Perusteprojekti jyrattava = repository.findOne(diaariHaku.getId());
+                    perusteprojekti.setPaatosPvm(jyrattava.getPaatosPvm());
+                    perusteprojekti.setToimikausiAlku(jyrattava.getToimikausiAlku());
+                    perusteprojekti.setToimikausiLoppu(jyrattava.getToimikausiLoppu());
+                }
             }
         }
-        
+
         Peruste peruste;
         if (perusteprojektiDto.getPerusteId() == null) {
             peruste = perusteService.luoPerusteRunko(koulutustyyppi, perusteprojektiDto.getToteutus(),
