@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.domain;
 
-
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.Comparator;
@@ -67,6 +66,10 @@ public class GeneerinenArviointiasteikko extends AbstractAuditedReferenceableEnt
     @Setter
     private boolean valittavissa = true;
 
+    @Getter
+    @Setter
+    private boolean oletusvalinta = false;
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @Getter
@@ -80,6 +83,7 @@ public class GeneerinenArviointiasteikko extends AbstractAuditedReferenceableEnt
         GeneerinenArviointiasteikko uusi = new GeneerinenArviointiasteikko();
         uusi.setJulkaistu(false);
         uusi.setValittavissa(true);
+        uusi.setOletusvalinta(false);
         uusi.setArviointiAsteikko(this.arviointiAsteikko);
         uusi.setNimi(this.getNimi());
         uusi.setKohde(this.getKohde());

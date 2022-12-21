@@ -6,7 +6,6 @@ import fi.vm.sade.eperusteet.domain.GeneerinenArviointiasteikko;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
-import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
@@ -16,20 +15,15 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.*;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
-
 import fi.vm.sade.eperusteet.repository.OsaamistasoRepository;
-import java.io.IOException;
 import java.util.List;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 
-import java.util.ArrayList;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -101,6 +95,44 @@ public class GeneerinenArviointiIT extends AbstractPerusteprojektiTest {
         geneerinen.setJulkaistu(true);
         GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
         assertThat(julkaistu.isJulkaistu()).isTrue();
+    }
+
+    @Test
+    @Rollback
+    public void testPalautaOletusValintaKeskeneraiseksi() {
+        loginAsUser("testOphAdmin");
+        GeneerinenArviointiasteikkoDto geneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        geneerinenDto.setJulkaistu(true);
+        geneerinenDto.setOletusvalinta(true);
+        GeneerinenArviointiasteikkoDto geneerinen = geneerinenArviointiasteikkoService.add(geneerinenDto);
+        assertThat(geneerinen.isJulkaistu()).isTrue();
+
+        geneerinen.setJulkaistu(false);
+        GeneerinenArviointiasteikkoDto julkaistu = geneerinenArviointiasteikkoService.update(geneerinen.getId(), geneerinen);
+        assertThat(julkaistu.isOletusvalinta()).isFalse();
+    }
+
+    @Test
+    @Rollback
+    public void testAsetaOletukseksi() {
+        loginAsUser("testOphAdmin");
+        GeneerinenArviointiasteikkoDto oletusGeneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        oletusGeneerinenDto.setJulkaistu(true);
+        oletusGeneerinenDto.setOletusvalinta(true);
+        GeneerinenArviointiasteikkoDto toBeOletusGeneerinenDto = buildGeneerinenArviointiasteikkoDto(0);
+        toBeOletusGeneerinenDto.setJulkaistu(true);
+
+        GeneerinenArviointiasteikkoDto oletusGeneerinen = geneerinenArviointiasteikkoService.add(oletusGeneerinenDto);
+        GeneerinenArviointiasteikkoDto toBeOletusGeneerinen = geneerinenArviointiasteikkoService.add(toBeOletusGeneerinenDto);
+        assertThat(oletusGeneerinen.isOletusvalinta()).isTrue();
+        assertThat(toBeOletusGeneerinen.isOletusvalinta()).isFalse();
+
+        toBeOletusGeneerinen.setOletusvalinta(true);
+        GeneerinenArviointiasteikkoDto newOletus = geneerinenArviointiasteikkoService.update(toBeOletusGeneerinen.getId(), toBeOletusGeneerinen);
+        assertThat(newOletus.isOletusvalinta()).isTrue();
+
+        GeneerinenArviointiasteikkoDto oldOletus = geneerinenArviointiasteikkoService.getOne(oletusGeneerinen.getId());
+        assertThat(oldOletus.isOletusvalinta()).isFalse();
     }
 
     @Test
