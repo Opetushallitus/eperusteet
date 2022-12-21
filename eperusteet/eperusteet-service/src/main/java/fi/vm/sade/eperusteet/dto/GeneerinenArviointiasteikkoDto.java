@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.dto;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +18,7 @@ public class GeneerinenArviointiasteikkoDto {
     private Reference arviointiAsteikko;
     private boolean julkaistu;
     private boolean valittavissa;
+    private boolean oletusvalinta;
     private Set<KoulutusTyyppi> koulutustyypit;
     private Set<GeneerisenArvioinninOsaamistasonKriteeriDto> osaamistasonKriteerit = new HashSet<>();
 }

@@ -6,7 +6,6 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
-import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
@@ -14,7 +13,6 @@ import fi.vm.sade.eperusteet.service.GeneerinenArviointiasteikkoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
-
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,10 +105,22 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
                 throw new BusinessRuleViolationException("julkaistua-ei-voi-rakenteellisesti-muuttaa");
             }
         }
+        if (asteikkoDto.isOletusvalinta()) {
+            GeneerinenArviointiasteikko finalAsteikko = asteikko;
+            geneerinenArviointiasteikkoRepository.findByJulkaistuTrue().forEach(julkaistu -> {
+                if (julkaistu.isOletusvalinta() && !finalAsteikko.getId().equals(julkaistu.getId())) {
+                    julkaistu.setOletusvalinta(false);
+                    geneerinenArviointiasteikkoRepository.save(julkaistu);
+                }
+            });
+        }
 
         asteikkoDto.setId(id);
         ArviointiAsteikko arviointiAsteikko = asteikko.getArviointiAsteikko();
         mapper.map(asteikkoDto, asteikko);
+        if (!asteikkoDto.isJulkaistu()) {
+            asteikko.setOletusvalinta(false);
+        }
         asteikko.setArviointiAsteikko(arviointiAsteikko);
         tarkistaArviointiAsteikot(asteikko);
         asteikko = geneerinenArviointiasteikkoRepository.save(asteikko);
