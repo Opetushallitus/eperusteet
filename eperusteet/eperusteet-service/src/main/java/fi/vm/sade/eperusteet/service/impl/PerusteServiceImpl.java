@@ -852,13 +852,20 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         JulkaistuPeruste julkaisu = null;
-        if (julkaisuRevisio != null) {
-            julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
-        } else {
-            julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        if (!useCurrentData) {
+            if (julkaisuRevisio != null) {
+                julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+
+                if (julkaisu == null) {
+                    throw new BusinessRuleViolationException("perustetta-ei-loydy");
+                }
+
+            } else {
+                julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+            }
         }
 
-        if (!useCurrentData && julkaisu != null) {
+        if (julkaisu != null) {
             ObjectNode data = julkaisu.getData().getData();
             try {
                 return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
