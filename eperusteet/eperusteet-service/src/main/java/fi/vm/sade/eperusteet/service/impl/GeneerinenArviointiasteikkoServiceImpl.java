@@ -106,9 +106,8 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
             }
         }
         if (asteikkoDto.isOletusvalinta()) {
-            GeneerinenArviointiasteikko finalAsteikko = asteikko;
             geneerinenArviointiasteikkoRepository.findByJulkaistuTrue().forEach(julkaistu -> {
-                if (julkaistu.isOletusvalinta() && !finalAsteikko.getId().equals(julkaistu.getId())) {
+                if (julkaistu.isOletusvalinta() && !julkaistu.getId().equals(id)) {
                     julkaistu.setOletusvalinta(false);
                     geneerinenArviointiasteikkoRepository.save(julkaistu);
                 }
