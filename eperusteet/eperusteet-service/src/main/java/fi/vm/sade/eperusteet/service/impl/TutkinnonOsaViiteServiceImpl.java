@@ -90,7 +90,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         if (viite == null || viite.getTutkinnonOsa() == null ) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
-        return LukkoDto.of(lockManager.lock(viite.getTutkinnonOsa().getId()));
+        return LukkoDto.of(lockManager.lock(viite.getId()));
     }
 
     @Override
@@ -100,7 +100,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         if (viite == null || viite.getTutkinnonOsa() == null ) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
-        lockManager.unlock(viite.getTutkinnonOsa().getId());
+        lockManager.unlock(viite.getId());
     }
 
     @Override
@@ -110,7 +110,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         if (viite == null || viite.getTutkinnonOsa() == null ) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
-        return LukkoDto.of(lockManager.getLock(viite.getTutkinnonOsa().getId()));
+        return LukkoDto.of(lockManager.getLock(viite.getId()));
     }
 
     @Override
@@ -143,10 +143,12 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
             throw new BusinessRuleViolationException("Laajuuden maksimin täytyy olla suurempi kuin minimiarvon");
         }
 
-        lockManager.ensureLockedByAuthenticatedUser(viiteDto.getTutkinnonOsa().getIdLong());
+        lockManager.ensureLockedByAuthenticatedUser(viiteDto.getId());
         if (viiteDto.getTutkinnonOsaDto() != null) {
             if (updateTutkinnonOsa) {
+                lockManager.lock(viiteDto.getTutkinnonOsaDto().getId());
                 viiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
+                lockManager.unlock(viiteDto.getTutkinnonOsaDto().getId());
             }
 
             viite.setTutkinnonOsa(tutkinnonOsaRepository.findOne(viiteDto.getTutkinnonOsa().getIdLong()));
