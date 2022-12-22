@@ -1856,7 +1856,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("tutkinnon-osan-muokkaus-ei-sallittu");
         }
 
-        TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa);
+        TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa, true);
         muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.PAIVITYS);
         onApplicationEvent(PerusteUpdatedEvent.of(this, id));
         return dto;

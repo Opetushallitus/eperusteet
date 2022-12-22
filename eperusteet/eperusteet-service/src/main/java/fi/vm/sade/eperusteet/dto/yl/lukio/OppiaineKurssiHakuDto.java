@@ -16,7 +16,6 @@
 
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import jdk.jfr.Enabled;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 

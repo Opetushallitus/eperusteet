@@ -15,10 +15,12 @@
  */
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
@@ -54,6 +56,9 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
     @Autowired
     private LockManager lockManager;
 
+    @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepository;
+
     @Override
     public List<Revision> getVersiot(Long id) {
         return tutkinnonOsaViiteRepository.getRevisions(id);
@@ -66,6 +71,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         if (viite == null) {
             throw new BusinessRuleViolationException("Virheellinen viiteId");
         }
+
         TutkinnonOsaViiteDto viiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
         TutkinnonOsaDto tutkinnonOsaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
         viiteDto.setTutkinnonOsaDto(tutkinnonOsaDto);
@@ -114,12 +120,12 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         TutkinnonOsaViiteDto viiteDto = mapper.map(revision, TutkinnonOsaViiteDto.class);
         TutkinnonOsaDto tutkinnonOsaDto = mapper.map(revision.getTutkinnonOsa(), TutkinnonOsaDto.class);
         viiteDto.setTutkinnonOsaDto(tutkinnonOsaDto);
-        return update(viiteDto);
+        return update(viiteDto, false);
     }
 
     @Override
     @Transactional
-    public TutkinnonOsaViiteDto update(TutkinnonOsaViiteDto viiteDto) {
+    public TutkinnonOsaViiteDto update(TutkinnonOsaViiteDto viiteDto, boolean updateTutkinnonOsa) {
         assertExists(viiteDto.getId());
         TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(viiteDto.getId());
 
@@ -137,7 +143,15 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
             throw new BusinessRuleViolationException("Laajuuden maksimin täytyy olla suurempi kuin minimiarvon");
         }
 
-        lockManager.ensureLockedByAuthenticatedUser(viite.getTutkinnonOsa().getId());
+        lockManager.ensureLockedByAuthenticatedUser(viiteDto.getTutkinnonOsa().getIdLong());
+        if (viiteDto.getTutkinnonOsaDto() != null) {
+            if (updateTutkinnonOsa) {
+                viiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
+            }
+
+            viite.setTutkinnonOsa(tutkinnonOsaRepository.findOne(viiteDto.getTutkinnonOsa().getIdLong()));
+        }
+
         viite.setJarjestys(viiteDto.getJarjestys());
         viite.setLaajuus(viiteDto.getLaajuus());
         viite.setLaajuusMaksimi(viiteDto.getLaajuusMaksimi());
@@ -146,7 +160,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
         TutkinnonOsaViiteDto uusiViiteDto = mapper.map(viite, TutkinnonOsaViiteDto.class);
 
         if (viiteDto.getTutkinnonOsaDto() != null) {
-            uusiViiteDto.setTutkinnonOsaDto(perusteenOsaService.update(viiteDto.getTutkinnonOsaDto()));
+            uusiViiteDto.setTutkinnonOsaDto(viiteDto.getTutkinnonOsaDto());
         }
 
         return uusiViiteDto;
