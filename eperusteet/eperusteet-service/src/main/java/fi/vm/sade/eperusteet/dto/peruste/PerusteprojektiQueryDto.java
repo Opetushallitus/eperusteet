@@ -47,6 +47,10 @@ public class PerusteprojektiQueryDto {
     private String jarjestysTapa;
     private Boolean jarjestysOrder;
     private Set<Long> perusteet;
+    private boolean tuleva;
+    private boolean voimassaolo;
+    private boolean siirtyma;
+    private boolean poistunut;
 
     public void setTila(ProjektiTila tila) {
         this.tila = new HashSet<>();
