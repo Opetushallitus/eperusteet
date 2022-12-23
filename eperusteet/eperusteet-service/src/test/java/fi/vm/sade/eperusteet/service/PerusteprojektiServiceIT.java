@@ -31,6 +31,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -716,6 +717,69 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
             PerusteInfoDto loydetty = perusteService.getByDiaari(new Diaarinumero(ppDto.getDiaarinumero()));
             assertThat(loydetty).isNull();
         }
+
+    }
+
+    @Test
+    public void test_perusteprojektihakuAjoilla() {
+        PerusteDto tuleva = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloAlkaa(DateTime.now().plusDays(1).toDate());
+        });
+
+        PerusteDto voimassa1 = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+        });
+
+        PerusteDto voimassa2 = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloAlkaa(DateTime.now().minusDays(1).toDate());
+        });
+
+        PerusteDto voimassa3 = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloAlkaa(DateTime.now().minusDays(1).toDate());
+            peruste.setVoimassaoloLoppuu(DateTime.now().plusDays(1).toDate());
+        });
+
+        PerusteDto voimassa4 = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloLoppuu(DateTime.now().plusDays(1).toDate());
+        });
+
+        PerusteDto siirtyma = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloLoppuu(DateTime.now().minusDays(1).toDate());
+            peruste.setSiirtymaPaattyy(DateTime.now().plusDays(1).toDate());
+        });
+
+        PerusteDto paattynyt = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
+            peruste.setVoimassaoloLoppuu(DateTime.now().minusDays(1).toDate());
+        });
+
+        PerusteprojektiQueryDto pquery = new PerusteprojektiQueryDto();
+        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
+        Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
+
+        assertThat(page.getTotalElements()).isEqualTo(7);
+
+        pquery.setTuleva(true);
+        page = service.findBy(p, pquery);
+        assertThat(page.getTotalElements()).isEqualTo(1);
+        assertThat(page.getContent().get(0).getPeruste().getId()).isEqualTo(tuleva.getId());
+
+        pquery = new PerusteprojektiQueryDto();
+        pquery.setVoimassaolo(true);
+        page = service.findBy(p, pquery);
+        assertThat(page.getTotalElements()).isEqualTo(4);
+        assertThat(page.getContent().stream().map(pr -> pr.getPeruste().getId()))
+                .containsExactlyInAnyOrder(voimassa1.getId(), voimassa2.getId(), voimassa3.getId(), voimassa4.getId());
+
+        pquery = new PerusteprojektiQueryDto();
+        pquery.setSiirtyma(true);
+        page = service.findBy(p, pquery);
+        assertThat(page.getTotalElements()).isEqualTo(1);
+        assertThat(page.getContent().get(0).getPeruste().getId()).isEqualTo(siirtyma.getId());
+
+        pquery = new PerusteprojektiQueryDto();
+        pquery.setPoistunut(true);
+        page = service.findBy(p, pquery);
+        assertThat(page.getTotalElements()).isEqualTo(1);
+        assertThat(page.getContent().get(0).getPeruste().getId()).isEqualTo(paattynyt.getId());
 
     }
 

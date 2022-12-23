@@ -197,15 +197,49 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         }
 
 
-        if (!ObjectUtils.isEmpty(pq.getTila())) {
-            Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
+        Join<Perusteprojekti, Peruste> peruste = root.join(Perusteprojekti_.peruste);
 
-            if (pq.getTila().contains(ProjektiTila.JULKAISTU)) {
-                result = cb.and(result, cb.or(root.get(Perusteprojekti_.tila).in(pq.getTila()), cb.isNotEmpty(peruste.get(Peruste_.julkaisut))));
-            } else {
-                result = cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
-                result = cb.and(result, cb.isEmpty(peruste.get(Peruste_.julkaisut)));
-            }
+        if (!ObjectUtils.isEmpty(pq.getTila())) {
+            result = cb.and(result, root.get(Perusteprojekti_.tila).in(pq.getTila()));
+        }
+
+        final Expression<Date> voimassaoloAlkaa = peruste.get(Peruste_.voimassaoloAlkaa);
+        final Expression<Date> voimassaoloLoppuu = peruste.get(Peruste_.voimassaoloLoppuu);
+        final Expression<Date> siirtymaPaattyy = peruste.get(Peruste_.siirtymaPaattyy);
+        Expression<java.sql.Date> currentDate = cb.literal(new java.sql.Date(new Date().getTime()));
+
+        if (pq.isTuleva()) {
+            result = cb.and(result, cb.and(cb.isNotNull(voimassaoloAlkaa), cb.lessThan(currentDate, voimassaoloAlkaa)));
+        } else if (pq.isVoimassaolo()) {
+            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa));
+            Predicate loppuu = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(currentDate, voimassaoloLoppuu));
+            Predicate pr1 = cb.and(alkaa, loppuu);
+
+            // Voimassaolon loppumista ei ole määritelty
+            Predicate pr2 = cb.and(cb.isNull(voimassaoloLoppuu),
+                    cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa)));
+
+            // Voimassaolon alkamista ei ole määritelty
+            Predicate pr3 = cb.and(cb.isNull(voimassaoloAlkaa),
+                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(currentDate, voimassaoloLoppuu)));
+
+            // Voimassaolon alkamista tai loppumista ei ole määritelty
+            Predicate pr4 = cb.and(cb.isNull(voimassaoloAlkaa), cb.isNull(voimassaoloLoppuu));
+
+            result = cb.and(result, cb.or(pr1, pr2, pr3, pr4));
+
+        } else if (pq.isSiirtyma()) {
+            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu));
+            Predicate loppuu = cb.and(cb.isNotNull(siirtymaPaattyy), cb.lessThanOrEqualTo(currentDate, siirtymaPaattyy));
+            result = cb.and(result, cb.and(alkaa, loppuu));
+        } else if (pq.isPoistunut()) {
+            Predicate siirtymapoistunut = cb.and(cb.isNotNull(siirtymaPaattyy), cb.greaterThan(currentDate, siirtymaPaattyy));
+
+            // Siirtymän loppumista ei ole määritelty
+            Predicate poistunut = cb.and(cb.isNull(siirtymaPaattyy),
+                    cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu)));
+
+            result = cb.and(result, cb.or(siirtymapoistunut, poistunut));
         }
 
         return result;
