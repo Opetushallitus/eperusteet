@@ -66,7 +66,7 @@ public class KoodistoClientImplTest {
         assertThat(koodistoKoodiDto.getMetadataName("FI"))
                 .isEqualToComparingFieldByField(KoodistoMetadataDto.of("koodinimi","fi","koodinimi"));
 
-        verify(cacheManager, Mockito.times(2)).getCache(eq("koodistot"));
+        verify(cacheManager, Mockito.times(4)).getCache(eq("koodistot"));
     }
 
     @Test
