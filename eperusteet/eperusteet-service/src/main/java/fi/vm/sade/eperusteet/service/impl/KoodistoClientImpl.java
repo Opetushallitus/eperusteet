@@ -305,9 +305,6 @@ public class KoodistoClientImpl implements KoodistoClient {
             throw new BusinessRuleViolationException("koodi-arvo-liian-pitka");
         }
 
-        cacheManager.getCache("koodistot").evict(koodistonimi + false);
-        cacheManager.getCache("koodistot").evict(koodistonimi + true);
-
         KoodistoKoodiDto uusiKoodi = KoodistoKoodiDto.builder()
                 .koodiArvo(Long.toString(seuraavaKoodi))
                 .koodiUri(koodistonimi + "_" + seuraavaKoodi)
@@ -327,6 +324,9 @@ public class KoodistoClientImpl implements KoodistoClient {
             return null;
         }
 
+        cacheManager.getCache("koodistot").evict(koodistonimi + false);
+        cacheManager.getCache("koodistot").evict(koodistonimi + true);
+
         return lisattyKoodi;
     }
 
@@ -342,6 +342,9 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength) {
+        cacheManager.getCache("koodistot").evict(koodistonimi + false);
+        cacheManager.getCache("koodistot").evict(koodistonimi + true);
+
         List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
         Long minAllowedArvo = Long.parseLong("10000".substring(0, koodiArvoLength));
         if (koodit.size() == 0) {
