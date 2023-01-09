@@ -21,7 +21,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "   SELECT * " +
             "   FROM julkaistu_peruste_Data_view data" +
             "   WHERE (" +
-            "           koulutustyyppi IN (:koulutustyypit) " +
+            "           COALESCE(:koulutustyypit, NULL) = '' " +
+            "           OR koulutustyyppi IN (:koulutustyypit) " +
             "           OR exists (select 1 from jsonb_array_elements(oppaankoulutustyypit) okt where okt->>0 in (:koulutustyypit))" +
             "         ) " +
             "   AND (:nimi LIKE '' " +

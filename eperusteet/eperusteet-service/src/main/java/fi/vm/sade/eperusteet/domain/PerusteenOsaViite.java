@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
+import fi.vm.sade.eperusteet.domain.yl.DigitaalisenOsaamisenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -153,6 +154,13 @@ public class PerusteenOsaViite implements
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private TutkintoonvalmentavaSisalto tuvaSisalto;
 
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private DigitaalisenOsaamisenPerusteenSisalto digitaalinenOsaaminenSisalto;
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @Getter
     @Setter
@@ -205,6 +213,10 @@ public class PerusteenOsaViite implements
 
     public PerusteenOsaViite(final TutkintoonvalmentavaSisalto sisalto) {
         this.tuvaSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(final DigitaalisenOsaamisenPerusteenSisalto sisalto) {
+        this.digitaalinenOsaaminenSisalto = sisalto;
     }
 
     @Override

@@ -57,6 +57,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
+import fi.vm.sade.eperusteet.domain.yl.DigitaalisenOsaamisenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -2215,24 +2216,25 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             PerusteTyyppi tyyppi,
             boolean isReforminMukainen
     ) {
-        if (koulutustyyppi == null) {
+        if (koulutustyyppi == null && !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
 
         Peruste peruste = new Peruste();
-        peruste.setKoulutustyyppi(koulutustyyppi.toString());
+        peruste.setKoulutustyyppi(koulutustyyppi != null ? koulutustyyppi.toString() : null);
         peruste.setTyyppi(tyyppi);
         Set<Suoritustapa> suoritustavat = new HashSet<>();
         yksikko = yksikko != null ? yksikko : LaajuusYksikko.OSAAMISPISTE;
 
-        if (!isReforminMukainen && koulutustyyppi.isAmmatillinen()) {
+        if (!isReforminMukainen && koulutustyyppi != null && koulutustyyppi.isAmmatillinen()) {
             suoritustavat.add(suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.NAYTTO, yksikko));
         }
 
         Suoritustapa st = null;
 
-        // ~2018 eteenpäin koulutustyypit 1, 11 ja 12
-        if (isReforminMukainen) {
+        if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
+            peruste.setSisalto(new DigitaalisenOsaamisenPerusteenSisalto());
+        } else if (isReforminMukainen) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.REFORMI, LaajuusYksikko.OSAAMISPISTE);
         } else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko);
@@ -2350,7 +2352,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setKoulutukset(koulutukset);
         }
 
-        if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
+        if (luontiDto.getTyyppi().equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
+            DigitaalisenOsaamisenPerusteenSisalto uusiSisalto = vanha.getDigitaalinenOsaaminenSisalto().kloonaa(peruste);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setSisalto(uusiSisalto);
+            peruste = perusteRepository.save(peruste);
+        } else if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.PERUSOPETUSVALMISTAVA.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.VARHAISKASVATUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {

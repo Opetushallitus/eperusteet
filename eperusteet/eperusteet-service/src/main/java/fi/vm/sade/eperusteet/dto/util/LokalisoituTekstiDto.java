@@ -119,8 +119,10 @@ public class LokalisoituTekstiDto {
         if (tunniste != null) {
             map.put("_tunniste", tunniste.toString());
         }
-        for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
-            map.put(e.getKey().toString(), e.getValue());
+        if (tekstit != null) {
+            for (Map.Entry<Kieli, String> e : tekstit.entrySet()) {
+                map.put(e.getKey().toString(), e.getValue());
+            }
         }
         return map;
     }

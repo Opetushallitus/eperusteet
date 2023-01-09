@@ -23,6 +23,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
@@ -88,7 +90,9 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = KotoKielitaitotasoDto.class),
             @JsonSubTypes.Type(value = KotoOpintoDto.class),
             @JsonSubTypes.Type(value = KotoLaajaAlainenOsaaminenDto.class),
-            @JsonSubTypes.Type(value = TuvaLaajaAlainenOsaaminenDto.class)
+            @JsonSubTypes.Type(value = TuvaLaajaAlainenOsaaminenDto.class),
+            @JsonSubTypes.Type(value = OsaamiskokonaisuusDto.class),
+            @JsonSubTypes.Type(value = OsaamiskokonaisuusPaaAlueDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto implements Navigable {
         public abstract String getOsanTyyppi();

@@ -3,6 +3,8 @@ package fi.vm.sade.eperusteet.dto.util;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -36,6 +38,16 @@ public class NavigableLokalisoituTekstiDto extends LokalisoituTekstiDto {
                         NavigationType.tutkinnonosaviite,
                         LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
                         viite.getId()));
+    }
+
+    public NavigableLokalisoituTekstiDto(PerusteenOsa perusteenOsa) {
+        this(
+                perusteenOsa.getNimi() != null ? perusteenOsa.getNimi().getId() : null,
+                perusteenOsa.getNimi() != null ? perusteenOsa.getNimi().getTeksti() : null,
+                NavigationNodeDto.of(
+                        perusteenOsa.getNavigationType(),
+                        perusteenOsa.getNimi() != null ? LokalisoituTekstiDto.of(perusteenOsa.getNimi().getTeksti()) : null,
+                        perusteenOsa.getViitteet().stream().findFirst().get().getId()));
     }
 
     public NavigableLokalisoituTekstiDto(Long id, UUID tunniste, Map<Kieli, String> values) {

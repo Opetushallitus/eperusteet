@@ -21,15 +21,22 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.digi.DigitaalinenOsaaminenTaso;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
 import fi.vm.sade.eperusteet.domain.vst.TavoiteAlueTyyppi;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusKasitteistoDto;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusOsaAlueDto;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusOsaAlueTasoKuvausDto;
+import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
@@ -489,6 +496,103 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(updatedKoto.getOsaamisAlueet().get(0).getKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.LAAJAALAINENOSAAMINENKOTO2022, "Digiosaaminen"));
         Map<Kieli, String> tekstit = updatedKoto.getOsaamisAlueet().get(0).getKuvaus().getTekstit();
         assertThat(tekstit).isEqualTo(Maps.newHashMap(Kieli.FI, "joku osaamisalue"));
+    }
+
+    @Test
+    public void testOsaamiskokonaisuus() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(null);
+            ppl.setTyyppi(PerusteTyyppi.DIGITAALINEN_OSAAMINEN);
+        });
+
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(
+                perusteDto.getId(),
+                null,
+                new PerusteenOsaViiteDto.Matala(new OsaamiskokonaisuusDto()));
+
+        OsaamiskokonaisuusDto osaamiskokonaisuus = (OsaamiskokonaisuusDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(osaamiskokonaisuus.getId());
+        assertThat(osaamiskokonaisuus.getId()).isNotNull();
+        assertThat(osaamiskokonaisuus.getKasitteistot()).hasSize(5);
+        assertThat(osaamiskokonaisuus.getKasitteistot()).extracting("taso")
+                .containsExactly(DigitaalinenOsaaminenTaso.VARHAISKASVATUS,
+                        DigitaalinenOsaaminenTaso.ESIOPETUS,
+                        DigitaalinenOsaaminenTaso.VUOSILUOKKA_12,
+                        DigitaalinenOsaaminenTaso.VUOSILUOKKA_3456,
+                        DigitaalinenOsaaminenTaso.VUOSILUOKKA_789);
+
+        osaamiskokonaisuus.setNimi(LokalisoituTekstiDto.of("digiosaaminen"));
+        osaamiskokonaisuus.getKasitteistot().stream()
+                .filter(kasitteisto -> kasitteisto.getTaso().equals(DigitaalinenOsaaminenTaso.ESIOPETUS))
+                .forEach(kasitteisto -> {
+                    kasitteisto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
+                    kasitteisto.setKeskeinenKasitteisto(LokalisoituTekstiDto.of("keskeinensisalto"));
+                });
+
+        OsaamiskokonaisuusDto updatetOsamiskokonaisuusDto = perusteenOsaService.update(osaamiskokonaisuus);
+
+        assertThat(updatetOsamiskokonaisuusDto.getNimi().get(Kieli.FI)).isEqualTo("digiosaaminen");
+        OsaamiskokonaisuusKasitteistoDto kasitteisto = updatetOsamiskokonaisuusDto.getKasitteistot().stream()
+                .filter(k -> k.getTaso().equals(DigitaalinenOsaaminenTaso.ESIOPETUS))
+                .findFirst().get();
+        assertThat(kasitteisto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
+        assertThat(kasitteisto.getKeskeinenKasitteisto().get(Kieli.FI)).isEqualTo("keskeinensisalto");
+
+        PerusteenOsaViiteDto.Matala osaamiskokonaisuusPaaAlueViite = perusteService.addSisaltoLapsi(
+                perusteDto.getId(),
+                perusteViite.getId(),
+                new PerusteenOsaViiteDto.Matala(new OsaamiskokonaisuusPaaAlueDto()));
+
+        OsaamiskokonaisuusPaaAlueDto osaamiskokonaisuusPaaAlueDto = (OsaamiskokonaisuusPaaAlueDto) perusteenOsaService.get(osaamiskokonaisuusPaaAlueViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(osaamiskokonaisuusPaaAlueDto.getId());
+
+        osaamiskokonaisuusPaaAlueDto.setKuvaus(LokalisoituTekstiDto.of("paaaluekuvaus"));
+        osaamiskokonaisuusPaaAlueDto.setNimi(LokalisoituTekstiDto.of("paaaluenimi"));
+        osaamiskokonaisuusPaaAlueDto.setOsaAlueet(new ArrayList<>(Arrays.asList(
+                OsaamiskokonaisuusOsaAlueDto.builder()
+                        .nimi(LokalisoituTekstiDto.of("osaaluenimi"))
+                        .tasokuvaukset(new ArrayList<>(Arrays.asList(
+                                OsaamiskokonaisuusOsaAlueTasoKuvausDto.builder()
+                                        .taso(DigitaalinenOsaaminenTaso.VARHAISKASVATUS)
+                                        .kuvaukset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvausV")))
+                                        .edistynytOsaaminenKuvaukset(Arrays.asList(LokalisoituTekstiDto.of("edistynytkuvausV")))
+                                        .build(),
+                                OsaamiskokonaisuusOsaAlueTasoKuvausDto.builder()
+                                        .taso(DigitaalinenOsaaminenTaso.ESIOPETUS)
+                                        .kuvaukset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvausE")))
+                                        .edistynytOsaaminenKuvaukset(Arrays.asList(LokalisoituTekstiDto.of("edistynytkuvausE")))
+                                        .build())))
+                        .build(),
+                OsaamiskokonaisuusOsaAlueDto.builder()
+                        .nimi(LokalisoituTekstiDto.of("osaaluenimi"))
+                        .tasokuvaukset(new ArrayList<>(Arrays.asList(
+                                OsaamiskokonaisuusOsaAlueTasoKuvausDto.builder()
+                                        .taso(DigitaalinenOsaaminenTaso.ESIOPETUS)
+                                        .kuvaukset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvaus")))
+                                        .edistynytOsaaminenKuvaukset(Arrays.asList(LokalisoituTekstiDto.of("edistynytkuvaus")))
+                                        .build())))
+                        .build()
+        )));
+
+        perusteenOsaService.update(osaamiskokonaisuusPaaAlueDto);
+
+        PerusteenOsaViiteDto.Matala osaamiskokonaisuusViite = perusteenOsaViiteService.getSisalto(perusteDto.getId(), perusteViite.getId(), PerusteenOsaViiteDto.Matala.class);
+        assertThat(osaamiskokonaisuusViite.getLapset()).hasSize(1);
+
+        osaamiskokonaisuusPaaAlueDto = (OsaamiskokonaisuusPaaAlueDto) perusteenOsaService.getByViite(osaamiskokonaisuusViite.getLapset().get(0).getIdLong());
+        assertThat(osaamiskokonaisuusPaaAlueDto.getKuvaus().get(Kieli.FI)).isEqualTo("paaaluekuvaus");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getNimi().get(Kieli.FI)).isEqualTo("paaaluenimi");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet()).hasSize(2);
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getNimi().get(Kieli.FI)).isEqualTo("osaaluenimi");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset()).hasSize(2);
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getTaso()).isEqualTo(DigitaalinenOsaaminenTaso.VARHAISKASVATUS);
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getKuvaukset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausV");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getEdistynytOsaaminenKuvaukset().get(0).get(Kieli.FI)).isEqualTo("edistynytkuvausV");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getTaso()).isEqualTo(DigitaalinenOsaaminenTaso.ESIOPETUS);
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getKuvaukset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausE");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getEdistynytOsaaminenKuvaukset().get(0).get(Kieli.FI)).isEqualTo("edistynytkuvausE");
     }
 
     private void assertTavoitesisaltoalueData(TavoitesisaltoalueDto tavoitesisaltoalueDto) {
