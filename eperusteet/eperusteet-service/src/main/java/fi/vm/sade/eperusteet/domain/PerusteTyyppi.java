@@ -25,7 +25,8 @@ public enum PerusteTyyppi {
     NORMAALI("normaali"),
     OPAS("opas"),
     AMOSAA_YHTEINEN("amosaayhteinen"),
-    POHJA("pohja");
+    POHJA("pohja"),
+    DIGITAALINEN_OSAAMINEN("digitaalinen_osaaminen");
 
     private final String tila;
 

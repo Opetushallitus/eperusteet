@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.google.common.base.Supplier;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -32,6 +33,7 @@ import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import io.swagger.annotations.Api;
 import java.util.ArrayList;
@@ -63,6 +65,9 @@ public class PerusteenOsaController {
 
     @Autowired
     private PerusteenOsaService service;
+
+    @Autowired
+    private PerusteenOsaViiteService perusteenOsaViiteService;
 
     @Autowired
     private TutkinnonOsaViiteService tutkinnonOsaViiteService;
@@ -98,6 +103,16 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<PerusteenOsaDto.Laaja> getPerusteenOsatByViite(@PathVariable("viiteId") final Long viiteId) {
         PerusteenOsaDto.Laaja t = service.getByViite(viiteId);
+        if (t == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(t, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/peruste/{perusteId}/viite/{viiteId}/", method = GET)
+    @ResponseBody
+    public ResponseEntity<PerusteenOsaViiteDto.Puu> getPerusteenOsaViiteLapsilla(@PathVariable("perusteId") final Long perusteId, @PathVariable("viiteId") final Long viiteId) {
+        PerusteenOsaViiteDto.Puu t = perusteenOsaViiteService.getSisalto(perusteId, viiteId, PerusteenOsaViiteDto.Puu.class);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -392,7 +392,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                                                             String koodi, Integer sivu, Integer sivukoko) {
         Pageable pageable = new PageRequest(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
-        if (CollectionUtils.isEmpty((koulutustyyppi))) {
+        if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN.toString())) {
+            koulutustyyppi = Arrays.asList("");
+        } else if (CollectionUtils.isEmpty((koulutustyyppi))) {
             koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         }
         return julkaisutRepository.findAllJulkisetJulkaisut(

@@ -163,15 +163,22 @@ public class TekstiPalanen implements Serializable {
         tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, false);
     }
 
-    static public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
+    static public boolean tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
                                       final Set<Kieli> pakolliset,
                                       Map<String, String> virheellisetKielet, boolean pakollinen) {
         if (palanen == null || palanen.getTeksti() == null) {
-            return;
+            if (pakollinen) {
+                for (Kieli kieli : pakolliset) {
+                    virheellisetKielet.put(nimi, kieli.name());
+                }
+                return false;
+            }
+            return true;
         }
 
         // Oispa lambdat
         boolean onJollainVaaditullaKielella = false;
+        boolean checkOf = true;
         if (!pakollinen) {
             for (Kieli kieli : pakolliset) {
                 String osa = palanen.getTeksti().get(kieli);
@@ -187,8 +194,11 @@ public class TekstiPalanen implements Serializable {
                 Map<Kieli, String> teksti = palanen.getTeksti();
                 if (!teksti.containsKey(kieli) || teksti.get(kieli) == null || teksti.get(kieli).isEmpty()) {
                     virheellisetKielet.put(nimi, kieli.name());
+                    checkOf = false;
                 }
             }
         }
+
+        return checkOf;
     }
 }

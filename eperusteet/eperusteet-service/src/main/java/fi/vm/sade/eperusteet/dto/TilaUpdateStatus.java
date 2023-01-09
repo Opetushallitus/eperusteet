@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -198,7 +199,28 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet, validointiKategoria, validointiStatusType));
     }
 
+    public void addStatus(String viesti, ValidointiKategoria validointiKategoria, LokalisoituTekstiDto nimi) {
+        if (infot == null) {
+            infot = new ArrayList<>();
+        }
+        if (infot.stream().anyMatch(info -> info.getViesti().equals(viesti))) {
+            infot.stream()
+                    .filter(info -> info.getViesti().equals(viesti))
+                    .forEach(info -> info.getNimet().add(nimi));
+        } else {
+            infot.add(Status.builder()
+                    .viesti(viesti)
+                    .validointiKategoria(validointiKategoria)
+                    .nimet(new ArrayList<>(Arrays.asList(nimi)))
+                    .validointiStatusType(ValidointiStatusType.VIRHE)
+                .build());
+        }
+
+    }
+
     @Data
+    @Builder
+    @AllArgsConstructor
     public static class Status {
         String viesti;
         PerusteprojektiListausDto perusteprojekti;

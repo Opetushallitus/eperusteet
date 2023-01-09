@@ -34,9 +34,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisa
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -97,6 +95,10 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     @JsonProperty("opas")
     private OpasSisaltoDto oppaanSisalto;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("digitaalinenosaaminen")
+    private DigitaalisenOsaamisenSisaltoDto digitaalisenOsaamisenSisalto;
+
     @JsonIgnore
     public Set<PerusteenSisaltoDto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
@@ -120,6 +122,8 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
                 return Collections.singleton(this.getVstSisalto());
             } else if (this.getTuvasisalto() != null) {
                 return Collections.singleton(this.getTuvasisalto());
+            } else if (this.getDigitaalisenOsaamisenSisalto() != null) {
+                return Collections.singleton(this.getDigitaalisenOsaamisenSisalto());
             }
         }
         return new HashSet<>();

@@ -725,11 +725,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     public PerusteprojektiDto save(PerusteprojektiLuontiDto perusteprojektiDto) {
         Perusteprojekti perusteprojekti = mapper.map(perusteprojektiDto, Perusteprojekti.class);
 
-        KoulutusTyyppi koulutustyyppi = KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi());
-        if (!koulutustyyppi.isAmmatillinen()) {
-            perusteprojektiDto.setReforminMukainen(false);
-        }
-
+        KoulutusTyyppi koulutustyyppi = perusteprojektiDto.getKoulutustyyppi() != null ? KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi()) : null;
         LaajuusYksikko yksikko = perusteprojektiDto.getLaajuusYksikko();
         PerusteTyyppi tyyppi = perusteprojektiDto.getTyyppi() == null ? PerusteTyyppi.NORMAALI : perusteprojektiDto.getTyyppi();
         perusteprojekti.setTila(LAADINTA);
@@ -737,13 +733,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         perusteprojektiDto.setReforminMukainen(
                 perusteprojektiDto.isReforminMukainen()
+                        && perusteprojektiDto.getKoulutustyyppi() != null
                         && KoulutusTyyppi.of(perusteprojektiDto.getKoulutustyyppi()).isAmmatillinen());
 
         if (tyyppi == PerusteTyyppi.OPAS) {
             throw new BusinessRuleViolationException("Virheellinen perustetyyppi");
         }
 
-        if (tyyppi != PerusteTyyppi.POHJA) {
+        if (tyyppi != PerusteTyyppi.POHJA && tyyppi != PerusteTyyppi.DIGITAALINEN_OSAAMINEN) {
             if (yksikko == null && koulutustyyppi
                     .isOneOf(KoulutusTyyppi.PERUSTUTKINTO,
                             KoulutusTyyppi.AMMATTITUTKINTO,
@@ -779,7 +776,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste = perusteService.luoPerusteRunkoToisestaPerusteesta(perusteprojektiDto, tyyppi);
         }
 
-        if (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
+        if (peruste.getKoulutustyyppi() != null && KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen()) {
             KVLiite kvliite = new KVLiite();
             if (perusteprojektiDto.getPerusteId() != null) {
                 Peruste pohja = perusteRepository.findOne(perusteprojektiDto.getPerusteId());
@@ -790,7 +787,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste.setKvliite(kvliite);
         }
 
-        if (tyyppi == PerusteTyyppi.POHJA) {
+        if (tyyppi.equals(PerusteTyyppi.POHJA) || tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             TekstiPalanen pnimi = TekstiPalanen.of(Kieli.FI, perusteprojektiDto.getNimi());
             peruste.setNimi(pnimi);
         }
