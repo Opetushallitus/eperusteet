@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
@@ -36,7 +37,6 @@ import fi.vm.sade.javautils.http.OphHttpRequest;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -241,7 +241,11 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
         OphHttpClient client = restClientFactory.get(koServiceUrl, true);
         String url = koServiceUrl + VIRKAILIJA_HAKU;
 
+        Map<Object, Set<String>> oikeudet = Maps.newHashMap();
+        oikeudet.put("EPERUSTEET", Sets.newHashSet("CRUD", "READ"));
+
         Map<String, Object> criteria = new HashMap<>();
+        criteria.put("kayttooikeudet", oikeudet);
         criteria.put("organisaatioOids", Sets.newHashSet(organisaatioOid));
         criteria.put("duplikaatti", false);
         criteria.put("passivoitu", false);
