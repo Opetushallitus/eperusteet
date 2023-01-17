@@ -39,11 +39,6 @@ public class OsaamiskokonaisuusKasitteisto extends AbstractAuditedReferenceableE
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen keskeinenKasitteisto;
-
     public OsaamiskokonaisuusKasitteisto(DigitaalinenOsaaminenTaso taso){
         this.taso = taso;
     }
