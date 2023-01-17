@@ -13,5 +13,4 @@ public class OsaamiskokonaisuusKasitteistoDto {
     private Long id;
     private DigitaalinenOsaaminenTaso taso;
     private LokalisoituTekstiDto kuvaus;
-    private LokalisoituTekstiDto keskeinenKasitteisto;
 }

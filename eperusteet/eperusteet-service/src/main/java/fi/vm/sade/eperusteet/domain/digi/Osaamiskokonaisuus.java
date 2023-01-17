@@ -44,6 +44,11 @@ public class Osaamiskokonaisuus extends PerusteenOsa {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen keskeinenKasitteisto;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "osaamiskokonaisuus_kasitteisto_join")
     @OrderColumn
@@ -80,6 +85,7 @@ public class Osaamiskokonaisuus extends PerusteenOsa {
 
         setNimi(other.getNimi());
         setKuvaus(other.getKuvaus());
+        setKeskeinenKasitteisto(other.getKeskeinenKasitteisto());
         setKasitteistot(other.getKasitteistot());
         preupdate();
     }

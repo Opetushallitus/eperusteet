@@ -524,21 +524,23 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                         DigitaalinenOsaaminenTaso.VUOSILUOKKA_789);
 
         osaamiskokonaisuus.setNimi(LokalisoituTekstiDto.of("digiosaaminen"));
+        osaamiskokonaisuus.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
+        osaamiskokonaisuus.setKeskeinenKasitteisto(LokalisoituTekstiDto.of("keskeinensisalto"));
         osaamiskokonaisuus.getKasitteistot().stream()
                 .filter(kasitteisto -> kasitteisto.getTaso().equals(DigitaalinenOsaaminenTaso.ESIOPETUS))
                 .forEach(kasitteisto -> {
                     kasitteisto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
-                    kasitteisto.setKeskeinenKasitteisto(LokalisoituTekstiDto.of("keskeinensisalto"));
                 });
 
         OsaamiskokonaisuusDto updatetOsamiskokonaisuusDto = perusteenOsaService.update(osaamiskokonaisuus);
 
         assertThat(updatetOsamiskokonaisuusDto.getNimi().get(Kieli.FI)).isEqualTo("digiosaaminen");
+        assertThat(updatetOsamiskokonaisuusDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
+        assertThat(updatetOsamiskokonaisuusDto.getKeskeinenKasitteisto().get(Kieli.FI)).isEqualTo("keskeinensisalto");
         OsaamiskokonaisuusKasitteistoDto kasitteisto = updatetOsamiskokonaisuusDto.getKasitteistot().stream()
                 .filter(k -> k.getTaso().equals(DigitaalinenOsaaminenTaso.ESIOPETUS))
                 .findFirst().get();
         assertThat(kasitteisto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus");
-        assertThat(kasitteisto.getKeskeinenKasitteisto().get(Kieli.FI)).isEqualTo("keskeinensisalto");
 
         PerusteenOsaViiteDto.Matala osaamiskokonaisuusPaaAlueViite = perusteService.addSisaltoLapsi(
                 perusteDto.getId(),

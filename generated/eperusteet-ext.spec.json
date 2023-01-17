@@ -668,6 +668,18 @@
         }
       }
     },
+    "DigitaalisenOsaamisenSisaltoDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sisalto" : {
+          "$ref" : "#/definitions/Laaja"
+        }
+      }
+    },
     "EsiopetuksenPerusteenSisaltoDto" : {
       "type" : "object",
       "properties" : {
@@ -2093,6 +2105,104 @@
         }
       }
     },
+    "OsaamiskokonaisuusDto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "keskeinenKasitteisto" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "kasitteistot" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/OsaamiskokonaisuusKasitteistoDto"
+            }
+          }
+        }
+      } ]
+    },
+    "OsaamiskokonaisuusKasitteistoDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "taso" : {
+          "type" : "string",
+          "enum" : [ "VARHAISKASVATUS", "ESIOPETUS", "VUOSILUOKKA_12", "VUOSILUOKKA_3456", "VUOSILUOKKA_789" ]
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
+    "OsaamiskokonaisuusOsaAlueDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tasokuvaukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamiskokonaisuusOsaAlueTasoKuvausDto"
+          }
+        }
+      }
+    },
+    "OsaamiskokonaisuusOsaAlueTasoKuvausDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "taso" : {
+          "type" : "string",
+          "enum" : [ "VARHAISKASVATUS", "ESIOPETUS", "VUOSILUOKKA_12", "VUOSILUOKKA_3456", "VUOSILUOKKA_789" ]
+        },
+        "kuvaukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          }
+        },
+        "edistynytOsaaminenKuvaukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          }
+        }
+      }
+    },
+    "OsaamiskokonaisuusPaaAlueDto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "osaAlueet" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/OsaamiskokonaisuusOsaAlueDto"
+            }
+          }
+        }
+      } ]
+    },
     "OsaamistasoDto" : {
       "type" : "object",
       "properties" : {
@@ -2244,11 +2354,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "first" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
@@ -2284,11 +2394,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "first" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
@@ -2438,7 +2548,7 @@
         },
         "tyyppi" : {
           "type" : "string",
-          "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA" ]
+          "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN" ]
         },
         "koulutusvienti" : {
           "type" : "boolean",
@@ -2544,6 +2654,9 @@
         },
         "opas" : {
           "$ref" : "#/definitions/OpasSisaltoDto"
+        },
+        "digitaalinenosaaminen" : {
+          "$ref" : "#/definitions/DigitaalisenOsaamisenSisaltoDto"
         }
       }
     },
@@ -2563,7 +2676,7 @@
         },
         "tyyppi" : {
           "type" : "string",
-          "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA" ]
+          "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN" ]
         },
         "koulutustyyppi" : {
           "type" : "string"

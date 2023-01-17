@@ -35,6 +35,7 @@ import java.util.List;
 public class OsaamiskokonaisuusDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto nimi;
     private LokalisoituTekstiDto kuvaus;
+    private LokalisoituTekstiDto keskeinenKasitteisto;
     private List<OsaamiskokonaisuusKasitteistoDto> kasitteistot;
 
     @Override
