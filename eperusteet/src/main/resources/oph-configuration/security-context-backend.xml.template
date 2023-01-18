@@ -84,13 +84,24 @@
         <beans:property name="cache" ref="casTicketsCacheBean"/>
     </beans:bean>
 
-    <beans:bean id="userDetailsService" class="fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl">
+    <beans:bean id="casAuthenticator" class="fi.vm.sade.javautils.http.auth.CasAuthenticator">
+        <beans:constructor-arg index="0" value="${web.url.cas}"/>
+        <beans:constructor-arg index="1" value="${fi.vm.sade.eperusteet.oph_username}"/>
+        <beans:constructor-arg index="2" value="${fi.vm.sade.eperusteet.oph_password}"/>
+        <beans:constructor-arg index="3" value="${host.alb}"/>
+        <beans:constructor-arg index="4"><beans:null/></beans:constructor-arg>
+        <beans:constructor-arg index="5" value="false"/>
+        <beans:constructor-arg index="6"><beans:null/></beans:constructor-arg>
+    </beans:bean>
+
+	<beans:bean id="userDetailsService" class="fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl">
         <beans:constructor-arg index="0" value="${host.alb}"/>
         <beans:constructor-arg index="1" value="eperusteet"/>
+		<beans:constructor-arg index="2" ref="casAuthenticator"/>
     </beans:bean>
 
     <beans:bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
-        <beans:property name="userDetailsService" ref="userDetailsService"/>
+		<beans:property name="userDetailsService" ref="userDetailsService"/>
         <beans:property name="serviceProperties" ref="casServiceProperties"/>
         <beans:property name="ticketValidator" ref="casTicketValidator"/>
         <beans:property name="key" value="${cas_key}"/>
