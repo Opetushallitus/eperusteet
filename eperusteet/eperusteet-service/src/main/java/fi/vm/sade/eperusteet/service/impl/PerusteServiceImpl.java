@@ -2350,7 +2350,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             peruste.setKoulutukset(koulutukset);
         }
 
-        if (luontiDto.getTyyppi().equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
+        if (vanha.getTyyppi().equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             DigitaalisenOsaamisenPerusteenSisalto uusiSisalto = vanha.getDigitaalinenOsaaminenSisalto().kloonaa(peruste);
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
