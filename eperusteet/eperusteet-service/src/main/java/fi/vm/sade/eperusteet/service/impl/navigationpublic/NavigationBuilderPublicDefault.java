@@ -105,7 +105,7 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(perusteId, julkaisuRevisio, esikatselu);
 
         Set<PerusteenSisaltoDto> sisallot = peruste.getSisallot();
-        NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root);
+        NavigationNodeDto result = NavigationNodeDto.of(NavigationType.root, peruste.getNimi());
 
         if (sisallot.isEmpty()) {
             return result;
