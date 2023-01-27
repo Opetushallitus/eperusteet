@@ -933,7 +933,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         // Lisätään koodittomat ammattiatitovaatimukset koodistoon
         if (tila == ProjektiTila.JULKAISTU) {
-            ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(projekti.getId(), peruste.getId());
+            ammattitaitovaatimusService.addAmmattitaitovaatimusJaArvioinninkohteetKooditToKoodisto(peruste.getId());
         }
 
         // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
