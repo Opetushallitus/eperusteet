@@ -475,7 +475,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
         });
 
-        ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getPerusteprojekti().getId(), peruste.getId());
+        ammattitaitovaatimusService.addAmmattitaitovaatimusJaArvioinninkohteetKooditToKoodisto(peruste.getId());
     }
 
     @Override
