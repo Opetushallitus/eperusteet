@@ -805,8 +805,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
         Peruste peruste = perusteRepository.getOne(id);
 
-        if (peruste == null) {
-            return null;
+        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
+            throw new NotExistsException("");
         }
 
         JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
@@ -829,8 +829,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query) {
         Peruste peruste = perusteRepository.getOne(id);
 
-        if (peruste == null) {
-            return null;
+        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
+            throw new NotExistsException("");
         }
 
         try {
@@ -847,8 +847,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean useCurrentData) {
         Peruste peruste = perusteRepository.getOne(id);
 
-        if (peruste == null) {
-            return null;
+        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
+            throw new NotExistsException("");
         }
 
         JulkaistuPeruste julkaisu = null;
