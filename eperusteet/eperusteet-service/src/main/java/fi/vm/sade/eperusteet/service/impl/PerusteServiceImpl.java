@@ -803,24 +803,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
-        Peruste peruste = perusteRepository.getOne(id);
-
-        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
-            throw new NotExistsException("");
-        }
-
-        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
-        if (julkaisu != null) {
-            ObjectNode data = julkaisu.getData().getData();
-            try {
-                return objectMapper.treeToValue(data, PerusteKaikkiDto.class);
-            } catch (JsonProcessingException e) {
-                log.error(Throwables.getStackTraceAsString(e));
-                throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
-            }
-        }
-
-        return null;
+        return getJulkaistuSisalto(id, null, false);
     }
 
     @Override
