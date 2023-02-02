@@ -39,6 +39,11 @@ public class OsaamiskokonaisuusKasitteisto extends AbstractAuditedReferenceableE
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
+    public OsaamiskokonaisuusKasitteisto(OsaamiskokonaisuusKasitteisto other) {
+        this.taso = other.taso;
+        this.kuvaus = other.kuvaus;
+    }
+
     public OsaamiskokonaisuusKasitteisto(DigitaalinenOsaaminenTaso taso){
         this.taso = taso;
     }

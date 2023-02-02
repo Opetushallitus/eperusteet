@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -27,6 +28,7 @@ import java.util.List;
 @Audited
 @Getter
 @Setter
+@NoArgsConstructor
 public class OsaamiskokonaisuusOsaAlueTasoKuvaus extends AbstractAuditedReferenceableEntity {
 
     @Enumerated(EnumType.STRING)
@@ -47,5 +49,9 @@ public class OsaamiskokonaisuusOsaAlueTasoKuvaus extends AbstractAuditedReferenc
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> edistynytOsaaminenKuvaukset = new ArrayList<>();
 
-
+    public OsaamiskokonaisuusOsaAlueTasoKuvaus(OsaamiskokonaisuusOsaAlueTasoKuvaus other) {
+        this.taso = other.taso;
+        this.kuvaukset.addAll(other.getKuvaukset());
+        this.edistynytOsaaminenKuvaukset.addAll(other.getEdistynytOsaaminenKuvaukset());
+    }
 }
