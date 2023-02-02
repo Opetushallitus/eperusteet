@@ -21,6 +21,8 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import java.io.Serializable;
 import java.util.Date;
 
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -43,5 +45,5 @@ public class PerusteprojektinPerusteenosaDto implements Serializable  {
     private String koulutustyyppi;
     private PerusteTyyppi tyyppi;
     private Date luotu;
-
+    private PerusteInfoDto peruste;
 }

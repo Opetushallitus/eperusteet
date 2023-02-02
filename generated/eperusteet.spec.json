@@ -13018,6 +13018,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "type" : "object"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13030,20 +13044,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "type" : "object"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13058,6 +13058,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KoodistoKoodiDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13070,20 +13084,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/KoodistoKoodiDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13098,6 +13098,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KoulutuskoodiStatusDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13110,20 +13124,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/KoulutuskoodiStatusDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13138,6 +13138,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteBaseDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13150,20 +13164,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PerusteBaseDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13178,6 +13178,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteHakuDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13190,20 +13204,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PerusteHakuDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13218,6 +13218,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteHakuInternalDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13230,20 +13244,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PerusteHakuInternalDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13258,6 +13258,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteInfoDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13270,20 +13284,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PerusteInfoDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13298,6 +13298,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteenJulkaisuData"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13310,20 +13324,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PerusteenJulkaisuData"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13338,6 +13338,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteprojektiKevytDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13350,20 +13364,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/PerusteprojektiKevytDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13378,6 +13378,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TiedoteDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13390,20 +13404,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/TiedoteDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13418,6 +13418,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TilaUpdateStatus"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13430,20 +13444,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/TilaUpdateStatus"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13458,6 +13458,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TutkinnonOsaDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13470,20 +13484,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/TutkinnonOsaDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13498,6 +13498,20 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
+          }
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
@@ -13510,20 +13524,6 @@
         },
         "last" : {
           "type" : "boolean"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -15181,6 +15181,9 @@
         "luotu" : {
           "type" : "string",
           "format" : "date-time"
+        },
+        "peruste" : {
+          "$ref" : "#/definitions/PerusteInfoDto"
         }
       }
     },

@@ -50,6 +50,7 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuus;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
@@ -1835,7 +1836,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new BusinessRuleViolationException("Virheellinen viite");
         }
 
-        if (viite.getTutkinnonOsa().getAlkuperainenPeruste() != null && !viite.getTutkinnonOsa().getAlkuperainenPeruste().getId().equals(id)) {
+        if (!viite.getTutkinnonOsa().getTyyppi().equals(TutkinnonOsaTyyppi.NORMAALI)
+            && viite.getTutkinnonOsa().getAlkuperainenPeruste() != null
+                && !viite.getTutkinnonOsa().getAlkuperainenPeruste().getId().equals(id)) {
             throw new BusinessRuleViolationException("tutkinnon-osan-muokkaus-ei-sallittu");
         }
 

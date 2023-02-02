@@ -671,10 +671,11 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
             Suoritustapakoodi suoritustapakoodi
     ) {
         TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(
-                BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.NORMAALI);
+                BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.REFORMI_TUTKE2);
         TutkinnonOsaDto tosa = new TutkinnonOsaDto();
         tosa.setNimi(dto.getNimi());
         tosa.setOsaAlueet(new ArrayList<>());
+        tosa.setTyyppi(TutkinnonOsaTyyppi.REFORMI_TUTKE2);
 
         dto.setTutkinnonOsaDto(tosa);
         TutkinnonOsaViiteDto lisatty = perusteService.addTutkinnonOsa(id, suoritustapakoodi, dto);
