@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface GeneerinenArviointiasteikkoService {
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    @PreAuthorize("isAuthenticated()")
     List<GeneerinenArviointiasteikkoDto> getAll();
 
     @PreAuthorize("permitAll()")
