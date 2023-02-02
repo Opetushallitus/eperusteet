@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -19,12 +20,14 @@ import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "osaamiskokonaisuus_osa_alue")
 @Audited
 @Getter
 @Setter
+@NoArgsConstructor
 public class OsaamiskokonaisuusOsaAlue extends AbstractAuditedReferenceableEntity {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
@@ -36,6 +39,11 @@ public class OsaamiskokonaisuusOsaAlue extends AbstractAuditedReferenceableEntit
     @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaukset_join")
     @OrderColumn
     private List<OsaamiskokonaisuusOsaAlueTasoKuvaus> tasokuvaukset = new ArrayList<>();;
+
+    public OsaamiskokonaisuusOsaAlue(OsaamiskokonaisuusOsaAlue other) {
+        this.nimi = other.nimi;
+        this.tasokuvaukset.addAll(other.getTasokuvaukset().stream().map(OsaamiskokonaisuusOsaAlueTasoKuvaus::new).collect(Collectors.toList()));
+    }
 
     public void setTasokuvaukset(List<OsaamiskokonaisuusOsaAlueTasoKuvaus> tasokuvaukset) {
         this.tasokuvaukset.clear();

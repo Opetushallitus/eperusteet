@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.domain.digi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.vst.KotoTaitotaso;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "osaamiskokonaisuus")
@@ -75,7 +77,14 @@ public class Osaamiskokonaisuus extends PerusteenOsa {
     @Override
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
-        copyState((Osaamiskokonaisuus) perusteenOsa);
+        if (perusteenOsa instanceof Osaamiskokonaisuus) {
+            Osaamiskokonaisuus other = (Osaamiskokonaisuus) perusteenOsa;
+            setKuvaus(other.getKuvaus());
+            setKeskeinenKasitteisto(other.getKeskeinenKasitteisto());
+            setKasitteistot(other.getKasitteistot());
+            preupdate();
+
+        }
     }
 
     private void copyState(Osaamiskokonaisuus other) {
@@ -83,11 +92,9 @@ public class Osaamiskokonaisuus extends PerusteenOsa {
             return;
         }
 
-        setNimi(other.getNimi());
-        setKuvaus(other.getKuvaus());
-        setKeskeinenKasitteisto(other.getKeskeinenKasitteisto());
-        setKasitteistot(other.getKasitteistot());
-        preupdate();
+        this.kuvaus = other.kuvaus;
+        this.keskeinenKasitteisto = other.getKeskeinenKasitteisto();
+        setKasitteistot(other.getKasitteistot().stream().map(OsaamiskokonaisuusKasitteisto::new).collect(Collectors.toList()));
     }
 
     public void setKasitteistot(List<OsaamiskokonaisuusKasitteisto> kasitteistot) {
