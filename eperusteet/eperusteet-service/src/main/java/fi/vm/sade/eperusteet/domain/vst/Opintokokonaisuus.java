@@ -16,10 +16,12 @@
 
 package fi.vm.sade.eperusteet.domain.vst;
 
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
+import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusKasitteisto;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -98,6 +101,7 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
     }
 
     public Opintokokonaisuus(Opintokokonaisuus other) {
+        super(other);
         copyState(other);
     }
 
@@ -122,7 +126,20 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
         if (perusteenOsa instanceof Opintokokonaisuus) {
-            copyState((Opintokokonaisuus) perusteenOsa);
+            Opintokokonaisuus other = (Opintokokonaisuus) perusteenOsa;
+            setNimi(other.getNimi());
+            setNimiKoodi(other.getNimiKoodi());
+            setKuvaus(other.getKuvaus());
+            setMinimilaajuus((other.getMinimilaajuus()));
+            setOpetuksenTavoiteOtsikko((other.getOpetuksenTavoiteOtsikko()));
+
+            this.opetuksenTavoitteet = new ArrayList<>();
+            for (Koodi koodi : other.getOpetuksenTavoitteet()) {
+                this.opetuksenTavoitteet.add(koodi);
+            }
+
+            this.arvioinnit = new ArrayList<>();
+            setArvioinnit(other.getArvioinnit());
         }
     }
 
@@ -169,19 +186,12 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
             return;
         }
 
-        setNimi(other.getNimi());
-        setNimiKoodi(other.getNimiKoodi());
-        setKuvaus(other.getKuvaus());
-        setMinimilaajuus((other.getMinimilaajuus()));
-        setOpetuksenTavoiteOtsikko((other.getOpetuksenTavoiteOtsikko()));
-
-        this.opetuksenTavoitteet = new ArrayList<>();
-        for (Koodi koodi : other.getOpetuksenTavoitteet()) {
-            this.opetuksenTavoitteet.add(koodi);
-        }
-
-        this.arvioinnit = new ArrayList<>();
-        setArvioinnit(other.getArvioinnit());
+        this.kuvaus = other.kuvaus;
+        this.nimiKoodi = other.getNimiKoodi();
+        this.minimilaajuus = other.getMinimilaajuus();
+        this.opetuksenTavoiteOtsikko = other.getOpetuksenTavoiteOtsikko();
+        this.opetuksenTavoitteet = other.getOpetuksenTavoitteet().stream().map(k -> new Koodi(k.getUri(), k.getKoodisto())).collect(Collectors.toList());
+        this.arvioinnit = other.getArvioinnit().stream().map(a -> TekstiPalanen.of(a.getTeksti())).collect(Collectors.toList());
     }
 
     @Override
