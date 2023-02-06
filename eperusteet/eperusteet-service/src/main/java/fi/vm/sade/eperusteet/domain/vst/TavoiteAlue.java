@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +26,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -34,6 +36,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Getter
 @Setter
+@NoArgsConstructor
 public class TavoiteAlue extends AbstractAuditedEntity {
 
     @Id
@@ -66,8 +69,11 @@ public class TavoiteAlue extends AbstractAuditedEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> keskeisetSisaltoalueet = new ArrayList<>();
 
-    public TavoiteAlue() {
-
+    public TavoiteAlue(TavoiteAlue other) {
+        this.tavoiteAlueTyyppi = other.getTavoiteAlueTyyppi();
+        this.otsikko = new Koodi(other.getOtsikko().getUri(), other.getOtsikko().getKoodisto());
+        this.tavoitteet = other.getTavoitteet().stream().map(tavoite -> new Koodi(tavoite.getUri(), tavoite.getKoodisto())).collect(Collectors.toList());
+        this.keskeisetSisaltoalueet = other.getKeskeisetSisaltoalueet().stream().map(k -> TekstiPalanen.of(k)).collect(Collectors.toList());
     }
 
     public void setTavoitteet(List<Koodi> tavoitteet) {

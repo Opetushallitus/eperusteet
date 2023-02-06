@@ -22,6 +22,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
@@ -50,13 +51,19 @@ public class KotoLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
     }
 
     public KotoLaajaAlainenOsaaminen(KotoLaajaAlainenOsaaminen other) {
+        super(other);
         copyState(other);
     }
 
     @Override
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
-        copyState((KotoLaajaAlainenOsaaminen) perusteenOsa);
+        if (perusteenOsa instanceof KotoLaajaAlainenOsaaminen) {
+            KotoLaajaAlainenOsaaminen other = (KotoLaajaAlainenOsaaminen) perusteenOsa;
+            setNimi(other.getNimi());
+            setYleiskuvaus(other.getYleiskuvaus());
+            this.osaamisAlueet = new ArrayList<>(other.osaamisAlueet);
+        }
     }
 
     private void copyState(KotoLaajaAlainenOsaaminen other) {
@@ -64,9 +71,8 @@ public class KotoLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
             return;
         }
 
-        setNimi(other.getNimi());
-        setYleiskuvaus(other.getYleiskuvaus());
-        this.osaamisAlueet = new ArrayList<>(other.osaamisAlueet);
+        this.yleiskuvaus = other.getYleiskuvaus();
+        this.osaamisAlueet = other.getOsaamisAlueet().stream().map(KotoLaajaAlaisenOsaamisenAlue::new).collect(Collectors.toList());
     }
 
     @Override

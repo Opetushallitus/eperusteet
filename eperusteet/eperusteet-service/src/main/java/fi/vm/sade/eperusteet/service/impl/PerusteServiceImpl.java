@@ -2338,7 +2338,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
             peruste = perusteRepository.save(peruste);
-        } else if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
+        }
+        else if (vanha.getToteutus().equals(KoulutustyyppiToteutus.VAPAASIVISTYSTYO) || vanha.getToteutus().equals(KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS)) {
+            VapaasivistystyoSisalto uusiSisalto = vanha.getVstSisalto().kloonaa(peruste);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setSisalto(uusiSisalto);
+            peruste = perusteRepository.save(peruste);
+        } else if (vanha.getToteutus().equals(KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA)) {
+            TutkintoonvalmentavaSisalto uusiSisalto = vanha.getTuvasisalto().kloonaa(peruste);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setSisalto(uusiSisalto);
+            peruste = perusteRepository.save(peruste);
+        }
+        else if (KoulutusTyyppi.ESIOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.LISAOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.PERUSOPETUSVALMISTAVA.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())
                 || KoulutusTyyppi.VARHAISKASVATUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {

@@ -51,6 +51,7 @@ public class TuvaLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
     }
 
     public TuvaLaajaAlainenOsaaminen(TuvaLaajaAlainenOsaaminen other) {
+        super(other);
         copyState(other);
     }
 
@@ -68,7 +69,11 @@ public class TuvaLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
         if (perusteenOsa instanceof TuvaLaajaAlainenOsaaminen) {
-            copyState((TuvaLaajaAlainenOsaaminen) perusteenOsa);
+            TuvaLaajaAlainenOsaaminen other = (TuvaLaajaAlainenOsaaminen)perusteenOsa;
+            setNimiKoodi(other.getNimiKoodi());
+            setNimi(other.getNimi());
+            setTeksti(other.getTeksti());
+            setLiite(other.isLiite());
         }
     }
 
@@ -90,10 +95,9 @@ public class TuvaLaajaAlainenOsaaminen extends PerusteenOsa implements Serializa
             return;
         }
 
-        setNimiKoodi(other.getNimiKoodi());
-        setNimi(other.getNimi());
-        setTeksti(other.getTeksti());
-        setLiite(other.isLiite());
+        this.nimiKoodi = other.getNimiKoodi();
+        this.teksti = other.getTeksti();
+        this.liite = other.isLiite();
     }
 
     @Override

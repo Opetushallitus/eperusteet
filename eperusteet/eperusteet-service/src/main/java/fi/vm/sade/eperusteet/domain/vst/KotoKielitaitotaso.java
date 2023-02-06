@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
@@ -60,6 +61,7 @@ public class KotoKielitaitotaso extends PerusteenOsa implements Serializable, Ko
     }
 
     public KotoKielitaitotaso(KotoKielitaitotaso other) {
+        super(other);
         copyState(other);
     }
 
@@ -77,7 +79,15 @@ public class KotoKielitaitotaso extends PerusteenOsa implements Serializable, Ko
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
         if (perusteenOsa instanceof KotoKielitaitotaso) {
-            copyState((KotoKielitaitotaso) perusteenOsa);
+            KotoKielitaitotaso other = (KotoKielitaitotaso) perusteenOsa;
+            setNimi(other.getNimi());
+            setNimiKoodi(other.getNimiKoodi());
+            setKuvaus(other.getKuvaus());
+
+            this.taitotasot = new ArrayList<>();
+            for (KotoTaitotaso taitotaso : other.getTaitotasot()) {
+                this.taitotasot.add(taitotaso);
+            }
         }
     }
 
@@ -109,15 +119,9 @@ public class KotoKielitaitotaso extends PerusteenOsa implements Serializable, Ko
             return;
         }
 
-        setNimi(other.getNimi());
-        setNimiKoodi(other.getNimiKoodi());
-        setKuvaus(other.getKuvaus());
-
-        this.taitotasot = new ArrayList<>();
-        for (KotoTaitotaso taitotaso : other.getTaitotasot()) {
-            this.taitotasot.add(taitotaso);
-        }
-
+        this.nimiKoodi = other.getNimiKoodi();
+        this.kuvaus = other.getKuvaus();
+        this.taitotasot = other.getTaitotasot().stream().map(KotoTaitotaso::new).collect(Collectors.toList());
     }
 
     @Override

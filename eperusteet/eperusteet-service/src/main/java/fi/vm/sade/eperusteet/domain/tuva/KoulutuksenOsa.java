@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -109,6 +110,7 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     }
 
     public KoulutuksenOsa(KoulutuksenOsa other) {
+        super(other);
         copyState(other);
     }
 
@@ -126,7 +128,21 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
         if (perusteenOsa instanceof KoulutuksenOsa) {
-            copyState((KoulutuksenOsa) perusteenOsa);
+            KoulutuksenOsa other = (KoulutuksenOsa) perusteenOsa;
+            setNimiKoodi(other.getNimiKoodi());
+            setNimi(other.getNimi());
+            setKuvaus(other.getKuvaus());
+            setKoulutusOsanKoulutustyyppi(other.getKoulutusOsanKoulutustyyppi());
+            setKoulutusOsanTyyppi(other.getKoulutusOsanTyyppi());
+            setLaajuusMinimi(other.getLaajuusMinimi());
+            setLaajuusMaksimi(other.getLaajuusMaksimi());
+            setKeskeinenSisalto(other.getKeskeinenSisalto());
+            setLaajaAlaisenOsaamisenKuvaus(other.getLaajaAlaisenOsaamisenKuvaus());
+            setOsaamisenArvioinnista(other.getOsaamisenArvioinnista());
+            setArvioinninKuvaus(other.getArvioinninKuvaus());
+            setArvioinnit(other.getArvioinnit());
+            setTavoitteenKuvaus(other.getTavoitteenKuvaus());
+            setTavoitteet(other.getTavoitteet());
         }
     }
 
@@ -164,20 +180,19 @@ public class KoulutuksenOsa extends PerusteenOsa implements Serializable {
             return;
         }
 
-        setNimiKoodi(other.getNimiKoodi());
-        setNimi(other.getNimi());
-        setKuvaus(other.getKuvaus());
-        setKoulutusOsanKoulutustyyppi(other.getKoulutusOsanKoulutustyyppi());
-        setKoulutusOsanTyyppi(other.getKoulutusOsanTyyppi());
-        setLaajuusMinimi(other.getLaajuusMinimi());
-        setLaajuusMaksimi(other.getLaajuusMaksimi());
-        setKeskeinenSisalto(other.getKeskeinenSisalto());
-        setLaajaAlaisenOsaamisenKuvaus(other.getLaajaAlaisenOsaamisenKuvaus());
-        setOsaamisenArvioinnista(other.getOsaamisenArvioinnista());
-        setArvioinninKuvaus(other.getArvioinninKuvaus());
-        setArvioinnit(other.getArvioinnit());
-        setTavoitteenKuvaus(other.getTavoitteenKuvaus());
-        setTavoitteet(other.getTavoitteet());
+        this.nimiKoodi = other.getNimiKoodi();
+        this.kuvaus = other.getKuvaus();
+        this.koulutusOsanKoulutustyyppi = other.getKoulutusOsanKoulutustyyppi();
+        this.koulutusOsanTyyppi = other.getKoulutusOsanTyyppi();
+        this.laajuusMinimi = other.getLaajuusMinimi();
+        this.laajuusMaksimi = other.getLaajuusMaksimi();
+        this.keskeinenSisalto = other.getKeskeinenSisalto();
+        this.laajaAlaisenOsaamisenKuvaus = other.getLaajaAlaisenOsaamisenKuvaus();
+        this.osaamisenArvioinnista = other.getOsaamisenArvioinnista();
+        this.arvioinninKuvaus = other.getArvioinninKuvaus();
+        this.arvioinnit = other.getArvioinnit().stream().map(TekstiPalanen::of).collect(Collectors.toList());
+        this.tavoitteenKuvaus = other.getTavoitteenKuvaus();
+        this.tavoitteet = other.getTavoitteet().stream().map(TekstiPalanen::of).collect(Collectors.toList());
     }
 
     @Override

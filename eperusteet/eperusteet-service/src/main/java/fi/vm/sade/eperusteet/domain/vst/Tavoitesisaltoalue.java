@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -55,6 +56,7 @@ public class Tavoitesisaltoalue extends PerusteenOsa implements Serializable {
     }
 
     public Tavoitesisaltoalue(Tavoitesisaltoalue other) {
+        super(other);
         copyState(other);
     }
 
@@ -72,7 +74,13 @@ public class Tavoitesisaltoalue extends PerusteenOsa implements Serializable {
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
         if (perusteenOsa instanceof Tavoitesisaltoalue) {
-            copyState((Tavoitesisaltoalue) perusteenOsa);
+            Tavoitesisaltoalue other = (Tavoitesisaltoalue) perusteenOsa;
+            setNimi(other.getNimi());
+            setNimiKoodi(other.getNimiKoodi());
+            setTeksti(other.getTeksti());
+
+            this.tavoitealueet = new ArrayList<>();
+            setTavoitealueet(other.getTavoitealueet());
         }
     }
 
@@ -104,12 +112,9 @@ public class Tavoitesisaltoalue extends PerusteenOsa implements Serializable {
             return;
         }
 
-        setNimi(other.getNimi());
-        setNimiKoodi(other.getNimiKoodi());
-        setTeksti(other.getTeksti());
-
-        this.tavoitealueet = new ArrayList<>();
-        setTavoitealueet(other.getTavoitealueet());
+        this.nimiKoodi = other.getNimiKoodi();
+        this.teksti = other.getTeksti();
+        this.tavoitealueet = other.getTavoitealueet().stream().map(ta -> new TavoiteAlue(ta)).collect(Collectors.toList());
     }
 
     @Override

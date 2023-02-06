@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -22,6 +23,7 @@ import javax.persistence.Table;
 @Audited
 @Getter
 @Setter
+@NoArgsConstructor
 public class KotoLaajaAlaisenOsaamisenAlue extends AbstractAuditedReferenceableEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
@@ -33,4 +35,9 @@ public class KotoLaajaAlaisenOsaamisenAlue extends AbstractAuditedReferenceableE
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
+
+    public KotoLaajaAlaisenOsaamisenAlue(KotoLaajaAlaisenOsaamisenAlue other) {
+        this.koodi = new Koodi(other.getKoodi().getUri(), other.getKoodi().getKoodisto());
+        this.kuvaus = other.getKuvaus();
+    }
 }

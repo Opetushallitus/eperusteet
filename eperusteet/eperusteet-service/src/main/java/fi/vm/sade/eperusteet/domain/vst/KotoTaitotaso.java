@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
@@ -24,6 +25,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Audited
 @Getter
 @Setter
+@NoArgsConstructor
 public class KotoTaitotaso extends AbstractAuditedEntity {
 
     @Id
@@ -86,4 +88,19 @@ public class KotoTaitotaso extends AbstractAuditedEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen vuorovaikutusJaMediaatio;
+
+    public KotoTaitotaso(KotoTaitotaso other) {
+        this.nimi = other.getNimi();
+        this.tavoitteet = other.getTavoitteet();
+        this.kielenkayttotarkoitus = other.getKielenkayttotarkoitus();
+        this.aihealueet = other.getAihealueet();
+        this.viestintataidot = other.getViestintataidot();
+        this.opiskelijantaidot = other.getOpiskelijantaidot();
+        this.opiskelijanTyoelamataidot = other.getOpiskelijanTyoelamataidot();
+        this.tyoelamaOpintoMinimiLaajuus = other.getTyoelamaOpintoMinimiLaajuus();
+        this.tyoelamaOpintoMaksimiLaajuus = other.getTyoelamaOpintoMaksimiLaajuus();
+        this.suullinenVastaanottaminen = other.getSuullinenVastaanottaminen();
+        this.suullinenTuottaminen = other.getSuullinenTuottaminen();
+        this.vuorovaikutusJaMediaatio = other.getVuorovaikutusJaMediaatio();
+    }
 }
