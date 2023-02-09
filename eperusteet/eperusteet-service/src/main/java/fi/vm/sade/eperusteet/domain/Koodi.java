@@ -68,6 +68,10 @@ public class Koodi implements Serializable {
     public Koodi() {
     }
 
+    public Koodi(final String uri) {
+        this.uri = uri;
+    }
+
     public Koodi(final String uri, final String koodisto) {
         this.uri = uri;
         this.koodisto = koodisto;
@@ -100,7 +104,7 @@ public class Koodi implements Serializable {
         }
 
         final String uriKoodisto = osat[0];
-        if (StringUtils.isEmpty(this.koodisto)) {
+        if (ObjectUtils.isEmpty(this.koodisto)) {
             this.koodisto = uriKoodisto;
         } else if (!Objects.equals(this.getKoodisto(), uriKoodisto)) {
             throw new BusinessRuleViolationException("uri: " + this.getUri() + " ei vastaa koodistoa: " + this.getKoodisto());

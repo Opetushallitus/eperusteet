@@ -190,7 +190,7 @@ public class Opintokokonaisuus extends PerusteenOsa implements Serializable {
         this.nimiKoodi = other.getNimiKoodi();
         this.minimilaajuus = other.getMinimilaajuus();
         this.opetuksenTavoiteOtsikko = other.getOpetuksenTavoiteOtsikko();
-        this.opetuksenTavoitteet = other.getOpetuksenTavoitteet().stream().map(k -> new Koodi(k.getUri(), k.getKoodisto())).collect(Collectors.toList());
+        this.opetuksenTavoitteet = other.getOpetuksenTavoitteet().stream().map(k -> new Koodi(k.getUri())).collect(Collectors.toList());
         this.arvioinnit = other.getArvioinnit().stream().map(a -> TekstiPalanen.of(a.getTeksti())).collect(Collectors.toList());
     }
 

@@ -72,9 +72,9 @@ public class TavoiteAlue extends AbstractAuditedEntity {
     public TavoiteAlue(TavoiteAlue other) {
         this.tavoiteAlueTyyppi = other.getTavoiteAlueTyyppi();
         if (other.getOtsikko() != null) {
-            this.otsikko = new Koodi(other.getOtsikko().getUri(), other.getOtsikko().getKoodisto());
+            this.otsikko = new Koodi(other.getOtsikko().getUri());
         }
-        this.tavoitteet = other.getTavoitteet().stream().map(tavoite -> new Koodi(tavoite.getUri(), tavoite.getKoodisto())).collect(Collectors.toList());
+        this.tavoitteet = other.getTavoitteet().stream().map(tavoite -> new Koodi(tavoite.getUri())).collect(Collectors.toList());
         this.keskeisetSisaltoalueet = other.getKeskeisetSisaltoalueet().stream().map(k -> TekstiPalanen.of(k)).collect(Collectors.toList());
     }
 

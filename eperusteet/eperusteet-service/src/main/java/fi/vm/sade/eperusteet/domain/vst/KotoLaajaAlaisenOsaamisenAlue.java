@@ -37,7 +37,7 @@ public class KotoLaajaAlaisenOsaamisenAlue extends AbstractAuditedReferenceableE
     private TekstiPalanen kuvaus;
 
     public KotoLaajaAlaisenOsaamisenAlue(KotoLaajaAlaisenOsaamisenAlue other) {
-        this.koodi = new Koodi(other.getKoodi().getUri(), other.getKoodi().getKoodisto());
+        this.koodi = new Koodi(other.getKoodi().getUri());
         this.kuvaus = other.getKuvaus();
     }
 }
