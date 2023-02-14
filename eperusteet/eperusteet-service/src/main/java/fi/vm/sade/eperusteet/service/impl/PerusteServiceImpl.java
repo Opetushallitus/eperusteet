@@ -117,6 +117,8 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOpetuksenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -943,6 +945,13 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+
+        if (peruste.getAipeOpetuksenPerusteenSisalto() != null && peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset() != null) {
+            perusteDto.getAipeOpetuksenPerusteenSisalto()
+                    .setLaajaalaisetosaamiset(mapper.mapAsList(
+                            peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset(),
+                            LaajaalainenOsaaminenDto.class));
+        }
 
         if (peruste.getTpoOpetuksenSisalto() != null) {
             perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
