@@ -204,16 +204,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
-        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
-        if (dokumentti == null) {
-            dokumentti = mapper.map(dto, Dokumentti.class);
-        }
-
         try {
-            dokumentti.setData(generateFor(dto));
-            dokumentti.setTila(DokumenttiTila.VALMIS);
-            dokumentti.setValmistumisaika(new Date());
-            dokumenttiRepository.save(dokumentti);
+            externalPdfService.generatePdf(dto);
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
