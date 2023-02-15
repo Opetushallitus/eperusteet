@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.*;
@@ -31,16 +16,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
-/**
- *
- * @author jussini
- */
 @RestController
 @RequestMapping("/dokumentit")
 @InternalApi
@@ -174,5 +156,21 @@ public class DokumenttiController {
         DokumenttiDto dto = service.query(dokumenttiId);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/pdf/data/{dokumenttiId}", consumes = MediaType.APPLICATION_PDF_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> savePdfData(@PathVariable("dokumenttiId") Long dokumenttiId,
+                                              @RequestBody byte[] pdfData) {
+        service.updateDokumenttiPdfData(pdfData, dokumenttiId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/pdf/tila/{dokumenttiId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<String> updateDokumenttiTila(@PathVariable("dokumenttiId") Long dokumenttiId,
+                                                       @RequestBody DokumenttiTila tila) {
+        service.updateDokumenttiTila(tila, dokumenttiId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

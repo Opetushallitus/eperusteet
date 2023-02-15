@@ -1,21 +1,16 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Dokumentti;
+import fi.vm.sade.eperusteet.domain.DokumenttiTila;
+import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
@@ -28,6 +23,7 @@ import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
+import fi.vm.sade.eperusteet.service.dokumentti.ExternalPdfService;
 import fi.vm.sade.eperusteet.service.dokumentti.KVLiiteBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -53,25 +49,16 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.xpath.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-
-/**
- *
- * @author jussini
- */
 @Slf4j
 @Service
 @Profile("default")
@@ -113,6 +100,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
+
+    @Autowired
+    private ExternalPdfService externalPdfService;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -195,16 +185,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
-        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
-        if (dokumentti == null) {
-            dokumentti = mapper.map(dto, Dokumentti.class);
-        }
-
         try {
-            dokumentti.setData(generateFor(dto));
-            dokumentti.setTila(DokumenttiTila.VALMIS);
-            dokumentti.setValmistumisaika(new Date());
-            dokumenttiRepository.save(dokumentti);
+            externalPdfService.generatePdf(dto);
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
@@ -480,4 +462,17 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         });
     }
 
+    public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
+        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
+        dokumentti.setData(data);
+        dokumentti.setTila(DokumenttiTila.VALMIS);
+        dokumentti.setValmistumisaika(new Date());
+        dokumenttiRepository.save(dokumentti);
+    }
+
+    public void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId) {
+        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
+        dokumentti.setTila(tila);
+        dokumenttiRepository.save(dokumentti);
+    }
 }
