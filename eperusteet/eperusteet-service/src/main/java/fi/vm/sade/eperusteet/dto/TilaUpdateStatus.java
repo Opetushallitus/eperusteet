@@ -216,6 +216,7 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
                 .build());
         }
 
+        status.setVaihtoOk(false);
     }
 
     @Data
