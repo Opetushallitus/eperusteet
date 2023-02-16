@@ -45,7 +45,7 @@ public class JulkaisuController {
     @ResponseBody
     @ApiOperation(value = "julkaistujen perusteiden haku")
     public ResponseEntity<Page<PerusteenJulkaisuData>> getKoulutustyyppienJulkaisut(
-            @RequestParam("koulutustyyppi") final List<String> koulutustyyppi,
+            @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyyppi,
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) final String kieli,
             @RequestParam(value = "tulevat", defaultValue = "true", required = false) final boolean tulevat,
