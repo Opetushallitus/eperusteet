@@ -9,7 +9,8 @@ public enum LiiteTyyppi {
     DOKUMENTTI("dokumentti"),
     MAARAYSKIRJE("maarayskirje"),
     MUUTOSMAARAYS("muutosmaarays"),
-    KOULUTUSVIENNINOHJE("KOULUTUSVIENNINOHJE");
+    KOULUTUSVIENNINOHJE("koulutusvienninohje"),
+    KAANNOS("kaannos");
 
     private final String tyyppi;
 
