@@ -117,12 +117,16 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
                 tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-paa-alue-osa-alue-nimi", osaAlue.getNimi(), pakolliset, virheellisetKielet, true);
 
                 osaAlue.getTasokuvaukset().forEach(tasokuvaus -> {
-                    tasokuvaus.getKuvaukset().forEach(kuvaus -> {
+                    tasokuvaus.getEdelleenKehittyvatOsaamiset().forEach(kuvaus -> {
+                        tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-paa-alue-osa-alue-kuvaus", osaAlue.getNimi(), pakolliset, virheellisetKielet, true);
+                    });
+
+                    tasokuvaus.getOsaamiset().forEach(kuvaus -> {
                         tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-paa-alue-osa-alue-kuvaus", osaAlue.getNimi(), pakolliset, virheellisetKielet, true);
                     });
 
                     tasokuvaus.getEdistynytOsaaminenKuvaukset().forEach(kuvaus -> {
-                        tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuuspaa-alue-osa-alue-kuvaus", osaAlue.getNimi(), pakolliset, virheellisetKielet, true);
+                        tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-paa-alue-osa-alue-kuvaus", osaAlue.getNimi(), pakolliset, virheellisetKielet, true);
                     });
                 });
             });
