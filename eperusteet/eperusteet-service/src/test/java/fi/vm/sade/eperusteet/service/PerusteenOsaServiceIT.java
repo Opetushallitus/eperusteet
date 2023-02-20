@@ -558,12 +558,13 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                         .tasokuvaukset(new ArrayList<>(Arrays.asList(
                                 OsaamiskokonaisuusOsaAlueTasoKuvausDto.builder()
                                         .taso(DigitaalinenOsaaminenTaso.VARHAISKASVATUS)
-                                        .kuvaukset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvausV")))
+                                        .edelleenKehittyvatOsaamiset(Arrays.asList(LokalisoituTekstiDto.of("edelleenkeh")))
+                                        .osaamiset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvausV")))
                                         .edistynytOsaaminenKuvaukset(Arrays.asList(LokalisoituTekstiDto.of("edistynytkuvausV")))
                                         .build(),
                                 OsaamiskokonaisuusOsaAlueTasoKuvausDto.builder()
                                         .taso(DigitaalinenOsaaminenTaso.ESIOPETUS)
-                                        .kuvaukset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvausE")))
+                                        .osaamiset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvausE")))
                                         .edistynytOsaaminenKuvaukset(Arrays.asList(LokalisoituTekstiDto.of("edistynytkuvausE")))
                                         .build())))
                         .build(),
@@ -572,7 +573,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                         .tasokuvaukset(new ArrayList<>(Arrays.asList(
                                 OsaamiskokonaisuusOsaAlueTasoKuvausDto.builder()
                                         .taso(DigitaalinenOsaaminenTaso.ESIOPETUS)
-                                        .kuvaukset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvaus")))
+                                        .osaamiset(Arrays.asList(LokalisoituTekstiDto.of("tasokuvaus")))
                                         .edistynytOsaaminenKuvaukset(Arrays.asList(LokalisoituTekstiDto.of("edistynytkuvaus")))
                                         .build())))
                         .build()
@@ -590,10 +591,11 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getNimi().get(Kieli.FI)).isEqualTo("osaaluenimi");
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset()).hasSize(2);
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getTaso()).isEqualTo(DigitaalinenOsaaminenTaso.VARHAISKASVATUS);
-        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getKuvaukset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausV");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getEdelleenKehittyvatOsaamiset().get(0).get(Kieli.FI)).isEqualTo("edelleenkeh");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getOsaamiset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausV");
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(0).getEdistynytOsaaminenKuvaukset().get(0).get(Kieli.FI)).isEqualTo("edistynytkuvausV");
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getTaso()).isEqualTo(DigitaalinenOsaaminenTaso.ESIOPETUS);
-        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getKuvaukset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausE");
+        assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getOsaamiset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausE");
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getEdistynytOsaaminenKuvaukset().get(0).get(Kieli.FI)).isEqualTo("edistynytkuvausE");
     }
 

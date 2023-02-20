@@ -17,6 +17,7 @@ import java.util.List;
 public class OsaamiskokonaisuusOsaAlueTasoKuvausDto {
     private Long id;
     private DigitaalinenOsaaminenTaso taso;
-    private List<LokalisoituTekstiDto> kuvaukset = new ArrayList<>();
+    private List<LokalisoituTekstiDto> edelleenKehittyvatOsaamiset = new ArrayList<>();
+    private List<LokalisoituTekstiDto> osaamiset = new ArrayList<>();
     private List<LokalisoituTekstiDto> edistynytOsaaminenKuvaukset = new ArrayList<>();
 }

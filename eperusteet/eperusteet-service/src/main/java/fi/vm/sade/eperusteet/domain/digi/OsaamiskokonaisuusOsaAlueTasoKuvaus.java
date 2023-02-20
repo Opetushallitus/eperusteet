@@ -38,9 +38,16 @@ public class OsaamiskokonaisuusOsaAlueTasoKuvaus extends AbstractAuditedReferenc
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_kuvaus_join")
+    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_ed_keh_osaa_join")
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private List<TekstiPalanen> kuvaukset = new ArrayList<>();
+    private List<TekstiPalanen> edelleenKehittyvatOsaamiset = new ArrayList<>();
+
+    @OrderColumn
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_osaamiset_join")
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private List<TekstiPalanen> osaamiset = new ArrayList<>();
 
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
@@ -51,7 +58,8 @@ public class OsaamiskokonaisuusOsaAlueTasoKuvaus extends AbstractAuditedReferenc
 
     public OsaamiskokonaisuusOsaAlueTasoKuvaus(OsaamiskokonaisuusOsaAlueTasoKuvaus other) {
         this.taso = other.taso;
-        this.kuvaukset.addAll(other.getKuvaukset());
+        this.edelleenKehittyvatOsaamiset.addAll(other.getEdelleenKehittyvatOsaamiset());
+        this.osaamiset.addAll(other.getOsaamiset());
         this.edistynytOsaaminenKuvaukset.addAll(other.getEdistynytOsaaminenKuvaukset());
     }
 }
