@@ -20,11 +20,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttooikeusKyselyDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -37,6 +39,8 @@ import fi.vm.sade.javautils.http.OphHttpRequest;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +49,8 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+
+import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -79,6 +85,8 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     private static final String HENKILO_API = "/henkilo/";
     private static final String HENKILOT_BY_LIST = HENKILO_API + "henkilotByHenkiloOidList";
     private static final String VIRKAILIJA_HAKU = "/virkailija/haku";
+    private final String KAYTTOOIKEUS_EPERUSTEET = "EPERUSTEET";
+    private final List<String> ROLES = Arrays.asList("ADMIN","READ","CRUD","READ_UPDATE");
 
     private final ObjectMapper mapper = new ObjectMapper();
 
@@ -241,21 +249,15 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
         OphHttpClient client = restClientFactory.get(koServiceUrl, true);
         String url = koServiceUrl + VIRKAILIJA_HAKU;
 
-        Map<Object, Set<String>> oikeudet = Maps.newHashMap();
-        oikeudet.put("EPERUSTEET", Sets.newHashSet("CRUD", "READ"));
-
-        Map<String, Object> criteria = new HashMap<>();
-        criteria.put("kayttooikeudet", oikeudet);
-        criteria.put("organisaatioOids", Sets.newHashSet(organisaatioOid));
-        criteria.put("duplikaatti", false);
-        criteria.put("passivoitu", false);
+        KayttooikeusKyselyDto kayttooikeusKyselyDto = KayttooikeusKyselyDto.builder()
+                .kayttooikeudet(ImmutableMap.of(KAYTTOOIKEUS_EPERUSTEET, ROLES))
+                .organisaatioOids(Collections.singletonList(organisaatioOid))
+                .build();
 
         try {
-            String jsonContent = mapper.writeValueAsString(criteria);
-
             OphHttpEntity entity = new OphHttpEntity.Builder()
-                    .content(jsonContent)
-                    .contentType("application/json", "UTF-8")
+                    .content(mapper.writeValueAsString(kayttooikeusKyselyDto))
+                    .contentType(ContentType.APPLICATION_JSON)
                     .build();
 
             OphHttpRequest request = OphHttpRequest.Builder
