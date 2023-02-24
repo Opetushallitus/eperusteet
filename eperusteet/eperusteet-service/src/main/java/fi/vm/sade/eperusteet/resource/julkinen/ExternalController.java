@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
@@ -97,6 +100,18 @@ public class ExternalController {
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "query") final String query) {
         Object result = perusteService.getJulkaistuSisaltoObjectNode(id, query);
+        if (result == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(result);
+    }
+
+    @RequestMapping(value = "/peruste/{perusteId}/**", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteen tietojen haku tarkalla sisältörakenteella")
+    public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
+        String[] queries = req.getPathInfo().split("/");
+        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, Arrays.stream(queries).skip(4).collect(Collectors.toList()));
         if (result == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

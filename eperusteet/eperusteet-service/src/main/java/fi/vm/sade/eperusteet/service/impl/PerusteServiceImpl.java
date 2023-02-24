@@ -169,6 +169,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.joda.time.DateTime;
@@ -817,6 +818,31 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
             throw new NotExistsException("");
         }
+
+        try {
+            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
+        } catch (JsonProcessingException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
+        Peruste peruste = perusteRepository.getOne(id);
+
+        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
+            throw new NotExistsException("");
+        }
+
+        String query = queryList.stream().reduce("$", (subquery, element) -> {
+            if (NumberUtils.isCreatable(element)) {
+                return subquery + String.format("?(@.id==%s)", element);
+            }
+            return subquery + "." + element;
+        });
 
         try {
             return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);

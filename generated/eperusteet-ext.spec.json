@@ -34,6 +34,30 @@
         }
       }
     },
+    "/external/peruste/{perusteId}/**" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
+        "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
+        "description" : "",
+        "operationId" : "getPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          }
+        }
+      }
+    },
     "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "Julkinen" ],
@@ -2171,7 +2195,13 @@
           "type" : "string",
           "enum" : [ "VARHAISKASVATUS", "ESIOPETUS", "VUOSILUOKKA_12", "VUOSILUOKKA_3456", "VUOSILUOKKA_789" ]
         },
-        "kuvaukset" : {
+        "edelleenKehittyvatOsaamiset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          }
+        },
+        "osaamiset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/LokalisoituTekstiDto"
@@ -2357,10 +2387,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -2397,10 +2427,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
