@@ -77,6 +77,10 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
             return NavigationType.muodostuminen;
         }
 
+        if (PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN.equals(tk.getTunniste())) {
+            return NavigationType.aipe_laajaalainenosaaminen;
+        }
+
         return type;
     }
 

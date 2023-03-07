@@ -19,5 +19,6 @@ public enum NavigationType {
     opintokokonaisuus, tavoitesisaltoalue, koto_kielitaitotaso, koto_opinto, koto_laajaalainenosaaminen,
     linkkisivu,
     koulutuksenosat, koulutuksenosa, laajaalainenosaaminen,
-    osaamiskokonaisuus, osaamiskokonaisuus_paa_alue;
+    osaamiskokonaisuus, osaamiskokonaisuus_paa_alue,
+    aipe_laajaalainenosaaminen;
 }
