@@ -72,4 +72,9 @@ public class JulkaisutServiceMock implements JulkaisutService {
     public int seuraavaVapaaJulkaisuNumero(long perusteId) {
         return 0;
     }
+
+    @Override
+    public void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
+
+    }
 }

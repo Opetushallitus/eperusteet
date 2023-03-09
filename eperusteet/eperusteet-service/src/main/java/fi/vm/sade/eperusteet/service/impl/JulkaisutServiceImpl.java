@@ -9,10 +9,12 @@ import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.Muutosmaarays;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -22,8 +24,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
-import fi.vm.sade.eperusteet.domain.validation.ValidHtmlValidator;
-import fi.vm.sade.eperusteet.domain.validation.ValidMaxLengthValidator;
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -39,6 +40,7 @@ import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
+import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -69,7 +71,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -80,12 +81,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
@@ -141,6 +142,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private JulkaisuPerusteTilaRepository julkaisuPerusteTilaRepository;
+
+    @Autowired
+    private LiiteRepository liiteRepository;
 
     @Autowired
     @Lazy
@@ -292,22 +296,43 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                         .flatMap(Collection::stream)
                         .collect(toSet()));
             }
-
-            List<JulkaistuPeruste> vanhatJulkaisut = julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste());
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
             julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
+            julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
             julkaisu.setLuoja(username);
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
+            julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
+            julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
 
             if (!dokumentit.isEmpty()) {
                 julkaisu.setDokumentit(dokumentit);
             }
 
+            if (julkaisuBaseDto.getMuutosmaaraykset() != null) {
+                JulkaistuPeruste mappedJulkaisu = mapper.map(julkaisuBaseDto, JulkaistuPeruste.class);
+                for (Muutosmaarays muutosmaarays : mappedJulkaisu.getMuutosmaaraykset()) {
+                    Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
+                    Map<Kieli, Liite> tempLiitteet = new HashMap<>();
+                    if (muutosmaarays.getLiitteet() != null) {
+                        liitteet.forEach((kieli, liiteId) -> {
+                            Liite liite = liiteRepository.findOne(peruste.getId(), liiteId.getId());
+                            if (liite != null) {
+                                tempLiitteet.put(kieli, liite);
+                            }
+                        });
+
+                        muutosmaarays.setPeruste(julkaisu.getPeruste());
+                        muutosmaarays.setLiitteet(tempLiitteet);
+                    }
+                }
+                julkaisu.setMuutosmaaraykset(mappedJulkaisu.getMuutosmaaraykset());
+            }
+
             julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
-            julkaisu = julkaisutRepository.saveAndFlush(julkaisu);
+            julkaisutRepository.saveAndFlush(julkaisu);
 
             if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
                 Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
@@ -506,4 +531,41 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         return vanhatJulkaisut.stream().mapToInt(JulkaistuPeruste::getRevision).max().orElse(0) + 1;
     }
 
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuBaseDto.getRevision());
+
+        julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
+        julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
+        julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
+        julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
+
+        JulkaistuPeruste mappedJulkaisu = mapper.map(julkaisuBaseDto, JulkaistuPeruste.class);
+        List<Muutosmaarays> muutosmaaraykset = mappedJulkaisu.getMuutosmaaraykset();
+        if (muutosmaaraykset != null) {
+            //TODO: ERROR: update or delete on table "muutosmaarays" violates foreign key constraint
+            // "julkaistu_peruste_muutosmaarays_muutosmaaraykset_id_fkey" on table "julkaistu_peruste_muutosmaarays"
+            for (Muutosmaarays muutosmaarays : muutosmaaraykset) {
+                Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
+                Map<Kieli, Liite> tempLiitteet = new HashMap<>();
+
+                if (muutosmaarays.getLiitteet() != null) {
+
+                    liitteet.forEach((kieli, liiteId) -> {
+                        Liite liite = liiteRepository.findOne(peruste.getId(), liiteId.getId());
+                        if (liite != null) {
+                            tempLiitteet.put(kieli, liite);
+                        }
+                    });
+                    muutosmaarays.setPeruste(julkaisu.getPeruste());
+                    muutosmaarays.setLiitteet(tempLiitteet);
+                }
+
+            }
+            julkaisu.setMuutosmaaraykset(mappedJulkaisu.getMuutosmaaraykset());
+        }
+        julkaisutRepository.save(julkaisu);
+    }
 }

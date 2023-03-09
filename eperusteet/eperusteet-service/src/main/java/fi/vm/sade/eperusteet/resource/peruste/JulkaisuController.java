@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,4 +108,11 @@ public class JulkaisuController {
         julkaisutService.nollaaJulkaisuTila(perusteId);
     }
 
+    @RequestMapping(method = POST, value = "/{perusteId}/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void update(@PathVariable("perusteId") final long perusteId,
+                       @RequestBody JulkaisuBaseDto julkaisuBaseDto) {
+        julkaisutService.update(perusteId, julkaisuBaseDto);
+    }
 }

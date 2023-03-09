@@ -49,4 +49,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     int seuraavaVapaaJulkaisuNumero(long perusteId);
+
+    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto);
 }
