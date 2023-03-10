@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
+import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoKaikkiDto;
 import fi.vm.sade.eperusteet.service.GeneerinenArviointiasteikkoService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,11 @@ public class GeneerinenArviointiasteikkoController {
     @RequestMapping(value = "/{id}", method = GET)
     public GeneerinenArviointiasteikkoDto getOneGeneerisetArviointiasteikko(@PathVariable Long id) {
         return geneerinenArviointiasteikkoService.getOne(id);
+    }
+
+    @RequestMapping(value = "/{id}/kaikki", method = GET)
+    public GeneerinenArviointiasteikkoKaikkiDto getOneGeneerisetArviointiasteikkoKaikki(@PathVariable Long id) {
+        return geneerinenArviointiasteikkoService.getOne(id, GeneerinenArviointiasteikkoKaikkiDto.class);
     }
 
     @RequestMapping(method = POST)

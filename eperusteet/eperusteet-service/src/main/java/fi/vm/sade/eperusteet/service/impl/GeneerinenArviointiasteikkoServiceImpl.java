@@ -65,11 +65,16 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Override
     public GeneerinenArviointiasteikkoDto getOne(Long id) {
+        return getOne(id, GeneerinenArviointiasteikkoDto.class);
+    }
+
+    @Override
+    public <T> T getOne(Long id, Class<T> type) {
         GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findOne(id);
         if (asteikko == null) {
             throw new BusinessRuleViolationException("geneerinen-arivointiasteikko-ei-loytynyt");
         }
-        return mapper.map(asteikko, GeneerinenArviointiasteikkoDto.class);
+        return mapper.map(asteikko, type);
     }
 
     @Override
