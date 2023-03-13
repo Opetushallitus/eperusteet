@@ -856,7 +856,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean useCurrentData) {
-        Peruste peruste = perusteRepository.getOne(id);
+        Peruste peruste = perusteRepository.findOne(id);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
             throw new NotExistsException("");
