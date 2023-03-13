@@ -813,7 +813,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query) {
-        Peruste peruste = perusteRepository.getOne(id);
+        Peruste peruste = perusteRepository.findOne(id);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
             throw new NotExistsException("");
@@ -831,7 +831,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
-        Peruste peruste = perusteRepository.getOne(id);
+        Peruste peruste = perusteRepository.findOne(id);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
             throw new NotExistsException("");
@@ -2146,7 +2146,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private Peruste getPeruste(Long perusteId) {
-        Peruste peruste = perusteRepository.getOne(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
             throw new BusinessRuleViolationException("peruste-puuttuu");
         }
