@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.Getter;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Immutable
 @Getter
 @Setter
 @Table(name = "julkaistu_peruste")
@@ -43,7 +43,6 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
-    @Getter
     @NotNull
     private String luoja;
 
@@ -55,7 +54,6 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private JulkaistuPerusteData data;
 
-    @Getter
     @NotNull
     private Boolean julkinen;
 
@@ -63,15 +61,13 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @Column(name = "muutosmaarays_voimaan")
     private Date muutosmaaraysVoimaan;
 
-    @Getter
-    @OrderColumn
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Muutosmaarays> muutosmaaraykset = new ArrayList<>();
+    @OneToMany(mappedBy = "julkaistuPeruste", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JulkaisuLiite> liitteet = new ArrayList<>();
 
-    public void setMuutosmaaraykset(List<Muutosmaarays> muutosmaaraykset) {
-        this.muutosmaaraykset.clear();
-        if (muutosmaaraykset != null) {
-            this.muutosmaaraykset.addAll(muutosmaaraykset);
+    public void setLiitteet(List<JulkaisuLiite> liitteet) {
+        this.liitteet.clear();
+        if (liitteet != null) {
+            this.liitteet.addAll(liitteet);
         }
     }
 

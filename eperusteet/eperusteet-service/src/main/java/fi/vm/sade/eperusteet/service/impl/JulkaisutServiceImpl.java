@@ -7,14 +7,13 @@ import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
+import fi.vm.sade.eperusteet.domain.JulkaisuLiite;
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
-import fi.vm.sade.eperusteet.domain.Muutosmaarays;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -30,6 +29,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
@@ -46,6 +46,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -55,10 +56,12 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import org.apache.tika.mime.MimeTypeException;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONCompare;
@@ -70,23 +73,30 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
@@ -112,6 +122,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
+
+    @Autowired
+    private LiiteRepository liiteRepository;
 
     @Autowired
     private PerusteprojektiService perusteprojektiService;
@@ -144,13 +157,21 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private JulkaisuPerusteTilaRepository julkaisuPerusteTilaRepository;
 
     @Autowired
-    private LiiteRepository liiteRepository;
+    private LiiteTiedostoService liiteTiedostoService;
 
     @Autowired
     @Lazy
     private JulkaisutService self;
 
     private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 5 * 60;
+
+    public static final Set<String> DOCUMENT_TYPES;
+
+    static {
+        DOCUMENT_TYPES = Collections.unmodifiableSet(new HashSet<>(Collections.singletonList(
+                MediaType.APPLICATION_PDF_VALUE
+        )));
+    }
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
     private static final List<String> pdfEnabled = Arrays.asList(
@@ -311,26 +332,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 julkaisu.setDokumentit(dokumentit);
             }
 
-            if (julkaisuBaseDto.getMuutosmaaraykset() != null) {
-                JulkaistuPeruste mappedJulkaisu = mapper.map(julkaisuBaseDto, JulkaistuPeruste.class);
-                for (Muutosmaarays muutosmaarays : mappedJulkaisu.getMuutosmaaraykset()) {
-                    Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
-                    Map<Kieli, Liite> tempLiitteet = new HashMap<>();
-                    if (muutosmaarays.getLiitteet() != null) {
-                        liitteet.forEach((kieli, liiteId) -> {
-                            Liite liite = liiteRepository.findOne(peruste.getId(), liiteId.getId());
-                            if (liite != null) {
-                                tempLiitteet.put(kieli, liite);
-                            }
-                        });
-
-                        muutosmaarays.setPeruste(julkaisu.getPeruste());
-                        muutosmaarays.setLiitteet(tempLiitteet);
-                    }
-                }
-                julkaisu.setMuutosmaaraykset(mappedJulkaisu.getMuutosmaaraykset());
-            }
-
+            julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
             julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
             julkaisutRepository.saveAndFlush(julkaisu);
 
@@ -533,7 +535,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     @IgnorePerusteUpdateCheck
-    public void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
+    @Transactional
+    public void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
         Peruste peruste = perusteRepository.findOne(perusteId);
         JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuBaseDto.getRevision());
 
@@ -541,31 +544,47 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
         julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
         julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
+        julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
 
-        JulkaistuPeruste mappedJulkaisu = mapper.map(julkaisuBaseDto, JulkaistuPeruste.class);
-        List<Muutosmaarays> muutosmaaraykset = mappedJulkaisu.getMuutosmaaraykset();
-        if (muutosmaaraykset != null) {
-            //TODO: ERROR: update or delete on table "muutosmaarays" violates foreign key constraint
-            // "julkaistu_peruste_muutosmaarays_muutosmaaraykset_id_fkey" on table "julkaistu_peruste_muutosmaarays"
-            for (Muutosmaarays muutosmaarays : muutosmaaraykset) {
-                Map<Kieli, Liite> liitteet = muutosmaarays.getLiitteet();
-                Map<Kieli, Liite> tempLiitteet = new HashMap<>();
+        julkaisutRepository.saveAndFlush(julkaisu);
+    }
 
-                if (muutosmaarays.getLiitteet() != null) {
+    private List<JulkaisuLiite> addLiitteet(JulkaistuPeruste julkaisu,
+                                            List<JulkaisuLiiteDto> liitteet) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
+        List<JulkaisuLiite> tempLiitteet = new ArrayList<>();
 
-                    liitteet.forEach((kieli, liiteId) -> {
-                        Liite liite = liiteRepository.findOne(peruste.getId(), liiteId.getId());
-                        if (liite != null) {
-                            tempLiitteet.put(kieli, liite);
-                        }
-                    });
-                    muutosmaarays.setPeruste(julkaisu.getPeruste());
-                    muutosmaarays.setLiitteet(tempLiitteet);
+        if (liitteet != null) {
+            for (JulkaisuLiiteDto julkaisuLiite : liitteet) {
+                Liite liite = null;
+                JulkaisuLiite mappedJulkaisuLiite = mapper.map(julkaisuLiite, JulkaisuLiite.class);
+                if (julkaisuLiite.getData() != null) {
+                    Pair<UUID, String> filePair = uploadLiite(julkaisuLiite);
+                    liite = liiteRepository.findById(filePair.getFirst());
+                } else if (julkaisuLiite.getLiite() != null && julkaisuLiite.getLiite().getId() != null) {
+                    liite = liiteRepository.findById(julkaisuLiite.getLiite().getId());
                 }
 
+                if (liite != null) {
+                    mappedJulkaisuLiite.setLiite(liite);
+                    mappedJulkaisuLiite.setKieli(julkaisuLiite.getKieli());
+                    mappedJulkaisuLiite.setJulkaistuPeruste(julkaisu);
+                    tempLiitteet.add(mappedJulkaisuLiite);
+                }
             }
-            julkaisu.setMuutosmaaraykset(mappedJulkaisu.getMuutosmaaraykset());
         }
-        julkaisutRepository.save(julkaisu);
+        return tempLiitteet;
+    }
+
+    private Pair<UUID, String> uploadLiite(JulkaisuLiiteDto julkaisuLiite) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
+        byte[] decoder = Base64.getDecoder().decode(julkaisuLiite.getData());
+        InputStream is = new ByteArrayInputStream(decoder);
+        return liiteTiedostoService.uploadFile(
+                null,
+                julkaisuLiite.getLiite().getNimi(),
+                is,
+                decoder.length,
+                julkaisuLiite.getLiite().getTyyppi(),
+                DOCUMENT_TYPES,
+                null, null, null);
     }
 }

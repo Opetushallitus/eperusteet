@@ -6,13 +6,20 @@ ALTER TABLE julkaistu_peruste
         FOREIGN KEY (julkinen_tiedote_id)
             REFERENCES tekstipalanen;
 
-CREATE TABLE julkaistu_peruste_muutosmaarays(julkaistu_peruste_id bigint NOT NULL REFERENCES julkaistu_peruste(id),
-                                             muutosmaaraykset_id bigint NOT NULL REFERENCES muutosmaarays(id),
-                                            muutosmaaraykset_order INTEGER NOT NULL);
+create table julkaisu_liite (
+                                id int8 not null,
+                                kieli varchar(255) not null,
+                                julkaistu_peruste_id int8 not null,
+                                liite_id uuid not null,
+                                primary key (id)
+);
 
-CREATE TABLE julkaistu_peruste_muutosmaarays_aud(julkaistu_peruste_id bigint NOT NULL,
-                                                 muutosmaaraykset_id bigint NOT NULL,
-                                                 muutosmaaraykset_order INTEGER NOT NULL,
-                                                 rev INTEGER,
-                                                 revend INTEGER,
-                                                 revtype SMALLINT);
+alter table julkaisu_liite
+    add constraint FK_lxmxvvawjv9wwx6swbhxi26us
+        foreign key (julkaistu_peruste_id)
+            references julkaistu_peruste;
+
+alter table julkaisu_liite
+    add constraint FK_m2l0286yybgxq924oyxoiwfyh
+        foreign key (liite_id)
+            references liite;

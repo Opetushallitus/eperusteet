@@ -1,59 +1,22 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
+import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import io.swagger.annotations.Api;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PushbackInputStream;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import javax.activation.MimetypesFileTypeMap;
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.tika.Tika;
 import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.util.ObjectUtils;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -64,22 +27,31 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-/**
- *
- * @author jhyoty
- */
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
 @Slf4j
 @RestController
 @RequestMapping("/perusteet/{perusteId}")
 @Api("Liitetiedostot")
 public class LiitetiedostoController {
 
-    private static final int BUFSIZE = 64 * 1024;
-    final Tika tika = new Tika();
-
     @Autowired
     private LiiteService liitteet;
 
+    @Autowired
+    private LiiteTiedostoService liiteTiedostoService;
     public static final Set<String> IMAGE_TYPES;
 
     public static final Set<String> DOCUMENT_TYPES;
@@ -95,7 +67,6 @@ public class LiitetiedostoController {
         )));
     }
 
-
     @RequestMapping(value = "/kuvat", method = RequestMethod.POST)
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     public ResponseEntity<String> uploadKuva(
@@ -106,7 +77,7 @@ public class LiitetiedostoController {
             @RequestParam Integer width,
             @RequestParam Integer height,
             UriComponentsBuilder ucb
-    ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+    ) throws IOException, MimeTypeException, HttpMediaTypeNotSupportedException {
         Pair<UUID, String> res = upload(perusteId, nimi, file.getInputStream(), file.getSize(), LiiteTyyppi.KUVA, IMAGE_TYPES, width, height, file);
         UUID uuid = res.getFirst();
         String extension = res.getSecond();
@@ -126,7 +97,7 @@ public class LiitetiedostoController {
             @RequestParam("file") Part file,
             @RequestParam("tyyppi") String tyyppi,
             UriComponentsBuilder ucb
-    ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+    ) throws IOException, MimeTypeException, HttpMediaTypeNotSupportedException {
         Pair<UUID, String> res = upload(perusteId, nimi, file.getInputStream(), file.getSize(), LiiteTyyppi.of(tyyppi), DOCUMENT_TYPES);
         UUID uuid = res.getFirst();
         String extension = res.getSecond();
@@ -146,7 +117,7 @@ public class LiitetiedostoController {
             @RequestParam("file") String b64file,
             @RequestParam("tyyppi") String tyyppi,
             UriComponentsBuilder ucb
-    ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+    ) throws MimeTypeException, IOException, HttpMediaTypeNotSupportedException {
         byte[] decoder = Base64.getDecoder().decode(b64file);
         InputStream is = new ByteArrayInputStream(decoder);
         Pair<UUID, String> res = upload(perusteId, nimi, is, decoder.length, LiiteTyyppi.of(tyyppi), DOCUMENT_TYPES);
@@ -183,26 +154,21 @@ public class LiitetiedostoController {
     ) throws IOException {
         UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));
         LiiteDto dto = liitteet.get(perusteId, id);
+        getFile(id, dto, response, etag, perusteId);
+    }
 
-        if (dto != null) {
-            if (DOCUMENT_TYPES.contains(dto.getMime())) {
-                response.setHeader("Content-disposition",
-                        "inline; filename=\"" + dto.getNimi() + ".pdf\"");
-            }
-
-            if (dto.getId().toString().equals(etag)) {
-                response.setStatus(HttpStatus.NOT_MODIFIED.value());
-            } else {
-                response.setHeader("Content-Type", dto.getMime());
-                response.setHeader("ETag", id.toString());
-                try (OutputStream os = response.getOutputStream()) {
-                    liitteet.export(perusteId, id, os);
-                    os.flush();
-                }
-            }
-        } else {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-        }
+    @RequestMapping(value = "/julkaisu/liitteet/{fileName}", method = RequestMethod.GET)
+    public void getJulkaisuLiite(
+            @PathVariable("perusteId") Long perusteId,
+            @PathVariable("fileName") String fileName,
+            @RequestHeader(value = "If-None-Match", required = false) String etag,
+            String topLevelMediaType,
+            //HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));
+        LiiteDto dto = liitteet.get(id);
+        getFile(id, dto, response, etag, perusteId);
     }
 
     @RequestMapping(value = { "/kuvat/{id}", "/liitteet/{id}"}, method = RequestMethod.DELETE)
@@ -237,7 +203,7 @@ public class LiitetiedostoController {
             InputStream is,
             long koko,
             LiiteTyyppi tyyppi,
-            Set<String> tyypit) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+            Set<String> tyypit) throws MimeTypeException, IOException, HttpMediaTypeNotSupportedException {
         return upload(perusteId, nimi, is, koko, tyyppi, tyypit, null, null, null);
     }
 
@@ -251,43 +217,29 @@ public class LiitetiedostoController {
             Integer width,
             Integer height,
             Part file
-    ) throws IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
-        try (PushbackInputStream pis = new PushbackInputStream(is, BUFSIZE)) {
-            byte[] buf = new byte[koko < BUFSIZE ? (int) koko : BUFSIZE];
-            int len = pis.read(buf);
-            if (len < buf.length) {
-                throw new IOException("luku epäonnistui");
-            }
-            pis.unread(buf);
-            String mime = tika.detect(buf);
-            MimeTypes mimeTypes = MimeTypes.getDefaultMimeTypes();
-            String extension = mimeTypes.forName(mime).getExtension();
+    ) throws MimeTypeException, IOException, HttpMediaTypeNotSupportedException {
+        return liiteTiedostoService.uploadFile(perusteId, nimi, is, koko, tyyppi, tyypit, width, height, file);
+    }
 
-            if (!tyypit.contains(mime)) {
-                throw new HttpMediaTypeNotSupportedException(mime + " ei ole tuettu");
+    private void getFile(UUID id, LiiteDto dto, HttpServletResponse response, String etag, Long perusteId) throws IOException {
+        if (dto != null) {
+            if (DOCUMENT_TYPES.contains(dto.getMime())) {
+                response.setHeader("Content-disposition",
+                        "inline; filename=\"" + dto.getNimi() + ".pdf\"");
             }
 
-            if (width != null && height != null && file != null) {
-                String mediaType = tika.detect(buf);
-                ByteArrayOutputStream os = scaleImage(file, mediaType, width, height);
-                return Pair.of(liitteet.add(perusteId, tyyppi, mime, nimi, os.size(), new PushbackInputStream(new ByteArrayInputStream(os.toByteArray()))), extension);
+            if (dto.getId().toString().equals(etag)) {
+                response.setStatus(HttpStatus.NOT_MODIFIED.value());
             } else {
-                return Pair.of(liitteet.add(perusteId, tyyppi, mime, nimi, koko, pis), extension);
+                response.setHeader("Content-Type", dto.getMime());
+                response.setHeader("ETag", id.toString());
+                try (OutputStream os = response.getOutputStream()) {
+                    liitteet.export(perusteId, id, os);
+                    os.flush();
+                }
             }
-
+        } else {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
         }
     }
-
-    private ByteArrayOutputStream scaleImage(@RequestParam("file") Part file, String tyyppi, Integer width, Integer height) throws IOException {
-        BufferedImage a = ImageIO.read(file.getInputStream());
-        BufferedImage preview = new BufferedImage(width, height, a.getType());
-        preview.createGraphics().drawImage(a.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
-
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(preview, tyyppi.replace("image/", ""), os);
-
-        return os;
-    }
-
-
 }

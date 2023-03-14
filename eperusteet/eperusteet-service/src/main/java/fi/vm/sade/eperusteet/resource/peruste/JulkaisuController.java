@@ -6,14 +6,18 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -112,7 +116,7 @@ public class JulkaisuController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void update(@PathVariable("perusteId") final long perusteId,
-                       @RequestBody JulkaisuBaseDto julkaisuBaseDto) {
+                       @RequestBody JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
         julkaisutService.update(perusteId, julkaisuBaseDto);
     }
 }

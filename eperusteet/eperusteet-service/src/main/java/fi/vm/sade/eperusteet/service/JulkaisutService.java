@@ -4,11 +4,16 @@ import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.tika.mime.MimeTypeException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 public interface JulkaisutService {
     @PreAuthorize("permitAll()")
@@ -51,5 +56,5 @@ public interface JulkaisutService {
     int seuraavaVapaaJulkaisuNumero(long perusteId);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
-    void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto);
+    void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
 }
