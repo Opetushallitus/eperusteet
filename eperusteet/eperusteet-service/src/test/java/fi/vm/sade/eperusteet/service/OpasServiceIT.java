@@ -240,6 +240,7 @@ public class OpasServiceIT extends AbstractPerusteprojektiTest {
         julkaisu.setLuoja("testi");
         julkaisu.setLuotu(new Date());
         julkaisu.setPeruste(peruste2);
+        julkaisu.setJulkinen(false);
         julkaisu = julkaisutRepository.save(julkaisu);
 
         List<Peruste> perusteet = perusteRepository.findAll();
