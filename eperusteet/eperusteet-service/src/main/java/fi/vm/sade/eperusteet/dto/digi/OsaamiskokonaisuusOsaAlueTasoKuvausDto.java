@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto.digi;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.digi.DigitaalinenOsaaminenTaso;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OsaamiskokonaisuusOsaAlueTasoKuvausDto {
     private Long id;
     private DigitaalinenOsaaminenTaso taso;
