@@ -95,7 +95,6 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
             Osaamiskokonaisuus osaamiskokonaisuus = (Osaamiskokonaisuus) perusteenOsa;
             Map<String, String> virheellisetKielet = new HashMap<>();
             tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-nimi", osaamiskokonaisuus.getNimi(), pakolliset, virheellisetKielet, true);
-            tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-kuvaus", osaamiskokonaisuus.getKuvaus(), pakolliset, virheellisetKielet, true);
             tarkistaTekstipalanen("peruste-validointi-osaamiskokonaisuus-keskeinen-kasitteisto-kuvaus", osaamiskokonaisuus.getKeskeinenKasitteisto(), pakolliset, virheellisetKielet, true);
 
             for (OsaamiskokonaisuusKasitteisto kasitteisto : osaamiskokonaisuus.getKasitteistot()) {
