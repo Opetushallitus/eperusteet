@@ -20,6 +20,11 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
+    public List<JulkaisuBaseDto> getJulkisetJulkaisut(long id) {
+        return null;
+    }
+
+    @Override
     public void teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
     }
 
@@ -74,7 +79,7 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
+    public void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
 
     }
 }

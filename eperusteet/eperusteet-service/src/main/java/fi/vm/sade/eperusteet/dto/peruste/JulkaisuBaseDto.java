@@ -25,7 +25,6 @@ public class JulkaisuBaseDto {
     private LokalisoituTekstiDto julkinenTiedote;
     private Date luotu;
     private String luoja;
-
     private KayttajanTietoDto kayttajanTieto;
     private JulkaisuTila tila = JulkaisuTila.JULKAISTU;
     private Boolean julkinen;

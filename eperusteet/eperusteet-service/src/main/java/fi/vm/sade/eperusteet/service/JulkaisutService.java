@@ -19,6 +19,9 @@ public interface JulkaisutService {
     @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkaisut(long id);
 
+    @PreAuthorize("permitAll()")
+    List<JulkaisuBaseDto> getJulkisetJulkaisut(long id);
+
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     void teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
@@ -29,7 +32,7 @@ public interface JulkaisutService {
     void teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
-    JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision);
+    JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
 
     @PreAuthorize("permitAll()")
     Page<PerusteenJulkaisuData> getJulkisetJulkaisut(
@@ -55,6 +58,6 @@ public interface JulkaisutService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     int seuraavaVapaaJulkaisuNumero(long perusteId);
 
-    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
-    void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'TILANVAIHTO')")
+    void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
 }

@@ -44,6 +44,12 @@ public class JulkaisuController {
         return julkaisutService.getJulkaisut(id);
     }
 
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisut/julkinen")
+    public List<JulkaisuBaseDto> getJulkisetJulkaisut(
+            @PathVariable("perusteId") final long id) {
+        return julkaisutService.getJulkisetJulkaisut(id);
+    }
+
     @RequestMapping(method = GET, value = "/julkaisut")
     @ResponseBody
     @ApiOperation(value = "julkaistujen perusteiden haku")
@@ -78,7 +84,7 @@ public class JulkaisuController {
     @ResponseBody
     public JulkaisuBaseDto aktivoiJulkaisu(
             @PathVariable("projektiId") final long projektiId,
-            @PathVariable("revision") final int revision) {
+            @PathVariable("revision") final int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
         return julkaisutService.aktivoiJulkaisu(projektiId, revision);
     }
 
@@ -115,8 +121,8 @@ public class JulkaisuController {
     @RequestMapping(method = POST, value = "/{perusteId}/update")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void update(@PathVariable("perusteId") final long perusteId,
+    public void updateJulkaisu(@PathVariable("perusteId") final long perusteId,
                        @RequestBody JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
-        julkaisutService.update(perusteId, julkaisuBaseDto);
+        julkaisutService.updateJulkaisu(perusteId, julkaisuBaseDto);
     }
 }

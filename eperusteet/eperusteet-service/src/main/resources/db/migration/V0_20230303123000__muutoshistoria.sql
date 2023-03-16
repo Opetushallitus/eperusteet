@@ -6,12 +6,12 @@ ALTER TABLE julkaistu_peruste
         FOREIGN KEY (julkinen_tiedote_id)
             REFERENCES tekstipalanen;
 
-create table julkaisu_liite (
-                                id int8 not null,
-                                kieli varchar(255) not null,
-                                julkaistu_peruste_id int8 not null,
-                                liite_id uuid not null,
-                                primary key (id)
+create table julkaisu_liite (id int8 not null,
+                             kieli varchar(255) not null,
+                             nimi varchar(255) not null,
+                             julkaistu_peruste_id int8 not null,
+                             liite_id uuid not null,
+                             primary key (id)
 );
 
 alter table julkaisu_liite

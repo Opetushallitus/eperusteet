@@ -181,13 +181,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     public List<JulkaisuBaseDto> getJulkaisut(long id) {
-        Peruste peruste = perusteRepository.findOne(id);
-        if (peruste == null) {
-            throw new BusinessRuleViolationException("perustetta-ei-loytynyt");
-        }
-
-        List<JulkaistuPeruste> one = julkaisutRepository.findAllByPeruste(peruste);
-        List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(one, JulkaisuBaseDto.class);
+        List<JulkaisuBaseDto> julkaisut = getJulkaistutPerusteet(id);
 
         JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(id);
         if (julkaisuPerusteTila != null
@@ -200,6 +194,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return taytaKayttajaTiedot(julkaisut);
+    }
+
+    @Override
+    public List<JulkaisuBaseDto> getJulkisetJulkaisut(long id) {
+        return getJulkaistutPerusteet(id).stream()
+                .filter(JulkaisuBaseDto::getJulkinen)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -391,7 +392,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     @IgnorePerusteUpdateCheck
-    public JulkaisuBaseDto aktivoiJulkaisu(long projektiId, int revision) {
+    public JulkaisuBaseDto aktivoiJulkaisu(long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
         if (perusteprojekti == null) {
@@ -407,6 +408,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setDokumentit(Sets.newHashSet(vanhaJulkaisu.getDokumentit()));
         julkaisu.setPeruste(peruste);
         julkaisu.setData(vanhaJulkaisu.getData());
+        julkaisu.setJulkinen(vanhaJulkaisu.getJulkinen());
+        julkaisu.setJulkinenTiedote(vanhaJulkaisu.getJulkinenTiedote());
+        julkaisu.setMuutosmaaraysVoimaan(vanhaJulkaisu.getMuutosmaaraysVoimaan());
+
+        if (vanhaJulkaisu.getLiitteet() != null) {
+            julkaisu.setLiitteet(addLiitteet(julkaisu, mapper.mapAsList(vanhaJulkaisu.getLiitteet(), JulkaisuLiiteDto.class)));
+        }
+
         julkaisu = julkaisutRepository.save(julkaisu);
         muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
 
@@ -536,21 +545,26 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    public void update(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
-        Peruste peruste = perusteRepository.findOne(perusteId);
-        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuBaseDto.getRevision());
+    public void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
+        try {
+            Peruste peruste = perusteRepository.findOne(perusteId);
+            JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuBaseDto.getRevision());
 
-        julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
-        julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
-        julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
-        julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
-        julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
+            julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
+            julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
+            julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
+            julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
+            julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
 
-        julkaisutRepository.saveAndFlush(julkaisu);
+            julkaisutRepository.saveAndFlush(julkaisu);
+        } catch(Exception e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
+        }
     }
 
     private List<JulkaisuLiite> addLiitteet(JulkaistuPeruste julkaisu,
-                                            List<JulkaisuLiiteDto> liitteet) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
+                                            List<JulkaisuLiiteDto> liitteet) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         List<JulkaisuLiite> tempLiitteet = new ArrayList<>();
 
         if (liitteet != null) {
@@ -566,6 +580,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
                 if (liite != null) {
                     mappedJulkaisuLiite.setLiite(liite);
+                    mappedJulkaisuLiite.setNimi(julkaisuLiite.getNimi());
                     mappedJulkaisuLiite.setKieli(julkaisuLiite.getKieli());
                     mappedJulkaisuLiite.setJulkaistuPeruste(julkaisu);
                     tempLiitteet.add(mappedJulkaisuLiite);
@@ -575,16 +590,30 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         return tempLiitteet;
     }
 
-    private Pair<UUID, String> uploadLiite(JulkaisuLiiteDto julkaisuLiite) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
-        byte[] decoder = Base64.getDecoder().decode(julkaisuLiite.getData());
-        InputStream is = new ByteArrayInputStream(decoder);
-        return liiteTiedostoService.uploadFile(
-                null,
-                julkaisuLiite.getLiite().getNimi(),
-                is,
-                decoder.length,
-                julkaisuLiite.getLiite().getTyyppi(),
-                DOCUMENT_TYPES,
-                null, null, null);
+    private Pair<UUID, String> uploadLiite(JulkaisuLiiteDto julkaisuLiite) throws HttpMediaTypeNotSupportedException, MimeTypeException {
+        try {
+            byte[] decoder = Base64.getDecoder().decode(julkaisuLiite.getData());
+            InputStream is = new ByteArrayInputStream(decoder);
+            return liiteTiedostoService.uploadFile(
+                    null,
+                    julkaisuLiite.getLiite().getNimi(),
+                    is,
+                    decoder.length,
+                    julkaisuLiite.getLiite().getTyyppi(),
+                    DOCUMENT_TYPES,
+                    null, null, null);
+        } catch (IOException e) {
+            throw new BusinessRuleViolationException("liitteen-lisaaminen-epaonnistui");
+        }
+    }
+
+    private List<JulkaisuBaseDto> getJulkaistutPerusteet(Long id) {
+        Peruste peruste = perusteRepository.findOne(id);
+        if (peruste == null) {
+            throw new BusinessRuleViolationException("perustetta-ei-loytynyt");
+        }
+
+        List<JulkaistuPeruste> one = julkaisutRepository.findAllByPeruste(peruste);
+        return mapper.mapAsList(one, JulkaisuBaseDto.class);
     }
 }

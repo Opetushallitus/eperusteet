@@ -36,4 +36,7 @@ public class JulkaisuLiite implements Serializable {
 
     @NotNull
     private String kieli;
+
+    @NotNull
+    private String nimi;
 }
