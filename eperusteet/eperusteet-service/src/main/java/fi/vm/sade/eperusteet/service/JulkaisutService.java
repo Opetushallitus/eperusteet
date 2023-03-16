@@ -58,6 +58,6 @@ public interface JulkaisutService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     int seuraavaVapaaJulkaisuNumero(long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'TILANVAIHTO')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
 }

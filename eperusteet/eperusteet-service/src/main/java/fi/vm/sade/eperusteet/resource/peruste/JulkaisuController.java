@@ -118,7 +118,7 @@ public class JulkaisuController {
         julkaisutService.nollaaJulkaisuTila(perusteId);
     }
 
-    @RequestMapping(method = POST, value = "/{perusteId}/update")
+    @RequestMapping(method = POST, value = "/{perusteId}/julkaisu/update")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void updateJulkaisu(@PathVariable("perusteId") final long perusteId,

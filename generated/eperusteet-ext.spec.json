@@ -2370,10 +2370,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2396,6 +2392,10 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -2409,10 +2409,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2436,6 +2432,10 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
