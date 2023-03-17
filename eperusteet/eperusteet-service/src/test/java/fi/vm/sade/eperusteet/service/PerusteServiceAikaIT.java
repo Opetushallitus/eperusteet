@@ -298,6 +298,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         julkaisu.setLuoja("test");
         julkaisu.setLuotu(new Date());
         julkaisu.setPeruste(perusteRepository.getOne(id));
+        julkaisu.setJulkinen(false);
         julkaisutRepository.save(julkaisu);
     }
 }

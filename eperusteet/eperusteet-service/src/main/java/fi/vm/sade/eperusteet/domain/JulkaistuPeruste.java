@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.Getter;
@@ -10,15 +11,13 @@ import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
-@Immutable
 @Getter
 @Setter
 @Table(name = "julkaistu_peruste")
@@ -36,10 +35,14 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen tiedote;
 
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinColumn(name = "julkinen_tiedote_id")
+    private TekstiPalanen julkinenTiedote;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
-    @Getter
     @NotNull
     private String luoja;
 
@@ -51,6 +54,23 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private JulkaistuPerusteData data;
 
+    @NotNull
+    private Boolean julkinen;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "muutosmaarays_voimaan")
+    private Date muutosmaaraysVoimaan;
+
+    @OneToMany(mappedBy = "julkaistuPeruste", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<JulkaisuLiite> liitteet = new ArrayList<>();
+
+    public void setLiitteet(List<JulkaisuLiite> liitteet) {
+        this.liitteet.clear();
+        if (liitteet != null) {
+            this.liitteet.addAll(liitteet);
+        }
+    }
+
     @PrePersist
     private void prepersist() {
         luotu = new Date();
@@ -58,5 +78,4 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
             luoja = SecurityUtil.getAuthenticatedPrincipal().getName();
         }
     }
-
 }

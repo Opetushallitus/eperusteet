@@ -704,6 +704,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         { // Peruste luonnos josta julkaisu -> näkyy
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setPeruste(pp.getPeruste());
+            julkaisu.setJulkinen(false);
             julkaisutRepository.save(julkaisu);
             pp.setTila(ProjektiTila.LAADINTA);
             pp.getPeruste().asetaTila(PerusteTila.LUONNOS);

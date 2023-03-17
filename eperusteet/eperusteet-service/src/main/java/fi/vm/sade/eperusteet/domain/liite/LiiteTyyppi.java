@@ -9,6 +9,7 @@ public enum LiiteTyyppi {
     DOKUMENTTI("dokumentti"),
     MAARAYSKIRJE("maarayskirje"),
     MUUTOSMAARAYS("muutosmaarays"),
+    JULKAISUMUUTOSMAARAYS("julkaisumuutosmaarays"),
     KOULUTUSVIENNINOHJE("koulutusvienninohje"),
     KAANNOS("kaannos");
 

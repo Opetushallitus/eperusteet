@@ -4,15 +4,23 @@ import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.tika.mime.MimeTypeException;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 public interface JulkaisutService {
     @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkaisut(long id);
+
+    @PreAuthorize("permitAll()")
+    List<JulkaisuBaseDto> getJulkisetJulkaisut(long id);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     void teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
@@ -24,7 +32,7 @@ public interface JulkaisutService {
     void teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
-    JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision);
+    JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
 
     @PreAuthorize("permitAll()")
     Page<PerusteenJulkaisuData> getJulkisetJulkaisut(
@@ -49,4 +57,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     int seuraavaVapaaJulkaisuNumero(long perusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
 }

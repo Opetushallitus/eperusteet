@@ -6,15 +6,18 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +42,12 @@ public class JulkaisuController {
     public List<JulkaisuBaseDto> getJulkaisut(
             @PathVariable("perusteId") final long id) {
         return julkaisutService.getJulkaisut(id);
+    }
+
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisut/julkinen")
+    public List<JulkaisuBaseDto> getJulkisetJulkaisut(
+            @PathVariable("perusteId") final long id) {
+        return julkaisutService.getJulkisetJulkaisut(id);
     }
 
     @RequestMapping(method = GET, value = "/julkaisut")
@@ -75,7 +84,7 @@ public class JulkaisuController {
     @ResponseBody
     public JulkaisuBaseDto aktivoiJulkaisu(
             @PathVariable("projektiId") final long projektiId,
-            @PathVariable("revision") final int revision) {
+            @PathVariable("revision") final int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
         return julkaisutService.aktivoiJulkaisu(projektiId, revision);
     }
 
@@ -109,4 +118,11 @@ public class JulkaisuController {
         julkaisutService.nollaaJulkaisuTila(perusteId);
     }
 
+    @RequestMapping(method = POST, value = "/{perusteId}/julkaisu/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateJulkaisu(@PathVariable("perusteId") final long perusteId,
+                       @RequestBody JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException {
+        julkaisutService.updateJulkaisu(perusteId, julkaisuBaseDto);
+    }
 }
