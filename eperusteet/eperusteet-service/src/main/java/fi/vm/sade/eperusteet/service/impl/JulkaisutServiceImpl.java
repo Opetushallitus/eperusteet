@@ -327,7 +327,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
             julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
-            julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
+            julkaisu.setJulkinen(true);
 
             if (!dokumentit.isEmpty()) {
                 julkaisu.setDokumentit(dokumentit);
@@ -408,7 +408,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setDokumentit(Sets.newHashSet(vanhaJulkaisu.getDokumentit()));
         julkaisu.setPeruste(peruste);
         julkaisu.setData(vanhaJulkaisu.getData());
-        julkaisu.setJulkinen(vanhaJulkaisu.getJulkinen());
+        julkaisu.setJulkinen(true);
         julkaisu.setJulkinenTiedote(vanhaJulkaisu.getJulkinenTiedote());
         julkaisu.setMuutosmaaraysVoimaan(vanhaJulkaisu.getMuutosmaaraysVoimaan());
 
@@ -570,7 +570,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         if (liitteet != null) {
             for (JulkaisuLiiteDto julkaisuLiite : liitteet) {
                 Liite liite = null;
-                JulkaisuLiite mappedJulkaisuLiite = mapper.map(julkaisuLiite, JulkaisuLiite.class);
                 if (julkaisuLiite.getData() != null) {
                     Pair<UUID, String> filePair = uploadLiite(julkaisuLiite);
                     liite = liiteRepository.findById(filePair.getFirst());
@@ -579,11 +578,12 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 }
 
                 if (liite != null) {
-                    mappedJulkaisuLiite.setLiite(liite);
-                    mappedJulkaisuLiite.setNimi(julkaisuLiite.getNimi());
-                    mappedJulkaisuLiite.setKieli(julkaisuLiite.getKieli());
-                    mappedJulkaisuLiite.setJulkaistuPeruste(julkaisu);
-                    tempLiitteet.add(mappedJulkaisuLiite);
+                    JulkaisuLiite newJulkaisuLiite = new JulkaisuLiite();
+                    newJulkaisuLiite.setLiite(liite);
+                    newJulkaisuLiite.setNimi(julkaisuLiite.getNimi());
+                    newJulkaisuLiite.setKieli(julkaisuLiite.getKieli());
+                    newJulkaisuLiite.setJulkaistuPeruste(julkaisu);
+                    tempLiitteet.add(newJulkaisuLiite);
                 }
             }
         }

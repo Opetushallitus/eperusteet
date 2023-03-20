@@ -11,7 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -30,7 +29,7 @@ public class JulkaisuLiite implements Serializable {
     @JoinColumn(name = "julkaistu_peruste_id", nullable = false, updatable = false)
     private JulkaistuPeruste julkaistuPeruste;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @NotNull
     private Liite liite;
 
