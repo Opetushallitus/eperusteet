@@ -10739,6 +10739,10 @@
     "JulkaisuLiiteDto" : {
       "type" : "object",
       "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "nimi" : {
           "type" : "string"
         },
@@ -13181,10 +13185,6 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13202,10 +13202,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13220,10 +13224,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13242,10 +13242,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13260,10 +13264,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13282,10 +13282,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13300,10 +13304,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13322,10 +13322,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13340,10 +13344,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13362,10 +13362,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13380,10 +13384,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13402,10 +13402,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13420,10 +13424,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13442,10 +13442,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13460,10 +13464,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13482,10 +13482,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13500,10 +13504,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13522,10 +13522,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13540,10 +13544,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13562,10 +13562,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13580,10 +13584,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13602,10 +13602,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13620,10 +13624,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13642,10 +13642,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -13660,10 +13664,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -13682,10 +13682,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
