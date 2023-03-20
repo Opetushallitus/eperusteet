@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
+import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaExternalDto;
 import fi.vm.sade.eperusteet.dto.tuva.TutkintoonvalmentavaSisaltoDto;
 import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOpetuksenSisaltoDto;
@@ -57,7 +58,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     List<TutkinnonOsaKaikkiDto> tutkinnonOsat;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    List<KoulutuksenOsaDto> koulutuksenOsat;
+    List<KoulutuksenOsaExternalDto> koulutuksenOsat;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("perusopetus")
