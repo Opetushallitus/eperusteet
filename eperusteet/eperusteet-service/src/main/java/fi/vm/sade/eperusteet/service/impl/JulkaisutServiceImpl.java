@@ -413,7 +413,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setMuutosmaaraysVoimaan(vanhaJulkaisu.getMuutosmaaraysVoimaan());
 
         if (vanhaJulkaisu.getLiitteet() != null) {
-            julkaisu.setLiitteet(addLiitteet(julkaisu, mapper.mapAsList(vanhaJulkaisu.getLiitteet(), JulkaisuLiiteDto.class)));
+            List<JulkaisuLiiteDto> vanhatLiitteet = mapper.mapAsList(vanhaJulkaisu.getLiitteet(), JulkaisuLiiteDto.class);
+            vanhatLiitteet.forEach(liite -> liite.setId(null));
+            julkaisu.setLiitteet(addLiitteet(julkaisu, vanhatLiitteet));
         }
 
         julkaisu = julkaisutRepository.save(julkaisu);
@@ -570,6 +572,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         if (liitteet != null) {
             for (JulkaisuLiiteDto julkaisuLiite : liitteet) {
                 Liite liite = null;
+                JulkaisuLiite mappedJulkaisuLiite = mapper.map(julkaisuLiite, JulkaisuLiite.class);
                 if (julkaisuLiite.getData() != null) {
                     Pair<UUID, String> filePair = uploadLiite(julkaisuLiite);
                     liite = liiteRepository.findById(filePair.getFirst());
@@ -578,12 +581,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 }
 
                 if (liite != null) {
-                    JulkaisuLiite newJulkaisuLiite = new JulkaisuLiite();
-                    newJulkaisuLiite.setLiite(liite);
-                    newJulkaisuLiite.setNimi(julkaisuLiite.getNimi());
-                    newJulkaisuLiite.setKieli(julkaisuLiite.getKieli());
-                    newJulkaisuLiite.setJulkaistuPeruste(julkaisu);
-                    tempLiitteet.add(newJulkaisuLiite);
+                    mappedJulkaisuLiite.setLiite(liite);
+                    mappedJulkaisuLiite.setNimi(julkaisuLiite.getNimi());
+                    mappedJulkaisuLiite.setKieli(julkaisuLiite.getKieli());
+                    mappedJulkaisuLiite.setJulkaistuPeruste(julkaisu);
+                    tempLiitteet.add(mappedJulkaisuLiite);
                 }
             }
         }

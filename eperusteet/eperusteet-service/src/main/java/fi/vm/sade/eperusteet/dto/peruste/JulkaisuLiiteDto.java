@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JulkaisuLiiteDto {
+    private Long id;
     private String nimi;
     private String kieli;
     private String data;
