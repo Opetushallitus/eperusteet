@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto.tuva;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.KoulutusOsanTyyppi;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("koulutuksenosa")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class KoulutuksenOsaDto extends PerusteenOsaDto.Laaja {
 
     private KoodiDto nimiKoodi;
