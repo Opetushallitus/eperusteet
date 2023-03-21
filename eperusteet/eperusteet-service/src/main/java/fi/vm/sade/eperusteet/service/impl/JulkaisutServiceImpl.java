@@ -327,7 +327,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
             julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
-            julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
+            julkaisu.setJulkinen(true);
 
             if (!dokumentit.isEmpty()) {
                 julkaisu.setDokumentit(dokumentit);
@@ -408,12 +408,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisu.setDokumentit(Sets.newHashSet(vanhaJulkaisu.getDokumentit()));
         julkaisu.setPeruste(peruste);
         julkaisu.setData(vanhaJulkaisu.getData());
-        julkaisu.setJulkinen(vanhaJulkaisu.getJulkinen());
+        julkaisu.setJulkinen(true);
         julkaisu.setJulkinenTiedote(vanhaJulkaisu.getJulkinenTiedote());
         julkaisu.setMuutosmaaraysVoimaan(vanhaJulkaisu.getMuutosmaaraysVoimaan());
 
         if (vanhaJulkaisu.getLiitteet() != null) {
-            julkaisu.setLiitteet(addLiitteet(julkaisu, mapper.mapAsList(vanhaJulkaisu.getLiitteet(), JulkaisuLiiteDto.class)));
+            List<JulkaisuLiiteDto> vanhatLiitteet = mapper.mapAsList(vanhaJulkaisu.getLiitteet(), JulkaisuLiiteDto.class);
+            vanhatLiitteet.forEach(liite -> liite.setId(null));
+            julkaisu.setLiitteet(addLiitteet(julkaisu, vanhatLiitteet));
         }
 
         julkaisu = julkaisutRepository.save(julkaisu);
