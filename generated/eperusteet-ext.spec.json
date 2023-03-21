@@ -1010,6 +1010,59 @@
         }
       } ]
     },
+    "KoulutuksenOsaExternalDto" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "nimiKoodi" : {
+            "$ref" : "#/definitions/KoodiDto"
+          },
+          "laajuusMinimi" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "laajuusMaksimi" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "koulutusOsanKoulutustyyppi" : {
+            "type" : "string",
+            "enum" : [ "TUTKINTOKOULUTUKSEENVALMENTAVA", "PERUSOPETUS", "LUKIOKOULUTUS", "AMMATILLINENKOULUTUS" ]
+          },
+          "koulutusOsanTyyppi" : {
+            "type" : "string",
+            "enum" : [ "YHTEINEN", "VALINNAINEN" ]
+          },
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "tavoitteenKuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "tavoitteet" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/LokalisoituTekstiDto"
+            }
+          },
+          "keskeinenSisalto" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "laajaAlaisenOsaamisenKuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "arvioinninKuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "viiteId" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }
+      } ]
+    },
     "KoulutusDto" : {
       "type" : "object",
       "properties" : {
@@ -2387,15 +2440,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2427,15 +2480,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2655,7 +2708,7 @@
         "koulutuksenOsat" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/KoulutuksenOsaDto"
+            "$ref" : "#/definitions/KoulutuksenOsaExternalDto"
           }
         },
         "perusopetus" : {
