@@ -186,7 +186,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             for (int i = 0; i < list.getLength(); i++) {
                 Element element = (Element) list.item(i);
                 element.setAttribute("text", element.getTextContent());
-                
+
                 Node node = list.item(i);
                 if (node.getAttributes() != null & node.getAttributes().getNamedItem("data-viite") != null) {
                     String avain = node.getAttributes().getNamedItem("data-viite").getNodeValue();
@@ -1211,11 +1211,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             List<Ammattitaitovaatimus2019> vaatimukset = ammattitaitovaatimukset2019.getVaatimukset();
             List<Ammattitaitovaatimus2019Kohdealue> kohdealueet = ammattitaitovaatimukset2019.getKohdealueet();
 
-            if (kohde != null) {
-                addTeksti(docBase, getTextString(docBase, kohde), "p");
-            }
-
             if (!ObjectUtils.isEmpty(vaatimukset) || !ObjectUtils.isEmpty(kohdealueet)) {
+                if (kohde != null && !ObjectUtils.isEmpty(vaatimukset)) {
+                    addTeksti(docBase, getTextString(docBase, kohde), "p");
+                }
+
                 Element listaEl = docBase.getDocument().createElement("ul");
                 docBase.getBodyElement().appendChild(listaEl);
 
@@ -2039,7 +2039,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 if (StringUtils.isEmpty(id)) {
                     continue;
                 }
-                
+
                 UUID uuid = UUID.fromString(id);
 
                 // Ladataan kuvan data muistiin
