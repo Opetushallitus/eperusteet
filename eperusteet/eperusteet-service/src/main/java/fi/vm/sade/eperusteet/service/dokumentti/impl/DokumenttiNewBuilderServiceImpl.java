@@ -1620,27 +1620,33 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                         }
                     }
 
-                    if (osaAlue.getPakollisetOsaamistavoitteet() != null) {
+                    if (osaAlue.getPakollisetOsaamistavoitteet() != null && osaamistavoitteellaSisaltoa(osaAlue.getPakollisetOsaamistavoitteet().getTavoitteet2020(), docBase.getKieli())) {
                         String otsikko = messages.translate("docgen.tutke2.pakolliset_osaamistavoitteet.title", docBase.getKieli())
                                 + getLaajuusSuffiksi(osaAlue.getPakollisetOsaamistavoitteet().getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
                         addTeksti(docBase, otsikko, "h5");
 
                         addAmmattitaitovaatimukset2019(docBase, osaAlue.getPakollisetOsaamistavoitteet().getTavoitteet2020());
-
                     }
 
-                    if (osaAlue.getValinnaisetOsaamistavoitteet() != null) {
+                    if (osaAlue.getValinnaisetOsaamistavoitteet() != null && osaamistavoitteellaSisaltoa(osaAlue.getValinnaisetOsaamistavoitteet().getTavoitteet2020(), docBase.getKieli())) {
                         String otsikko = messages.translate("docgen.tutke2.valinnaiset_osaamistavoitteet.title", docBase.getKieli())
                                 + getLaajuusSuffiksi(osaAlue.getValinnaisetOsaamistavoitteet().getLaajuus(), docBase.getLaajuusYksikko(), docBase.getKieli());
                         addTeksti(docBase, otsikko, "h5");
 
                         addAmmattitaitovaatimukset2019(docBase, osaAlue.getValinnaisetOsaamistavoitteet().getTavoitteet2020());
-
                     }
 
                     addGeneerinenArviointi(docBase, osaAlue.getGeneerinenArviointiasteikko());
 
                 });
+    }
+
+    private boolean osaamistavoitteellaSisaltoa(Ammattitaitovaatimukset2019 tavoitteet, Kieli kieli) {
+        return tavoitteet.getVaatimukset().stream()
+                    .anyMatch(vaatimus -> vaatimus.getVaatimus().getTeksti().containsKey(kieli) && StringUtils.isNotEmpty(vaatimus.getVaatimus().getTeksti().get(kieli)))
+                || tavoitteet.getKohdealueet().stream()
+                    .anyMatch(kohdeAlue -> kohdeAlue.getVaatimukset().stream()
+                            .anyMatch(vaatimus -> vaatimus.getVaatimus() != null && vaatimus.getVaatimus().getTeksti().containsKey(kieli) && StringUtils.isNotEmpty(vaatimus.getVaatimus().getTeksti().get(kieli))));
     }
 
     private void addAipeSisalto(DokumenttiPeruste docBase) {
