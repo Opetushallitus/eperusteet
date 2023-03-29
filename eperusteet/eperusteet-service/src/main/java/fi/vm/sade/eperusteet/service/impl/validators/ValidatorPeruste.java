@@ -496,8 +496,6 @@ public class ValidatorPeruste implements Validator {
                         vaaditutKielet, virheellisetKielet);
                 tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", tosa.getNimi(),
                         vaaditutKielet, virheellisetKielet, true);
-                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-tavoitteet", tosa.getTavoitteet(),
-                        vaaditutKielet, virheellisetKielet);
             }
         }
 
