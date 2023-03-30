@@ -59,6 +59,7 @@ public interface DokumenttiService {
     @PreAuthorize("isAuthenticated()")
     DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version);
 
+    @Deprecated
     void paivitaDokumentit();
 
 }
