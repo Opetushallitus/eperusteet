@@ -48,4 +48,18 @@ public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
             GeneratorVersion version,
             Sort sort
     );
+
+    List<Dokumentti> findByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersion(
+            Long perusteId,
+            Kieli kieli,
+            Suoritustapakoodi suoritustapakoodi,
+            GeneratorVersion version,
+            Sort sort
+    );
+    List<Dokumentti> findByPerusteIdAndKieliAndGeneratorVersion(
+            Long perusteId,
+            Kieli kieli,
+            GeneratorVersion version,
+            Sort sort
+    );
 }

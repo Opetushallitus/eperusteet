@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 //@Component
+@Deprecated
 public class DokumenttiTask implements ScheduledTask {
 
     @Autowired
