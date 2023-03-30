@@ -168,11 +168,11 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         // Kvliite ei riipu suoritustavasta
         if (GeneratorVersion.KVLIITE.equals(version)) {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndGeneratorVersion(
-                    id, kieli, DokumenttiTila.VALMIS, version, sort);
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndGeneratorVersion(
+                    id, kieli, version, sort);
         } else {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndTilaAndSuoritustapakoodiAndGeneratorVersion(
-                    id, kieli, DokumenttiTila.VALMIS, suoritustapakoodi,
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersion(
+                    id, kieli, suoritustapakoodi,
                     version != null ? version : GeneratorVersion.UUSI, sort);
         }
 
@@ -389,6 +389,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
+    @Deprecated
     public void paivitaDokumentit() {
 
         // Haetaan päivitettävät dokumentit
@@ -413,6 +414,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Transactional(propagation = Propagation.NEVER)
+    @Deprecated
     private List<DokumenttiDto> getPaivitettavat(List<PerusteprojektiDokumenttiDto> tarkistettavat) {
 
         TransactionTemplate template = new TransactionTemplate(tm);
