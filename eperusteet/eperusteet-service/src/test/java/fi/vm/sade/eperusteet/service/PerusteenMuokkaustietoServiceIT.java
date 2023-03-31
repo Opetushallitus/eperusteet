@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenMuokkaustieto;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
@@ -27,6 +28,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -93,6 +95,17 @@ public class PerusteenMuokkaustietoServiceIT extends AbstractIntegrationTest {
                 .contains(NavigationType.koulutuksenosa);
     }
 
+    @Test
+    @Rollback
+    public void testMuokkaustiedot() {
+        addPerusteenOsa(new TekstiKappaleDto());
+        addPerusteenOsa(new KoulutuksenOsaDto());
+        assertThat(getMuokkaustiedotValilta(peruste.getId()))
+                .hasSize(2)
+                .extracting(PerusteenMuokkaustieto::getKohde)
+                .containsExactlyInAnyOrder(NavigationType.koulutuksenosa, NavigationType.tekstikappale);
+    }
+
     private void addPerusteenOsa(PerusteenOsaDto.Laaja perusteenOsaDto) {
         PerusteenOsaViiteDto.Matala pov = new PerusteenOsaViiteDto.Matala(new KoulutuksenOsaDto());
         pov.setPerusteenOsa(perusteenOsaDto);
@@ -101,5 +114,11 @@ public class PerusteenMuokkaustietoServiceIT extends AbstractIntegrationTest {
 
     private List<PerusteenMuokkaustieto> getMuokkaustiedot(Long perusteId) {
         return muokkausTietoRepository.findByPerusteIdAndLuotuBeforeOrderByLuotuDesc(perusteId, new Date(), new PageRequest(0, 100));
+    }
+
+    private List<PerusteenMuokkaustieto> getMuokkaustiedotValilta(Long perusteId) {
+        List<MuokkausTapahtuma> includeTapahtumat = Arrays.asList(MuokkausTapahtuma.LUONTI, MuokkausTapahtuma.PAIVITYS, MuokkausTapahtuma.POISTO);
+        List<NavigationType> excludeTypet = List.of(NavigationType.peruste);
+        return muokkausTietoRepository.findByPerusteIdAndLuotuIsBetweenAndTapahtumaIsInAndKohdeNotIn(perusteId, peruste.getLuotu(), new Date(), includeTapahtumat, excludeTypet);
     }
 }

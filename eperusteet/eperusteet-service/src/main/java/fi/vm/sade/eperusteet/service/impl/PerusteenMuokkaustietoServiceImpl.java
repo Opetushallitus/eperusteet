@@ -130,11 +130,7 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
 
     @Override
     public List<PerusteenMuutostietoDto> getVersionMuutostiedot(Long perusteId, Integer revision) {
-        List<MuokkausTapahtuma> includeTapahtumat = Arrays.asList(MuokkausTapahtuma.LUONTI, MuokkausTapahtuma.PAIVITYS, MuokkausTapahtuma.POISTO);
-        List<NavigationType> excludeTypet = Arrays.asList(NavigationType.peruste);
-
         Peruste peruste = perusteRepository.findOne(perusteId);
-
         JulkaistuPeruste tarkasteltavaJulkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, revision);
         JulkaistuPeruste edellinenJulkinenJulkaisu = julkaisutRepository.findFirstByPerusteAndJulkinenAndLuotuBeforeOrderByRevisionDesc(peruste, true, tarkasteltavaJulkaisu.getLuotu());
 
@@ -142,14 +138,15 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
             // ei löydy vanhempaa julkista julkaisua, johon verrata
             return new ArrayList<>();
         }
+        return filterTapahtumat(getVersioidenValisetMuutokset(perusteId, edellinenJulkinenJulkaisu.getLuotu(), tarkasteltavaJulkaisu.getLuotu()));
+    }
 
-        log.info("Nykyversio: {}, Edellinen: {}", tarkasteltavaJulkaisu.getRevision(), edellinenJulkinenJulkaisu.getRevision());
-        // Haetaan vertailtavien julkaisujen väliset muokkaustiedot
-        List<PerusteenMuokkaustietoDto> muokkaustiedot = mapper.mapAsList(
-                muokkausTietoRepository.findByPerusteIdAndLuotuIsBetweenAndTapahtumaIsInAndKohdeNotIn(perusteId, edellinenJulkinenJulkaisu.getLuotu(), tarkasteltavaJulkaisu.getLuotu(), includeTapahtumat, excludeTypet),
+    private List<PerusteenMuokkaustietoDto> getVersioidenValisetMuutokset(Long perusteId, Date edellinenLuotu, Date nykyinenLuotu) {
+        List<MuokkausTapahtuma> includeTapahtumat = Arrays.asList(MuokkausTapahtuma.LUONTI, MuokkausTapahtuma.PAIVITYS, MuokkausTapahtuma.POISTO);
+        List<NavigationType> excludeTypet = List.of(NavigationType.peruste);
+        return mapper.mapAsList(
+                muokkausTietoRepository.findByPerusteIdAndLuotuIsBetweenAndTapahtumaIsInAndKohdeNotIn(perusteId, edellinenLuotu, nykyinenLuotu, includeTapahtumat, excludeTypet),
                 PerusteenMuokkaustietoDto.class);
-
-        return filterTapahtumat(muokkaustiedot);
     }
 
     private List<PerusteenMuutostietoDto> filterTapahtumat(List<PerusteenMuokkaustietoDto> muokkaustiedot) {
