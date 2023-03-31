@@ -96,6 +96,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     List<JulkaistuPeruste> findAllByPerusteOrderByRevisionDesc(@Param("peruste") Peruste peruste);
 
+    JulkaistuPeruste findFirstByPerusteAndJulkinenAndLuotuBeforeOrderByRevisionDesc(@Param("peruste") Peruste peruste, boolean julkinen, Date luotu);
+
     JulkaistuPeruste findFirstByPerusteOrderByRevisionDesc(@Param("peruste") Peruste peruste);
 
     JulkaistuPeruste findFirstByPerusteIdOrderByRevisionDesc(long id);
