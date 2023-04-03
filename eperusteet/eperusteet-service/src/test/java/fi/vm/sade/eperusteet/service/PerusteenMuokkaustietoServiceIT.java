@@ -35,7 +35,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class PerusteenMuokkaustietoServiceIT extends AbstractIntegrationTest {
 
     @Autowired
