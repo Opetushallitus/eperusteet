@@ -322,12 +322,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
             julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
-            julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
             julkaisu.setLuoja(username);
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
             julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
             julkaisu.setJulkinen(true);
+
+            if (julkaisuBaseDto.getJulkinenTiedote() != null) {
+                julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
+            }
 
             if (!dokumentit.isEmpty()) {
                 julkaisu.setDokumentit(dokumentit);
