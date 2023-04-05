@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import lombok.*;
 import org.hibernate.envers.Audited;
@@ -32,7 +33,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         Koodillinen,
         StructurallyComparable<Lops2019Oppiaine>,
         Nimetty,
-        Copyable<Lops2019Oppiaine> {
+        Copyable<Lops2019Oppiaine>,
+        HistoriaTapahtuma {
 
     @Getter
     @Setter
@@ -206,4 +208,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
         return result;
     }
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.oppiaine;
+    }
 }

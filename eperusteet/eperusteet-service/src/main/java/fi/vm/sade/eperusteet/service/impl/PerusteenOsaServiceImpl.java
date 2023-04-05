@@ -612,9 +612,19 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Override
     @Transactional
-    public fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja revertToVersio(Long id, Integer versioId) {
+    public PerusteenOsaDto.Laaja revertToVersio(Long id, Integer versioId) {
         PerusteenOsa revision = perusteenOsaRepo.findRevision(id, versioId);
-        return update(mapper.map(revision, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class));
+        PerusteenOsaDto.Laaja updated = update(mapper.map(revision, PerusteenOsaDto.Laaja.class));
+        createMuokkaustieto(updated.getId());
+        return updated;
+    }
+
+    private void createMuokkaustieto(Long id) {
+        PerusteenOsa lisatty = perusteenOsaRepo.findOne(id);
+        if (lisatty != null && !lisatty.getViitteet().isEmpty()) {
+            Long viiteId = lisatty.getViitteet().stream().findFirst().get().getId();
+            muokkausTietoService.addMuokkaustieto(id, perusteenOsaViiteRepository.findOne(viiteId), MuokkausTapahtuma.PAIVITYS);
+        }
     }
 
     @Override

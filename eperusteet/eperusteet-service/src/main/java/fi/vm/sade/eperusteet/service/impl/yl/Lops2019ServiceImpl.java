@@ -12,6 +12,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAla
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -20,6 +21,7 @@ import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -63,6 +65,9 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
     @Autowired
     private Lops2019ModuuliRepository moduuliRepository;
+
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
 
     @Autowired
     @Dto
@@ -292,7 +297,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
         Lops2019Oppiaine oppiaine = mapper.map(dto, Lops2019Oppiaine.class);
 
         oppiaine = oppiaineRepository.save(oppiaine);
-
+        muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.LUONTI);
         // Lisätään sisältöön viittaus oppiaineeseen
         final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         sisalto.getOppiaineet().add(oppiaine);
@@ -432,7 +437,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         // Tallennetaan muokattu oppiaine
         oppiaine = oppiaineRepository.save(oppiaine);
-
+        muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.PAIVITYS);
         final Lops2019OppiaineDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineDto.class);
 
         // Haetaan manuaalisesti oppimäärät ja moduulit mukaan
@@ -468,6 +473,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
         if (removed) {
             oppiaineRepository.delete(oppiaineId);
         }
+        muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.POISTO);
     }
 
     @Override

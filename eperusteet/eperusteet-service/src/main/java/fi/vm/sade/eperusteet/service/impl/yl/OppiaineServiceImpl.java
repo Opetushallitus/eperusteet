@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine.OsaTyyppi;
@@ -27,6 +28,7 @@ import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -81,6 +83,9 @@ public class OppiaineServiceImpl implements OppiaineService {
     private OpetuksenKohdeAlueRepository kohdeAlueRepository;
 
     @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
+
+    @Autowired
     @LockCtx(OppiaineLockContext.class)
     private LockService<OppiaineLockContext> lockService;
 
@@ -100,6 +105,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (sisalto != null) {
             Oppiaine oppiaine = saveOppiaine(dto);
             sisalto.addOppiaine(oppiaine);
+            muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.LUONTI);
             return mapper.map(oppiaine, OppiaineDto.class);
         }
         throw new BusinessRuleViolationException("Perustetta ei ole");
@@ -180,6 +186,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             ((LukiokoulutuksenPerusteenSisalto) sisalto).getOpetussuunnitelma().setMuokattu(new Date());
         }
         oppiaineRepository.delete(aine);
+        muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.POISTO);
     }
 
     @Override
@@ -371,6 +378,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         oppiaineRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         aine = oppiaineRepository.save(aine);
         oppiaineRepository.setRevisioKommentti("Muokattu oppiainetta " + aine.getNimi().toString());
+        muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(aine, OppiaineDto.class);
     }
 
