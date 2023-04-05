@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -31,6 +32,8 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -45,7 +48,9 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name = "yl_oppiaine")
-public class Oppiaine extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen {
+public class Oppiaine extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen, HistoriaTapahtuma {
+
+
 
     public enum OsaTyyppi {
         tehtava(Oppiaine::getTehtava),
@@ -403,5 +408,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Transient
     public boolean isAbstraktiBool() {
         return abstrakti != null && abstrakti;
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.oppiaine;
     }
 }
