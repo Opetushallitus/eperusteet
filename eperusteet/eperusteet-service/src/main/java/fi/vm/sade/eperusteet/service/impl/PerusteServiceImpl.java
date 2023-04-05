@@ -1090,11 +1090,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             return;
         }
         Date muokattu = new Date();
-//        if (peruste.getTila() == PerusteTila.VALMIS) {
-//            perusteRepository.setRevisioKommentti("Perusteen sisältöä korjattu");
-//            peruste.muokattu();
-//            muokattu = peruste.getMuokattu();
-//        }
         if (peruste.getGlobalVersion() == null) {
             peruste.setGlobalVersion(new PerusteVersion(peruste));
         }
