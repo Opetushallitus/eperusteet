@@ -194,6 +194,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             julkaisu.setLuoja("maintenance");
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
+            julkaisu.setJulkinen(true);
 
             ObjectNode data = objectMapper.valueToTree(sisalto);
             julkaisu.setData(new JulkaistuPerusteData(data));
