@@ -41,7 +41,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "arvioinninkohde")
 @ValidArvioinninKohde
 @Audited
-public class ArvioinninKohde implements Serializable {
+public class
+ArvioinninKohde implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
