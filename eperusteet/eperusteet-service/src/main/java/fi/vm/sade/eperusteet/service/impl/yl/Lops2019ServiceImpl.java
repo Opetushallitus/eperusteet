@@ -545,6 +545,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
         if (removed) {
             moduuliRepository.delete(moduuliId);
         }
+        muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.PAIVITYS);
     }
 
     @Override
