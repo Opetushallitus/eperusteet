@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonTypeName("koulutuksenosa")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KoulutuksenOsaExternalDto extends KoulutuksenOsaDto {
     private Long viiteId;
