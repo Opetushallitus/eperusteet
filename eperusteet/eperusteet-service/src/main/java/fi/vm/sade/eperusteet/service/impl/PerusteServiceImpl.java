@@ -1017,7 +1017,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     CollectionUtil.treeToStream(peruste.getTuvasisalto().getSisalto(), PerusteenOsaViite::getLapset)
                             .filter(viite -> viite.getPerusteenOsa() != null && viite.getPerusteenOsa() instanceof KoulutuksenOsa)
                             .map(viite -> {
-                                KoulutuksenOsaExternalDto dtoExternal = mapper.map(viite.getPerusteenOsa(), KoulutuksenOsaExternalDto.class);
+                                KoulutuksenOsaDto dto = mapper.map(viite.getPerusteenOsa(), KoulutuksenOsaDto.class);
+                                KoulutuksenOsaExternalDto dtoExternal = mapper.map(dto, KoulutuksenOsaExternalDto.class);
                                 dtoExternal.setViiteId(viite.getId());
                                 return dtoExternal;
                             })

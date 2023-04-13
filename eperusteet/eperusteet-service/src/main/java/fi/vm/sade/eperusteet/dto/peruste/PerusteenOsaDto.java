@@ -88,7 +88,6 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = OpintokokonaisuusDto.class),
             @JsonSubTypes.Type(value = TavoitesisaltoalueDto.class),
             @JsonSubTypes.Type(value = KoulutuksenOsaDto.class),
-            @JsonSubTypes.Type(value = KoulutuksenOsaExternalDto.class),
             @JsonSubTypes.Type(value = KotoKielitaitotasoDto.class),
             @JsonSubTypes.Type(value = KotoOpintoDto.class),
             @JsonSubTypes.Type(value = KotoLaajaAlainenOsaaminenDto.class),
