@@ -166,7 +166,7 @@ public class DokumenttiController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(path = "/pdf/tila/{dokumenttiId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/pdf/tila/{dokumenttiId}", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<String> updateDokumenttiTila(@PathVariable("dokumenttiId") Long dokumenttiId,
                                                        @RequestBody DokumenttiTila tila) {
