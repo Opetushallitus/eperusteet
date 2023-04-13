@@ -35,6 +35,8 @@ public class KoulutuksenOsaDto extends PerusteenOsaDto.Laaja {
     private LokalisoituTekstiDto laajaAlaisenOsaamisenKuvaus;
     private LokalisoituTekstiDto arvioinninKuvaus;
 
+    private Long viiteId;
+
     @Override
     public String getOsanTyyppi() {
         return "koulutuksenosa";

@@ -113,7 +113,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
-import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaExternalDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
@@ -1018,9 +1017,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                             .filter(viite -> viite.getPerusteenOsa() != null && viite.getPerusteenOsa() instanceof KoulutuksenOsa)
                             .map(viite -> {
                                 KoulutuksenOsaDto dto = mapper.map(viite.getPerusteenOsa(), KoulutuksenOsaDto.class);
-                                KoulutuksenOsaExternalDto dtoExternal = mapper.map(dto, KoulutuksenOsaExternalDto.class);
-                                dtoExternal.setViiteId(viite.getId());
-                                return dtoExternal;
+                                dto.setViiteId(viite.getId());
+                                return dto;
                             })
                             .collect(Collectors.toList()));
         }
