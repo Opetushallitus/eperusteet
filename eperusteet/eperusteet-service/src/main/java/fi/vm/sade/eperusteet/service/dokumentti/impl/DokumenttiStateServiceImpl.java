@@ -45,7 +45,7 @@ public class DokumenttiStateServiceImpl implements DokumenttiStateService {
     private DtoMapper mapper;
 
     @IgnorePerusteUpdateCheck
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public DokumenttiDto save(DokumenttiDto dto) {
         Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);
         dokumentti = dokumenttiRepository.save(dokumentti);

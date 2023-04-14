@@ -23,11 +23,6 @@ public class DokumenttiServiceMock implements DokumenttiService {
     }
 
     @Override
-    public void generateWithDtoSynchronous(DokumenttiDto dto) throws DokumenttiException {
-
-    }
-
-    @Override
     public DokumenttiDto createDtoFor(long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
         return null;
     }
@@ -55,10 +50,5 @@ public class DokumenttiServiceMock implements DokumenttiService {
     @Override
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
         return null;
-    }
-
-    @Override
-    public void paivitaDokumentit() {
-
     }
 }
