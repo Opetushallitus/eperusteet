@@ -51,4 +51,9 @@ public class DokumenttiServiceMock implements DokumenttiService {
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
         return null;
     }
+
+    @Override
+    public Long getJulkaistuDokumenttiId(Long perusteId, Kieli kieli, Integer revision) {
+        return null;
+    }
 }

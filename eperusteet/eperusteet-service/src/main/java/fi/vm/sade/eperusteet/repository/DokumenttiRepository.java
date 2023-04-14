@@ -22,6 +22,8 @@ import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -62,4 +64,6 @@ public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
             GeneratorVersion version,
             Sort sort
     );
+
+    Dokumentti findByIdInAndKieli(Set<Long> id, Kieli kieli);
 }
