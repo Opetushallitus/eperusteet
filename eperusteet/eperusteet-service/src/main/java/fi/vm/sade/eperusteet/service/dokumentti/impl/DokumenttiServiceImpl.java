@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -50,6 +51,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import fi.vm.sade.eperusteet.utils.dto.dokumentti.DokumenttiMetaDto;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -191,6 +193,33 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             dto.setTila(DokumenttiTila.EI_OLE);
             return dto;
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @IgnorePerusteUpdateCheck
+    public Long getJulkaistuDokumenttiId(Long perusteId, Kieli kieli, Integer revision) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+
+        if (peruste == null) {
+            return null;
+        }
+
+        JulkaistuPeruste julkaisu = null;
+        if (revision != null) {
+            julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, revision);
+        } else {
+            julkaisu = julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(peruste.getId());
+        }
+
+        if (julkaisu != null && CollectionUtils.isNotEmpty(julkaisu.getDokumentit())) {
+            Dokumentti dokumentti = dokumenttiRepository.findByIdInAndKieli(julkaisu.getDokumentit(), kieli);
+            if (dokumentti != null) {
+                return dokumentti.getId();
+            }
+        }
+
+        return null;
     }
 
     @Override
