@@ -1,0 +1,1 @@
+update dokumentti set tila = 'EI_OLE' where tila in ('LUODAAN', 'JONOSSA') and valmistumisaika is null
