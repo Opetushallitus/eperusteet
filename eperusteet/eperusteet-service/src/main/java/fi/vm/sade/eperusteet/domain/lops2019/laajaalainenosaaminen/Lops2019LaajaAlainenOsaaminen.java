@@ -2,11 +2,13 @@ package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Copyable;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -23,7 +25,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Table(name = "yl_lops2019_laaja_alainen_osaaminen")
 public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableEntity
-        implements Copyable<Lops2019LaajaAlainenOsaaminen> {
+        implements Copyable<Lops2019LaajaAlainenOsaaminen>, HistoriaTapahtuma {
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -64,4 +66,8 @@ public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableE
         return result;
     }
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.laajaalaiset;
+    }
 }

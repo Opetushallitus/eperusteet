@@ -12,7 +12,6 @@ import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAla
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -120,6 +119,8 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         final Lops2019LaajaAlainenOsaaminenKokonaisuus kokonaisuus = sisalto.getLaajaAlainenOsaaminen();
 
+        Lops2019LaajaAlainenOsaaminenKokonaisuusDto originalKokonaisuusCopy = mapper.map(sisalto.getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
+
         if (Objects.equals(peruste.getTila(), PerusteTila.VALMIS)) {
             kokonaisuus.getLaajaAlaisetOsaamiset().forEach(lao -> {
                 laajaAlaiset.forEach(olao -> {
@@ -136,7 +137,35 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
 
+        addLaajaAlainenMuokkaustieto(perusteId, originalKokonaisuusCopy.getLaajaAlaisetOsaamiset(), kokonaisuus.getLaajaAlaisetOsaamiset());
         return mapper.map(sisalto.getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
+    }
+
+    private void addLaajaAlainenMuokkaustieto(Long perusteId, List<Lops2019LaajaAlainenOsaaminenDto> original, Set<Lops2019LaajaAlainenOsaaminen> korvaavat) {
+        List<Lops2019LaajaAlainenOsaaminen> alkuperaiset = mapper.mapAsList(original, Lops2019LaajaAlainenOsaaminen.class);
+        if (!korvaavat.isEmpty()) {
+            korvaavat.forEach(dtoLao -> {
+                boolean isLuonti = alkuperaiset.stream().noneMatch(dbL -> Objects.equals(dbL.getId(), dtoLao.getId()));
+                if (alkuperaiset.isEmpty() || isLuonti) {
+                    muokkausTietoService.addMuokkaustieto(perusteId, dtoLao, MuokkausTapahtuma.LUONTI);
+                }
+            });
+        }
+
+        alkuperaiset.forEach(dbLao -> {
+            boolean isPoisto = korvaavat.stream().noneMatch(dtoLao -> Objects.equals(dbLao.getId(), dtoLao.getId()));
+            if (isPoisto) {
+                muokkausTietoService.addMuokkaustieto(perusteId, dbLao, MuokkausTapahtuma.POISTO);
+            }
+            else {
+                korvaavat.forEach(dtoLao -> {
+                    if (Objects.equals(dbLao.getId(), dtoLao.getId())
+                            && (!Objects.equals(dbLao.getNimi(), dtoLao.getNimi()) || !Objects.equals(dbLao.getKuvaus(), dtoLao.getKuvaus()))) {
+                        muokkausTietoService.addMuokkaustieto(perusteId, dtoLao, MuokkausTapahtuma.PAIVITYS);
+                    }
+                });
+            }
+        });
     }
 
     @Override
