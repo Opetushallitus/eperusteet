@@ -39,6 +39,6 @@ public class DokumenttiTask implements ScheduledTask {
 
     @Override
     public void execute() {
-        dokumenttiService.paivitaDokumentit();
+        //dokumenttiService.paivitaDokumentit();
     }
 }

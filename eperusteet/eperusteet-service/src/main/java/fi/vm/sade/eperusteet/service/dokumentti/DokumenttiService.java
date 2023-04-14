@@ -33,9 +33,6 @@ public interface DokumenttiService {
     @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
     void generateWithDto(@P("dto") DokumenttiDto dto) throws DokumenttiException;
 
-    @PreAuthorize("hasPermission(#dto.perusteId, 'peruste', 'LUKU')")
-    void generateWithDtoSynchronous(@P("dto") DokumenttiDto dto) throws DokumenttiException;
-
     @PreAuthorize("hasPermission(#id, 'peruste', 'LUKU')")
     DokumenttiDto createDtoFor(
             @P("id") final long id,
@@ -58,8 +55,5 @@ public interface DokumenttiService {
 
     @PreAuthorize("isAuthenticated()")
     DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version);
-
-    @Deprecated
-    void paivitaDokumentit();
 
 }

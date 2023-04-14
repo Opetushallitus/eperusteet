@@ -210,7 +210,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste()), JulkaisuBaseDto.class);
         if (julkaisut.size() > 0 && !onkoMuutoksia(perusteprojekti.getPeruste().getId())) {
-            throw new BusinessRuleViolationException("ei-muuttunut-viime-julkaisun-jalkeen");
+            throw new BusinessRuleViolationException("julkaisu-epaonnistui-peruste-ei-muuttunut-viime-julkaisun-jalkeen");
         }
 
         JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteprojekti.getPeruste().getId());
@@ -305,6 +305,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                                                 suoritustapa,
                                                 GeneratorVersion.UUSI
                                         );
+                                        dokumenttiService.setStarted(createDtoFor);
                                         dokumenttiService.generateWithDto(createDtoFor);
                                         return createDtoFor.getId();
                                     } catch (DokumenttiException e) {

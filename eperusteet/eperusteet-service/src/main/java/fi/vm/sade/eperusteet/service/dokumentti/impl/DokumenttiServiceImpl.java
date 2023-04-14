@@ -15,7 +15,17 @@
  */
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Dokumentti;
+import fi.vm.sade.eperusteet.domain.DokumenttiTila;
+import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapa;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
@@ -53,14 +63,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.xpath.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -122,7 +128,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private String activeProfile;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @IgnorePerusteUpdateCheck
     public DokumenttiDto createDtoFor(
             long id,
@@ -188,37 +194,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Override
-    @Transactional(noRollbackFor = DokumenttiException.class)
+    @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
     @IgnorePerusteUpdateCheck
     @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
-        dto.setTila(DokumenttiTila.LUODAAN);
-        dokumenttiStateService.save(dto);
-
-        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
-        if (dokumentti == null) {
-            dokumentti = mapper.map(dto, Dokumentti.class);
-        }
-
-        try {
-            dokumentti.setData(generateFor(dto));
-            dokumentti.setTila(DokumenttiTila.VALMIS);
-            dokumentti.setValmistumisaika(new Date());
-            dokumenttiRepository.save(dokumentti);
-        } catch (Exception ex) {
-            dto.setTila(DokumenttiTila.EPAONNISTUI);
-            dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
-            dto.setValmistumisaika(new Date());
-            dokumenttiStateService.save(dto);
-
-            throw new DokumenttiException(ex.getMessage(), ex);
-        }
-    }
-
-    @Override
-    @Transactional(noRollbackFor = DokumenttiException.class)
-    @IgnorePerusteUpdateCheck
-    public void generateWithDtoSynchronous(DokumenttiDto dto) throws DokumenttiException {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
@@ -296,7 +275,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @IgnorePerusteUpdateCheck
     public void setStarted(DokumenttiDto dto) {
         dto.setAloitusaika(new Date());
@@ -384,100 +363,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
         }
         return toReturn;
-    }
-
-    @Override
-    @IgnorePerusteUpdateCheck
-    @Transactional(propagation = Propagation.NEVER)
-    @Deprecated
-    public void paivitaDokumentit() {
-
-        // Haetaan päivitettävät dokumentit
-        TransactionTemplate template = new TransactionTemplate(tm);
-        List<PerusteprojektiDokumenttiDto> tarkistettavat = template.execute(status -> mapper.mapAsList(
-                perusteprojektiRepository.findAllByTilaAndPerusteTyyppi(ProjektiTila.JULKAISTU, PerusteTyyppi.NORMAALI),
-                PerusteprojektiDokumenttiDto.class));
-
-        List<DokumenttiDto> paivitettavat = getPaivitettavat(tarkistettavat);
-
-        log.debug("Päivitetään " + paivitettavat.size() + " dokumenttia");
-
-        int counter = 1;
-        for (DokumenttiDto d : paivitettavat) {
-            try {
-                paivitaDokumentti(d, counter);
-            } catch (RuntimeException e) {
-                log.error(e.getLocalizedMessage(), e);
-            }
-            counter++;
-        }
-    }
-
-    @Transactional(propagation = Propagation.NEVER)
-    @Deprecated
-    private List<DokumenttiDto> getPaivitettavat(List<PerusteprojektiDokumenttiDto> tarkistettavat) {
-
-        TransactionTemplate template = new TransactionTemplate(tm);
-
-        List<DokumenttiDto> paivitettavat = new ArrayList<>();
-        for (PerusteprojektiDokumenttiDto pp : tarkistettavat) {
-            PerusteDokumenttiDto p = pp.getPeruste();
-
-            for (Kieli kieli : p.getKielet()) {
-                for (SuoritustapaDto st : p.getSuoritustavat()) {
-                    template.execute(status -> {
-                        DokumenttiDto latest = findLatest(p.getId(), kieli, st.getSuoritustapakoodi(), GeneratorVersion.UUSI);
-                        if (latest != null
-                                && latest.getAloitusaika() != null
-                                && latest.getAloitusaika().before(p.getViimeisinJulkaisuAika().orElse(p.getGlobalVersion().getAikaleima()))) {
-                            paivitettavat.add(latest);
-                        }
-
-                        DokumenttiDto latestKvliite = findLatest(p.getId(), kieli, st.getSuoritustapakoodi(), GeneratorVersion.KVLIITE);
-                        if (latestKvliite != null
-                                && !DokumenttiTila.EI_OLE.equals(latestKvliite.getTila())
-                                && (latestKvliite.getAloitusaika() == null || latestKvliite.getAloitusaika()
-                                .before(p.getViimeisinJulkaisuAika().orElse(p.getGlobalVersion().getAikaleima())))) {
-                            paivitettavat.add(latestKvliite);
-                        }
-                        return true;
-                    });
-                }
-            }
-        }
-
-        return paivitettavat;
-    }
-
-    @Transactional(propagation = Propagation.NEVER)
-    private void paivitaDokumentti(DokumenttiDto latest, int counter) {
-
-        TransactionTemplate template = new TransactionTemplate(tm);
-
-        template.execute(status -> {
-
-            log.debug(String.format("%04d", counter)
-                    + " Aloitetaan perusteelle (" + latest.getPerusteId() + ", " + latest.getSuoritustapakoodi()
-                    + ", " + latest.getKieli() + ", " + latest.getGeneratorVersion() + ") uuden dokumentin luonti.");
-            try {
-                DokumenttiDto createDtoFor = createDtoFor(
-                        latest.getPerusteId(),
-                        latest.getKieli(),
-                        latest.getSuoritustapakoodi(),
-                        GeneratorVersion.UUSI
-                );
-                setStarted(createDtoFor);
-                generateWithDtoSynchronous(createDtoFor);
-
-                return true;
-
-            } catch (DokumenttiException e) {
-                log.error(e.getLocalizedMessage(), e);
-            }
-
-            return false;
-
-        });
     }
 
 }
