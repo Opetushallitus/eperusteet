@@ -319,4 +319,55 @@ public class PerusteenOsaViite implements
         }
         return NavigationType.viite;
     }
+
+    public Peruste getPeruste() {
+        if (this.vanhempi != null) {
+            return this.vanhempi.getPeruste();
+        }
+
+        if (suoritustapa != null) {
+            return suoritustapa.getPerusteet().stream().findFirst().get();
+        }
+
+        if (perusopetuksenPerusteenSisalto != null) {
+            return perusopetuksenPerusteenSisalto.getPeruste();
+        }
+
+        if (lukiokoulutuksenPerusteenSisalto != null) {
+            return lukiokoulutuksenPerusteenSisalto.getPeruste();
+        }
+
+        if (lops2019Sisalto != null) {
+            return lops2019Sisalto.getPeruste();
+        }
+
+        if (esiopetuksenPerusteenSisalto != null) {
+            return esiopetuksenPerusteenSisalto.getPeruste();
+        }
+
+        if (aipeSisalto != null) {
+            return aipeSisalto.getPeruste();
+        }
+
+        if (tpoOpetuksenSisalto != null) {
+            return tpoOpetuksenSisalto.getPeruste();
+        }
+
+        if (opasSisalto != null) {
+            return opasSisalto.getPeruste();
+        }
+
+        if (vstSisalto != null) {
+            return vstSisalto.getPeruste();
+        }
+        if (tuvaSisalto != null) {
+            return tuvaSisalto.getPeruste();
+        }
+
+        if (digitaalinenOsaaminenSisalto != null) {
+            return digitaalinenOsaaminenSisalto.getPeruste();
+        }
+
+        return null;
+    }
 }

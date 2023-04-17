@@ -384,13 +384,13 @@ public class OppiaineServiceImpl implements OppiaineService {
 
     @Override
     @Transactional(readOnly = false)
-    public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId,
-                              Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
+    public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
         PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
-        OppiaineenVuosiluokkaKokonaisuusDto tmp
-            = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, oppiaineId,
-                updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
+        OppiaineenVuosiluokkaKokonaisuusDto tmp = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, oppiaineId, updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
         vuosiluokkakokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
+
+        Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
+        muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.PAIVITYS);
         return tmp;
     }
 
