@@ -164,6 +164,7 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
         List<PerusteenMuokkaustietoDto> finalLuonnit = luonnit.stream()
                 .filter(tieto -> poistot.stream().noneMatch(poisto -> poisto.getKohdeId().equals(tieto.getKohdeId())))
                 .collect(Collectors.toList());
+        checkEmptyNames(finalLuonnit);
 
         // vain relevantit päivitys-tapahtumat
         List<PerusteenMuokkaustietoDto> finalPaivitykset = paivitykset.stream()
@@ -194,6 +195,15 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
             tyypinmukaan.add(muutostieto);
         });
         return tyypinmukaan;
+    }
+
+    private void checkEmptyNames(List<PerusteenMuokkaustietoDto> muokkaustiedot) {
+        muokkaustiedot.forEach(luonti -> {
+            if (luonti.getNimi() == null) {
+                PerusteenMuokkaustietoDto uusinKohde = mapper.map(muokkausTietoRepository.findFirstByKohdeIdOrderByLuotuDesc(luonti.getKohdeId()), PerusteenMuokkaustietoDto.class);
+                luonti.setNimi(uusinKohde.getNimi());
+            }
+        });
     }
 
     private List<PerusteenMuokkaustietoDto> filterMuokkaustiedotByTyyppi(List<PerusteenMuokkaustietoDto> muokkaustiedot, NavigationType tyyppi) {

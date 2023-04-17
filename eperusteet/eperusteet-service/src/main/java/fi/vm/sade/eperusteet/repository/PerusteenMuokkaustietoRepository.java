@@ -23,4 +23,6 @@ public interface PerusteenMuokkaustietoRepository extends JpaRepository<Perustee
     }
 
     List<PerusteenMuokkaustieto> findByKohdeId(Long kohdeId);
+
+    PerusteenMuokkaustieto findFirstByKohdeIdOrderByLuotuDesc(Long kohdeId);
 }
