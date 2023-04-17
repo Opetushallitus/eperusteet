@@ -20,5 +20,5 @@ public enum NavigationType {
     linkkisivu,
     koulutuksenosat, koulutuksenosa, laajaalainenosaaminen,
     osaamiskokonaisuus, osaamiskokonaisuus_paa_alue,
-    aipe_laajaalainenosaaminen;
+    aipe_laajaalaisetosaamiset, aipe_laajaalainenosaaminen;
 }

@@ -39,7 +39,6 @@ import java.util.Optional;
 public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
     private Optional<TekstiOsaDto> tehtava;
     private Optional<TekstiOsaDto> arviointi;
-    private Optional<KoodiDto> koodi;
     private Optional<TekstiOsaDto> tyotavat;
     private Optional<TekstiOsaDto> ohjaus;
     private Optional<TekstiOsaDto> sisaltoalueinfo;
@@ -57,5 +56,4 @@ public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
     private List<AIPEKurssiDto> kurssit;
 
     private List<AIPEOppiaineLaajaDto> oppimaarat;
-
 }

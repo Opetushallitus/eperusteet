@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -27,6 +29,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import fi.vm.sade.eperusteet.dto.yl.AIPEHasId;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -65,6 +68,12 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implement
     @Setter
     private Integer jarjestys;
 
+    @Column
+    @Getter
+    @Setter
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date muokattu;
+
     @Getter
     @NotAudited
     @RelatesToPeruste
@@ -98,5 +107,15 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implement
         uusiLaaja.setKuvaus(kuvaus);
         uusiLaaja.setNimi(nimi);
         return uusiLaaja;
+    }
+
+    @PrePersist
+    private void prepersist() {
+        muokattu = new Date();
+    }
+
+    @PreUpdate
+    protected void preupdate() {
+        muokattu = new Date();
     }
 }
