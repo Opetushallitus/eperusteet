@@ -11,6 +11,8 @@ import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
+import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen.Lops2019LaajaAlainenOsaaminenKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019ArviointiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
@@ -24,6 +26,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenMuokkaustietoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -78,6 +81,9 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
     @Autowired
     private PerusteprojektiTestHelper projektiHelper;
+
+    @Autowired
+    private PerusteenMuokkaustietoRepository muokkausTietoRepository;
 
     @Before
     public void beforeEach() {
@@ -141,11 +147,19 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         // Haetaan tiedostosta perusteen sisältö
         final PerusteKaikkiDto perusteTiedostosta = this.readPerusteFile();
-        this.updatePeruste(peruste, perusteTiedostosta);
+
+        perusteTiedostosta.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset().forEach(lao -> lao.setId(null));
+        lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(perusteDto.getId(), perusteTiedostosta.getLops2019Sisalto().getLaajaAlainenOsaaminen());
 
         Assert.notNull(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen(),
                 "Perusteen sisällön laaja-alainen osaaminen puuttuu");
         assertThat(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset()).hasSize(6);
+
+        Lops2019LaajaAlainenOsaaminenKokonaisuusDto laot = mapper.map(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
+        laot.getLaajaAlaisetOsaamiset().remove(1);
+        lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(perusteDto.getId(), laot);
+
+        assertThat(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset()).hasSize(5);
     }
 
     private Peruste updatePeruste(final Peruste peruste, final PerusteKaikkiDto uusi) {
@@ -342,6 +356,46 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         assertThat(moduuli.getKoodi().getKoodisto()).isEqualTo(koodiDto.getKoodisto());
         assertThat(moduuli.getKoodi().getUri()).isEqualTo(koodiDto.getUri());
         assertThat(moduuli.getKoodi().getVersio()).isEqualTo(koodiDto.getVersio());
+    }
+
+    @Test
+    public void shouldAddLuontiTapahtumaForAddedLaajaAlainenOsaaminen() {
+        final PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString());
+            ppl.setToteutus(KoulutustyyppiToteutus.LOPS2019);
+            ppl.setLaajuusYksikko(LaajuusYksikko.OPINTOPISTE);
+        });
+
+        final PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+        final PerusteKaikkiDto perusteKaikkiDto = perusteService.getKaikkiSisalto(perusteDto.getId());
+        final Peruste peruste = repository.findOne(perusteKaikkiDto.getId());
+
+
+        Lops2019LaajaAlainenOsaaminenDto lao = new Lops2019LaajaAlainenOsaaminenDto();
+        lao.setNimi(LokalisoituTekstiDto.of(Kieli.FI, "LAO1"));
+
+        Lops2019LaajaAlainenOsaaminenKokonaisuusDto laoKok = new Lops2019LaajaAlainenOsaaminenKokonaisuusDto();
+        laoKok.setLaajaAlaisetOsaamiset(List.of(lao));
+
+        // Lisätään uusi laaja-alainen osaaminen
+        Lops2019LaajaAlainenOsaaminenKokonaisuusDto updatedKokonaisuus = lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(peruste.getId(), laoKok);
+
+        Long kohdeId = updatedKokonaisuus.getLaajaAlaisetOsaamiset().get(0).getId();
+
+        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId).get(0).getTapahtuma()).isEqualTo(MuokkausTapahtuma.LUONTI);
+
+        Lops2019LaajaAlainenOsaaminenDto laoToBeUpdated = updatedKokonaisuus.getLaajaAlaisetOsaamiset().get(0);
+        laoToBeUpdated.setNimi(LokalisoituTekstiDto.of(Kieli.FI, "LAO2"));
+
+        laoKok.setLaajaAlaisetOsaamiset(List.of(laoToBeUpdated));
+
+        // Päivitetään laaja-alaista osaamista
+        lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(peruste.getId(), laoKok);
+        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId).get(1).getTapahtuma()).isEqualTo(MuokkausTapahtuma.PAIVITYS);
+
+        // Poistetaan laaja-alainen osaaminen
+        lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(peruste.getId(), new Lops2019LaajaAlainenOsaaminenKokonaisuusDto());
+        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId).get(2).getTapahtuma()).isEqualTo(MuokkausTapahtuma.POISTO);
     }
 
     private void checkLaajaOppiaine(final Long oppiaineId) {
