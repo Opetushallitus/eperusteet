@@ -382,7 +382,9 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         Long kohdeId = updatedKokonaisuus.getLaajaAlaisetOsaamiset().get(0).getId();
 
-        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId).get(0).getTapahtuma()).isEqualTo(MuokkausTapahtuma.LUONTI);
+        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId))
+                .extracting("tapahtuma")
+                .contains(MuokkausTapahtuma.LUONTI);
 
         Lops2019LaajaAlainenOsaaminenDto laoToBeUpdated = updatedKokonaisuus.getLaajaAlaisetOsaamiset().get(0);
         laoToBeUpdated.setNimi(LokalisoituTekstiDto.of(Kieli.FI, "LAO2"));
@@ -391,11 +393,15 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         // Päivitetään laaja-alaista osaamista
         lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(peruste.getId(), laoKok);
-        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId).get(1).getTapahtuma()).isEqualTo(MuokkausTapahtuma.PAIVITYS);
+        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId))
+                .extracting("tapahtuma")
+                .contains(MuokkausTapahtuma.PAIVITYS);
 
         // Poistetaan laaja-alainen osaaminen
         lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(peruste.getId(), new Lops2019LaajaAlainenOsaaminenKokonaisuusDto());
-        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId).get(2).getTapahtuma()).isEqualTo(MuokkausTapahtuma.POISTO);
+        assertThat(muokkausTietoRepository.findByKohdeId(kohdeId))
+                .extracting("tapahtuma")
+                .contains(MuokkausTapahtuma.POISTO);
     }
 
     private void checkLaajaOppiaine(final Long oppiaineId) {
