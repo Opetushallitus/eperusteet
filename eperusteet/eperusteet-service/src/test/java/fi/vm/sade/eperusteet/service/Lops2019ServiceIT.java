@@ -359,7 +359,7 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
     }
 
     @Test
-    public void shouldAddLuontiTapahtumaForAddedLaajaAlainenOsaaminen() {
+    public void testLaajaAlainenOsaaminenMuutostapahtumat() {
         final PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString());
             ppl.setToteutus(KoulutustyyppiToteutus.LOPS2019);
