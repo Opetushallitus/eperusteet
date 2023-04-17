@@ -48,6 +48,11 @@ public class NavigationBuilderDefault implements NavigationBuilder {
                 if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
                     type = NavigationType.muodostuminen;
                 }
+                if (sisalto.getPeruste() != null
+                        && KoulutusTyyppi.of(sisalto.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.AIKUISTENPERUSOPETUS)
+                        && PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN.equals(tk.getTunniste())) {
+                    type = NavigationType.aipe_laajaalaisetosaamiset;
+                }
             } else {
                 type = po.getNavigationType();
             }

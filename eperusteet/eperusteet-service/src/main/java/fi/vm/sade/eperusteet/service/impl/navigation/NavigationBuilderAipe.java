@@ -22,36 +22,24 @@ public class NavigationBuilderAipe {
 
     public List<NavigationNodeDto> buildNavigation(Long perusteId, String kieli) {
         return aipeOpetuksenPerusteenSisaltoService.getVaiheetKaikki(perusteId).stream()
-                .map(vaihe -> NavigationNodeDto.of(NavigationType.aipevaihe, vaihe.getNimi() != null ? vaihe.getNimi().orElseGet(() -> LokalisoituTekstiDto.of("tuntematon")) : LokalisoituTekstiDto.of("tuntematon"), vaihe.getId())
+                .map(vaihe -> NavigationNodeDto.of(NavigationType.aipevaihe, vaihe.getNimi() != null ? vaihe.getNimi().orElse(null) : null, vaihe.getId())
                         .addAll(oppiaineet(vaihe.getOppiaineet(), kieli)))
                 .collect(Collectors.toList());
     }
 
     private List<NavigationNodeDto> oppiaineet(List<AIPEOppiaineLaajaDto> oppiaineet, String kieli) {
         return oppiaineet.stream()
-                .map(oppiaine -> {
-                    NavigationNodeDto oppiaineNode = NavigationNodeDto
-                            .of(NavigationType.aipeoppiaine, oppiaine.getNimi() != null ? oppiaine.getNimi().orElseGet(() -> LokalisoituTekstiDto.of("tuntematon")) : LokalisoituTekstiDto.of("tuntematon"), oppiaine.getId());
-
-                    if (!ObjectUtils.isEmpty(oppiaine.getOppimaarat())) {
-                        oppiaineNode.add(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
-                                .addAll(oppiaineet(oppiaine.getOppimaarat(), kieli)));
-                    }
-
-                    if (!ObjectUtils.isEmpty(oppiaine.getKurssit())) {
-                        oppiaineNode.add(NavigationNodeDto.of(NavigationType.kurssit).meta("navigation-subtype", true)
-                                .addAll(kurssit(oppiaine.getKurssit(), kieli)));
-                    }
-
-                    return oppiaineNode;
-                })
+                .map(oppiaine -> NavigationNodeDto
+                        .of(NavigationType.aipeoppiaine, oppiaine.getNimi() != null ? oppiaine.getNimi().orElse(null) : null, oppiaine.getId())
+                        .addAll(oppiaineet(oppiaine.getOppimaarat(), kieli))
+                        .addAll(kurssit(oppiaine.getKurssit(), kieli)))
                 .collect(Collectors.toList());
     }
 
     private List<NavigationNodeDto> kurssit(List<AIPEKurssiDto> kurssit, String kieli) {
         return kurssit.stream()
                 .map(kurssi -> NavigationNodeDto
-                        .of(NavigationType.aipekurssi, kurssi.getNimi() != null ? kurssi.getNimi().orElseGet(() -> LokalisoituTekstiDto.of("tuntematon")) : LokalisoituTekstiDto.of("tuntematon"), kurssi.getId())
+                        .of(NavigationType.aipekurssi, kurssi.getNimi() != null ? kurssi.getNimi().orElse(null) : null, kurssi.getId())
                 )
                 .collect(Collectors.toList());
     }

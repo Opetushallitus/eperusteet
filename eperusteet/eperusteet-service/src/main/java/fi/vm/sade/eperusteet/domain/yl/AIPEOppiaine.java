@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tunnistettava;
@@ -141,6 +142,15 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen vapaaTeksti;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "aipeoppiaine_vapaateksti",
+            joinColumns = @JoinColumn(name = "aipeoppiaine_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
 
     @Getter
     @Setter

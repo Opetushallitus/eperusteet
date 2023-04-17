@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tunnistettava;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -27,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
@@ -70,6 +72,15 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     @Setter
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private TekstiOsa paikallisestiPaatettavatAsiat;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "aipevaihe_vapaateksti",
+            joinColumns = @JoinColumn(name = "aipevaihe_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
 
     @Getter
     @Setter

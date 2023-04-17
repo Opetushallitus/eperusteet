@@ -41,4 +41,12 @@ public class AIPEKurssiBaseDto implements AIPEHasId {
     private Optional<LokalisoituTekstiDto> nimi;
     private Reference oppiaine;
     private KoodiDto koodi;
+
+    public Optional<LokalisoituTekstiDto> getNimi() {
+        if (getKoodi() != null) {
+            return Optional.of(getKoodi().getNimi());
+        }
+
+        return nimi;
+    }
 }

@@ -16,6 +16,9 @@
 
 package fi.vm.sade.eperusteet.dto.yl;
 
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
+import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
+import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -42,4 +45,5 @@ public class AIPEVaiheDto extends AIPEVaiheSuppeaDto {
     private Optional<TekstiOsaDto> paikallisestiPaatettavatAsiat;
     private List<OpetuksenKohdealueDto> opetuksenKohdealueet;
     private List<AIPEOppiaineLaajaDto> oppiaineet;
+    private List<KevytTekstiKappaleDto> vapaatTekstit;
 }

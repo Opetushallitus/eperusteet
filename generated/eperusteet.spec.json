@@ -9907,14 +9907,14 @@
           "type" : "string",
           "format" : "date-time"
         },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
         "tehtava" : {
           "$ref" : "#/definitions/TekstiOsaDto"
         },
         "arviointi" : {
           "$ref" : "#/definitions/TekstiOsaDto"
-        },
-        "koodi" : {
-          "$ref" : "#/definitions/KoodiDto"
         },
         "tyotavat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
@@ -9937,6 +9937,15 @@
         "kielikasvatus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
+        "vapaaTeksti" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
+        },
         "tavoitteet" : {
           "type" : "array",
           "items" : {
@@ -9954,9 +9963,6 @@
           "items" : {
             "$ref" : "#/definitions/AIPEKurssiDto"
           }
-        },
-        "vapaaTeksti" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
     },
@@ -9987,14 +9993,14 @@
           "type" : "string",
           "format" : "date-time"
         },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
         "tehtava" : {
           "$ref" : "#/definitions/TekstiOsaDto"
         },
         "arviointi" : {
           "$ref" : "#/definitions/TekstiOsaDto"
-        },
-        "koodi" : {
-          "$ref" : "#/definitions/KoodiDto"
         },
         "tyotavat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
@@ -10069,6 +10075,9 @@
         "muokattu" : {
           "type" : "string",
           "format" : "date-time"
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
         }
       }
     },
@@ -10140,6 +10149,12 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/AIPEOppiaineLaajaDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         }
       }
@@ -11406,12 +11421,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -11472,6 +11487,10 @@
         },
         "kuvaus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         }
       }
     },
@@ -12170,7 +12189,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "luotu" : {
           "type" : "string",
@@ -12238,7 +12257,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
@@ -13284,15 +13303,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13324,15 +13343,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13364,15 +13383,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13404,15 +13423,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13444,15 +13463,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13484,15 +13503,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13524,15 +13543,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13564,15 +13583,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13604,15 +13623,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13644,15 +13663,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13684,15 +13703,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13724,15 +13743,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -13764,15 +13783,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
         "last" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -15025,7 +15044,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "luotu" : {
           "type" : "string",
@@ -15047,7 +15066,7 @@
       "properties" : {
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "tapahtumat" : {
           "type" : "array",
