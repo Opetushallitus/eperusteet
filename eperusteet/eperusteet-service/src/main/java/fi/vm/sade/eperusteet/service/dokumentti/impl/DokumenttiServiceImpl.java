@@ -176,10 +176,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         // Kvliite ei riipu suoritustavasta
         if (GeneratorVersion.KVLIITE.equals(version)) {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndGeneratorVersion(
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndGeneratorVersionAndValmistumisaikaIsNotNull(
                     id, kieli, version, sort);
         } else {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersion(
+            documents = dokumenttiRepository.findByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersionAndValmistumisaikaIsNotNull(
                     id, kieli, suoritustapakoodi,
                     version != null ? version : GeneratorVersion.UUSI, sort);
         }
