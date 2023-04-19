@@ -185,7 +185,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         }
 
         if (documents.size() > 0) {
-            return mapper.map(documents.get(0), DokumenttiDto.class);
+            DokumenttiDto dokumentti = mapper.map(documents.get(0), DokumenttiDto.class);
+            Long julkaisuDokumenttiId = getJulkaistuDokumenttiId(id, kieli, null);
+            if (dokumentti.getId().equals(julkaisuDokumenttiId)) {
+                dokumentti.setJulkaisuDokumentti(true);
+            }
+            return dokumentti;
         } else {
             DokumenttiDto dto = new DokumenttiDto();
             dto.setPerusteId(id);

@@ -1006,55 +1006,6 @@
           },
           "arvioinninKuvaus" : {
             "$ref" : "#/definitions/LokalisoituTekstiDto"
-          }
-        }
-      } ]
-    },
-    "KoulutuksenOsaExternalDto" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/Laaja"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "nimiKoodi" : {
-            "$ref" : "#/definitions/KoodiDto"
-          },
-          "laajuusMinimi" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "laajuusMaksimi" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "koulutusOsanKoulutustyyppi" : {
-            "type" : "string",
-            "enum" : [ "TUTKINTOKOULUTUKSEENVALMENTAVA", "PERUSOPETUS", "LUKIOKOULUTUS", "AMMATILLINENKOULUTUS" ]
-          },
-          "koulutusOsanTyyppi" : {
-            "type" : "string",
-            "enum" : [ "YHTEINEN", "VALINNAINEN" ]
-          },
-          "kuvaus" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "tavoitteenKuvaus" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "tavoitteet" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/LokalisoituTekstiDto"
-            }
-          },
-          "keskeinenSisalto" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "laajaAlaisenOsaamisenKuvaus" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "arvioinninKuvaus" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
           },
           "viiteId" : {
             "type" : "integer",
@@ -2415,13 +2366,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2455,13 +2406,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2708,7 +2659,7 @@
         "koulutuksenOsat" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/KoulutuksenOsaExternalDto"
+            "$ref" : "#/definitions/KoulutuksenOsaDto"
           }
         },
         "perusopetus" : {
