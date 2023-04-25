@@ -208,7 +208,7 @@ jobs:
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           cp -vr src/main/resources/tomcat $DOCKER_BUILD_DIR/config/
           cd ..
-          export BASE_IMAGE="baseimage-war-tomcat8-openjdk11:master"
+          export BASE_IMAGE="baseimage-war-tomcat8:master"
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-war.sh ${ARTIFACT_NAME}
           ./ci-tools/github-build/upload-image.sh ${ARTIFACT_NAME}
