@@ -22,6 +22,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.Validator;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,6 +46,9 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     @Override
     public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila targetTila) {
@@ -62,6 +67,13 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
             updateStatus.setVaihtoOk(false);
             updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
         }
+
+        List<Peruste> julkaistutDigitaaliset = perusteRepository.findJulkaistutVoimassaolevatPerusteetByTyyppi(PerusteTyyppi.DIGITAALINEN_OSAAMINEN);
+        if (julkaistutDigitaaliset.size() > 0 && julkaistutDigitaaliset.stream().noneMatch(julkaistu -> julkaistu.getId().equals(projekti.getPeruste().getId()))) {
+            updateStatus.setVaihtoOk(false);
+            updateStatus.addStatus("digitaalinen-osaaminen-jo-julkaistu");
+        }
+
         tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste(), updateStatus);
         return updateStatus;
     }
