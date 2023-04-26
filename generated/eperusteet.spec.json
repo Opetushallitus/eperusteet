@@ -10632,6 +10632,9 @@
         "generatorVersion" : {
           "type" : "string",
           "enum" : [ "VANHA", "UUSI", "KVLIITE" ]
+        },
+        "julkaisuDokumentti" : {
+          "type" : "boolean"
         }
       }
     },
