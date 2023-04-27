@@ -772,6 +772,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
             addPerusteenOsat(docBase, lapsi);
 
             docBase.getGenerator().decreaseDepth();
+            docBase.getGenerator().increaseNumber();
 
         } else if (tunniste == PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN
                 && docBase.getAipeOpetuksenSisalto() != null) {
@@ -789,8 +790,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     addTeksti(docBase, teksti, "div");
                 });
             }
+            docBase.getGenerator().increaseNumber();
         }
-        docBase.getGenerator().increaseNumber();
     }
 
     private void addTaiteenala(DokumenttiPeruste docBase, Taiteenala taiteenala, PerusteenOsa po,
