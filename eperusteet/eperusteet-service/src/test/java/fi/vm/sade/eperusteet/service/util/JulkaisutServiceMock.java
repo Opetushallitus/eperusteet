@@ -2,11 +2,14 @@ package fi.vm.sade.eperusteet.service.util;
 
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,11 @@ public class JulkaisutServiceMock implements JulkaisutService {
     @Override
     public void teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
 
+    }
+
+    @Override
+    public Set<Long> generoiJulkaisuPdf(Peruste peruste) {
+        return null;
     }
 
     @Override
