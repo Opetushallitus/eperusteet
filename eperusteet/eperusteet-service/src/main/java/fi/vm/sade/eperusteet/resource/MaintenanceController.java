@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -43,6 +44,9 @@ public class MaintenanceController {
     @Autowired
     private PerusteService perusteService;
 
+    @Autowired
+    private PermissionManager permissionManager;
+
     @RequestMapping(value = "/cacheclear/{cache}", method = GET)
     public ResponseEntity clearCache(@PathVariable final String cache) {
         maintenanceService.clearCache(cache);
@@ -68,13 +72,17 @@ public class MaintenanceController {
     }
 
     @RequestMapping(value = "/julkaisut", method = GET)
-    public void teeJulkaisut(
+    public ResponseEntity<String> teeJulkaisut(
             @RequestParam(value = "julkaisekaikki", defaultValue = "false") boolean julkaiseKaikki,
             @RequestParam(value = "tyyppi", defaultValue = "NORMAALI") String tyyppi,
             @RequestParam(value = "koulutustyyppi", required = false) String koulutustyyppi,
             @RequestParam(value = "tiedote", defaultValue = "Ylläpidon suorittama julkaisu") String tiedote
     ) {
+        if (!permissionManager.isUserAdmin()) {
+            return ResponseEntity.badRequest().body("virhe käynnistyksessä");
+        }
         maintenanceService.teeJulkaisut(julkaiseKaikki, tyyppi, koulutustyyppi, tiedote);
+        return ResponseEntity.ok("julkaisut käynnistetty");
     }
 
     @RequestMapping(value = "/julkaise/{perusteId}", method = GET)

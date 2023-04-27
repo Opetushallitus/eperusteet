@@ -187,6 +187,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
+            Set<Long> dokumentit = julkaisutService.generoiJulkaisuPdf(peruste);
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(julkaisutService.seuraavaVapaaJulkaisuNumero(perusteId));
             julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));
@@ -194,6 +195,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             julkaisu.setLuotu(new Date());
             julkaisu.setPeruste(peruste);
             julkaisu.setJulkinen(true);
+            julkaisu.setDokumentit(dokumentit);
 
             ObjectNode data = objectMapper.valueToTree(sisalto);
             julkaisu.setData(new JulkaistuPerusteData(data));

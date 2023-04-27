@@ -2,12 +2,14 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.data.domain.Page;
@@ -30,6 +32,9 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     void teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+
+    @PreAuthorize("hasPermission(#peruste.id, 'peruste', 'LUKU') or hasPermission(null, 'pohja', 'LUONTI')")
+    Set<Long> generoiJulkaisuPdf(@P("peruste") Peruste peruste);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
