@@ -24,13 +24,13 @@ public interface JulkaisutService {
     @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkisetJulkaisut(long id);
 
-    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
     void teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     JulkaisuTila viimeisinJulkaisuTila(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
+    @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
     void teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#peruste.id, 'peruste', 'LUKU') or hasPermission(null, 'pohja', 'LUONTI')")
