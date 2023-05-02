@@ -320,14 +320,14 @@
           "type" : "string",
           "format" : "date-time"
         },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
         "tehtava" : {
           "$ref" : "#/definitions/TekstiOsaDto"
         },
         "arviointi" : {
           "$ref" : "#/definitions/TekstiOsaDto"
-        },
-        "koodi" : {
-          "$ref" : "#/definitions/KoodiDto"
         },
         "tyotavat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
@@ -423,6 +423,12 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/AIPEOppiaineLaajaDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         }
       }
@@ -1071,6 +1077,10 @@
         },
         "kuvaus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         }
       }
     },
@@ -2394,12 +2404,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2434,12 +2444,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2978,6 +2988,12 @@
           },
           "oppimisenArviointiOpetuksessa" : {
             "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          },
+          "vapaatTekstit" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KevytTekstiKappaleDto"
+            }
           },
           "osaavainMap" : {
             "type" : "object",
