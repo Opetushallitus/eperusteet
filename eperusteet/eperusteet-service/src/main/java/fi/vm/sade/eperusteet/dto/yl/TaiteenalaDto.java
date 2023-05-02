@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +33,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -52,6 +54,7 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
     private KevytTekstiKappaleDto aikuistenOpetus;
     private KevytTekstiKappaleDto tyotavatOpetuksessa;
     private KevytTekstiKappaleDto oppimisenArviointiOpetuksessa;
+    private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     @Override
     public String getOsanTyyppi() {
@@ -73,4 +76,15 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
     public NavigationType getNavigationType() {
         return NavigationType.taiteenala;
     }
+
+    @Override
+    public LokalisoituTekstiDto getNimi() {
+        if (koodi != null && koodi.getNimi() != null && !CollectionUtils.isEmpty(koodi.getNimi().getTekstit())) {
+            return koodi.getNimi();
+        } else {
+            return super.getNimi();
+        }
+    }
+
+
 }

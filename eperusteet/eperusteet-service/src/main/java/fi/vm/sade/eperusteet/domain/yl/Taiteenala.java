@@ -31,6 +31,8 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -76,6 +78,15 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private KevytTekstiKappale oppimisenArviointiOpetuksessa;
 
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "taiteenala_vapaateksti",
+            joinColumns = @JoinColumn(name = "taiteenala_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
+
     public Taiteenala() {
 
     }
@@ -120,6 +131,13 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         setKasvatus(KevytTekstiKappale.getCopy(other.getKasvatus()));
         setTyotavatOpetuksessa(KevytTekstiKappale.getCopy(other.getTyotavatOpetuksessa()));
         setOppimisenArviointiOpetuksessa(KevytTekstiKappale.getCopy(other.getOppimisenArviointiOpetuksessa()));
+
+        if (other.getVapaatTekstit() != null) {
+            this.vapaatTekstit = new ArrayList<>();
+            for (KevytTekstiKappale vapaaTeksti : other.getVapaatTekstit()) {
+                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
     }
 
     @Override
