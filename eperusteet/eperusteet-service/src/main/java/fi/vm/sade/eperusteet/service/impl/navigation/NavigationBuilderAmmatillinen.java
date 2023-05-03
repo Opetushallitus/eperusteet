@@ -47,10 +47,19 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId, kieli);
+        NavigationNodeDto tutkinnonMuodostuminen = tutkinnonMuodostuminen(tekstit);
         return NavigationNodeDto.of(NavigationType.root)
+                .add(tutkinnonMuodostuminen)
                 .add(tutkinnonOsat(perusteId))
-                .addAll(tekstit.getChildren());
-//                .add(tutkinnonMuodostuminen(perusteId))
+                .addAll(tekstit.getChildren().stream()
+                        .filter(node -> !node.getId().equals(tutkinnonMuodostuminen.getId())));
+    }
+
+    private NavigationNodeDto tutkinnonMuodostuminen(NavigationNodeDto tekstit) {
+        return tekstit.getChildren().stream()
+                .filter(teksti -> teksti.getType().equals(NavigationType.muodostuminen))
+                .findFirst()
+                .orElse(new NavigationNodeDto());
     }
 
     private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViite tosa) {
@@ -88,9 +97,4 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
                         .map(this::buildTutkinnonOsa)
                         .collect(Collectors.toList()));
     }
-
-    private NavigationNodeDto tutkinnonMuodostuminen(Long perusteId) {
-        return NavigationNodeDto.of(NavigationType.muodostuminen, null, perusteId);
-    }
-
 }
