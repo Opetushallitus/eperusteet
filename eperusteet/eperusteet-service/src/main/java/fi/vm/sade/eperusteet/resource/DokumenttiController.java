@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +28,7 @@ import java.util.Objects;
 @RequestMapping("/dokumentit")
 @InternalApi
 @Api(value = "Dokumentit")
+@Slf4j
 public class DokumenttiController {
 
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiController.class);
@@ -162,6 +164,7 @@ public class DokumenttiController {
     @ResponseBody
     public ResponseEntity<String> savePdfData(@PathVariable("dokumenttiId") Long dokumenttiId,
                                               @RequestBody byte[] pdfData) {
+        log.info("savePdfData, {}", dokumenttiId);
         service.updateDokumenttiPdfData(pdfData, dokumenttiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

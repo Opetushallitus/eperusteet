@@ -43,9 +43,9 @@ public interface DokumenttiService {
     @Deprecated
     void paivitaDokumentit();
 
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     void updateDokumenttiPdfData(byte[] pdfData, Long dokumenttiId);
 
-//    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")
     void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId);
 }
