@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,19 +48,13 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId, kieli);
-        NavigationNodeDto tutkinnonMuodostuminen = tutkinnonMuodostuminen(tekstit);
-        return NavigationNodeDto.of(NavigationType.root)
-                .add(tutkinnonMuodostuminen)
+        NavigationNodeDto node =  NavigationNodeDto.of(NavigationType.root)
                 .add(tutkinnonOsat(perusteId))
-                .addAll(tekstit.getChildren().stream()
-                        .filter(node -> !node.getId().equals(tutkinnonMuodostuminen.getId())));
-    }
-
-    private NavigationNodeDto tutkinnonMuodostuminen(NavigationNodeDto tekstit) {
-        return tekstit.getChildren().stream()
-                .filter(teksti -> teksti.getType().equals(NavigationType.muodostuminen))
-                .findFirst()
-                .orElse(new NavigationNodeDto());
+                .addAll(tekstit.getChildren());
+        node.setChildren(node.getChildren().stream()
+                .sorted(Comparator.comparing(n -> n.getType().equals(NavigationType.muodostuminen) ? 0 : 1))
+                .collect(Collectors.toList()));
+        return node;
     }
 
     private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViite tosa) {
