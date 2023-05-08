@@ -48,7 +48,6 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
 
     @ElementCollection
     @NotNull
-    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     private Set<Long> dokumentit = new HashSet<>();
 
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
