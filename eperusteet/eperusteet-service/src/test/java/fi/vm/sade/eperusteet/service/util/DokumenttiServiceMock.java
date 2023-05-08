@@ -53,7 +53,7 @@ public class DokumenttiServiceMock implements DokumenttiService {
     }
 
     @Override
-    public Long getJulkaistuDokumenttiId(Long perusteId, Kieli kieli, Integer revision) {
+    public DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision) {
         return null;
     }
 }

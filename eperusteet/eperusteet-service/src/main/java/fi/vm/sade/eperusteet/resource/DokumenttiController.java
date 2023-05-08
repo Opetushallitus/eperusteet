@@ -178,11 +178,11 @@ public class DokumenttiController {
 
     @RequestMapping(value = "/julkaistu", method = RequestMethod.GET)
     @ResponseBody
-    public ResponseEntity<Long> getJulkaistuDokumentti(
+    public ResponseEntity<DokumenttiDto> getJulkaistuDokumentti(
             @RequestParam() final Long perusteId,
             @RequestParam() final String kieli,
             @RequestParam(required = false) final Integer revision
     ) {
-        return ResponseEntity.ok(service.getJulkaistuDokumenttiId(perusteId, Kieli.of(kieli), revision));
+        return ResponseEntity.ok(service.getJulkaistuDokumentti(perusteId, Kieli.of(kieli), revision));
     }
 }
