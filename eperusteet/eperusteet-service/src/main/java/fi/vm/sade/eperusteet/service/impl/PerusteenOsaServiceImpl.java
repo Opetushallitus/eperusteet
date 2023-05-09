@@ -190,10 +190,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             tutkinnonOsa.setValmaTelmaSisalto( createValmatelmaIfNotExist( tutkinnonOsa.getValmaTelmaSisalto() ) );
         }
 
-        if (current.getTila() == PerusteTila.VALMIS && !current.structureEquals(updated)) {
-            throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
-        }
-
         if (perusteenOsaDto.getClass().equals(TutkinnonOsaDto.class)) {
             removeMissingFromCurrent(perusteenOsaRepo.findOne(perusteenOsaDto.getId()), updated);
         }
