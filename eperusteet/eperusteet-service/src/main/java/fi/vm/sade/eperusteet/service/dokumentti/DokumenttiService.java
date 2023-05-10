@@ -57,6 +57,6 @@ public interface DokumenttiService {
     DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version);
 
     @PreAuthorize("permitAll()")
-    Long getJulkaistuDokumenttiId(Long perusteId, Kieli kieli, Integer revision);
+    DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision);
 
 }

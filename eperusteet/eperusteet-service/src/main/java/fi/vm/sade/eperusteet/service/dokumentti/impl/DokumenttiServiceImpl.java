@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import fi.vm.sade.eperusteet.domain.Dokumentti;
@@ -23,18 +8,12 @@ import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDokumenttiDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
@@ -44,7 +23,6 @@ import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
-import fi.vm.sade.eperusteet.service.internal.DokumenttiBuilderService;
 import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -63,23 +41,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-
-/**
- *
- * @author jussini
- */
 @Slf4j
 @Service
 @Profile("default")
@@ -96,9 +67,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private PerusteRepository perusteRepository;
 
     @Autowired
-    private DokumenttiBuilderService builder;
-
-    @Autowired
     private DokumenttiNewBuilderService newBuilder;
 
     @Autowired
@@ -109,9 +77,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private DokumenttiStateService dokumenttiStateService;
-
-    @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
 
     @Autowired
     private LocalizedMessagesService messages;
@@ -186,8 +151,8 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
         if (documents.size() > 0) {
             DokumenttiDto dokumentti = mapper.map(documents.get(0), DokumenttiDto.class);
-            Long julkaisuDokumenttiId = getJulkaistuDokumenttiId(id, kieli, null);
-            if (dokumentti.getId().equals(julkaisuDokumenttiId)) {
+            DokumenttiDto julkaisuDokumentti = getJulkaistuDokumentti(id, kieli, null);
+            if (julkaisuDokumentti != null && dokumentti.getId().equals(julkaisuDokumentti.getId())) {
                 dokumentti.setJulkaisuDokumentti(true);
             }
             return dokumentti;
@@ -203,14 +168,14 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
-    public Long getJulkaistuDokumenttiId(Long perusteId, Kieli kieli, Integer revision) {
+    public DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision) {
         Peruste peruste = perusteRepository.findOne(perusteId);
 
         if (peruste == null) {
             return null;
         }
 
-        JulkaistuPeruste julkaisu = null;
+        JulkaistuPeruste julkaisu;
         if (revision != null) {
             julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, revision);
         } else {
@@ -220,7 +185,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         if (julkaisu != null && CollectionUtils.isNotEmpty(julkaisu.getDokumentit())) {
             Dokumentti dokumentti = dokumenttiRepository.findByIdInAndKieli(julkaisu.getDokumentit(), kieli);
             if (dokumentti != null) {
-                return dokumentti.getId();
+                DokumenttiDto dokumenttiDto = mapper.map(dokumentti, DokumenttiDto.class);
+                dokumenttiDto.setJulkaisuDokumentti(true);
+                return dokumenttiDto;
             }
         }
 
