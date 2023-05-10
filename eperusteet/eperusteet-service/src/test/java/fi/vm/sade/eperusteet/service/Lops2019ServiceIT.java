@@ -3,7 +3,12 @@ package fi.vm.sade.eperusteet.service;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
@@ -48,14 +53,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Slf4j
 @Transactional
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -129,7 +140,6 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
     }
 
     @Test
-    @Rollback
     public void createLops2019Peruste() throws IOException {
         final PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.LUKIOKOULUTUS.toString());
@@ -151,12 +161,11 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         perusteTiedostosta.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset().forEach(lao -> lao.setId(null));
         lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(perusteDto.getId(), perusteTiedostosta.getLops2019Sisalto().getLaajaAlainenOsaaminen());
 
-        Assert.notNull(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen(),
-                "Perusteen sisällön laaja-alainen osaaminen puuttuu");
-        assertThat(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset()).hasSize(6);
+        Lops2019LaajaAlainenOsaaminenKokonaisuusDto laot = lops2019Service.getLaajaAlainenOsaaminenKokonaisuus(perusteDto.getId());
+        Assert.notNull(laot,"Perusteen sisällön laaja-alainen osaaminen puuttuu");
+        assertThat(laot.getLaajaAlaisetOsaamiset()).hasSize(6);
 
-        Lops2019LaajaAlainenOsaaminenKokonaisuusDto laot = mapper.map(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
-        laot.getLaajaAlaisetOsaamiset().remove(1);
+        laot.getLaajaAlaisetOsaamiset().remove(5);
         lops2019Service.updateLaajaAlainenOsaaminenKokonaisuus(perusteDto.getId(), laot);
 
         assertThat(peruste.getLops2019Sisalto().getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset()).hasSize(5);
@@ -464,6 +473,7 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         { // Moduuli 1
             final Lops2019ModuuliBaseDto moduuli = new Lops2019ModuuliBaseDto();
             moduuli.setNimi(LokalisoituTekstiDto.of("moduuli 1"));
+            moduuli.setKoodi(KoodiDto.of("moduulikoodistolops2021", "222"));
             moduuli.setPakollinen(false);
             om.getModuulit().add(moduuli);
             om = lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), om);
@@ -471,7 +481,6 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
             final Lops2019ModuuliBaseDto moduuliBaseDto = om.getModuulit().get(0);
             final Lops2019ModuuliDto moduuliDto = lops2019Service.getModuuli(projektiHelper.getPerusteId(), om.getId(), moduuliBaseDto.getId());
             moduuli1 = moduuliDto.getId();
-            moduuliDto.setKoodi(KoodiDto.of("moduulikoodistolops2021", "123"));
             moduuliDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus"));
             final Lops2019ModuuliTavoiteDto tavoite = new Lops2019ModuuliTavoiteDto();
             tavoite.setKohde(LokalisoituTekstiDto.of("kohde"));
@@ -481,6 +490,7 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         { // Moduuli 2
             final Lops2019ModuuliBaseDto moduuli = new Lops2019ModuuliBaseDto();
+            moduuli.setKoodi(KoodiDto.of("moduulikoodistolops2021", "555"));
             moduuli.setNimi(LokalisoituTekstiDto.of("moduuli 2"));
             moduuli.setPakollinen(false);
             om.getModuulit().add(moduuli);

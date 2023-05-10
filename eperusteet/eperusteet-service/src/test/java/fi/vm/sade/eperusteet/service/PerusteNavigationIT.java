@@ -126,6 +126,7 @@ public class PerusteNavigationIT {
                 m.setId(12L);
                 m.setKoodi(Koodi.of("moduulit", "M2"));
                 m.asetaOppiaine(om);
+                m.setPakollinen(true);
                 om.getModuulit().add(m);
             }
             { // Moduuli 2
@@ -133,6 +134,7 @@ public class PerusteNavigationIT {
                 m.setId(11L);
                 m.setKoodi(Koodi.of("moduulit", "M1"));
                 m.asetaOppiaine(om);
+                m.setPakollinen(false);
                 om.getModuulit().add(m);
             }
             oa.getOppimaarat().add(om);
@@ -204,11 +206,7 @@ public class PerusteNavigationIT {
                         tuple(NavigationType.laajaalaiset, null),
                         tuple(NavigationType.oppiaineet, null));
 
-        assertThat(navigationNodeDto.getChildren().get(1).getChildren())
-                .extracting("type", "id", "koodi.arvo")
-                .containsExactly(
-                        tuple(NavigationType.laajaalainen, 501L, "LO1"),
-                        tuple(NavigationType.laajaalainen, 500L, "LO2"));
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren()).isEmpty();
 
         NavigationNodeDto oppiaine = navigationNodeDto.getChildren().get(2).getChildren().get(0);
         assertThat(oppiaine.getChildren().get(0).getType()).isEqualTo(NavigationType.oppimaarat);
@@ -218,7 +216,7 @@ public class PerusteNavigationIT {
                 .returns(101L, NavigationNodeDto::getId)
                 .returns("OA", n -> n.getKoodi().getArvo());
 
-        NavigationNodeDto oppimaara = oppiaine.getChildren().get(0).getChildren().get(0);
+        NavigationNodeDto oppimaara = oppiaine.getChildren().get(1);
         assertThat(oppimaara.getChildren().get(0).getType()).isEqualTo(NavigationType.moduulit);
 
         assertThat(oppimaara)
@@ -226,12 +224,12 @@ public class PerusteNavigationIT {
                 .returns(102L, NavigationNodeDto::getId)
                 .returns("OM", n -> n.getKoodi().getArvo());
 
-        List<NavigationNodeDto> moduulit = oppimaara.getChildren().get(0).getChildren();
+        List<NavigationNodeDto> moduulit = Arrays.asList(oppimaara.getChildren().get(1), oppimaara.getChildren().get(2));
         assertThat(moduulit)
                 .extracting("type", "id", "koodi.arvo")
                 .containsExactly(
-                        tuple(NavigationType.moduuli, 11L, "M1"),
-                        tuple(NavigationType.moduuli, 12L, "M2"));
+                        tuple(NavigationType.moduuli, 12L, "M2"),
+                        tuple(NavigationType.moduuli, 11L, "M1"));
     }
 
     /**

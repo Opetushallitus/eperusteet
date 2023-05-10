@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.Copyable;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.*;
@@ -23,12 +24,13 @@ public class Lops2019LaajaAlainenOsaaminenKokonaisuus implements Copyable<Lops20
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OrderBy("jarjestys, id")
+    @OrderColumn(name="jarjestys")
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @JoinTable(name = "yl_lops2019_lao_kokonaisuus_lao",
             joinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_kokonaisuus_id"),
             inverseJoinColumns = @JoinColumn(name = "laaja_alainen_osaaminen_id"))
-    private Set<Lops2019LaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new HashSet<>();
+    private List<Lops2019LaajaAlainenOsaaminen> laajaAlaisetOsaamiset = new ArrayList<>();
 
     public void setLaajaAlaisetOsaamiset(Collection<Lops2019LaajaAlainenOsaaminen> laajaAlaiset) {
         this.laajaAlaisetOsaamiset.clear();
