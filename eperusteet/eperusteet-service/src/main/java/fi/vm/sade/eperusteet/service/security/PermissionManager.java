@@ -172,6 +172,7 @@ public class PermissionManager {
 
             perm = Maps.newHashMap();
             perm.put(KORJAUS, r1);
+            perm.put(MUOKKAUS, r1);
             perm.put(LUKU, r5);
             tmp.put(ProjektiTila.JULKAISTU, perm);
 

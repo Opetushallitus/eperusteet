@@ -173,4 +173,13 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
         }
     }
 
+    public void setVapaatTekstit(List<KevytTekstiKappale> vapaatTekstit) {
+        this.vapaatTekstit = new ArrayList<>();
+        if (vapaatTekstit != null) {
+            for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
+                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
+    }
+
 }
