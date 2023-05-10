@@ -38,7 +38,6 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
 
     @Getter
     @Setter
-    @NotNull
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

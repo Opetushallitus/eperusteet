@@ -76,6 +76,7 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
 
     @Getter
     @Setter
+    @NotNull
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @ValidKoodisto(koodisto = KoodistoUriArvo.MODUULIKOODISTOLOPS2021)

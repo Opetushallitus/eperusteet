@@ -1,0 +1,1 @@
+alter table yl_lops2019_oppiaine alter column nimi_id drop not null;

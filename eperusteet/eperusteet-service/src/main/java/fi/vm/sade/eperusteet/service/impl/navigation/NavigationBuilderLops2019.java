@@ -92,44 +92,37 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
         }
     }
 
-    private NavigationNodeDto laajaAlaiset(Long perusteId) {
-        final Lops2019Sisalto sisalto = lops2019SisaltoRepository.findByPerusteId(perusteId);
-        return NavigationNodeDto.of(NavigationType.laajaalaiset)
-                .addAll(sisalto.getLaajaAlainenOsaaminen().getLaajaAlaisetOsaamiset().stream()
-                        .map(lo -> NavigationNodeDto.of(
-                                NavigationType.laajaalainen,
-                                mapper.map(lo.getNimi(), LokalisoituTekstiDto.class),
-                                lo.getId())
-                                .koodi(mapper.map(lo.getKoodi(), KoodiDto.class))
-                                .meta("koodi", mapper.map(lo.getKoodi(), KoodiDto.class)))
-                        .sorted(this::koodiComparator));
-    }
-
     private NavigationNodeDto mapOppiaine(
             Lops2019Oppiaine oa,
             Map<Long, List<Lops2019Oppiaine>> oppimaaratMap,
             Map<Long, List<Lops2019Moduuli>> moduulitMap) {
+        LokalisoituTekstiDto nimi = oa.getKoodi() != null ? mapper.map(oa.getKoodi(), KoodiDto.class).getNimi() : mapper.map(oa.getNimi(), LokalisoituTekstiDto.class);
         NavigationNodeDto result = NavigationNodeDto
-                .of(NavigationType.oppiaine, mapper.map(oa.getNimi(), LokalisoituTekstiDto.class), oa.getId())
+                .of(NavigationType.oppiaine, nimi, oa.getId())
                 .koodi(mapper.map(oa.getKoodi(), KoodiDto.class))
                 .meta("koodi", mapper.map(oa.getKoodi(), KoodiDto.class));
 
         Optional.ofNullable(oppimaaratMap.get(oa.getId()))
-                .ifPresent(oppimaarat -> result.add(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
-                .addAll(oppimaarat.stream().map(om -> mapOppiaine(om, oppimaaratMap, moduulitMap)))));
+                .ifPresent(oppimaarat -> {
+                    result.add(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true));
+                    result.addAll(oppimaarat.stream().map(om -> mapOppiaine(om, oppimaaratMap, moduulitMap)));
+                });
 
         Optional.ofNullable(moduulitMap.get(oa.getId()))
-                .ifPresent(moduulit -> result.add(NavigationNodeDto.of(NavigationType.moduulit).meta("navigation-subtype", true)
-                .addAll(moduulit.stream()
-                    .map(m -> NavigationNodeDto.of(
-                        NavigationType.moduuli,
-                        mapper.map(m.getNimi(), LokalisoituTekstiDto.class),
-                        m.getId())
-                        .koodi(mapper.map(m.getKoodi(), fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto.class))
-                        .meta("oppiaine", m.getOppiaine() != null ? m.getOppiaine().getId() : null)
-                        .meta("koodi", mapper.map(m.getKoodi(), KoodiDto.class))
-                        .meta("pakollinen", m.getPakollinen()))
-                    .sorted(this::koodiComparator))));
+                .ifPresent(moduulit -> {
+                    result.add(NavigationNodeDto.of(NavigationType.moduulit).meta("navigation-subtype", true));
+                    result.addAll(moduulit.stream()
+                        .map(m -> NavigationNodeDto.of(
+                            NavigationType.moduuli,
+                            mapper.map(m.getNimi(), LokalisoituTekstiDto.class),
+                            m.getId())
+                            .koodi(mapper.map(m.getKoodi(), fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto.class))
+                            .meta("oppiaine", m.getOppiaine() != null ? m.getOppiaine().getId() : null)
+                            .meta("koodi", mapper.map(m.getKoodi(), KoodiDto.class))
+                            .meta("pakollinen", m.getPakollinen()))
+                        .sorted(this::koodiComparator)
+                        .sorted(Comparator.comparing(moduuli -> !(Boolean)moduuli.getMeta().get("pakollinen"))));
+                    });
 
         return result;
     }
@@ -179,7 +172,7 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
         NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
         return NavigationNodeDto.of(NavigationType.root)
             .addAll(basicNavigation.getChildren())
-            .add(laajaAlaiset(perusteId))
+            .add(NavigationNodeDto.of(NavigationType.laajaalaiset))
             .add(oppiaineet(perusteId));
     }
 }

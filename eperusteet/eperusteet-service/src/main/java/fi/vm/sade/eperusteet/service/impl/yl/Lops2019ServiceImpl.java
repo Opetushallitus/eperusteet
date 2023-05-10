@@ -141,7 +141,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
         return mapper.map(sisalto.getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
     }
 
-    private void addLaajaAlainenMuokkaustieto(Long perusteId, List<Lops2019LaajaAlainenOsaaminen> alkuperaiset, Set<Lops2019LaajaAlainenOsaaminen> korvaavat) {
+    private void addLaajaAlainenMuokkaustieto(Long perusteId, List<Lops2019LaajaAlainenOsaaminen> alkuperaiset, List<Lops2019LaajaAlainenOsaaminen> korvaavat) {
         if (!korvaavat.isEmpty()) {
             korvaavat.forEach(dtoLao -> {
                 boolean isLuonti = alkuperaiset.stream().noneMatch(dbL -> Objects.equals(dbL.getId(), dtoLao.getId()));

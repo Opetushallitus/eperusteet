@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,4 +26,12 @@ public class Lops2019OppiaineBaseDto implements ReferenceableDto {
     private Lops2019OpiskeluymparistoTyotavatDto opiskeluymparistoTyotavat;
     private Lops2019OppiaineLaajaAlainenOsaaminenDto laajaAlaisetOsaamiset;
     private Lops2019OppiaineTavoitteetDto tavoitteet;
+
+    public LokalisoituTekstiDto getNimi() {
+        if (koodi != null) {
+            return koodi.getNimi();
+        }
+
+        return nimi;
+    }
 }
