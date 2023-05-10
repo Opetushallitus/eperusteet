@@ -834,6 +834,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
         // Yhteiset opinnot
         addTaiteenalaSisalto(docBase, taiteenala.getYhteisetOpinnot(), "docgen.taiteenala.yhteiset-opinnot");
+
+        if (!CollectionUtils.isEmpty(taiteenala.getVapaatTekstit())) {
+            taiteenala.getVapaatTekstit().forEach(vapaaTeksti -> addTaiteenalaSisalto(docBase, vapaaTeksti, ""));
+        }
     }
 
     private void addOpintokokonaisuus(DokumenttiPeruste docBase, Opintokokonaisuus opintokokonaisuus, PerusteenOsa po,
@@ -1671,6 +1675,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addTekstiOsa(docBase, vaihe.getSiirtymaSeuraavaan());
         addTekstiOsa(docBase, vaihe.getPaikallisestiPaatettavatAsiat());
 
+        if (!CollectionUtils.isEmpty(vaihe.getVapaatTekstit())) {
+            vaihe.getVapaatTekstit().forEach(vapaaTeksti -> addTekstiOsa(docBase, vapaaTeksti));
+        }
+
         if (vaihe.getOppiaineet().size() > 0) {
             addOppiaineet(docBase, vaihe.getOppiaineet());
         }
@@ -1682,6 +1690,13 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     private void addTekstiOsa(DokumenttiPeruste docBase, TekstiOsa tekstiOsa) {
         if (tekstiOsa != null) {
             addTeksti(docBase, getTextString(docBase, tekstiOsa.getOtsikko()), "h5");
+            addTeksti(docBase, getTextString(docBase, tekstiOsa.getTeksti()), "div");
+        }
+    }
+
+    private void addTekstiOsa(DokumenttiPeruste docBase, KevytTekstiKappale tekstiOsa) {
+        if (tekstiOsa != null) {
+            addTeksti(docBase, getTextString(docBase, tekstiOsa.getNimi()), "h5");
             addTeksti(docBase, getTextString(docBase, tekstiOsa.getTeksti()), "div");
         }
     }
@@ -1717,6 +1732,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         addTekstiOsa(docBase, oppiaine.getOhjaus());
         addTekstiOsa(docBase, oppiaine.getArviointi());
         addTekstiOsa(docBase, oppiaine.getSisaltoalueinfo());
+
+        if (!CollectionUtils.isEmpty(oppiaine.getVapaatTekstit())) {
+            oppiaine.getVapaatTekstit().forEach(vapaaTeksti -> addTekstiOsa(docBase, vapaaTeksti));
+        }
 
         if (oppiaine.getPakollinenKurssiKuvaus() != null) {
             addTeksti(docBase, messages.translate("docgen.pakollinen_kurssi_kuvaus.title", docBase.getKieli()), "h5");
