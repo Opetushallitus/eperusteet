@@ -66,10 +66,13 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
                         return null;
                     }
                 }).filter(Objects::nonNull));
-                navigationNodeDto.addAll(taiteenaladto.getVapaatTekstit().stream().map(vapaateksti -> NavigationNodeDto.of(NavigationType.taiteenosa,
-                                vapaateksti.getNimi())
-                        .meta("vapaateksti_id", vapaateksti.getId())
-                        .meta("viiteId", navigationNodeDto.getId())));
+
+                if (!CollectionUtils.isEmpty(taiteenaladto.getVapaatTekstit())) {
+                    navigationNodeDto.addAll(taiteenaladto.getVapaatTekstit().stream().map(vapaateksti -> NavigationNodeDto.of(NavigationType.taiteenosa,
+                                    vapaateksti.getNimi())
+                            .meta("vapaateksti_id", vapaateksti.getId())
+                            .meta("viiteId", navigationNodeDto.getId())));
+                }
             }
         });
 
