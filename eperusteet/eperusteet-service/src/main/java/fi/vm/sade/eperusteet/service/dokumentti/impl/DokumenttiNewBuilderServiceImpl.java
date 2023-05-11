@@ -1707,8 +1707,10 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private void addOppiaine(DokumenttiPeruste docBase, AIPEOppiaine oppiaine) {
         StringBuilder nimiBuilder = new StringBuilder();
-        nimiBuilder.append(getTextString(docBase, oppiaine.getNimi()));
         if (oppiaine.getKoodi() != null && oppiaine.getKoodi().getUri() != null) {
+            KoodiDto koodiDto = mapper.map(oppiaine.getKoodi(), KoodiDto.class);
+            nimiBuilder.append(getTextString(docBase, koodiDto.getNimi()));
+
             String uri = oppiaine.getKoodi().getUri();
             String[] splitArray = uri.split("_");
             if (splitArray.length > 0) {
@@ -1716,9 +1718,11 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 nimiBuilder.append(splitArray[splitArray.length - 1].toUpperCase());
                 nimiBuilder.append(")");
             }
+        } else if (oppiaine.getNimi() != null) {
+            nimiBuilder.append(getTextString(docBase, oppiaine.getNimi()));
         }
 
-        if (oppiaine.getNimi() != null) {
+        if (nimiBuilder.length() > 0) {
             addHeader(docBase, nimiBuilder.toString());
         } else if (oppiaine.getOppiaine() == null) {
             addHeader(docBase, messages.translate("docgen.nimeton_oppiaine", docBase.getKieli()));
@@ -1865,8 +1869,9 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
 
     private void addKurssi(DokumenttiPeruste docBase, AIPEKurssi kurssi) {
         StringBuilder nimiBuilder = new StringBuilder();
-        nimiBuilder.append(getTextString(docBase, kurssi.getNimi()));
         if (kurssi.getKoodi() != null && kurssi.getKoodi().getUri() != null) {
+            KoodiDto koodiDto = mapper.map(kurssi.getKoodi(), KoodiDto.class);
+            nimiBuilder.append(getTextString(docBase, koodiDto.getNimi()));
             String uri = kurssi.getKoodi().getUri();
             String[] splitArray = uri.split("_");
             if (splitArray.length > 0) {
@@ -1874,6 +1879,8 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                 nimiBuilder.append(splitArray[splitArray.length - 1].toUpperCase());
                 nimiBuilder.append(")");
             }
+        } else if (kurssi.getNimi() != null) {
+            nimiBuilder.append(getTextString(docBase, kurssi.getNimi()));
         }
 
         addTeksti(docBase, nimiBuilder.toString(), "h6");
