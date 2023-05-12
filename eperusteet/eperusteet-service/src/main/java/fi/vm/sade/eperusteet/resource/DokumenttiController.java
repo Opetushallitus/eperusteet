@@ -115,7 +115,8 @@ public class DokumenttiController {
                 headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
             }
         }
-
+        // estetään googlea indeksoimasta pdf:iä
+        headers.set("X-Robots-Tag", "noindex");
         return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
     }
 
