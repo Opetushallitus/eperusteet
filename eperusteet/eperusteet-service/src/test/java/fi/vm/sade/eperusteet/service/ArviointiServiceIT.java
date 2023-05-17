@@ -27,12 +27,15 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistasoRepository;
 import fi.vm.sade.eperusteet.resource.config.MappingModule;
 import fi.vm.sade.eperusteet.service.internal.ArviointiService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -68,6 +71,10 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private OsaamistasoRepository osaamistasoRepository;
+
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
 
     @PersistenceContext
     private EntityManager em;
@@ -155,8 +162,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         List<ArviointiAsteikko> arviointiasteikot = arviointiAsteikkoRepository.findAll();
 
         dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.setArviointiAsteikko(Reference.of(arviointiasteikot.get(0)))));
-        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(Reference.of(osaamistasot.get(0).getId())))));
-
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(mapper.map(osaamistasot.get(0), OsaamistasoDto.class)))));
         arviointiService.add(dto);
 
         em.flush();
@@ -178,7 +184,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         List<ArviointiAsteikko> arviointiasteikot = arviointiAsteikkoRepository.findAll();
 
         dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.setArviointiAsteikko(Reference.of(arviointiasteikot.get(0)))));
-        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(Reference.of(osaamistasot.get(0).getId())))));
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(mapper.map(osaamistasot.get(0), OsaamistasoDto.class)))));
         arviointiService.add(dto);
         em.flush();
     }
@@ -194,7 +200,7 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
         List<ArviointiAsteikko> arviointiasteikot = arviointiAsteikkoRepository.findAll();
 
         dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.setArviointiAsteikko(Reference.of(arviointiasteikot.get(0)))));
-        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(Reference.of(osaamistasot.get(0).getId())))));
+        dto.getArvioinninKohdealueet().forEach(aka -> aka.getArvioinninKohteet().forEach(ak -> ak.getOsaamistasonKriteerit().forEach(ok -> ok.setOsaamistaso(mapper.map(osaamistasot.get(0), OsaamistasoDto.class)))));
         arviointiService.add(dto);
         em.flush();
     }
