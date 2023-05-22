@@ -9,4 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PdfData {
     private String data;
+    private String tila;
 }

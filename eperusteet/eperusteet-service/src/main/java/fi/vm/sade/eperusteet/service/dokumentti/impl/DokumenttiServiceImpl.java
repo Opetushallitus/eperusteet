@@ -366,9 +366,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
-    public void updateDokumenttiPdfData(String data, Long dokumenttiId) {
+    public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
         Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
-        dokumentti.setData(Base64.getDecoder().decode(data));
+        dokumentti.setData(data);
         dokumentti.setTila(DokumenttiTila.VALMIS);
         dokumentti.setValmistumisaika(new Date());
         dokumenttiRepository.save(dokumentti);

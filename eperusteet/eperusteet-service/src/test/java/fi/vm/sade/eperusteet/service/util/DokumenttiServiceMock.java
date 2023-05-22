@@ -59,7 +59,7 @@ public class DokumenttiServiceMock implements DokumenttiService {
     }
 
     @Override
-    public void updateDokumenttiPdfData(String pdfData, Long dokumenttiId) {
+    public void updateDokumenttiPdfData(byte[] pdfData, Long dokumenttiId) {
 
     }
 

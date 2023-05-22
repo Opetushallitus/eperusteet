@@ -37,6 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.Objects;
 
 /**
@@ -193,15 +194,15 @@ public class DokumenttiController {
     @ResponseBody
     public ResponseEntity<String> savePdfData(@PathVariable("dokumenttiId") Long dokumenttiId,
                                               @RequestBody PdfData pdfData) {
-        service.updateDokumenttiPdfData(pdfData.getData(), dokumenttiId);
+        service.updateDokumenttiPdfData(Base64.getDecoder().decode(pdfData.getData()), dokumenttiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(path = "/pdf/tila/{dokumenttiId}", method = RequestMethod.POST)
+    @PostMapping(path = "/pdf/tila/{dokumenttiId}")
     @ResponseBody
     public ResponseEntity<String> updateDokumenttiTila(@PathVariable("dokumenttiId") Long dokumenttiId,
-                                                       @RequestBody DokumenttiTila tila) {
-        service.updateDokumenttiTila(tila, dokumenttiId);
+                                                       @RequestBody PdfData pdfData) {
+        service.updateDokumenttiTila(DokumenttiTila.of(pdfData.getTila()), dokumenttiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

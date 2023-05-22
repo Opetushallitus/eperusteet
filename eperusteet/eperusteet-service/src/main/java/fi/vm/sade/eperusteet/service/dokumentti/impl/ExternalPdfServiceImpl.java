@@ -45,27 +45,9 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
     private PerusteService perusteService;
 
     @Autowired
-    HttpEntity httpEntity;
-
-    @Autowired
     RestClientFactory restClientFactory;
 
     private final ObjectMapper mapper = InitJacksonConverter.createMapper();
-
-//    @Override
-//    public void generatePdf(DokumenttiDto dto) throws JsonProcessingException {
-//        RestTemplate restTemplate = new RestTemplate();
-//        PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(dto.getPerusteId());
-//        String json = mapper.writeValueAsString(sisalto);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> entity = new HttpEntity<>(json, headers);
-//
-//        String url = pdfServiceUrl + "/api/pdf/generate/eperusteet/" + dto.getId() + "/" + dto.getKieli().name() + "/" + dto.getGeneratorVersion().name();
-//        restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-//    }
 
     @Override
     public void generatePdf(DokumenttiDto dto) throws JsonProcessingException {
