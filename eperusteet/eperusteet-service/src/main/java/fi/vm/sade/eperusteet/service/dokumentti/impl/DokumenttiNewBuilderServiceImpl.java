@@ -72,6 +72,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
@@ -1530,7 +1531,7 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
     }
 
     private void addTutke2Osat(DokumenttiPeruste docBase, TutkinnonOsa osa) {
-        List<OsaAlue> osaAlueet = osa.getOsaAlueet();
+        List<OsaAlue> osaAlueet = osa.getOsaAlueet().stream().filter(osaalue -> osaalue.getNimi().getTeksti().containsKey(docBase.getKieli())).collect(Collectors.toList());
 
         osaAlueet.forEach(osaAlue -> {
             String nimi = getTextString(docBase, osaAlue.getNimi());
