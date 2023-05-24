@@ -25,10 +25,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
  */
 public interface TermistoService {
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
     List<TermiDto> getTermit(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
     TermiDto getTermi(@P("perusteId") Long perusteId, String avain);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
