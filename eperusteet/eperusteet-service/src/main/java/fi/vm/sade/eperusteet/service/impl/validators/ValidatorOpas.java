@@ -24,6 +24,11 @@ public class ValidatorOpas implements Validator {
 
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
 
+        if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
+            updateStatus.setVaihtoOk(false);
+            updateStatus.addStatus("oppaan-voimassaolon-alku-pakollinen");
+        }
+
         if (ProjektiTila.JULKAISTU.equals(projekti.getTila())) {
             if (projekti.getPeruste().getKoulutustyyppi() == null
                     && projekti.getPeruste().getOppaanKoulutustyypit().isEmpty()) {
@@ -37,10 +42,7 @@ public class ValidatorOpas implements Validator {
                 updateStatus.addStatus("oppaan-nimea-ei-ole-kaikilla-kielilla");
                 updateStatus.setVaihtoOk(false);
             }
-            if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
-                updateStatus.setVaihtoOk(false);
-                updateStatus.addStatus("oppaan-voimassaolon-alku-pakollinen");
-            }
+
             if (projekti.getPeruste().getVoimassaoloLoppuu() != null &&
                     projekti.getPeruste().getVoimassaoloLoppuu().before(DateTime.now().toDate())) {
                 updateStatus.setVaihtoOk(false);
