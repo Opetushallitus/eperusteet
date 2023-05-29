@@ -106,12 +106,12 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
                     addOrderExpression(cb, order, voimassaoloLoppuu, jarjestysOrder);
                     addOrderExpression(cb, order, nimi, false);
                     break;
-                case KOULUTUSTYYPPI:
-                    addOrderExpression(cb, order, koulutustyyppi, jarjestysOrder);
+                case PERUSTE_PAATOSPVM:
+                    addOrderExpression(cb, order, paatospvm, jarjestysOrder);
                     addOrderExpression(cb, order, nimi, false);
                     break;
-                case PAATOSPVM:
-                    addOrderExpression(cb, order, paatospvm, jarjestysOrder);
+                case KOULUTUSTYYPPI:
+                    addOrderExpression(cb, order, koulutustyyppi, jarjestysOrder);
                     addOrderExpression(cb, order, nimi, false);
                     break;
                 default:
