@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
-
 package fi.vm.sade.eperusteet.repository.custom;
 
 import fi.vm.sade.eperusteet.domain.*;
@@ -39,17 +23,12 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
-/**
- *
- * @author nkala
- */
 @Slf4j
 public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryCustom {
 
@@ -99,6 +78,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         final Path<Date> voimassaoloAlkaa = root.join(Perusteprojekti_.peruste).get(Peruste_.voimassaoloAlkaa);
         final Path<Date> voimassaoloLoppuu = root.join(Perusteprojekti_.peruste).get(Peruste_.voimassaoloLoppuu);
         final Path<String> koulutustyyppi = root.join(Perusteprojekti_.peruste).get(Peruste_.koulutustyyppi);
+        final Path<Date> paatospvm = root.join(Perusteprojekti_.peruste).get(Peruste_.paatospvm);
 
         if (!StringUtils.isEmpty(pquery.getJarjestysTapa())) {
             Boolean jarjestysOrder = pquery.getJarjestysOrder();
@@ -130,6 +110,10 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
                     addOrderExpression(cb, order, koulutustyyppi, jarjestysOrder);
                     addOrderExpression(cb, order, nimi, false);
                     break;
+                case PAATOSPVM:
+                    addOrderExpression(cb, order, paatospvm, jarjestysOrder);
+                    addOrderExpression(cb, order, nimi, false);
+                    break;
                 default:
                     addOrderExpression(cb, order, nimi, false);
                     break;
@@ -139,7 +123,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         }
 
         order.add(cb.asc(root.get(Perusteprojekti_.id)));
-        query.multiselect(root, nimi, perusteVersion, voimassaoloAlkaa, voimassaoloLoppuu, koulutustyyppi).where(pred).orderBy(order);
+        query.multiselect(root, nimi, perusteVersion, voimassaoloAlkaa, voimassaoloLoppuu, koulutustyyppi, paatospvm).where(pred).orderBy(order);
         return em.createQuery(query);
     }
 
