@@ -312,6 +312,10 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         luontiDto.setRyhmaOid("abc");
         OpasDto opas = opasService.save(luontiDto);
 
+        Peruste perustePohja = perusteRepository.findOne(opas.getPeruste().getIdLong());
+        perustePohja.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 2, Calendar.MARCH, 12).getTime());
+        perusteRepository.save(perustePohja);
+
         ppTestUtils.julkaise(opas.getId());
 
         List<PerusteKoosteDto> kooste = perusteService.getKooste();
