@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -227,11 +212,6 @@ import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
-
-/**
- *
- * @author jhyoty
- */
 
 @Slf4j
 @Service
@@ -1590,7 +1570,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         RakenneModuuliDto updated = mapper.map(moduuli, RakenneModuuliDto.class);
-        updateAllTutkinnonOsaJarjestys(perusteId, updated);
         return updated;
     }
 
@@ -1604,6 +1583,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
+    /**
+     * Poistettu käytöstä rakenteen tallennuksessa
+     */
     @Override
     @Transactional
     public void updateAllTutkinnonOsaJarjestys(Long perusteId, RakenneModuuliDto rakenne) {
