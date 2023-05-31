@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
@@ -43,7 +44,11 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
         PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(dto.getPerusteId());
         String json = mapper.writeValueAsString(sisalto);
         OphHttpClient client = restClientFactory.get(pdfServiceUrl, true);
-        String url = pdfServiceUrl + "/api/pdf/generate/eperusteet/" + dto.getId() + "/" + dto.getKieli().name() + "/" + dto.getGeneratorVersion().name();
+        String url = pdfServiceUrl + "/api/pdf/generate/eperusteet/" + dto.getId() + "/" + dto.getKieli().name();
+
+        if (dto.getGeneratorVersion().equals(GeneratorVersion.KVLIITE)) {
+            url = url + "/kvliite";
+        }
 
         client.execute(
                 OphHttpRequest.Builder
