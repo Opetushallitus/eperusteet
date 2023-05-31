@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -102,6 +103,15 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
     private TekstiPalanen vapaaTeksti;
+
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "yl_oppiaineen_vlkok_vapaateksti",
+            joinColumns = @JoinColumn(name = "oppiaine_vlk_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
 
     public List<OpetuksenTavoite> getTavoitteet() {
         return new ArrayList<>(tavoitteet);
@@ -191,6 +201,15 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         ovlk.setVapaaTeksti(vapaaTeksti);
 
         return ovlk;
+    }
+
+    public void setVapaatTekstit(List<KevytTekstiKappale> vapaatTekstit) {
+        this.vapaatTekstit = new ArrayList<>();
+        if (vapaatTekstit != null) {
+            for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
+                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
@@ -38,6 +39,7 @@ import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
@@ -377,7 +380,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
         oppiaineRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         aine = oppiaineRepository.save(aine);
-        oppiaineRepository.setRevisioKommentti("Muokattu oppiainetta " + aine.getNimi().toString());
+        oppiaineRepository.setRevisioKommentti("Muokattu oppiainetta " + (aine.getNimi() != null ? aine.getNimi().toString() : ""));
         muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(aine, OppiaineDto.class);
     }
@@ -446,7 +449,18 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
 
         return mapper.map(kohde, OpetuksenKohdealueDto.class);
+    }
 
+    @Override
+    @Transactional
+    public List<OpetuksenKohdealueDto> updateKohdealueet(Long perusteId, Long oppiaineId, List<OpetuksenKohdealueDto> kohdealueetDto) {
+        Oppiaine aine = getAndLockOppiaine(perusteId, oppiaineId);
+
+        Set<OpetuksenKohdealue> kohdealueet = Sets.newHashSet(mapper.mapAsList(kohdealueetDto, OpetuksenKohdealue.class));
+        aine.setKohdealueet(kohdealueet);
+        kohdeAlueRepository.save(kohdealueet);
+
+        return mapper.mapAsList(kohdealueet, OpetuksenKohdealueDto.class);
     }
 
     @Override

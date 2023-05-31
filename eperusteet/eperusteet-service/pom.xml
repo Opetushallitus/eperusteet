@@ -785,6 +785,10 @@
                                         <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>
                                         <location>${eperusteet.resources}.peruste.LukiokoulutusJulkisetPerusteenSisallotController</location>
                                         <location>${eperusteet.resources}.peruste.PoistettuSisaltoController</location>
+                                        <location>${eperusteet.resources}.peruste.LaajaalainenOsaaminenLockController</location>
+                                        <location>${eperusteet.resources}.peruste.VuosiluokkaKokonaisuusLockController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineLockController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineVlkLockController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>

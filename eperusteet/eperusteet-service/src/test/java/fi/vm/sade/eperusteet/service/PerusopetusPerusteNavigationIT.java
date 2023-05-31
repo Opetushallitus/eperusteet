@@ -25,6 +25,8 @@ import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
 import java.util.Optional;
+
+import org.assertj.core.util.Maps;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,15 +92,17 @@ public class PerusopetusPerusteNavigationIT extends AbstractIntegrationTest {
     public void testPerusopetusnavigation() {
         NavigationNodeDto navigationNodeDto  = dispatcher.get(perusteId, NavigationBuilder.class).buildNavigation(perusteId, "fi");
         assertThat(navigationNodeDto).isNotNull();
-        assertThat(navigationNodeDto.getChildren()).hasSize(3); // viitteet + vlk + oppiaineet
+        assertThat(navigationNodeDto.getChildren()).hasSize(3);
         assertThat(navigationNodeDto.getChildren()).extracting("type")
-                .containsExactly(NavigationType.viite, NavigationType.vuosiluokkakokonaisuus, NavigationType.perusopetusoppiaineet);
-        assertThat(navigationNodeDto.getChildren().get(1).getChildren()).hasSize(4); // vlk oppiaineet
+                .containsExactly(NavigationType.vuosiluokkakokonaisuudet, NavigationType.perusopetusoppiaineet, NavigationType.perusopetuslaajaalaisetosaamiset);
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren()).hasSize(4);
         assertThat(navigationNodeDto.getChildren().get(1).getChildren()).extracting("type")
                 .containsOnly(NavigationType.perusopetusoppiaine);
-        assertThat(navigationNodeDto.getChildren().get(2).getChildren()).hasSize(4); // oppiaineet
-        assertThat(navigationNodeDto.getChildren().get(2).getChildren().get(0).getChildren()).hasSize(1); // oppiaineen oppimaarat
-        assertThat(navigationNodeDto.getChildren().get(2).getChildren().get(0).getChildren().get(0).getChildren()).hasSize(2); // oppiaineen oppimaarat
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren()).hasSize(4); // oppiaineet
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren().get(0).getChildren()).hasSize(3); // oppiaineen oppimaarat
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren().get(0).getChildren().get(0).getType()).isEqualTo(NavigationType.oppimaarat); // oppiaineen oppimaarat
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren().get(0).getChildren().get(1).getType()).isEqualTo(NavigationType.perusopetusoppiaine);
+        assertThat(navigationNodeDto.getChildren().get(1).getChildren().get(0).getChildren().get(1).getMeta()).isEqualTo(Maps.newHashMap("oppimaara", true));
     }
 
     private OppiaineSuppeaDto addOppimaara(VuosiluokkaKokonaisuusDto vk, String nimi, Long jnro, OppiaineDto oppiaine) {

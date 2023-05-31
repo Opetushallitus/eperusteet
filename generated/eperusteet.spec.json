@@ -48,6 +48,14 @@
   }, {
     "name" : "PerusopetuksenPerusteenSisalto"
   }, {
+    "name" : "PerusopetusLaajaAlainenOsaaminenLukko"
+  }, {
+    "name" : "PerusopetusOppiaineLukko"
+  }, {
+    "name" : "PerusopetusOppiaineVlkLukko"
+  }, {
+    "name" : "PerusopetusVuosiluokkaKokonaisuusLukko"
+  }, {
     "name" : "Perusteenosat",
     "description" : "Perusteen osien hallinta"
   }, {
@@ -5934,6 +5942,85 @@
         }
       }
     },
+    "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko" : {
+      "get" : {
+        "tags" : [ "PerusopetusLaajaAlainenOsaaminenLukko" ],
+        "operationId" : "checkLockPerusopetusLao",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaaminenId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "PerusopetusLaajaAlainenOsaaminenLukko" ],
+        "operationId" : "lockPerusopetusLao",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaaminenId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "If-Match",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "PerusopetusLaajaAlainenOsaaminenLukko" ],
+        "operationId" : "unlockPerusopetusLao",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "osaaminenId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/perusopetus/oppiaineet" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
@@ -6131,6 +6218,46 @@
         }
       }
     },
+    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet/update" : {
+      "post" : {
+        "tags" : [ "PerusopetuksenPerusteenSisalto" ],
+        "operationId" : "updateKohdealueet",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/OpetuksenKohdealueDto"
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OpetuksenKohdealueDto"
+              }
+            }
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet/{kohdealueId}" : {
       "delete" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
@@ -6289,6 +6416,85 @@
         }
       }
     },
+    "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/lukko" : {
+      "get" : {
+        "tags" : [ "PerusopetusOppiaineLukko" ],
+        "operationId" : "checkLockPerusopetusOppiaine",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "oppiaineId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "PerusopetusOppiaineLukko" ],
+        "operationId" : "lockPerusopetusOppiaine",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "oppiaineId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "If-Match",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "PerusopetusOppiaineLukko" ],
+        "operationId" : "unlockPerusopetusOppiaine",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "oppiaineId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
+          }
+        }
+      }
+    },
     "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
@@ -6376,6 +6582,103 @@
           "format" : "int64"
         }, {
           "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko" : {
+      "get" : {
+        "tags" : [ "PerusopetusOppiaineVlkLukko" ],
+        "operationId" : "checkLockPerusopetusOppiaineVlk",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "oppiaineId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "kokonaisuusId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "PerusopetusOppiaineVlkLukko" ],
+        "operationId" : "lockPerusopetusOppiaineVlk",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "oppiaineId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "kokonaisuusId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "If-Match",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "PerusopetusOppiaineVlkLukko" ],
+        "operationId" : "unlockPerusopetusOppiaineVlk",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "oppiaineId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "kokonaisuusId",
           "in" : "path",
           "required" : true,
           "type" : "integer",
@@ -6693,6 +6996,85 @@
                 "$ref" : "#/definitions/OppiaineSuppeaDto"
               }
             }
+          }
+        }
+      }
+    },
+    "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko" : {
+      "get" : {
+        "tags" : [ "PerusopetusVuosiluokkaKokonaisuusLukko" ],
+        "operationId" : "checkLockPerusopetusVlk",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "kokonaisuusId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "PerusopetusVuosiluokkaKokonaisuusLukko" ],
+        "operationId" : "lockPerusopetusVlk",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "kokonaisuusId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "If-Match",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/LukkoDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "PerusopetusVuosiluokkaKokonaisuusLukko" ],
+        "operationId" : "unlockPerusopetusVlk",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "kokonaisuusId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
           }
         }
       }
@@ -12092,7 +12474,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "luotu" : {
           "type" : "string",
@@ -12160,7 +12542,7 @@
         },
         "type" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "koodi" : {
           "$ref" : "#/definitions/KoodiDto"
@@ -12537,6 +12919,15 @@
           "items" : {
             "$ref" : "#/definitions/OppiaineenVuosiluokkaKokonaisuusDto"
           }
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         }
       }
     },
@@ -12703,6 +13094,12 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/KeskeinenSisaltoalueDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         }
       }
@@ -13199,22 +13596,22 @@
             "type" : "object"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13239,22 +13636,22 @@
             "$ref" : "#/definitions/KoodistoKoodiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13279,22 +13676,22 @@
             "$ref" : "#/definitions/PerusteBaseDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13319,22 +13716,22 @@
             "$ref" : "#/definitions/PerusteHakuDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13359,22 +13756,22 @@
             "$ref" : "#/definitions/PerusteHakuInternalDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13399,22 +13796,22 @@
             "$ref" : "#/definitions/PerusteInfoDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13439,22 +13836,22 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13479,22 +13876,22 @@
             "$ref" : "#/definitions/PerusteprojektiKevytDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13519,22 +13916,22 @@
             "$ref" : "#/definitions/TiedoteDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13559,22 +13956,22 @@
             "$ref" : "#/definitions/TutkinnonOsaDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -13599,22 +13996,22 @@
             "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -14867,7 +15264,7 @@
         },
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "luotu" : {
           "type" : "string",
@@ -14889,7 +15286,7 @@
       "properties" : {
         "kohde" : {
           "type" : "string",
-          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
+          "enum" : [ "root", "tiedot", "viite", "liitteet", "liite", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen" ]
         },
         "tapahtumat" : {
           "type" : "array",
@@ -16497,6 +16894,15 @@
             "$ref" : "#/definitions/OppiaineenVuosiluokkaKokonaisuusDto"
           }
         },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
+        },
         "metadata" : {
           "$ref" : "#/definitions/MetaData"
         }
@@ -16543,6 +16949,12 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/KeskeinenSisaltoalueDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         },
         "metadata" : {
@@ -16640,6 +17052,12 @@
         },
         "paikallisestiPaatettavatAsiat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         },
         "metadata" : {
           "$ref" : "#/definitions/MetaData"
@@ -16772,6 +17190,12 @@
         },
         "paikallisestiPaatettavatAsiat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         }
       }
     },

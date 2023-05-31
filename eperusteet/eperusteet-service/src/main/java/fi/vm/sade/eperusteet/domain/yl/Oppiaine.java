@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -34,6 +35,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -201,6 +203,15 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
             inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
     private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisaltos;
 
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "yl_oppiaine_vapaateksti",
+            joinColumns = @JoinColumn(name = "oppiaine_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
+
     /**
      * Palauttaa oppimäärät
      *
@@ -238,7 +249,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     public void addOppimaara(Oppiaine oppimaara) {
         if (!koosteinen) {
-            throw new IllegalStateException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
+            throw new BusinessRuleViolationException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (oppimaarat == null) {
             oppimaarat = new HashSet<>();
@@ -396,6 +407,15 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
             oa.addOppimaara(om.kloonaa(laajainenOsaaminenMapper, vuosiluokkaKokonaisuusMapper));
         }
         return oa;
+    }
+
+    public void setVapaatTekstit(List<KevytTekstiKappale> vapaatTekstit) {
+        this.vapaatTekstit = new ArrayList<>();
+        if (vapaatTekstit != null) {
+            for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
+                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
     }
 
     public Stream<Oppiaine> maarineen() {
