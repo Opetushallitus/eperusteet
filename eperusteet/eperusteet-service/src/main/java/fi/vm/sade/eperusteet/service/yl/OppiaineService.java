@@ -70,6 +70,9 @@ public interface OppiaineService {
     OpetuksenKohdealueDto addKohdealue(@P("perusteId") Long perusteId, Long id, OpetuksenKohdealueDto kohdealue);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    List<OpetuksenKohdealueDto> updateKohdealueet(@P("perusteId") Long perusteId, Long oppiaineId, List<OpetuksenKohdealueDto> kohdealueet);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void deleteKohdealue(@P("perusteId") Long perusteId, Long id, Long kohdealueId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")

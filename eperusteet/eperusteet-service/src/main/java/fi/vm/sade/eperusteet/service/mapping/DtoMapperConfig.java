@@ -613,8 +613,26 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(OppiaineDto.class, Oppiaine.class)
-                .mapNulls(false)
+                .mapNulls(true)
                 .fieldBToA("vuosiluokkakokonaisuudet", "vuosiluokkakokonaisuudet")
+                .customize(new CustomMapper<OppiaineDto, Oppiaine>() {
+                    @Override
+                    public void mapBtoA(Oppiaine oppiaine, OppiaineDto oppiaineDto, MappingContext context) {
+                        super.mapBtoA(oppiaine, oppiaineDto, context);
+                        if (oppiaine.getKoodiUri() != null) {
+                            oppiaineDto.setKoodi(koodistoClient.getKoodi(oppiaine.getKoodiUri().split("_")[0], oppiaine.getKoodiUri()));
+                        }
+                    }
+
+                    @Override
+                    public void mapAtoB(OppiaineDto oppiaineDto, Oppiaine oppiaine, MappingContext context) {
+                        super.mapAtoB(oppiaineDto, oppiaine, context);
+                        if (oppiaineDto.getKoodi() != null) {
+                            oppiaine.setKoodiUri(oppiaineDto.getKoodi().getUri());
+                            oppiaine.setKoodiArvo(oppiaineDto.getKoodi().getArvo());
+                        }
+                    }
+                })
                 .byDefault()
                 .register();
 

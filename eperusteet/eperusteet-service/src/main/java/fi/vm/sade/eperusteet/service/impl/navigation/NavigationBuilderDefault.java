@@ -4,8 +4,6 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -53,6 +51,12 @@ public class NavigationBuilderDefault implements NavigationBuilder {
                         && KoulutusTyyppi.of(sisalto.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.AIKUISTENPERUSOPETUS)
                         && PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN.equals(tk.getTunniste())) {
                     type = NavigationType.aipe_laajaalaisetosaamiset;
+                }
+                if (sisalto.getPeruste() != null
+                        && sisalto.getPeruste().getKoulutustyyppi() != null
+                        && KoulutusTyyppi.of(sisalto.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.PERUSOPETUS)
+                        && PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN.equals(tk.getTunniste())) {
+                    type = NavigationType.perusopetuslaajaalaisetosaamiset;
                 }
             } else {
                 type = po.getNavigationType();
