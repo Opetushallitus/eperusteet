@@ -1,25 +1,9 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.domain.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.arviointi.Arviointi;
-import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -28,21 +12,15 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
-/**
- *
- * @author jhyoty
- */
 @Entity
 @Table(name = "tutkinnonosa")
 @JsonTypeName("tutkinnonosa")
@@ -391,5 +369,20 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 })
                 .map(Ammattitaitovaatimus2019::getKoodi)
                 .collect(Collectors.toList());
+    }
+
+    public static boolean hasRequiredKielet(TekstiPalanen tutkinnonOsaNimi) {
+        if (tutkinnonOsaNimi.getTeksti() == null) {
+            return false;
+        }
+
+        Set<Kieli> pakollisetKielet = new HashSet<>(Arrays.asList(Kieli.FI, Kieli.SV));
+        for (Kieli kieli : pakollisetKielet) {
+            String osa = tutkinnonOsaNimi.getTeksti().get(kieli);
+            if (osa == null || osa.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

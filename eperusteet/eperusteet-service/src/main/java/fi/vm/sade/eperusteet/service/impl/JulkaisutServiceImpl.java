@@ -24,6 +24,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -34,11 +35,13 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
@@ -158,6 +161,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private LiiteTiedostoService liiteTiedostoService;
+
+    @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepository;
 
     @Autowired
     @Lazy
@@ -524,6 +530,26 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 tutkintonimikeKoodiRepository.save(tutkintonimikeKoodi);
             }
         });
+
+        for (Suoritustapa suoritustapa : peruste.getSuoritustavat()) {
+            List<TutkinnonOsaViiteDto> tutkinnonOsaViitteet = perusteService.getTutkinnonOsat(peruste.getId(), suoritustapa.getSuoritustapakoodi());
+
+            tutkinnonOsaViitteet.forEach(tutkinnonOsaViite -> {
+                if (tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi() == null ) {
+                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkinnonosat", tutkinnonOsaViite.getTutkinnonOsaDto().getNimi());
+                    if (lisattyKoodi != null) {
+                        Koodi koodi = new Koodi();
+                        koodi.setUri(lisattyKoodi.getKoodiUri());
+                        koodi.setKoodisto("tutkinnonosat");
+                        koodi = koodiRepository.save(koodi);
+
+                        TutkinnonOsa tutkinnonOsa = mapper.map(tutkinnonOsaViite.getTutkinnonOsaDto(), TutkinnonOsa.class);
+                        tutkinnonOsa.setKoodi(koodi);
+                        tutkinnonOsaRepository.save(tutkinnonOsa);
+                    }
+                }
+            });
+        }
 
         ammattitaitovaatimusService.addAmmattitaitovaatimusJaArvioinninkohteetKooditToKoodisto(peruste.getId());
     }
