@@ -491,7 +491,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.12.440</version>
+            <version>1.12.480</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
