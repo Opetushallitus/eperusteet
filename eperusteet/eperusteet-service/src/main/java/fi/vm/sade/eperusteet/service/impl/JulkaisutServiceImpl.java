@@ -29,6 +29,7 @@ import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -536,11 +537,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             tutkinnonOsaViitteet.forEach(tutkinnonOsaViite -> {
                 if (tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi() == null ) {
-                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkinnonosat", tutkinnonOsaViite.getTutkinnonOsaDto().getNimi());
+                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.TUTKINNONOSAT, tutkinnonOsaViite.getTutkinnonOsaDto().getNimi());
                     if (lisattyKoodi != null) {
                         Koodi koodi = new Koodi();
                         koodi.setUri(lisattyKoodi.getKoodiUri());
-                        koodi.setKoodisto("tutkinnonosat");
+                        koodi.setKoodisto(KoodistoUriArvo.TUTKINNONOSAT);
                         koodi = koodiRepository.save(koodi);
 
                         TutkinnonOsa tutkinnonOsa = mapper.map(tutkinnonOsaViite.getTutkinnonOsaDto(), TutkinnonOsa.class);

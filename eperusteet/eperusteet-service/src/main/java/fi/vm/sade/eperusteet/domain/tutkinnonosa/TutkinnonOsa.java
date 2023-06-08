@@ -371,14 +371,14 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public static boolean hasRequiredKielet(TekstiPalanen tutkinnonOsaNimi) {
-        if (tutkinnonOsaNimi.getTeksti() == null) {
+    public boolean hasRequiredKielet() {
+        if (getNimi() == null || getNimi().getTeksti() == null) {
             return false;
         }
 
         Set<Kieli> pakollisetKielet = new HashSet<>(Arrays.asList(Kieli.FI, Kieli.SV));
         for (Kieli kieli : pakollisetKielet) {
-            String osa = tutkinnonOsaNimi.getTeksti().get(kieli);
+            String osa = getNimi().getTeksti().get(kieli);
             if (osa == null || osa.isEmpty()) {
                 return false;
             }

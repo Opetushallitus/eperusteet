@@ -83,7 +83,6 @@ import static fi.vm.sade.eperusteet.domain.ProjektiTila.POISTETTU;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.VALMIS;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.jalkeen;
 import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
-import static fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa.hasRequiredKielet;
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
 import static fi.vm.sade.eperusteet.service.util.Util.and;
 import static fi.vm.sade.eperusteet.service.util.Util.empty;
@@ -668,7 +667,7 @@ public class ValidatorPeruste implements Validator {
                     if (!koodittomatTutkinnonOsat.isEmpty()) {
                         List<LokalisoituTekstiDto> nimet = new ArrayList<>();
                         for (TutkinnonOsaViite viite : koodittomatTutkinnonOsat) {
-                            if (!hasRequiredKielet(viite.getTutkinnonOsa().getNimi())) {
+                            if (!viite.getTutkinnonOsa().hasRequiredKielet()) {
                                 nimet.add(new NavigableLokalisoituTekstiDto(viite));
                             }
                         }
