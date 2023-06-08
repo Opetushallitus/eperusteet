@@ -662,17 +662,19 @@ public class ValidatorPeruste implements Validator {
                         }
                     }
 
-                    // Tarkistetaan koodittomat tutkinnon osat
+                    // Tarkistetaan koodittomien tutkinnon osien nimet
                     List<TutkinnonOsaViite> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
                     if (!koodittomatTutkinnonOsat.isEmpty()) {
                         List<LokalisoituTekstiDto> nimet = new ArrayList<>();
                         for (TutkinnonOsaViite viite : koodittomatTutkinnonOsat) {
-                            if (viite.getTutkinnonOsa().getNimi() != null) {
+                            if (!viite.getTutkinnonOsa().hasRequiredKielet()) {
                                 nimet.add(new NavigableLokalisoituTekstiDto(viite));
                             }
                         }
-                        updateStatus.addStatus("koodittomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
-                        updateStatus.setVaihtoOk(false);
+                        if (!nimet.isEmpty()) {
+                            updateStatus.addStatus("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi", suoritustapa.getSuoritustapakoodi(), nimet);
+                            updateStatus.setVaihtoOk(false);
+                        }
                     }
 
                     // Tarkista tutke2-osien osa-alueiden koodit
