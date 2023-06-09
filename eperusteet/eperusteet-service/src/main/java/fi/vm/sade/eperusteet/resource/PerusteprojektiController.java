@@ -1,24 +1,7 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.KoulutuskoodiStatusDto;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -37,11 +20,6 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,13 +38,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-/**
- * @author harrik
- */
 @Slf4j
 @RestController
 @RequestMapping("/perusteprojektit")
@@ -115,17 +95,6 @@ public class PerusteprojektiController {
     ) {
         PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
         return new ResponseEntity<>(service.getVirheelliset(p), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/koodiongelmat", method = GET)
-    @ResponseBody
-    @Description("Lista tutkinnon osista, joista puuttuu yhteys koulutukseen. Tätä käytetään helpottamaan tutkinnon osien koodien ja koulutuskoodin eroavaisuuksien etsimiseen.")
-    public ResponseEntity<Page<KoulutuskoodiStatusDto>> getPerusteprojektiKoodiongelmat(
-            @RequestParam(defaultValue = "0") Integer sivu,
-            @RequestParam(defaultValue = "10") Integer sivukoko
-    ) {
-        PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
-        return new ResponseEntity<>(service.getKoodiongelmat(p), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
