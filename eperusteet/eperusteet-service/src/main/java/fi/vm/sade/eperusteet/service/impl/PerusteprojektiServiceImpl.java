@@ -344,19 +344,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TilaUpdateStatus> getVirheelliset(PageRequest p) {
-        Page<ValidointiStatus> virheelliset = validointiStatusRepository.findVirheelliset(p);
-        Page<TilaUpdateStatus> result = virheelliset
-                .map(validation -> {
-                    TilaUpdateStatus dto = mapper.map(validation, TilaUpdateStatus.class);
-                    dto.setPerusteprojekti(mapper.map(validation.getPeruste().getPerusteprojekti(), PerusteprojektiListausDto.class));
-                    return dto;
-                });
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
     public List<PerusteprojektiListausDto> getOmatProjektit() {
         Set<String> orgs = permissionManager.kayttajanOrganisaatiot();
