@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -35,6 +36,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto implements ReferenceableDto {
     private Long id;
-    private Optional<Reference> laajaalainenOsaaminen;
+    @JsonProperty("_laajaalainenOsaaminen")
+    private Reference laajaalainenOsaaminen;
+    @JsonProperty("laajaalainenOsaaminen")
+    private LaajaalainenOsaaminenDto laajaalainenOsaaminenDto;
     private Optional<LokalisoituTekstiDto> kuvaus;
 }
