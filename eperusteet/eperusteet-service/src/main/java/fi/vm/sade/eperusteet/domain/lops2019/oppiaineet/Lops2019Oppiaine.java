@@ -188,8 +188,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
             result.setTavoitteet(this.getTavoitteet().copy());
         }
 
-        result.setPakollisetModuulitKuvaus(this.getPakollisetModuulitKuvaus());
-        result.setValinnaisetModuulitKuvaus(this.getValinnaisetModuulitKuvaus());
+        result.setPakollisetModuulitKuvaus(TekstiPalanen.of(this.getPakollisetModuulitKuvaus().getTeksti()));
+        result.setValinnaisetModuulitKuvaus(TekstiPalanen.of(this.getValinnaisetModuulitKuvaus().getTeksti()));
 
         if (deep) {
             if (this.moduulit != null) {

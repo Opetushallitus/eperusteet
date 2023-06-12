@@ -191,7 +191,9 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         }
 
         suoritustapa.setRakenne(kopioiRakenne(vanhaSt.getRakenne(), viitemap));
-        kopioiSisalto(vanhaSt.getSisalto(), suoritustapa.getSisalto());
+        if (vanhaSt.getSisalto() != null) {
+            kopioiSisalto(vanhaSt.getSisalto(), suoritustapa.getSisalto());
+        }
         suoritustapa = suoritustapaRepository.save(suoritustapa);
         return suoritustapa;
     }
