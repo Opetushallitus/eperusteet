@@ -36,9 +36,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto implements ReferenceableDto {
     private Long id;
-    @JsonProperty("_laajaalainenOsaaminen")
-    private Reference laajaalainenOsaaminen;
-    @JsonProperty("laajaalainenOsaaminen")
-    private LaajaalainenOsaaminenDto laajaalainenOsaaminenDto;
+    private Optional<Reference> laajaalainenOsaaminen;
     private Optional<LokalisoituTekstiDto> kuvaus;
 }
