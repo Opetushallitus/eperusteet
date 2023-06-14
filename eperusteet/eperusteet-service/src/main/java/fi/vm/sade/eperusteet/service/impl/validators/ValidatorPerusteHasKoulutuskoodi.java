@@ -2,8 +2,8 @@ package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.service.Validator;
-import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,9 +16,6 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
 
-    @Autowired
-    private PerusteRepository perusteRepository;
-
     @Override
     public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
@@ -26,7 +23,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
         if (koulutukset == null || koulutukset.isEmpty()) {
             TilaUpdateStatus status = new TilaUpdateStatus();
             status.setVaihtoOk(false);
-            status.addStatus("koulutuskoodi-puuttuu");
+            status.addStatus("koulutuskoodi-puuttuu", ValidointiKategoria.PERUSTE);
             return status;
         }
         return null;

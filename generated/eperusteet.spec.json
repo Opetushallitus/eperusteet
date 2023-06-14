@@ -11046,6 +11046,10 @@
     "KevytTekstiKappaleDto" : {
       "type" : "object",
       "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "nimi" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
@@ -11426,12 +11430,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -15710,7 +15714,7 @@
         },
         "validointiKategoria" : {
           "type" : "string",
-          "enum" : [ "MAARITTELEMATON", "TEKSTI", "KIELISISALTO", "PERUSTE", "RAKENNE" ]
+          "enum" : [ "MAARITTELEMATON", "TEKSTI", "KIELISISALTO", "PERUSTE", "RAKENNE", "KOODISTO" ]
         },
         "validointiStatusType" : {
           "type" : "string",
