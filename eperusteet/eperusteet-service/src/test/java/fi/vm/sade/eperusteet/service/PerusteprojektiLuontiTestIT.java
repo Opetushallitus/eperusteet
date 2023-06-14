@@ -490,7 +490,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
                 rakenne);
         assertThat(validoitu.getOngelmat())
                 .extracting(PerusteenRakenne.Ongelma::getOngelma)
-                .contains("ryhmalta-puuttuu-sisalto");
+                .contains("tutkintonimikkeelta-tai-osaamisalalta-puuttuu-sisalto");
     }
 
     @Test
