@@ -1854,7 +1854,12 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
                     arviointiTable.appendChild(kohdeTr);
                     Element kohdeTd = docBase.getDocument().createElement("td");
                     kohdeTr.appendChild(kohdeTd);
-                    kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
+
+                    if (tavoitteenArviointi.getArvioinninKohde() != null) {
+                        kohdeTd.setTextContent(getTextString(docBase, tavoitteenArviointi.getArvioinninKohde()));
+                    } else {
+                        kohdeTd.setTextContent(messages.translate("osaamisen-kuvaus-arvosanalle_" + tavoitteenArviointi.getArvosana(), docBase.getKieli()));
+                    }
 
                     lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getOsaamisenKuvaus());
                     lisaaOsaamisenKuvaukset(docBase, kohdeTr, tavoitteenArviointi.getHyvanOsaamisenKuvaus());
