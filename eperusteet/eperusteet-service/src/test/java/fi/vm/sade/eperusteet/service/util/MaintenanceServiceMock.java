@@ -16,16 +16,11 @@ public class MaintenanceServiceMock implements MaintenanceService {
     }
 
     @Override
-    public void runValidointi() {
-    }
-
-    @Override
     public void teeJulkaisut(boolean julkaiseKaikki, String tyyppi, String koulutustyyppi, String tiedote) {
     }
 
     @Override
     public void teeJulkaisu(long perusteId, String tiedote) {
-
     }
 
     @Override

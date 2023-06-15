@@ -28,8 +28,6 @@ import java.util.Set;
 
 public interface PerusteprojektiService {
 
-    void validoiPerusteetTask(int max);
-
     void lataaMaarayskirjeetTask();
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")

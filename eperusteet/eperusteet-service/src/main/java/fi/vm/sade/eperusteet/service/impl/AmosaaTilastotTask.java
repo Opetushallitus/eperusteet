@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.impl;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ public class AmosaaTilastotTask extends AbstractScheduledTask {
     @Autowired
     private AmosaaClient amosaaClient;
 
-    @Autowired
+    @Lazy
     private MaintenanceService maintenanceService;
 
     @Override
