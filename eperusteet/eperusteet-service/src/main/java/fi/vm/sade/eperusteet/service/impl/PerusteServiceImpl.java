@@ -2396,6 +2396,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             if (KoulutusTyyppi.PERUSOPETUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
                 peruste.setSisalto(kloonaaPerusopetuksenSisalto(peruste, vanha.getPerusopetuksenPerusteenSisalto()));
+            } else if (KoulutusTyyppi.LUKIOKOULUTUS.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+                peruste.setSisalto(vanha.getLops2019Sisalto().copy(true));
+                peruste.setToteutus(vanha.getToteutus());
             } else {
                 lisaaTutkinnonMuodostuminen(peruste);
             }

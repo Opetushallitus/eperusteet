@@ -78,7 +78,7 @@ public class PerusopetusPerusteNavigationIT extends AbstractIntegrationTest {
         addOppiaine(vk, "oppiaine1", 5l, false);
         addOppiaine(vk, "oppiaine2", null, false);
         addOppiaine(vk, "oppiaine3", 3l, false);
-        OppiaineDto oppiaine = addOppiaine(vk, "oppiaine4", 2l, true);
+        OppiaineDto oppiaine = addOppiaine(null, "oppiaine4", 2l, true);
         oppiaine.setOppimaarat(Sets.newHashSet(addOppimaara(vk, "nimi2", 8l, oppiaine), addOppimaara(vk, "nimi1", 7l, oppiaine)));
 
         final OppiaineLockContext ctx = OppiaineLockContext.of(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS, perusteId, oppiaine.getId(), null);
@@ -117,13 +117,18 @@ public class PerusopetusPerusteNavigationIT extends AbstractIntegrationTest {
     }
 
     private OppiaineDto addOppiaine(VuosiluokkaKokonaisuusDto vk, String nimi, Long jnro, boolean koosteinen) {
-        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
-        vkDto.setVuosiluokkaKokonaisuus(Optional.of(Reference.of(vk.getId())));
         OppiaineDto oppiaineDto = oppiaine(nimi, jnro, Kieli.FI);
-        oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        if (vk != null) {
+            vkDto.setVuosiluokkaKokonaisuus(Optional.of(Reference.of(vk.getId())));
+            oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        }
         oppiaineDto.setKoosteinen(Optional.of(koosteinen));
         oppiaineDto = service.addOppiaine(perusteId, oppiaineDto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
-        service.addOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineDto.getId(), vkDto);
+
+        if (vk != null) {
+            service.addOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineDto.getId(), vkDto);
+        }
 
         return oppiaineDto;
     }

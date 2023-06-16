@@ -59,9 +59,15 @@ public class Lops2019LaajaAlainenOsaaminen extends AbstractAuditedReferenceableE
     @Override
     public Lops2019LaajaAlainenOsaaminen copy(boolean deep) {
         Lops2019LaajaAlainenOsaaminen result = new Lops2019LaajaAlainenOsaaminen();
-        result.setKuvaus(this.getKuvaus());
-        result.setNimi(this.getNimi());
-        result.setKoodi(this.getKoodi());
+        if (this.kuvaus != null) {
+            result.setKuvaus(TekstiPalanen.of(this.kuvaus.getTeksti()));
+        }
+        if (this.nimi != null) {
+            result.setNimi(TekstiPalanen.of(this.nimi.getTeksti()));
+        }
+        if (this.koodi != null) {
+            result.setKoodi(new Koodi(this.getKoodi().getUri()));
+        }
         result.setJarjestys(this.getJarjestys());
         return result;
     }

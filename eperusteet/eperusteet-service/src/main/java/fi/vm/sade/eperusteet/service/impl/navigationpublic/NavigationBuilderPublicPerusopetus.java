@@ -8,13 +8,20 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineLaajaDto;
 import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteService;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,14 +63,23 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
 
     private List<NavigationNodeDto> vuosiluokanOppiaineet(PerusteKaikkiDto peruste, Long vlkId, String kieli) {
         return peruste.getPerusopetuksenPerusteenSisalto().getOppiaineet().stream()
-                .filter(oppiaine -> oppiaine.getVuosiluokkakokonaisuudet().stream()
-                        .map(vlk -> vlk.getVuosiluokkaKokonaisuus().get().getIdLong()).collect(Collectors.toList()).contains(vlkId))
+                .filter(oppiaine -> oppiaineJaOppimaaraVuosiluokkakokonaisuusIdt(oppiaine).contains(vlkId))
                 .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimiOrDefault(LokalisoituTekstiDto.of("")), Kieli.of(kieli), "")))
                 .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
                 .map(oppiaine ->
                         NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimiOrDefault(null), oppiaine.getId()).meta("vlkId", vlkId)
                                 .add(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), vlkId, kieli) : null)
                 ).collect(Collectors.toList());
+    }
+
+    private List<Long> oppiaineJaOppimaaraVuosiluokkakokonaisuusIdt(OppiaineLaajaDto oppiaine) {
+        return Stream.concat(
+                oppiaine.getVuosiluokkakokonaisuudet() == null ? Stream.<Long>empty() : oppiaine.getVuosiluokkakokonaisuudet().stream()
+                        .map(vlk -> vlk.getVuosiluokkaKokonaisuus().get().getIdLong()),
+                oppiaine.getOppimaarat() == null ? Stream.empty() : oppiaine.getOppimaarat().stream()
+                        .flatMap(oppimaara -> oppimaara.getVuosiluokkakokonaisuudet().stream()
+                                .map(vlk -> vlk.getVuosiluokkaKokonaisuus().get().getIdLong())))
+                .collect(Collectors.toList());
     }
 
     private NavigationNodeDto oppiaineet(PerusteKaikkiDto peruste, String kieli) {

@@ -173,6 +173,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
 
     @Autowired
+    private KoodistoClient koodistoService;
+
+    @Autowired
+    private DokumenttiService dokumenttiService;
+
+    @Autowired
     private TiedoteService tiedoteService;
 
     @Autowired
