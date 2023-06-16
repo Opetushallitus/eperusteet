@@ -15,6 +15,7 @@ public class AmosaaTilastotTask extends AbstractScheduledTask {
     private AmosaaClient amosaaClient;
 
     @Lazy
+    @Autowired
     private MaintenanceService maintenanceService;
 
     @Override
