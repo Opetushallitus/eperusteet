@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
 import fi.vm.sade.eperusteet.domain.JulkaisuLiite;
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
@@ -25,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
@@ -37,6 +39,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KoodiRepository;
@@ -68,6 +71,7 @@ import net.sf.ehcache.CacheManager;
 import org.apache.tika.mime.MimeTypeException;
 import org.joda.time.DateTime;
 import org.json.JSONException;
+import org.jsoup.Jsoup;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -219,6 +223,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste()), JulkaisuBaseDto.class);
         if (julkaisut.size() > 0 && !onkoMuutoksia(perusteprojekti.getPeruste().getId())) {
             throw new BusinessRuleViolationException("julkaisu-epaonnistui-peruste-ei-muuttunut-viime-julkaisun-jalkeen");
+        }
+
+        if (!isValidTiedote(julkaisuBaseDto.getTiedote()) || !isValidTiedote(julkaisuBaseDto.getJulkinenTiedote())) {
+            throw new BusinessRuleViolationException("tiedote-sisaltaa-kiellettyja-merkkeja");
         }
 
         JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteprojekti.getPeruste().getId());
@@ -656,5 +664,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         List<JulkaistuPeruste> one = julkaisutRepository.findAllByPeruste(peruste);
         return mapper.mapAsList(one, JulkaisuBaseDto.class);
+    }
+
+    private boolean isValidTiedote(LokalisoituTekstiDto tiedote) {
+        Set<Kieli> kielet = new HashSet<>(Arrays.asList(Kieli.FI, Kieli.SV, Kieli.EN));
+        for (Kieli kieli : kielet) {
+            if (tiedote.get(kieli) != null && !Jsoup.isValid(tiedote.get(kieli), ValidHtml.WhitelistType.SIMPLIFIED.getWhitelist())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
