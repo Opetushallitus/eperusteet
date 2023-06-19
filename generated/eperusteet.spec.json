@@ -15528,7 +15528,7 @@
         },
         "validointiKategoria" : {
           "type" : "string",
-          "enum" : [ "MAARITTELEMATON", "TEKSTI", "KIELISISALTO", "PERUSTE", "RAKENNE" ]
+          "enum" : [ "MAARITTELEMATON", "TEKSTI", "KIELISISALTO", "PERUSTE", "RAKENNE", "KOODISTO" ]
         },
         "validointiStatusType" : {
           "type" : "string",
