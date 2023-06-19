@@ -28,8 +28,6 @@ import java.util.Set;
 
 public interface PerusteprojektiService {
 
-    void validoiPerusteetTask(int max);
-
     void lataaMaarayskirjeetTask();
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
@@ -109,9 +107,6 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(@P("id") Long perusteProjektiId);
-
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    Page<TilaUpdateStatus> getVirheelliset(PageRequest p);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'MUOKKAUS')")
     TilaUpdateStatus validoiProjekti(@P("id") Long id, ProjektiTila tila);

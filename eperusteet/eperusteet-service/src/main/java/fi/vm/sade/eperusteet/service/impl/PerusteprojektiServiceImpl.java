@@ -27,12 +27,10 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
-import fi.vm.sade.eperusteet.domain.validation.ValidointiStatus;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
@@ -47,7 +45,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiMaarayskirjeDto;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiValidointiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -59,7 +56,6 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
-import fi.vm.sade.eperusteet.repository.ValidointiStatusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -121,7 +117,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.JULKAISTU;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 import static fi.vm.sade.eperusteet.resource.peruste.LiitetiedostoController.DOCUMENT_TYPES;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
@@ -179,9 +174,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private TiedoteService tiedoteService;
-
-    @Autowired
-    private ValidointiStatusRepository validointiStatusRepository;
 
     @Autowired
     private MaarayskirjeStatusRepository maarayskirjeStatusRepository;
@@ -242,81 +234,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
-    @Transactional(propagation = Propagation.NEVER)
-    public void validoiPerusteetTask(int max) {
-
-        // Haetaan validoitavat projektit
-        TransactionTemplate template = new TransactionTemplate(tm);
-        List<PerusteprojektiValidointiDto> projektit = template.execute(status -> mapper.mapAsList(Stream
-                .concat(
-                        repository.findAllValidoimattomat().stream(),
-                        repository.findAllValidoimattomatUudet().stream()
-                )
-                .collect(Collectors.toList()), PerusteprojektiValidointiDto.class));
-
-        log.debug("Tarkastetaan " + projektit.size() + " perustetta.");
-
-        int counter = 1;
-
-        for (PerusteprojektiValidointiDto pp : projektit) {
-            try {
-                if (pp.getPeruste().getTyyppi() != PerusteTyyppi.NORMAALI) {
-                    continue;
-                }
-
-                if (max > 0 && counter > max) {
-                    break;
-                }
-
-                validoiPerusteTask(pp, counter);
-
-            } catch (RuntimeException e) {
-                log.error(e.getLocalizedMessage(), e);
-            }
-            counter++;
-        }
-    }
-
-    @Transactional(propagation = Propagation.NEVER)
-    private void validoiPerusteTask(PerusteprojektiValidointiDto pp, int counter) {
-
-        TransactionTemplate template = new TransactionTemplate(tm);
-
-        template.execute(status -> {
-
-            Peruste peruste = perusteRepository.findOne(pp.getPeruste().getId());
-            ValidointiStatus vs = validointiStatusRepository.findOneByPeruste(peruste);
-            boolean vaatiiValidoinnin = vs == null
-                    || !vs.isVaihtoOk()
-                    || peruste.getViimeisinJulkaisuAika().orElse(peruste.getGlobalVersion().getAikaleima()).after(vs.getLastCheck());
-
-            if (!vaatiiValidoinnin) {
-                return true;
-            }
-
-            log.debug(String.format("%04d", counter) + " Perusteen ajastettu validointi: " + peruste.getId());
-
-            TilaUpdateStatus tilaUpdateStatus = projektiValidator.run(pp.getId(), JULKAISTU);
-            tilaUpdateStatus.setInfot(tilaUpdateStatus.getInfot().stream().filter(info -> info.getValidointiStatusType() != ValidointiStatusType.HUOMAUTUS).collect(Collectors.toList()));
-
-            if (vs != null) {
-                mapper.map(tilaUpdateStatus, vs);
-            }
-            else {
-                vs = mapper.map(tilaUpdateStatus, ValidointiStatus.class);
-            }
-
-            vs.setPeruste(peruste);
-            vs.setLastCheck(new Date());
-
-            validointiStatusRepository.save(vs);
-
-            return true;
-        });
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public Page<PerusteprojektiKevytDto> findBy(PageRequest page, PerusteprojektiQueryDto query) {
         Page<PerusteprojektiKevytDto> result = repository.findBy(page, query).map(pp -> {
@@ -339,19 +256,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return ppk;
         });
 
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<TilaUpdateStatus> getVirheelliset(PageRequest p) {
-        Page<ValidointiStatus> virheelliset = validointiStatusRepository.findVirheelliset(p);
-        Page<TilaUpdateStatus> result = virheelliset
-                .map(validation -> {
-                    TilaUpdateStatus dto = mapper.map(validation, TilaUpdateStatus.class);
-                    dto.setPerusteprojekti(mapper.map(validation.getPeruste().getPerusteprojekti(), PerusteprojektiListausDto.class));
-                    return dto;
-                });
         return result;
     }
 

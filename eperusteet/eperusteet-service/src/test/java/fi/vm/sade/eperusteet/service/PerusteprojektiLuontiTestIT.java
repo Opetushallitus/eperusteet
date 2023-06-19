@@ -1,6 +1,17 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.MuodostumisSaanto;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
@@ -8,10 +19,23 @@ import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.opas.OpasLuontiDto;
-import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.*;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -32,7 +56,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -222,22 +250,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         assertThat(perusteService.getByDiaari(new Diaarinumero(perusteDto.getDiaarinumero())))
                 .hasFieldOrPropertyWithValue("id", perusteDto.getId());
-    }
-
-    @Test
-    @Rollback(true)
-    public void testVirheellistenPerusteprojektienListaus() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
-            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
-        });
-        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
-        });
-
-        ppTestUtils.julkaise(projekti.getId());
-        PageRequest preq = new PageRequest(0, 10);
-        Page<TilaUpdateStatus> virheelliset = perusteprojektiService.getVirheelliset(preq);
-        assertThat(virheelliset)
-                .isEmpty();
     }
 
     @Test

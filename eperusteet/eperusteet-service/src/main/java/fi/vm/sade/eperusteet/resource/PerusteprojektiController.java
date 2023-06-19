@@ -23,7 +23,6 @@ import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
@@ -84,17 +83,6 @@ public class PerusteprojektiController {
     @ResponseBody
     public ResponseEntity<List<PerusteprojektiListausDto>> getOmatJulkaistutPerusteprojektit() {
         return new ResponseEntity<>(service.getOmatJulkaistut(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/virheelliset", method = GET)
-    @ResponseBody
-    @Description("Lista julkaistujen perusteprojektien virheistä. Tätä käytetään helpottamaan perusteiden korjausta validointisääntöjen muuttuessa.")
-    public ResponseEntity<Page<TilaUpdateStatus>> getVirheellisetPerusteprojektit(
-            @RequestParam(defaultValue = "0") Integer sivu,
-            @RequestParam(defaultValue = "10") Integer sivukoko
-    ) {
-        PageRequest p = new PageRequest(sivu, Math.min(sivukoko, 20));
-        return new ResponseEntity<>(service.getVirheelliset(p), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

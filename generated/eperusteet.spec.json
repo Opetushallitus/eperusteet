@@ -1442,17 +1442,6 @@
         }
       }
     },
-    "/maintenance/validoi" : {
-      "get" : {
-        "tags" : [ "Maintenance" ],
-        "operationId" : "runValidointi",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
-          }
-        }
-      }
-    },
     "/maintenance/virheellisetAmmattitaitovaatimukset" : {
       "get" : {
         "tags" : [ "Maintenance" ],
@@ -8277,33 +8266,6 @@
         }
       }
     },
-    "/perusteprojektit/virheelliset" : {
-      "get" : {
-        "tags" : [ "Perusteprojektit" ],
-        "operationId" : "getVirheellisetPerusteprojektit",
-        "parameters" : [ {
-          "name" : "sivu",
-          "in" : "query",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int32"
-        }, {
-          "name" : "sivukoko",
-          "in" : "query",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int32"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PageTilaUpdateStatus"
-            }
-          }
-        }
-      }
-    },
     "/perusteprojektit/{id}" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
@@ -13555,46 +13517,6 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/TiedoteDto"
-          }
-        },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PageTilaUpdateStatus" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "size" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "content" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/TilaUpdateStatus"
           }
         },
         "number" : {

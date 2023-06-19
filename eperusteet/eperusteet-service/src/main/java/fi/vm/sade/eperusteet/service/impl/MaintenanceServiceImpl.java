@@ -14,7 +14,6 @@ import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
-import fi.vm.sade.eperusteet.service.impl.validators.ValidointiTask;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -49,9 +48,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
-
-    @Autowired
-    private ValidointiTask validointiTask;
 
     @Autowired
     private PlatformTransactionManager ptm;
@@ -128,12 +124,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             }
         }
         log.info("Osaamisalakuvaukset lisätty");
-    }
-
-    @Override
-    @Transactional(propagation = Propagation.NEVER)
-    public void runValidointi() {
-        validointiTask.execute();
     }
 
     @Override
