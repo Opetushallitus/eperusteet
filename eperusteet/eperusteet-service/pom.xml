@@ -824,14 +824,15 @@
                                         <scheme>http</scheme>
                                         <scheme>https</scheme>
                                     </schemes>
-                                    <basePath>/api</basePath>
+                                    <basePath>https://virkailija.opintopolku.fi/eperusteet-service/api</basePath>
                                     <locations>
                                         <location>${eperusteet.resources}.julkinen.ExternalController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>
                                         <title>ePerusteet api</title>
-                                        <version>v1</version>
+                                        <version>1</version>
+                                        <description></description>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>

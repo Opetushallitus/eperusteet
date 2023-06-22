@@ -31,9 +31,9 @@ include:
   - pages  
   
 header_pages:
-  - pages/amosaa.md
   - pages/eperusteet.md
-  - pages/lops.md
+  - pages/amosaa.md
+  - pages/ylops.md
   - pages/changelog.md  
 
 # Exclude from processing.
