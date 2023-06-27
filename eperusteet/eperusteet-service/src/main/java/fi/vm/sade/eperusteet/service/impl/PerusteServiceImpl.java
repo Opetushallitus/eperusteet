@@ -2135,21 +2135,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     private void lisaaTutkinnonMuodostuminen(Peruste peruste) {
-        if ((LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
-                || AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
-                || LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
-                && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
+        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())
+                || (LUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                    || AIKUISTENLUKIOKOULUTUS.toString().equals(peruste.getKoulutustyyppi())
+                    || LUKIOVALMISTAVAKOULUTUS.toString().equals(peruste.getKoulutustyyppi()))
+                    && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
             return;
         }
-
-        if (KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
-            lisaaKovakoodattuPerusteenOsa(
-                    peruste.getPerusopetuksenPerusteenSisalto().getSisalto(),
-                    "docgen.laaja_alaiset_osaamiset.title",
-                    PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN);
-            return;
-        }
-
+        
         if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             lisaaKovakoodattuPerusteenOsa(
                     peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(),
