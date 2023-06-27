@@ -31,6 +31,7 @@ import org.apache.pdfbox.preflight.parser.PreflightParser;
 import org.apache.pdfbox.preflight.utils.ByteArrayDataSource;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
+import org.jsoup.parser.Parser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -60,7 +61,7 @@ public class DokumenttiUtils {
     public static void addLokalisoituteksti(DokumenttiBase docBase, LokalisoituTeksti lTeksti, String tagi) {
         if (lTeksti != null && lTeksti.getTeksti() != null && lTeksti.getTeksti() != null) {
             String teksti = lTeksti.getTeksti();
-            teksti = "<" + tagi + ">" + unescapeHtml5(teksti) + "</" + tagi + ">";
+            teksti = "<" + tagi + ">" + cleanHtml(teksti) + "</" + tagi + ">";
 
             Document tempDoc = new W3CDom().fromJsoup(Jsoup.parseBodyFragment(teksti));
             Node node = tempDoc.getDocumentElement().getChildNodes().item(1).getFirstChild();
@@ -76,7 +77,7 @@ public class DokumenttiUtils {
     public static void addTeksti(DokumenttiBase docBase, String teksti, String tagi, Element element) {
         if (teksti != null) {
 
-            teksti = unescapeHtml5(teksti);
+            teksti = cleanHtml(teksti);
             teksti = "<" + tagi + ">" + teksti + "</" + tagi + ">";
 
             Document tempDoc = new W3CDom().fromJsoup(Jsoup.parseBodyFragment(teksti));
@@ -89,7 +90,7 @@ public class DokumenttiUtils {
     public static String tagTeksti(String teksti, String tagi) {
         if (teksti != null) {
 
-            teksti = unescapeHtml5(teksti);
+            teksti = cleanHtml(teksti);
             return "<" + tagi + ">" + teksti + "</" + tagi + ">";
         }
 
@@ -100,7 +101,7 @@ public class DokumenttiUtils {
         if (text != null) {
             Element header = docBase.getDocument().createElement("h" + docBase.getGenerator().getDepth());
             header.setAttribute("number", docBase.getGenerator().generateNumber());
-            header.appendChild(docBase.getDocument().createTextNode(unescapeHtml5(text)));
+            header.appendChild(docBase.getDocument().createTextNode(cleanHtml(text)));
             docBase.getBodyElement().appendChild(header);
         }
     }
@@ -119,7 +120,7 @@ public class DokumenttiUtils {
                 && tekstiPalanen.getTeksti() != null
                 && tekstiPalanen.getTeksti().containsKey(kieli)
                 && tekstiPalanen.getTeksti().get(kieli) != null) {
-            return unescapeHtml5(tekstiPalanen.getTeksti().get(kieli));
+            return cleanHtml(tekstiPalanen.getTeksti().get(kieli));
         } else {
             return "";
         }
@@ -130,7 +131,7 @@ public class DokumenttiUtils {
                 && tekstiPalanen.getTeksti() != null
                 && tekstiPalanen.getTeksti().containsKey(docBase.getKieli())
                 && tekstiPalanen.getTeksti().get(docBase.getKieli()) != null) {
-            return unescapeHtml5(tekstiPalanen.getTeksti().get(docBase.getKieli()));
+            return cleanHtml(tekstiPalanen.getTeksti().get(docBase.getKieli()));
         } else {
             return "";
         }
@@ -140,7 +141,7 @@ public class DokumenttiUtils {
         if (lokalisoituTekstiDto != null && lokalisoituTekstiDto.getTekstit() != null && docBase.getKieli() != null
                 && lokalisoituTekstiDto.getTekstit().containsKey(docBase.getKieli())
                 && lokalisoituTekstiDto.getTekstit().get(docBase.getKieli()) != null) {
-            return unescapeHtml5(lokalisoituTekstiDto.getTekstit().get(docBase.getKieli()));
+            return cleanHtml(lokalisoituTekstiDto.getTekstit().get(docBase.getKieli()));
         } else {
             return "";
         }
@@ -151,12 +152,23 @@ public class DokumenttiUtils {
                 || lokalisoituTeksti.getTeksti() == null) {
             return "";
         } else {
-            return unescapeHtml5(lokalisoituTeksti.getTeksti());
+            return cleanHtml(lokalisoituTeksti.getTeksti());
         }
     }
 
-    public static String unescapeHtml5(String string) {
+
+    public static String cleanHtml(String string) {
+        if (string == null) {
+            return "";
+        }
+        string = removeInternalLink(string);
         return StringEscapeUtils.unescapeHtml4((Jsoup.clean(stripNonValidXMLCharacters(string), ValidHtml.WhitelistType.NORMAL_PDF.getWhitelist())));
+    }
+
+    private static String removeInternalLink(String text) {
+        org.jsoup.nodes.Document stringRoutenodeCleaned = Jsoup.parse(text, "", Parser.xmlParser());
+        stringRoutenodeCleaned.select("a[routenode]").forEach(org.jsoup.nodes.Node::unwrap);
+        return stringRoutenodeCleaned.toString();
     }
 
     public static String stripNonValidXMLCharacters(String in) {
@@ -243,7 +255,7 @@ public class DokumenttiUtils {
     public static Element newItalicElement(DokumenttiBase docBase, String teksti) {
         Element emphasis = docBase.getDocument().createElement("em");
 
-        Document tempDoc = new W3CDom().fromJsoup(Jsoup.parseBodyFragment(unescapeHtml5(teksti)));
+        Document tempDoc = new W3CDom().fromJsoup(Jsoup.parseBodyFragment(cleanHtml(teksti)));
         Node node = tempDoc.getDocumentElement().getChildNodes().item(1).getFirstChild();
 
         emphasis.appendChild(docBase.getDocument().importNode(node, true));
