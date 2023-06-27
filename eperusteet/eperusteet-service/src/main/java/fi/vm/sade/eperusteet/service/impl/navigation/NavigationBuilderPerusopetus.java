@@ -57,15 +57,13 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationBuilder basicBuilder = dispatcher.get(NavigationBuilder.class);
         NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli);
-        NavigationNodeDto laajaAlaisetOsaamiset = basicNavigation.getChildren().stream().filter(node -> node.getType().equals(NavigationType.perusopetuslaajaalaisetosaamiset)).findFirst().get();
-        basicNavigation.setChildren(basicNavigation.getChildren().stream().filter(node -> !node.getType().equals(NavigationType.perusopetuslaajaalaisetosaamiset)).collect(Collectors.toList()));
-        laajaAlaisetOsaamiset.addAll(laajaAlaisetOsaamiset(perusteId));
 
         return NavigationNodeDto.of(NavigationType.root)
                 .addAll(basicNavigation.getChildren())
                 .add(vuosiluokkakokonaisuudet(perusteId, kieli))
                 .add(oppiaineet(perusteId, kieli))
-                .add(laajaAlaisetOsaamiset);
+                .add(NavigationNodeDto.of(NavigationType.perusopetuslaajaalaisetosaamiset)
+                        .addAll(laajaAlaisetOsaamiset(perusteId)));
     }
 
     private List<NavigationNodeDto> laajaAlaisetOsaamiset(Long perusteId) {

@@ -52,12 +52,6 @@ public class NavigationBuilderDefault implements NavigationBuilder {
                         && PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN.equals(tk.getTunniste())) {
                     type = NavigationType.aipe_laajaalaisetosaamiset;
                 }
-                if (sisalto.getPeruste() != null
-                        && sisalto.getPeruste().getKoulutustyyppi() != null
-                        && KoulutusTyyppi.of(sisalto.getPeruste().getKoulutustyyppi()).equals(KoulutusTyyppi.PERUSOPETUS)
-                        && PerusteenOsaTunniste.LAAJAALAINENOSAAMINEN.equals(tk.getTunniste())) {
-                    type = NavigationType.perusopetuslaajaalaisetosaamiset;
-                }
             } else {
                 type = po.getNavigationType();
             }
