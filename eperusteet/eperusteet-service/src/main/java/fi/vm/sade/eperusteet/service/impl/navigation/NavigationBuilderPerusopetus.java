@@ -93,7 +93,7 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
         return NavigationNodeDto.of(NavigationType.perusopetusoppiaineet)
                 .addAll(sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class).stream()
                         .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimiOrDefault(LokalisoituTekstiDto.of("")), Kieli.of(kieli), "")))
-                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
+                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99L)))
                         .map(oppiaine ->
                         NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimiOrDefault(null), oppiaine.getId())
                                 .addAll(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), kieli) : null)
