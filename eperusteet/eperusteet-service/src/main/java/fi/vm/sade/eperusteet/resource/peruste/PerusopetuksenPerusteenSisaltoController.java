@@ -56,7 +56,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     private PerusopetuksenPerusteenSisaltoService sisallot;
 
     @Autowired
-    private OppiaineService oppiaineet;
+    private OppiaineService oppiaineService;
 
     @Autowired
     private VuosiluokkaKokonaisuusService kokonaisuudet;
@@ -89,7 +89,7 @@ public class PerusopetuksenPerusteenSisaltoController {
     public OppiaineDto addPerusopetusOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @RequestBody OppiaineDto dto) {
-        return oppiaineet.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        return oppiaineService.addOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = GET)
@@ -100,9 +100,16 @@ public class PerusopetuksenPerusteenSisaltoController {
         return handleGet(perusteId, new Supplier<OppiaineDto>() {
             @Override
             public OppiaineDto get() {
-                return oppiaineet.getOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+                return oppiaineService.getOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
             }
         });
+    }
+
+    @RequestMapping(value = "/oppiaineet/jarjestys", method = POST)
+    public void updateOppiaineJarjestys(
+            @PathVariable("perusteId") final Long perusteId,
+            @RequestBody List<OppiaineSuppeaDto> oppiaineet) {
+        oppiaineService.updateOppiaineJarjestys(perusteId, oppiaineet);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/versiot/{revisio}", method = GET)
@@ -111,7 +118,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @PathVariable("revisio") final Integer revisio) {
-        return oppiaineet.getOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        return oppiaineService.getOppiaine(perusteId, id, revisio, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/oppimaarat", method = GET)
@@ -122,7 +129,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         return handleGet(perusteId, new Supplier<List<OppiaineSuppeaDto>>() {
             @Override
             public List<OppiaineSuppeaDto> get() {
-                return oppiaineet.getOppimaarat(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+                return oppiaineService.getOppimaarat(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
             }
         });
 
@@ -134,7 +141,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("id") final Long id,
         @RequestBody UpdateDto<OppiaineDto> dto) {
         dto.getDto().setId(id);
-        return oppiaineet.updateOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        return oppiaineService.updateOppiaine(perusteId, dto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}", method = DELETE)
@@ -142,14 +149,14 @@ public class PerusopetuksenPerusteenSisaltoController {
     public void deletePerusopetusOppiaine(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        oppiaineet.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        oppiaineService.deleteOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = GET)
     public Set<OpetuksenKohdealueDto> getKohdealueet(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
-        return oppiaineet.getOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS).getKohdealueet();
+        return oppiaineService.getOppiaine(perusteId, id, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS).getKohdealueet();
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet", method = POST)
@@ -157,7 +164,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @RequestBody OpetuksenKohdealueDto kohdealue) {
-        return oppiaineet.addKohdealue(perusteId, id, kohdealue);
+        return oppiaineService.addKohdealue(perusteId, id, kohdealue);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet/update", method = POST)
@@ -165,7 +172,7 @@ public class PerusopetuksenPerusteenSisaltoController {
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") final Long id,
             @RequestBody List<OpetuksenKohdealueDto> kohdealueet) {
-        return oppiaineet.updateKohdealueet(perusteId, id, kohdealueet);
+        return oppiaineService.updateKohdealueet(perusteId, id, kohdealueet);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/kohdealueet/{kohdealueId}", method = DELETE)
@@ -174,7 +181,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id,
         @PathVariable("kohdealueId") final Long kohdealueId) {
-        oppiaineet.deleteKohdealue(perusteId, id, kohdealueId);
+        oppiaineService.deleteKohdealue(perusteId, id, kohdealueId);
     }
 
     @RequestMapping(value = "/oppiaineet/{id}/vuosiluokkakokonaisuudet", method = GET)
@@ -184,7 +191,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         return handleGet(perusteId, new Supplier<Collection<OppiaineenVuosiluokkaKokonaisuusDto>>() {
             @Override
             public Collection<OppiaineenVuosiluokkaKokonaisuusDto> get() {
-                return oppiaineet.getOppiaine(perusteId, oppiaineId, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS).getVuosiluokkakokonaisuudet();
+                return oppiaineService.getOppiaine(perusteId, oppiaineId, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS).getVuosiluokkakokonaisuudet();
             }
         });
     }
@@ -195,7 +202,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long oppiaineId,
         @RequestBody OppiaineenVuosiluokkaKokonaisuusDto dto) {
-        return oppiaineet.addOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
+        return oppiaineService.addOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
 
     @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = GET)
@@ -207,7 +214,7 @@ public class PerusopetuksenPerusteenSisaltoController {
 
             @Override
             public OppiaineenVuosiluokkaKokonaisuusDto get() {
-                return oppiaineet.getOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
+                return oppiaineService.getOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
             }
         });
     }
@@ -219,7 +226,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("id") final Long id,
         @RequestBody UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> dto) {
         dto.getDto().setId(id);
-        return oppiaineet.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
+        return oppiaineService.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, dto);
     }
 
     @RequestMapping(value = "/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}", method = DELETE)
@@ -228,7 +235,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("oppiaineId") final Long oppiaineId,
         @PathVariable("id") final Long id) {
-        oppiaineet.deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
+        oppiaineService.deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, id);
     }
 
     @RequestMapping(value = "/vuosiluokkakokonaisuudet", method = GET)
