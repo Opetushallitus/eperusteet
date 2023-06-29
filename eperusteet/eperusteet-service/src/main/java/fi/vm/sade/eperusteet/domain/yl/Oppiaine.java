@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OppiaineLukiokurssi;
@@ -35,6 +36,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
@@ -222,7 +224,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
         if (koosteinen == false) {
             return null;
         }
-        return oppimaarat == null ? new HashSet<Oppiaine>() : new HashSet<>(oppimaarat);
+        return oppimaarat == null ? new HashSet<>() : new HashSet<>(oppimaarat);
     }
 
     public Set<OppiaineenVuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
@@ -269,6 +271,18 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
         } else {
             throw new IllegalArgumentException("Oppimäärä ei kuulu tähän oppiaineeseen");
         }
+    }
+
+    //paivitetaan vain jarjestys
+    public void setOppimaarat(final List<Oppiaine> oppimaarat) {
+        if (this.oppimaarat == null) {
+            this.oppimaarat = new HashSet<>();
+        }
+
+        this.oppimaarat.forEach(nykyinenOppimaara -> {
+            Oppiaine uusiOppimaara = oppimaarat.stream().filter(oppimaara -> oppimaara.getId().equals(nykyinenOppimaara.getId())).findFirst().get();
+            nykyinenOppimaara.setJnro((long)oppimaarat.indexOf(uusiOppimaara));
+        });
     }
 
     public void setOppiaine(Oppiaine oppiaine) {

@@ -24,8 +24,6 @@ import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
-import java.util.Optional;
-
 import org.assertj.core.util.Maps;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,11 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
-import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 
 @DirtiesContext
 public class PerusopetusPerusteNavigationIT extends AbstractIntegrationTest {

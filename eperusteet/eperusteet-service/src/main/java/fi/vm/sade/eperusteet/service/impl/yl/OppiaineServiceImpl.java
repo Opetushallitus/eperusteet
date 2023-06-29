@@ -386,6 +386,16 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
+    @Transactional
+    public void updateOppiaineJarjestys(Long perusteId, List<OppiaineSuppeaDto> oppiaineet) {
+        PerusopetuksenPerusteenSisalto sisalto =  perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
+        sisalto.getOppiaineet().forEach(sisallonOppiaine -> {
+            OppiaineSuppeaDto oppiaineDto = oppiaineet.stream().filter(oppiaine -> oppiaine.getId().equals(sisallonOppiaine.getId())).findFirst().get();
+            sisallonOppiaine.setJnro((long)oppiaineet.indexOf(oppiaineDto));
+        });
+    }
+
+    @Override
     @Transactional(readOnly = false)
     public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
         PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
