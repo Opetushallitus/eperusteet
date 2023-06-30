@@ -31,6 +31,9 @@ import java.util.concurrent.Future;
  */
 public interface KayttajanTietoService {
 
+    @PreAuthorize("permitAll()")
+    String haeLoginRedirectUrl(String nykyinenUrl);
+
     @PreAuthorize("isAuthenticated()")
     KayttajanTietoDto haeKirjautaunutKayttaja();
 

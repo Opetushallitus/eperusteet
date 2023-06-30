@@ -36,6 +36,11 @@ import org.springframework.stereotype.Service;
 public class KayttajanTietoServiceMock implements KayttajanTietoService {
 
     @Override
+    public String haeLoginRedirectUrl(String nykyinenUrl) {
+        return null;
+    }
+
+    @Override
     public KayttajanTietoDto haeKirjautaunutKayttaja() {
         return hae(null);
     }

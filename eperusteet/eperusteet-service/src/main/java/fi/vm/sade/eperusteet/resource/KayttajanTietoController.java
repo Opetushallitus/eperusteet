@@ -20,6 +20,8 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+
+import java.util.Base64;
 import java.util.List;
 
 import io.swagger.annotations.Api;
@@ -40,6 +42,13 @@ public class KayttajanTietoController {
 
     @Autowired
     KayttajanTietoService service;
+
+    @RequestMapping(value = "/redirect", method = RequestMethod.POST)
+    public String haeLoginRedirectUrl(
+            @RequestBody final String redirectUrl
+    ) {
+        return service.haeLoginRedirectUrl(redirectUrl);
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public KayttajanTietoDto getKirjautunutKayttajat() {

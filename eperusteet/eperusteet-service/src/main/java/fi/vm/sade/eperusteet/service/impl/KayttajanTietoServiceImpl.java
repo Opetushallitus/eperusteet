@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttooikeusKyselyDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.SessioKayttaja;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -49,6 +50,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpSession;
 
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,9 +101,24 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
     @Autowired
     OphClientHelper ophClientHelper;
 
+    @Autowired
+    SessioKayttaja sessioKayttaja;
+
     @PostConstruct
     public void configureMapper() {
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+    @Override
+    public String haeLoginRedirectUrl(String nykyinenUrl) {
+        if (SecurityUtil.isAuthenticated()){
+            String redirectUrl = sessioKayttaja.getRedirectUrl();
+            sessioKayttaja.setRedirectUrl(null);
+            return redirectUrl;
+        }
+
+        sessioKayttaja.setRedirectUrl(nykyinenUrl);
+        return null;
     }
 
     @Override
