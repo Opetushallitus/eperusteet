@@ -51,6 +51,9 @@ public interface OppiaineService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     <T extends OppiaineBaseUpdateDto> OppiaineDto updateOppiaine(@P("perusteId") Long perusteId, UpdateDto<T> dto, OppiaineOpetuksenSisaltoTyyppi tyyppi);
 
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    void updateOppiaineJarjestys(@P("perusteId") Long perusteId, List<OppiaineSuppeaDto> oppiaineet);
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void deleteOppiaine(@P("perusteId") Long perusteId, Long oppiaineId, OppiaineOpetuksenSisaltoTyyppi tyyppi);
 
@@ -68,6 +71,9 @@ public interface OppiaineService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     OpetuksenKohdealueDto addKohdealue(@P("perusteId") Long perusteId, Long id, OpetuksenKohdealueDto kohdealue);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    List<OpetuksenKohdealueDto> updateKohdealueet(@P("perusteId") Long perusteId, Long oppiaineId, List<OpetuksenKohdealueDto> kohdealueet);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void deleteKohdealue(@P("perusteId") Long perusteId, Long id, Long kohdealueId);

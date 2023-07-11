@@ -785,6 +785,10 @@
                                         <location>${eperusteet.resources}.peruste.AIPEOpetuksenSisaltoController</location>
                                         <location>${eperusteet.resources}.peruste.LukiokoulutusJulkisetPerusteenSisallotController</location>
                                         <location>${eperusteet.resources}.peruste.PoistettuSisaltoController</location>
+                                        <location>${eperusteet.resources}.peruste.LaajaalainenOsaaminenLockController</location>
+                                        <location>${eperusteet.resources}.peruste.VuosiluokkaKokonaisuusLockController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineLockController</location>
+                                        <location>${eperusteet.resources}.peruste.PerusopetusOppiaineVlkLockController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>
@@ -824,14 +828,15 @@
                                         <scheme>http</scheme>
                                         <scheme>https</scheme>
                                     </schemes>
-                                    <basePath>/api</basePath>
+                                    <basePath>https://virkailija.opintopolku.fi/eperusteet-service/api</basePath>
                                     <locations>
                                         <location>${eperusteet.resources}.julkinen.ExternalController</location>
                                     </locations>
                                     <modelSubstitute>/substitutes.map</modelSubstitute>
                                     <info>
                                         <title>ePerusteet api</title>
-                                        <version>v1</version>
+                                        <version>1</version>
+                                        <description></description>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>

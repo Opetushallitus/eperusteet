@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -27,8 +28,10 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -101,6 +104,15 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
             inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
     private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisallot = new HashSet<>();
 
+    @Getter
+    @Setter
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @JoinTable(name = "yl_vlkokonaisuus_vapaateksti",
+            joinColumns = @JoinColumn(name = "vuosiluokkakokonaisuudet_id"),
+            inverseJoinColumns = @JoinColumn(name = "kevyttekstikappale_id"))
+    @OrderColumn(name = "kevyttekstikappaleet_order")
+    private List<KevytTekstiKappale> vapaatTekstit;
+
     public Set<VuosiluokkaKokonaisuudenLaajaalainenOsaaminen> getLaajaalaisetOsaamiset() {
         return new HashSet<>(laajaalaisetOsaamiset);
     }
@@ -143,6 +155,15 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
         vlk.setVuosiluokat(new HashSet<>(vuosiluokat));
         vlk.tunniste = this.tunniste;
         return vlk;
+    }
+
+    public void setVapaatTekstit(List<KevytTekstiKappale> vapaatTekstit) {
+        this.vapaatTekstit = new ArrayList<>();
+        if (vapaatTekstit != null) {
+            for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
+                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
     }
 
 }

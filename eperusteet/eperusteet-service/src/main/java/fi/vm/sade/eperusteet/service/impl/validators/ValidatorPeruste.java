@@ -546,7 +546,7 @@ public class ValidatorPeruste implements Validator {
                 List<TutkintonimikeKoodiDto> tutkintonimikkeet = tutkintonimikeKoodiService.getTutkintonimikekoodit(peruste.getId());
 
                 if (!ValidatorUtil.hasValidTutkintonimikkeet(peruste, tutkintonimikkeet)) {
-                    updateStatus.addStatus("tyhja-tutkintonimike-ei-sallittu");
+                    updateStatus.addStatus("tyhja-tutkintonimike-ei-sallittu", ValidointiKategoria.PERUSTE);
                     updateStatus.setVaihtoOk(false);
                 }
 
@@ -568,7 +568,7 @@ public class ValidatorPeruste implements Validator {
                                     .map(k -> mapper.map(k, KoodiDto.class))
                                     .map(KoodiDto::getNimi)
                                     .collect(Collectors.toList());
-                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta", null, puuttuvatOsaamisalat);
+                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta", puuttuvatOsaamisalat, ValidointiKategoria.PERUSTE);
                             updateStatus.setVaihtoOk(false);
                             break;
                         }
@@ -598,7 +598,7 @@ public class ValidatorPeruste implements Validator {
                                     .map(koodi -> mapper.map(koodi, KoodiDto.class))
                                     .map(koodiDto -> koodiDto.getNimi())
                                     .collect(Collectors.toList());
-                            updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta", null, puuttuvat);
+                            updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta", puuttuvat, ValidointiKategoria.PERUSTE);
                             updateStatus.setVaihtoOk(false);
                         }
                     }
@@ -645,7 +645,7 @@ public class ValidatorPeruste implements Validator {
                                     nimet.add(new NavigableLokalisoituTekstiDto(viite));
                                 }
                             }
-                            updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet);
+                            updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet, ValidointiKategoria.RAKENNE);
                             updateStatus.setVaihtoOk(false);
                         }
 
@@ -657,7 +657,7 @@ public class ValidatorPeruste implements Validator {
                                     nimet.add(new NavigableLokalisoituTekstiDto(viite));
                                 }
                             }
-                            updateStatus.addStatus("tutkinnon-osan-arvioinnin-kohdealueelta-puuttuu-otsikko", suoritustapa.getSuoritustapakoodi(), nimet);
+                            updateStatus.addStatus("tutkinnon-osan-arvioinnin-kohdealueelta-puuttuu-otsikko", suoritustapa.getSuoritustapakoodi(), nimet, ValidointiKategoria.PERUSTE);
                             updateStatus.setVaihtoOk(false);
                         }
                     }
@@ -672,7 +672,8 @@ public class ValidatorPeruste implements Validator {
                             }
                         }
                         if (!nimet.isEmpty()) {
-                            updateStatus.addStatus("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi", suoritustapa.getSuoritustapakoodi(), nimet);
+                            updateStatus.addStatus("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi",
+                                    suoritustapa.getSuoritustapakoodi(), nimet, ValidointiKategoria.KOODISTO);
                             updateStatus.setVaihtoOk(false);
                         }
                     }
@@ -739,13 +740,13 @@ public class ValidatorPeruste implements Validator {
 
                     if (!virheellisetKoodistonimet.isEmpty()) {
                         updateStatus.addStatus("tutkinnon-osan-asetettua-koodia-ei-koodistossa",
-                                suoritustapa.getSuoritustapakoodi(), virheellisetKoodistonimet);
+                                suoritustapa.getSuoritustapakoodi(), virheellisetKoodistonimet, ValidointiKategoria.KOODISTO);
                         updateStatus.setVaihtoOk(false);
                     }
 
                     if (!uniikitKooditTosat.isEmpty()) {
                         updateStatus.addStatus("tutkinnon-osien-koodit-kaytossa-muissa-tutkinnon-osissa",
-                                suoritustapa.getSuoritustapakoodi(), uniikitKooditTosat);
+                                suoritustapa.getSuoritustapakoodi(), uniikitKooditTosat, ValidointiKategoria.KOODISTO);
                         updateStatus.setVaihtoOk(false);
                     }
                 }
@@ -759,7 +760,7 @@ public class ValidatorPeruste implements Validator {
                     }
                 }
                 if (!tutkinnonOsienKoodit.containsAll(koodit)) {
-                    updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta");
+                    updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta", ValidointiKategoria.KOODISTO);
                     updateStatus.setVaihtoOk(false);
                 }
 

@@ -5,7 +5,7 @@
 layout: home
 ---
 
-  Projekti | Build status | Maintainability | Test Coverage | Known Vulnerabilities
+  Project | Build status | Maintainability | Test Coverage | Known Vulnerabilities
   -------- | ------------ | --------------- | ------------- | ----------------------
   [ePerusteet](https://github.com/Opetushallitus/eperusteet) | [![Build Status](https://travis-ci.org/Opetushallitus/eperusteet.svg?branch=master)](https://travis-ci.org/Opetushallitus/eperusteet)
   [ePerusteet-amosaa](https://github.com/Opetushallitus/eperusteet-amosaa) | [![Build Status](https://travis-ci.org/Opetushallitus/eperusteet-amosaa.svg?branch=master)](https://travis-ci.org/Opetushallitus/eperusteet-amosaa)

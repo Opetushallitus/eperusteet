@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
-
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.*;
@@ -23,10 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author harrik
- */
 @Repository
 public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti, Long>, PerusteprojektiRepositoryCustom {
 
@@ -39,26 +20,6 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
     Perusteprojekti findOneByRyhmaOid(String ryhmaOid);
 
     Perusteprojekti findOneByPeruste(Peruste peruste);
-
-    @Query("SELECT p from Perusteprojekti p" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
-            "   AND p.peruste NOT IN (SELECT peruste FROM ValidointiStatus)")
-    Set<Perusteprojekti> findAllValidoimattomatUudet();
-
-    @Query("SELECT p from Perusteprojekti p, ValidointiStatus vs" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
-            " AND vs.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > vs.lastCheck")
-    Set<Perusteprojekti> findAllValidoimattomat();
-
-    @Query("SELECT p from Perusteprojekti p" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
-            "   AND p.peruste NOT IN (SELECT peruste FROM KoulutuskoodiStatus)")
-    Set<Perusteprojekti> findAllKoodiValidoimattomatUudet();
-
-    @Query("SELECT p from Perusteprojekti p, KoulutuskoodiStatus kks" +
-            " WHERE p.peruste.tyyppi = 'NORMAALI' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +
-            " AND kks.peruste = p.peruste AND p.peruste.globalVersion.aikaleima > kks.lastCheck")
-    Set<Perusteprojekti> findAllKoodiValidoimattomat();
 
     @Query("SELECT p from Perusteprojekti p" +
             " WHERE (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)" +

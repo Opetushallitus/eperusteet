@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,7 +56,13 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
             TilaUpdateStatus status = validator.validate(perusteprojektiId, tila);
             result.merge(status);
         }
+
+        // Huomautukset viimeiseksi
+        result.setInfot(result.getInfot().stream()
+                .sorted(Comparator.comparing(TilaUpdateStatus.Status::getValidointiStatusType)
+                        .reversed())
+                .collect(Collectors.toList()));
+
         return result;
     }
-
 }

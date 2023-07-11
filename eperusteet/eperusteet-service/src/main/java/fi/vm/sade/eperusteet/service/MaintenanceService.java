@@ -8,9 +8,6 @@ public interface MaintenanceService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void addMissingOsaamisalakuvaukset();
 
-    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    void runValidointi();
-
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void teeJulkaisut(boolean julkaiseKaikki, String tyyppi, String koulutustyyppi, String tiedote);
 

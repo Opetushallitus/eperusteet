@@ -66,11 +66,6 @@ public class MaintenanceController {
         maintenanceService.addMissingOsaamisalakuvaukset();
     }
 
-    @RequestMapping(value = "/validoi", method = GET)
-    public void runValidointi() {
-        maintenanceService.runValidointi();
-    }
-
     @RequestMapping(value = "/julkaisut", method = GET)
     public ResponseEntity<String> teeJulkaisut(
             @RequestParam(value = "julkaisekaikki", defaultValue = "false") boolean julkaiseKaikki,

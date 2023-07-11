@@ -5,5 +5,6 @@ public enum ValidointiKategoria {
     TEKSTI,
     KIELISISALTO,
     PERUSTE,
-    RAKENNE
+    RAKENNE,
+    KOODISTO
 }
