@@ -171,7 +171,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     public String getYllapitoValue(String key) {
         Yllapito yllapito = yllapitoRepository.findByKey(key);
-        return yllapito.getValue();
+        return yllapito != null ? yllapito.getValue() : null;
     }
 
     @Override
