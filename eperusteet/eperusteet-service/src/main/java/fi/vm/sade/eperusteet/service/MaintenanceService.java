@@ -15,7 +15,10 @@ public interface MaintenanceService {
     void teeJulkaisu(long perusteId, String tiedote);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    List<YllapitoDto> getSallitutYllapidot();
+    List<YllapitoDto> getYllapidot();
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void updateYllapito(List<YllapitoDto> yllapitoList);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void clearCache(String cache);

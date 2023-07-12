@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -23,10 +25,13 @@ public class Yllapito implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private String ominaisuus;
+    @NotNull
+    private String kuvaus;
 
-    private Boolean sallittu;
+    @NotNull
+    private String key;
 
-    private String url;
+    @NotNull
+    private String value;
 
 }
