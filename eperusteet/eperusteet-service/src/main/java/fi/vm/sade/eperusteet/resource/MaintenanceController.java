@@ -124,6 +124,11 @@ public class MaintenanceController {
         return ResponseEntity.ok(maintenanceService.getYllapidot());
     }
 
+    @RequestMapping(value = "/yllapito/{key}/", method = GET)
+    public ResponseEntity<String> getYllapito(@PathVariable final String key) {
+        return ResponseEntity.ok(maintenanceService.getYllapitoValue(key));
+    }
+
     @RequestMapping(value = "/yllapito/update", method = POST)
     public ResponseEntity updateYllapito(@RequestBody List<YllapitoDto> yllapitoDtoList) {
         maintenanceService.updateYllapito(yllapitoDtoList);
