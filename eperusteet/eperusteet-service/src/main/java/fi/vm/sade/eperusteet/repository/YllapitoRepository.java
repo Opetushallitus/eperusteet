@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface YllapitoRepository extends JpaWithVersioningRepository<Yllapito, Long> {
     Yllapito findById(Long id);
+    Yllapito findByKey(String key);
 }
