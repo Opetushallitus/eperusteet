@@ -29,6 +29,11 @@ public class MaintenanceServiceMock implements MaintenanceService {
     }
 
     @Override
+    public String getYllapitoValue(String key) {
+        return null;
+    }
+
+    @Override
     public void updateYllapito(List<YllapitoDto> yllapitoList) {
     }
 
