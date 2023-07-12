@@ -17,6 +17,9 @@ public interface MaintenanceService {
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<YllapitoDto> getYllapidot();
 
+    @PreAuthorize("permitAll()")
+    String getYllapitoValue(String key);
+
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void updateYllapito(List<YllapitoDto> yllapitoList);
 
