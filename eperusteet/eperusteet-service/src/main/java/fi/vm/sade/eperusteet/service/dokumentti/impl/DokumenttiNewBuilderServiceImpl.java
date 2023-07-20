@@ -308,6 +308,22 @@ public class DokumenttiNewBuilderServiceImpl implements DokumenttiNewBuilderServ
         pdfluotu.setAttribute("translate", messages.translate("docgen.pdf-luotu", docBase.getKieli()));
         docBase.getHeadElement().appendChild(pdfluotu);
 
+        // Poikkeamismääräys
+        if (docBase.getPeruste().getPoikkeamismaaraysTyyppi() != null) {
+            Element description = docBase.getDocument().createElement("meta");
+            description.setAttribute("name", "poikkeamismaarays");
+
+            String poikkeusmaaraysTeksti = "maarays-tutkinnon-perusteista-poikkeamiseen-tutkintoviennissa";
+            if (PoikkeamismaaraysTyyppi.EI_TARVITA_OHJETTA.equals(docBase.getPeruste().getPoikkeamismaaraysTyyppi())) {
+                poikkeusmaaraysTeksti = "voi-kayttaa-tutkintoviennissa";
+            } else if (PoikkeamismaaraysTyyppi.EI_VOI_POIKETA.equals(docBase.getPeruste().getPoikkeamismaaraysTyyppi())) {
+                poikkeusmaaraysTeksti = "ei-voi-poiketa-tutkinnon-perusteista-tutkintoviennin-yhteydessa";
+            }
+
+            description.setAttribute("translate", messages.translate(poikkeusmaaraysTeksti, docBase.getKieli()));
+            docBase.getHeadElement().appendChild(description);
+        }
+
         // Oppaille ei lisätä perusteiden tietoja
         if (docBase.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
             return;
