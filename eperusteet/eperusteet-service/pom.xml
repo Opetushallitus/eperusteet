@@ -395,7 +395,7 @@
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-support-distributed-ehcache</artifactId>
-            <version>3.5.0</version>
+            <version>3.6.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.sf.ehcache</groupId>
@@ -836,7 +836,7 @@
                                     <info>
                                         <title>ePerusteet api</title>
                                         <version>1</version>
-                                        <description></description>
+                                        <description/>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>
