@@ -496,7 +496,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.7</version>
+            <version>2.13.0</version>
         </dependency>
         <dependency>
             <groupId>org.skyscreamer</groupId>
@@ -836,7 +836,7 @@
                                     <info>
                                         <title>ePerusteet api</title>
                                         <version>1</version>
-                                        <description></description>
+                                        <description/>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>
