@@ -34,7 +34,7 @@
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
         <fop.version>2.8</fop.version>
-        <pdfbox.version>2.0.24</pdfbox.version>
+        <pdfbox.version>2.0.29</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
         <springfox.version>2.7.0</springfox.version>
@@ -836,7 +836,7 @@
                                     <info>
                                         <title>ePerusteet api</title>
                                         <version>1</version>
-                                        <description></description>
+                                        <description/>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>
