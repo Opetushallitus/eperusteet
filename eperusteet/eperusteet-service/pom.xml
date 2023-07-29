@@ -491,7 +491,7 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.12.440</version>
+            <version>1.12.504</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
@@ -836,7 +836,7 @@
                                     <info>
                                         <title>ePerusteet api</title>
                                         <version>1</version>
-                                        <description></description>
+                                        <description/>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>
