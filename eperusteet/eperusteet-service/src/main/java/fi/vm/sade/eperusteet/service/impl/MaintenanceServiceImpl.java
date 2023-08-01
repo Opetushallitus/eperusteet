@@ -177,7 +177,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     public void updateYllapito(List<YllapitoDto> yllapitoList) {
         yllapitoList.forEach(yp -> {
-            Yllapito yllapito = yllapitoRepository.findById(yp.getId());
+            Yllapito yllapito = yllapitoRepository.findOne(yp.getId());
             yllapito.setKey(yp.getKey());
             yllapito.setValue(yp.getValue());
             yllapito.setKuvaus(yp.getKuvaus());
