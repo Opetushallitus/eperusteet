@@ -164,8 +164,25 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public List<YllapitoDto> getSallitutYllapidot() {
-        return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
+    public List<YllapitoDto> getYllapidot() {
+        return mapper.mapAsList(yllapitoRepository.findAll(), YllapitoDto.class);
+    }
+
+    @Override
+    public String getYllapitoValue(String key) {
+        Yllapito yllapito = yllapitoRepository.findByKey(key);
+        return yllapito != null ? yllapito.getValue() : null;
+    }
+
+    @Override
+    public void updateYllapito(List<YllapitoDto> yllapitoList) {
+        yllapitoList.forEach(yp -> {
+            Yllapito yllapito = yllapitoRepository.findOne(yp.getId());
+            yllapito.setKey(yp.getKey());
+            yllapito.setValue(yp.getValue());
+            yllapito.setKuvaus(yp.getKuvaus());
+            yllapitoRepository.save(yllapito);
+        });
     }
 
     private void julkaisePeruste(Long perusteId, String tiedote) {
