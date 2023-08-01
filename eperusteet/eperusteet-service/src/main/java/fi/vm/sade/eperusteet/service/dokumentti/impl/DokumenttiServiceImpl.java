@@ -11,10 +11,12 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.util.YllapitoAvaimet;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
@@ -34,6 +36,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
@@ -91,6 +94,10 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private ExternalPdfService externalPdfService;
+
+    @Lazy
+    @Autowired
+    private MaintenanceService maintenanceService;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -207,7 +214,20 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dokumenttiStateService.save(dto);
 
         try {
-            externalPdfService.generatePdf(dto);
+            boolean isPdfServiceUsed = Boolean.parseBoolean(maintenanceService.getYllapitoValue(YllapitoAvaimet.USE_PDF_SERVICE_EPERUSTEET));
+
+            if (isPdfServiceUsed) {
+                externalPdfService.generatePdf(dto);
+            } else {
+                Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
+                if (dokumentti == null) {
+                    dokumentti = mapper.map(dto, Dokumentti.class);
+                }
+                dokumentti.setData(generateFor(dto));
+                dokumentti.setTila(DokumenttiTila.VALMIS);
+                dokumentti.setValmistumisaika(new Date());
+                dokumenttiRepository.save(dokumentti);
+            }
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
