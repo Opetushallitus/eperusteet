@@ -23,19 +23,19 @@ public interface LiiteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     UUID add(@P("perusteId") final Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, byte[] bytearray);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
     LiiteDto get(@P("perusteId") Long perusteId, UUID id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
     List<LiiteDto> getAll(@P("perusteId") Long perusteId);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
     List<LiiteDto> getAllByTyyppi(@P("perusteId") Long perusteId, Set<String> tyypit);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void delete(@P("perusteId") Long perusteId, UUID id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')  or isAuthenticated()")
     void export(@P("perusteId") final Long perusteId, UUID id, OutputStream os);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")

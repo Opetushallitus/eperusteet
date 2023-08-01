@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
+import fi.vm.sade.eperusteet.service.dokumentti.ExternalPdfService;
 import fi.vm.sade.eperusteet.service.dokumentti.KVLiiteBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -47,6 +48,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +88,9 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
+
+    @Autowired
+    private ExternalPdfService externalPdfService;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -197,21 +202,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
     @IgnorePerusteUpdateCheck
-    @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
-        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
-        if (dokumentti == null) {
-            dokumentti = mapper.map(dto, Dokumentti.class);
-        }
-
         try {
-            dokumentti.setData(generateFor(dto));
-            dokumentti.setTila(DokumenttiTila.VALMIS);
-            dokumentti.setValmistumisaika(new Date());
-            dokumenttiRepository.save(dokumentti);
+            externalPdfService.generatePdf(dto);
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
@@ -364,6 +360,26 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
         }
         return toReturn;
+    }
+
+    @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
+    public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
+        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
+        dokumentti.setData(data);
+        dokumentti.setTila(DokumenttiTila.VALMIS);
+        dokumentti.setValmistumisaika(new Date());
+        dokumenttiRepository.save(dokumentti);
+    }
+
+    @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
+    public void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId) {
+        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
+        dokumentti.setTila(tila);
+        dokumenttiRepository.save(dokumentti);
     }
 
 }

@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -55,5 +56,15 @@ public class DokumenttiServiceMock implements DokumenttiService {
     @Override
     public DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision) {
         return null;
+    }
+
+    @Override
+    public void updateDokumenttiPdfData(byte[] pdfData, Long dokumenttiId) {
+
+    }
+
+    @Override
+    public void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId) {
+
     }
 }
