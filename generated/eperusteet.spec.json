@@ -387,6 +387,62 @@
         }
       }
     },
+    "/dokumentit/pdf/data/{dokumenttiId}" : {
+      "post" : {
+        "tags" : [ "Dokumentit" ],
+        "operationId" : "savePdfData",
+        "parameters" : [ {
+          "name" : "dokumenttiId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/PdfData"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/dokumentit/pdf/tila/{dokumenttiId}" : {
+      "post" : {
+        "tags" : [ "Dokumentit" ],
+        "operationId" : "updateDokumenttiTila",
+        "parameters" : [ {
+          "name" : "dokumenttiId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/PdfData"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
     "/dokumentit/peruste" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
@@ -1506,7 +1562,7 @@
         }
       }
     },
-    "/maintenance/yllapito/{key}/" : {
+    "/maintenance/yllapito/{key}" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "getYllapito",
@@ -10754,15 +10810,18 @@
         "selite" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
-        "arviointiAsteikko" : {
-          "$ref" : "#/definitions/Reference"
-        },
         "osaamistasonKriteerit" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/OsaamistasonKriteeriDto"
           }
+        },
+        "_arviointiAsteikko" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "arviointiAsteikko" : {
+          "$ref" : "#/definitions/ArviointiAsteikkoDto"
         }
       }
     },
@@ -13507,13 +13566,16 @@
       "type" : "object",
       "properties" : {
         "osaamistaso" : {
-          "$ref" : "#/definitions/Reference"
+          "$ref" : "#/definitions/OsaamistasoDto"
         },
         "kriteerit" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/LokalisoituTekstiDto"
           }
+        },
+        "_osaamistaso" : {
+          "$ref" : "#/definitions/Reference"
         }
       }
     },
@@ -14147,6 +14209,17 @@
               "type" : "string"
             }
           }
+        }
+      }
+    },
+    "PdfData" : {
+      "type" : "object",
+      "properties" : {
+        "data" : {
+          "type" : "string"
+        },
+        "tila" : {
+          "type" : "string"
         }
       }
     },
@@ -16585,6 +16658,13 @@
         "ammattitaitovaatimukset" : {
           "description" : "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.",
           "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "ammattitaitovaatimuksetLista" : {
+          "type" : "array",
+          "description" : "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.",
+          "items" : {
+            "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
+          }
         }
       }
     },
