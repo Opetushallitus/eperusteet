@@ -14422,6 +14422,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         }
       }
     },
@@ -14570,6 +14577,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         },
         "suoritustavat" : {
           "type" : "array",
@@ -14738,6 +14752,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         },
         "suoritustavat" : {
           "type" : "array",
@@ -14930,6 +14951,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         },
         "suoritustavat" : {
           "type" : "array",
@@ -15162,6 +15190,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         },
         "suoritustavat" : {
           "type" : "array",

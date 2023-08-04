@@ -1206,6 +1206,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 current.setPaatospvm(updated.getPaatospvm());
                 current.setKoulutusvienti(updated.isKoulutusvienti());
                 current.setKoulutustyyppi(updated.getKoulutustyyppi());
+                current.setPoikkeamismaaraysTyyppi(updated.getPoikkeamismaaraysTyyppi());
+                current.setPoikkeamismaaraysTarkennus(updated.getPoikkeamismaaraysTarkennus());
 
                 if (updated.getVstSisalto() != null) {
                     current.setSisalto(updated.getVstSisalto());
@@ -1275,6 +1277,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setPaatospvm(updated.getPaatospvm());
         current.setKoulutusvienti(updated.isKoulutusvienti());
         current.setKoulutustyyppi(updated.getKoulutustyyppi());
+        current.setPoikkeamismaaraysTyyppi(updated.getPoikkeamismaaraysTyyppi());
+        current.setPoikkeamismaaraysTarkennus(updated.getPoikkeamismaaraysTarkennus());
 
         if (updated.getOsaamisalat() != null && !Objects.deepEquals(current.getOsaamisalat(), updated.getOsaamisalat())) {
             throw new BusinessRuleViolationException("Valmiin perusteen osaamisaloja ei voi muuttaa");
@@ -2142,7 +2146,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     && KoulutustyyppiToteutus.LOPS2019.equals(peruste.getToteutus())) {
             return;
         }
-        
+
         if (KoulutusTyyppi.AIKUISTENPERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             lisaaKovakoodattuPerusteenOsa(
                     peruste.getAipeOpetuksenPerusteenSisalto().getSisalto(),

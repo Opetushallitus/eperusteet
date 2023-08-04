@@ -1817,6 +1817,15 @@
           "items" : {
             "$ref" : "#/definitions/OppiaineenVuosiluokkaKokonaisuusDto"
           }
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         }
       }
     },
@@ -1983,6 +1992,12 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/KeskeinenSisaltoalueDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         }
       }
@@ -2405,15 +2420,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2445,15 +2460,15 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2656,6 +2671,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         },
         "suoritustavat" : {
           "type" : "array",
@@ -3500,6 +3522,12 @@
         },
         "paikallisestiPaatettavatAsiat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         }
       }
     }
