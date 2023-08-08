@@ -100,11 +100,6 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
         oppiaineDto.setKoosteinen(Optional.of(false));
 
-        OpetuksenKohdealueDto kohdealueDto = new OpetuksenKohdealueDto();
-        kohdealueDto.setNimi(olt("Kohdealue"));
-        oppiaineDto.setKohdealueet(new HashSet<OpetuksenKohdealueDto>());
-        oppiaineDto.getKohdealueet().add(kohdealueDto);
-
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
         vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
@@ -115,6 +110,13 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         vkDto.setSisaltoalueet(Lists.newArrayList(ks));
         PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+
+        OpetuksenKohdealueDto kohdealueDto = new OpetuksenKohdealueDto();
+        kohdealueDto.setNimi(olt("Kohdealue"));
+        service.addKohdealue(perusteId, oa.getId(), kohdealueDto);
+        
+        oa = service.getOppiaine(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+
         assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
 
         OppiaineLockContext lc = new OppiaineLockContext();
