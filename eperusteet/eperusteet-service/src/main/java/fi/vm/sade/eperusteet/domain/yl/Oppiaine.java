@@ -29,6 +29,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -302,16 +303,9 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     }
 
     public void setKohdealueet(Set<OpetuksenKohdealue> kohdealueet) {
-        if (kohdealueet == null) {
-            this.kohdealueet.clear();
-        } else {
-            Set<OpetuksenKohdealue> added = new HashSet<>(kohdealueet.size());
-            //kohdealueita ei ole paljon (<10), joten O(n^2) OK tässä
-            for (OpetuksenKohdealue k : kohdealueet) {
-                added.add(addKohdealue(k));
-            }
-            //TODO: tarkista onko jokin poistettava kohdealue käytössä
-            this.kohdealueet.retainAll(added);
+        this.kohdealueet.clear();
+        if (kohdealueet != null) {
+            this.kohdealueet.addAll(kohdealueet.stream().peek(kohdealue -> kohdealue.addOppiaine(this)).collect(Collectors.toList()));
         }
     }
 

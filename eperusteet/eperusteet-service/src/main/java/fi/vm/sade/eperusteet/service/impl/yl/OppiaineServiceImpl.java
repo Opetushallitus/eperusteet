@@ -456,6 +456,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             kohde = mapper.map(kohdealue, OpetuksenKohdealue.class);
             kohde = aine.addKohdealue(kohde);
             kohdeAlueRepository.save(kohde);
+            oppiaineRepository.save(aine);
         }
 
         return mapper.map(kohde, OpetuksenKohdealueDto.class);
@@ -469,6 +470,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         Set<OpetuksenKohdealue> kohdealueet = Sets.newHashSet(mapper.mapAsList(kohdealueetDto, OpetuksenKohdealue.class));
         aine.setKohdealueet(kohdealueet);
         kohdeAlueRepository.save(kohdealueet);
+        oppiaineRepository.save(aine);
 
         return mapper.mapAsList(kohdealueet, OpetuksenKohdealueDto.class);
     }

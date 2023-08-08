@@ -27,6 +27,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -76,5 +77,13 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
         klooni.setKuvaus(kuvaus);
         klooni.setNimi(nimi);
         return klooni;
+    }
+
+    public void addOppiaine(Oppiaine oppiaine) {
+        if (oppiaineet == null) {
+            oppiaineet = new HashSet<>();
+        }
+
+        oppiaineet.add(oppiaine);
     }
 }
