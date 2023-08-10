@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,8 +38,17 @@ public class OppiaineSuppeaDto extends OppiaineBaseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<OppiaineSuppeaDto> oppimaarat;
     private String koodiArvo;
+    private KoodiDto koodi;
     private Set<OppiaineenVuosiluokkaKokonaisuusSuppeaDto> vuosiluokkakokonaisuudet;
     private Optional<LokalisoituTekstiDto> pakollinenKurssiKuvaus;
     private Optional<LokalisoituTekstiDto> syventavaKurssiKuvaus;
     private Optional<LokalisoituTekstiDto> soveltavaKurssiKuvaus;
+
+    public Optional<LokalisoituTekstiDto> getNimi() {
+        if (koodi != null) {
+            return Optional.of(koodi.getNimi());
+        }
+
+        return super.getNimi();
+    }
 }

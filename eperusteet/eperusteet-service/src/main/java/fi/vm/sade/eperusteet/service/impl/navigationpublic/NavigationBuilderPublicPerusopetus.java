@@ -85,10 +85,10 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
     private NavigationNodeDto oppiaineet(PerusteKaikkiDto peruste, String kieli) {
         return NavigationNodeDto.of(NavigationType.perusopetusoppiaineet)
                 .addAll(peruste.getPerusopetuksenPerusteenSisalto().getOppiaineet().stream()
-                        .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimiOrDefault(LokalisoituTekstiDto.of("")), Kieli.of(kieli), "")))
+                        .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimi().orElse(null), Kieli.of(kieli), "")))
                         .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
                         .map(oppiaine ->
-                        NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimiOrDefault(null), oppiaine.getId())
+                        NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimi().orElse(LokalisoituTekstiDto.of("nimeton-oppiaine")), oppiaine.getId())
                                 .add(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), null, kieli) : null)
                 ).collect(Collectors.toList()));
     }
@@ -97,11 +97,11 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
         return NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
                 .addAll(
                         oppimaarat.stream()
-                                .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimiOrDefault(LokalisoituTekstiDto.of("")), Kieli.of(kieli), "")))
+                                .sorted(Comparator.comparing(oppiaine -> LokalisoituTekstiDto.getOrDefault(oppiaine.getNimi().orElse(null), Kieli.of(kieli), "")))
                                 .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
                                 .map(oppimaara -> {
                                     NavigationNodeDto node = NavigationNodeDto
-                                            .of(NavigationType.perusopetusoppiaine, oppimaara.getNimiOrDefault(null), oppimaara.getId());
+                                            .of(NavigationType.perusopetusoppiaine, oppimaara.getNimi().orElse(LokalisoituTekstiDto.of("nimeton-oppimaara")), oppimaara.getId());
                                     if (vlkId != null) {
                                         node = node.meta("vlkId", vlkId);
                                     }

@@ -638,6 +638,15 @@ public class DtoMapperConfig {
 
         factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
                 .fieldBToA("muokattu", "muokattu")
+                .customize(new CustomMapper<OppiaineSuppeaDto, Oppiaine>() {
+                    @Override
+                    public void mapBtoA(Oppiaine oppiaine, OppiaineSuppeaDto oppiaineDto, MappingContext context) {
+                        super.mapBtoA(oppiaine, oppiaineDto, context);
+                        if (oppiaine.getKoodiUri() != null) {
+                            oppiaineDto.setKoodi(koodistoClient.getKoodi(oppiaine.getKoodiUri().split("_")[0], oppiaine.getKoodiUri()));
+                        }
+                    }
+                })
                 .byDefault()
                 .register();
 
