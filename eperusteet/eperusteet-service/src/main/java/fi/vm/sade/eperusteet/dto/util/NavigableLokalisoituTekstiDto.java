@@ -32,11 +32,11 @@ public class NavigableLokalisoituTekstiDto extends LokalisoituTekstiDto {
 
     public NavigableLokalisoituTekstiDto(TutkinnonOsaViite viite) {
         this(
-                viite.getTutkinnonOsa().getNimi().getId(),
-                viite.getTutkinnonOsa().getNimi().getTeksti(),
+                viite.getTutkinnonOsa().getNimi() != null ? viite.getTutkinnonOsa().getNimi().getId() : null,
+                viite.getTutkinnonOsa().getNimi() != null ? viite.getTutkinnonOsa().getNimi().getTeksti() : null,
                 NavigationNodeDto.of(
                         NavigationType.tutkinnonosaviite,
-                        LokalisoituTekstiDto.of(viite.getNimi().getTeksti()),
+                        viite.getNimi() != null ? LokalisoituTekstiDto.of(viite.getNimi().getTeksti()) : LokalisoituTekstiDto.of("nimeton-tutkinnon-osa"),
                         viite.getId()));
     }
 

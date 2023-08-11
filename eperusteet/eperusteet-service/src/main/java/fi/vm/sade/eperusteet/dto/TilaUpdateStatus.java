@@ -171,6 +171,18 @@ public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
         return new TilaUpdateStatusBuilderForSuoritustapa(this, suoritustapa);
     }
 
+    public void addStatus(Status status) {
+        if (infot == null) {
+            infot = new ArrayList<>();
+        }
+
+        if (status.getValidointiStatusType() == null) {
+            status.setValidointiStatusType(ValidointiStatusType.VIRHE);
+        }
+
+        infot.add(status);
+    }
+
     public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
         if (infot == null) {
             infot = new ArrayList<>();
