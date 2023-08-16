@@ -31,9 +31,12 @@ import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
@@ -72,6 +75,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpEntity;
@@ -551,7 +555,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @IgnorePerusteUpdateCheck
     @Transactional
-    public TilaUpdateStatus validoiProjekti(Long id, ProjektiTila tila) {
+    public List<Validointi> validoiProjekti(Long id, ProjektiTila tila) {
         return projektiValidator.run(id, tila);
     }
 
@@ -575,7 +579,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (projekti.getTila().equals(ProjektiTila.POISTETTU)) {
             updateStatus = new TilaUpdateStatus();
         } else {
-            updateStatus = validoiProjekti(id, tila);
+            updateStatus = new TilaUpdateStatus(validoiProjekti(id, tila));
         }
 
         // Perusteen tilan muutos
@@ -584,11 +588,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         // Tarkistetaan mahdolliset tilat
-        updateStatus.setVaihtoOk(projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila));
-        if (!updateStatus.isVaihtoOk()) {
+        if (!projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila)) {
             String viesti = "Tilasiirtymä tilasta '" + projekti.getTila().toString() + "' tilaan '"
                     + tila.toString() + "' ei mahdollinen";
-            updateStatus.addStatus(viesti);
+            Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);
+            updateStatus.addValidointi(validointi.virhe(viesti, NavigationNodeDto.of(NavigationType.tiedot)));
             return updateStatus;
         }
 

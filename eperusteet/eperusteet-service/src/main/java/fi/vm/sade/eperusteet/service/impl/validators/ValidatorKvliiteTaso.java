@@ -6,8 +6,11 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.Validator;
@@ -16,6 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +36,10 @@ public class ValidatorKvliiteTaso implements Validator {
     private final List<String> koodiTarkistus = Arrays.asList("nqf_", "eqf_", "isced2011koulutusastetaso1_");
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
+    public List<Validointi> validate(Long perusteprojektiId, ProjektiTila tila) {
         Peruste peruste = perusteRepository.findByPerusteprojektiId(perusteprojektiId);
         List<KVLiiteTasoDto> tasot = perusteService.haeTasot(peruste.getId(), peruste);
-        TilaUpdateStatus result = new TilaUpdateStatus();
+        List<Validointi> validoinnit = new ArrayList<>();
 
         List<String> koodiUrit = tasot.stream().map(taso -> taso.getCodeUri()).collect(Collectors.toList());
 
@@ -45,10 +50,12 @@ public class ValidatorKvliiteTaso implements Validator {
                 }).isEmpty();
 
         if (!kaikkiLoyty) {
-            result.addStatus("kvliite-validointi-taso-koodi-puute", ValidointiStatusType.HUOMAUTUS);
+            Validointi validointi = new Validointi(ValidointiKategoria.MAARITTELEMATON);
+            validointi.huomautukset("kvliite-validointi-taso-koodi-puute", NavigationNodeDto.of(NavigationType.kvliite));
+            validoinnit.add(validointi);
         }
 
-        return result;
+        return validoinnit;
     }
 
     @Override
