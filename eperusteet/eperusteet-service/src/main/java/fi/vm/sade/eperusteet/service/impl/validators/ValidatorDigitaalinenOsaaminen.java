@@ -21,16 +21,19 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.Validator;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,46 +54,47 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
     private PerusteRepository perusteRepository;
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila targetTila) {
-        TilaUpdateStatus updateStatus = new TilaUpdateStatus();
+    public List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila) {
+        List<Validointi> validoinnit = new ArrayList<>();
 
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+
+        Validointi perusteValidointi = new Validointi(ValidointiKategoria.PERUSTE);
+        Validointi sisaltoValidointi = new Validointi(ValidointiKategoria.KIELISISALTO);
+
 
         boolean hasNimiKaikillaKielilla = projekti.getPeruste().getKielet().stream()
                 .allMatch(kieli -> projekti.getPeruste().getNimi().getTeksti() != null
                         && projekti.getPeruste().getNimi().getTeksti().containsKey(kieli));
         if (!hasNimiKaikillaKielilla) {
-            updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla");
-            updateStatus.setVaihtoOk(false);
+            perusteValidointi.virhe("perusteen-nimea-ei-ole-kaikilla-kielilla", NavigationNodeDto.of(NavigationType.tiedot));
         }
         if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa");
+            perusteValidointi.virhe("peruste-ei-voimassaolon-alkamisaikaa", NavigationNodeDto.of(NavigationType.tiedot));
         }
 
         List<Peruste> julkaistutDigitaaliset = perusteRepository.findJulkaistutVoimassaolevatPerusteetByTyyppi(PerusteTyyppi.DIGITAALINEN_OSAAMINEN);
         if (julkaistutDigitaaliset.size() > 0 && julkaistutDigitaaliset.stream().noneMatch(julkaistu -> julkaistu.getId().equals(projekti.getPeruste().getId()))) {
-            updateStatus.setVaihtoOk(false);
-            updateStatus.addStatus("digitaalinen-osaaminen-jo-julkaistu");
+            perusteValidointi.virhe("digitaalinen-osaaminen-jo-julkaistu", NavigationNodeDto.of(NavigationType.tiedot));
         }
 
-        tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste(), updateStatus);
-        return updateStatus;
+        tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste(), sisaltoValidointi);
+        return validoinnit;
     }
 
     @Transactional(readOnly = true)
-    public void tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste, TilaUpdateStatus updateStatus) {
+    public void tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste, Validointi validointi) {
         Set<Kieli> vaaditutKielet = peruste.getKielet();
 
         if (peruste.getDigitaalinenOsaaminenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getDigitaalinenOsaaminenSisalto().getSisalto().getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, updateStatus);
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
             }
         }
     }
 
     @Transactional(readOnly = true)
-    public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset, TilaUpdateStatus updateStatus) {
+    public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset, Validointi validointi) {
         PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
         if (perusteenOsa instanceof TekstiKappale && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
             TekstiKappale tekstikappale = (TekstiKappale) perusteenOsa;
@@ -99,7 +103,7 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
             tarkistaTekstipalanen("peruste-validointi-tekstikappale-teksti", tekstikappale.getTeksti(), pakolliset, virheellisetKielet, true);
 
             for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-                updateStatus.addStatus(entry.getKey(), ValidointiKategoria.KIELISISALTO, new NavigableLokalisoituTekstiDto(tekstikappale));
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(tekstikappale).getNavigationNode());
             }
         }
 
@@ -114,7 +118,7 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
             }
 
             for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-                updateStatus.addStatus(entry.getKey(), ValidointiKategoria.KIELISISALTO, new NavigableLokalisoituTekstiDto(osaamiskokonaisuus));
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(osaamiskokonaisuus).getNavigationNode());
             }
         }
 
@@ -142,12 +146,13 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
             });
 
             for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-                updateStatus.addStatus(entry.getKey(), ValidointiKategoria.KIELISISALTO, new NavigableLokalisoituTekstiDto(osaamiskokonaisuusPaaAlue));
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(osaamiskokonaisuusPaaAlue).getNavigationNode());
+
             }
         }
 
         for (PerusteenOsaViite lapsi : viite.getLapset()) {
-            tarkistaSisalto(lapsi, pakolliset, updateStatus);
+            tarkistaSisalto(lapsi, pakolliset, validointi);
         }
     }
 
