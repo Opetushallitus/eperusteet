@@ -1,23 +1,17 @@
 package fi.vm.sade.eperusteet.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
-import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.TestConfigurationDocker;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +28,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +38,7 @@ import static org.junit.Assert.assertTrue;
 @Testcontainers
 @DirtiesContext
 @Transactional
+@ContextConfiguration(classes = TestConfigurationDocker.class)
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -56,19 +51,10 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     private PerusteprojektiService perusteprojektiService;
 
     @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
-
-    @Autowired
     private PerusteRepository repo;
 
     @Autowired
     private PlatformTransactionManager manager;
-
-    @Autowired
-    private EntityManager em;
-
-    @Autowired
-    private KoulutusRepository koulutusRepository;
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
@@ -77,16 +63,11 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     @LockCtx(TutkinnonRakenneLockContext.class)
     private LockService<TutkinnonRakenneLockContext> lockService;
 
-    @Autowired
-    @Dto
-    private DtoMapper mapper;
-
     private Peruste peruste;
 
     private Date nykyinenAika;
 
     public PerusteServiceAikaIT() {
-
     }
 
     private GregorianCalendar gc;

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
+       default-lazy-init="true">
+    <!-- Enables the caching through annotations -->
+    <cache:annotation-driven />
+
+    <context:property-placeholder
+            location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+            ignore-resource-not-found="true"
+            properties-ref="defaultProps"/>
+
+    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <util:properties local-override="true">
+                <prop key="cas_key">eperusteet-service</prop>
+                <!-- prop key="cas_service">${cas.service.eperusteet-service}</prop -->
+                <prop key="spring_security_default_access">permitAll</prop>
+            </util:properties>
+        </property>
+    </bean>
+
+    <!-- generic cache manager -->
+    <bean id="cacheManager" class="org.springframework.cache.concurrent.ConcurrentMapCacheManager"/>
+
+    <!-- import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/ -->
+    <context:component-scan base-package="fi.vm.sade.eperusteet.utils"/>
+    <context:component-scan base-package="fi.vm.sade.eperusteet.service">
+        <context:exclude-filter type="regex" expression="fi.vm.sade.eperusteet.service.impl.DokumenttiServiceImpl"/>
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession"/>
+    </context:component-scan>
+    <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
+
+    <tx:annotation-driven order="100"/>
+    <aop:aspectj-autoproxy  />
+    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="request">
+                    <bean class="org.springframework.context.support.SimpleThreadScope"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.testcontainers.jdbc.ContainerDatabaseDriver"/>
+        <property name="url" value="jdbc:tc:postgresql:12.10:////test"/>
+        <property name="username" value="test"/>
+        <property name="password" value="test"/>
+    </bean>
+
+    <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="outOfOrder" value="true"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
+        <property name="persistenceUnitName" value="eperusteet"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
+        <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+        <property name="jpaPropertyMap">
+            <map>
+                <entry key="hibernate.hbm2ddl.auto" value="none"/>
+                <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
+                <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect"/>
+                <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="false"/>
+                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
+                <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
+                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
+                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />
+            </map>
+        </property>
+        <property name="mappingResources">
+            <list>
+                <value>typedefs-pg.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
+
+    <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" ref="testPermissionEvaluator"/>
+    </bean>
+
+    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
+        <constructor-arg>
+            <list>
+                <bean class="org.springframework.security.access.vote.RoleVoter"/>
+            </list>
+        </constructor-arg>
+        <property name="allowIfAllAbstainDecisions" value="true"/>
+    </bean>
+
+</beans>
