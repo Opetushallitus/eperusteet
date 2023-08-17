@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
@@ -27,6 +29,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -36,11 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Integraatiotesti muistinvaraista kantaa vasten.
- *
- * @author isaul
- */
+@Testcontainers
 @DirtiesContext
 @Transactional
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {
@@ -90,8 +91,12 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     private GregorianCalendar gc;
 
+    @Container
+    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:12.10");
+
     @Before
     public void setUp() {
+        postgreSQLContainer.start();
         TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
         gc = new GregorianCalendar(2017, 5, 4);
@@ -292,6 +297,10 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     }
 
     private void teeJulkaisu(Long id) {
+        ObjectMapper mapper = new ObjectMapper();
+        JulkaistuPerusteData data = new JulkaistuPerusteData();
+        data.setData(mapper.createObjectNode());
+
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
         julkaisu.setRevision((int) 1);
         julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
@@ -299,6 +308,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         julkaisu.setLuotu(new Date());
         julkaisu.setPeruste(perusteRepository.getOne(id));
         julkaisu.setJulkinen(false);
+        julkaisu.setData(data);
         julkaisutRepository.save(julkaisu);
     }
 }
