@@ -1,13 +1,24 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
-import fi.vm.sade.eperusteet.service.Validator;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.Validator;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -17,16 +28,15 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
     private PerusteprojektiRepository perusteprojektiRepository;
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila tila) {
+    public List<Validointi> validate(Long perusteprojektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         Set<Koulutus> koulutukset = projekti.getPeruste().getKoulutukset();
         if (koulutukset == null || koulutukset.isEmpty()) {
-            TilaUpdateStatus status = new TilaUpdateStatus();
-            status.setVaihtoOk(false);
-            status.addStatus("koulutuskoodi-puuttuu", ValidointiKategoria.PERUSTE);
-            return status;
+            Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);
+            return Collections.singletonList(
+                    validointi.virhe("koulutuskoodi-puuttuu", NavigationNodeDto.of(NavigationType.tiedot)));
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @Override

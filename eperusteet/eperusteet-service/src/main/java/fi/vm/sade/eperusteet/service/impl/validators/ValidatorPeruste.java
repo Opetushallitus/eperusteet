@@ -53,6 +53,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -63,6 +64,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,44 +119,6 @@ public class ValidatorPeruste implements Validator {
     @Override
     public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
         return true;
-    }
-
-    private void validoiLukio(Peruste peruste, ProjektiTila tila, TilaUpdateStatus updateStatus) {
-        LukiokoulutuksenPerusteenSisalto sisalto = peruste.getLukiokoulutuksenPerusteenSisalto();
-        LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
-        updateStatus.forSuoritustapa(Suoritustapakoodi.LUKIOKOULUTUS).toTila(tila)
-                .forTilat(jalkeen(LAADINTA))
-                .addErrorGiven("peruste-lukio-ei-oppiaineita", rakenne.getOppiaineet().isEmpty())
-                .addErrorGiven("peruste-lukio-ei-aihekokonaisuuksia", KoulutusTyyppi.of(peruste.getKoulutustyyppi()) != KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS
-                        && (sisalto.getAihekokonaisuudet() == null || sisalto.getAihekokonaisuudet().getAihekokonaisuudet().isEmpty()))
-                .addErrorGiven("peruste-lukio-ei-opetuksen-yleisia-tavoitteita",
-                        sisalto.getOpetuksenYleisetTavoitteet() == null)
-                .forTilat(jalkeen(KOMMENTOINTI))
-                .addErrorStatusForAll("peruste-lukio-liittamaton-kurssi", () ->
-                        rakenne.kurssit()
-                                .filter(empty(Lukiokurssi::getOppiaineet))
-                                .map(localized(Nimetty::getNimi)))
-                .addErrorStatusForAll("peruste-lukio-oppiaineessa-ei-oppimaaria", () ->
-                        rakenne.oppiaineet()
-                                .filter(and(Oppiaine::isKoosteinen, empty(Oppiaine::getOppimaarat)))
-                                .map(localized(Nimetty::getNimi)))
-                .addErrorStatusForAll("peruste-lukio-kooodi-puuttuu", () ->
-                        rakenne.koodilliset()
-                                .filter(emptyString(Koodillinen::getKoodiArvo).or(emptyString(Koodillinen::getKoodiUri)))
-                                .map(localized(Nimetty::getNimi)))
-                .addErrorStatusForAll("peruste-lukio-sama-koodi", () -> {
-                    List<LokalisoituTekstiDto> duplikaatit = new ArrayList<>();
-                    rakenne.koodilliset()
-                            .filter(emptyString(Koodillinen::getKoodiArvo).negate())
-                            .collect(toMap(Koodillinen::getKoodiArvo, k -> k, (a, b) -> {
-                                duplikaatit.add(localized(a.getNimi())
-                                        .concat(" - ")
-                                        .concat(localized(b.getNimi()))
-                                        .concat(" (" + a.getKoodiArvo() + ")"));
-                                return a;
-                            }));
-                    return duplikaatit.stream();
-                });
     }
 
     public List<PerusteenOsaViite> flattenSisalto(PerusteenOsaViite root) {
@@ -226,7 +190,7 @@ public class ValidatorPeruste implements Validator {
 
     @SuppressWarnings("ServiceMethodEntity")
     @Transactional(readOnly = true)
-    public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset, List<TilaUpdateStatus.Status> statukset) {
+    public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset, Validointi validointi) {
         PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
         Map<String, String> virheellisetKielet = new HashMap<>();
         if (perusteenOsa instanceof TekstiKappale && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
@@ -236,15 +200,11 @@ public class ValidatorPeruste implements Validator {
         }
 
         for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-            statukset.add(TilaUpdateStatus.Status.builder()
-                            .viesti(entry.getKey())
-                            .navigationNode(NavigationNodeDto.of(NavigationType.viite, mapper.map(perusteenOsa, PerusteenOsaDto.class).getNimi(), viite.getId()))
-                    .build()
-            );
+            validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.viite, mapper.map(perusteenOsa, PerusteenOsaDto.class).getNimi(), viite.getId()));
         }
 
         for (PerusteenOsaViite lapsi : viite.getLapset()) {
-            tarkistaSisalto(lapsi, pakolliset, statukset);
+            tarkistaSisalto(lapsi, pakolliset, validointi);
         }
     }
 
@@ -253,9 +213,14 @@ public class ValidatorPeruste implements Validator {
     private void tarkistaPerusopetuksenOppiaine(
             Oppiaine oa,
             final Set<Kieli> vaaditutKielet,
-            Map<String, String> virheellisetKielet
+            Validointi validointi
     ) {
-        tarkistaTekstipalanen("peruste-validointi-oppiaine-nimi", oa.getNimi(), vaaditutKielet, virheellisetKielet);
+        Map<String, String> virheellisetKielet = new HashMap<>();
+        OppiaineSuppeaDto oaDto = mapper.map(oa, OppiaineSuppeaDto.class);
+
+        if (oa.getKoodiArvo() == null && oa.getKoodiUri() == null) {
+            validointi.virhe("peruste-validointi-oppiaine-koodi", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId()));
+        }
 
         if (oa.getTehtava() != null) {
             tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto", oa.getTehtava().getOtsikko(),
@@ -318,15 +283,17 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId())));
+
         if (oa.getOppimaarat() != null) {
             for (Oppiaine oppimaara : oa.getOppimaarat()) {
-                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, virheellisetKielet);
+                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, validointi);
             }
         }
     }
 
     @Transactional(readOnly = true)
-    private void tarkistaPerusopetuksenPeruste(Peruste peruste, TilaUpdateStatus status) {
+    private void tarkistaPerusopetuksenPeruste(Peruste peruste, Validointi validointi) {
         if (peruste == null) {
             return;
         }
@@ -400,14 +367,12 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), null, null));
+
         for (Oppiaine oa : oppiaineet) {
-            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, virheellisetKielet);
+            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, validointi);
         }
 
-        for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-            status.setVaihtoOk(false);
-            status.addStatus(entry.getKey(), ValidointiKategoria.TEKSTI);
-        }
     }
 
     @SuppressWarnings("ServiceMethodEntity")
@@ -431,46 +396,47 @@ public class ValidatorPeruste implements Validator {
     }
 
     @Transactional(readOnly = true)
-    public List<TilaUpdateStatus.Status> tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste) {
+    public Validointi tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste) {
+        Validointi validointi = new Validointi(ValidointiKategoria.KIELISISALTO);
+
         if (peruste.getTyyppi() == PerusteTyyppi.POHJA) {
-            return new ArrayList<>();
+            return validointi;
         }
 
         Set<Kieli> vaaditutKielet = peruste.getKielet();
-        List<TilaUpdateStatus.Status> statukset = new ArrayList<>();
 
         // Esiopetus
         if (peruste.getEsiopetuksenPerusteenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getEsiopetuksenPerusteenSisalto().getSisalto().getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, statukset);
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
             }
         }
 
         // TPO
         if (peruste.getTpoOpetuksenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getTpoOpetuksenSisalto().getSisalto().getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, statukset);
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
             }
         }
 
         // VST
         if (peruste.getVstSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getVstSisalto().getSisalto().getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, statukset);
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
             }
         }
 
         // TUVA
         if (peruste.getTuvasisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getTuvasisalto().getSisalto().getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, statukset);
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
             }
         }
 
         // Perusopetus
         if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getPerusopetuksenPerusteenSisalto().getSisalto().getLapset()) {
-                tarkistaSisalto(lapsi, vaaditutKielet, statukset);
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
             }
         }
 
@@ -479,7 +445,7 @@ public class ValidatorPeruste implements Validator {
             PerusteenOsaViite sisalto = st.getSisalto();
             if (sisalto != null) {
                 for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
-                    tarkistaSisalto(lapsi, vaaditutKielet, statukset);
+                    tarkistaSisalto(lapsi, vaaditutKielet, validointi);
                 }
             }
 
@@ -489,11 +455,7 @@ public class ValidatorPeruste implements Validator {
                 tarkistaRakenne(st.getRakenne(), vaaditutKielet, virheellisetKielet);
 
                 for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-                    statukset.add(TilaUpdateStatus.Status.builder()
-                            .viesti(entry.getKey())
-                            .navigationNode(NavigationNodeDto.of(NavigationType.muodostuminen))
-                            .build()
-                    );
+                    validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.muodostuminen));
                 }
             }
 
@@ -510,22 +472,19 @@ public class ValidatorPeruste implements Validator {
                         vaaditutKielet, virheellisetKielet, true);
 
                 for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-                    statukset.add(TilaUpdateStatus.Status.builder()
-                            .viesti(entry.getKey())
-                            .navigationNode(NavigationNodeDto.of(NavigationType.tutkinnonosaviite, mapper.map(tosa, TutkinnonOsaDto.class).getNimi(), tov.getId()))
-                            .build()
-                    );
+                    validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.tutkinnonosaviite, mapper.map(tosa, TutkinnonOsaDto.class).getNimi(), tov.getId()));
                 }
             }
         }
 
-        return statukset;
+        return validointi;
     }
 
     @Override
-    public TilaUpdateStatus validate(Long id, ProjektiTila tila) {
-        TilaUpdateStatus updateStatus = new TilaUpdateStatus();
-        updateStatus.setVaihtoOk(true);
+    public List<Validointi> validate(Long id, ProjektiTila tila) {
+        List<Validointi> validoinnit = new ArrayList<>();
+        Validointi perusteValidointi = new Validointi(ValidointiKategoria.PERUSTE);
+        validoinnit.add(perusteValidointi);
 
         Perusteprojekti projekti = repository.findOne(id);
 
@@ -534,7 +493,7 @@ public class ValidatorPeruste implements Validator {
         }
 
         if (projekti.getPeruste().getTyyppi() == PerusteTyyppi.OPAS) {
-            return updateStatus;
+            return validoinnit;
         }
 
         // Tarkistetaan että perusteelle on asetettu nimi perusteeseen asetetuilla kielillä
@@ -543,8 +502,7 @@ public class ValidatorPeruste implements Validator {
             for (Kieli kieli : projekti.getPeruste().getKielet()) {
                 if (nimi == null || !nimi.getTeksti().containsKey(kieli)
                         || nimi.getTeksti().get(kieli).isEmpty()) {
-                    updateStatus.addStatus("perusteen-nimea-ei-ole-kaikilla-kielilla", ValidointiKategoria.PERUSTE);
-                    updateStatus.setVaihtoOk(false);
+                    perusteValidointi.virhe("perusteen-nimea-ei-ole-kaikilla-kielilla", NavigationNodeDto.of(NavigationType.tiedot));
                     break;
                 }
             }
@@ -566,8 +524,7 @@ public class ValidatorPeruste implements Validator {
                 List<TutkintonimikeKoodiDto> tutkintonimikkeet = tutkintonimikeKoodiService.getTutkintonimikekoodit(peruste.getId());
 
                 if (!ValidatorUtil.hasValidTutkintonimikkeet(peruste, tutkintonimikkeet)) {
-                    updateStatus.addStatus("tyhja-tutkintonimike-ei-sallittu", ValidointiKategoria.PERUSTE);
-                    updateStatus.setVaihtoOk(false);
+                    perusteValidointi.virhe("tyhja-tutkintonimike-ei-sallittu", NavigationNodeDto.of(NavigationType.muodostuminen));
                 }
 
                 { // Tutkintonimikkeiden osaamisalat täytyvät olla perusteessa
@@ -588,8 +545,7 @@ public class ValidatorPeruste implements Validator {
                                     .map(k -> mapper.map(k, KoodiDto.class))
                                     .map(KoodiDto::getNimi)
                                     .collect(Collectors.toList());
-                            updateStatus.addStatus("tutkintonimikkeen-osaamisala-puuttuu-perusteesta", puuttuvatOsaamisalat, ValidointiKategoria.PERUSTE);
-                            updateStatus.setVaihtoOk(false);
+                            perusteValidointi.virhe("tutkintonimikkeen-osaamisala-puuttuu-perusteesta", NavigationNodeDto.of(NavigationType.muodostuminen));
                             break;
                         }
                     }
@@ -618,8 +574,8 @@ public class ValidatorPeruste implements Validator {
                                     .map(koodi -> mapper.map(koodi, KoodiDto.class))
                                     .map(koodiDto -> koodiDto.getNimi())
                                     .collect(Collectors.toList());
-                            updateStatus.addStatus("osaamisalan-kuvauksia-puuttuu-sisallosta", puuttuvat, ValidointiKategoria.PERUSTE);
-                            updateStatus.setVaihtoOk(false);
+
+                            puuttuvat.forEach(puuttuva -> perusteValidointi.virhe("osaamisalan-kuvauksia-puuttuu-sisallosta", NavigationNodeDto.of(NavigationType.muodostuminen), puuttuva.getTekstit()));
                         }
                     }
                 }
@@ -634,61 +590,49 @@ public class ValidatorPeruste implements Validator {
                                     suoritustapa.getRakenne(),
                                     KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                             if (!validointi.ongelmat.isEmpty()) {
-                                updateStatus.addStatus("rakenteen-validointi-virhe",
-                                        suoritustapa.getSuoritustapakoodi(),
-                                        validointi,
-                                        null,
-                                        ValidointiKategoria.RAKENNE);
-                                updateStatus.setVaihtoOk(false);
+                                perusteValidointi.virhe("rakenteen-validointi-virhe", NavigationNodeDto.of(NavigationType.muodostuminen));
                             }
                         }
 
                         // Vapaiden tutkinnon osien tarkistus
                         List<TutkinnonOsaViite> vapaatOsat = vapaatTutkinnonosat(suoritustapa);
                         if (!vapaatOsat.isEmpty()) {
-                            List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                            List<NavigableLokalisoituTekstiDto> nimet = new ArrayList<>();
                             for (TutkinnonOsaViite viite : vapaatOsat) {
                                 if (viite.getTutkinnonOsa().getNimi() != null) {
                                     nimet.add(new NavigableLokalisoituTekstiDto(viite));
                                 }
                             }
-                            updateStatus.addStatus("liittamattomia-tutkinnon-osia", suoritustapa.getSuoritustapakoodi(), nimet, ValidointiKategoria.RAKENNE);
-                            updateStatus.setVaihtoOk(false);
+                            nimet.forEach(puuttuva -> perusteValidointi.virhe("liittamattomia-tutkinnon-osia", puuttuva.getNavigationNode()));
                         }
 
                         List<TutkinnonOsaViite> arvioinnitIlmanOtsikoita = arvioinnitIlmanOtsikoita(suoritustapa);
                         if (!arvioinnitIlmanOtsikoita.isEmpty()) {
-                            List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                            List<NavigableLokalisoituTekstiDto> nimet = new ArrayList<>();
                             for (TutkinnonOsaViite viite : arvioinnitIlmanOtsikoita) {
                                 if (viite.getTutkinnonOsa().getNimi() != null) {
                                     nimet.add(new NavigableLokalisoituTekstiDto(viite));
                                 }
                             }
-                            updateStatus.addStatus("tutkinnon-osan-arvioinnin-kohdealueelta-puuttuu-otsikko", suoritustapa.getSuoritustapakoodi(), nimet, ValidointiKategoria.PERUSTE);
-                            updateStatus.setVaihtoOk(false);
+                            nimet.forEach(puuttuva -> perusteValidointi.virhe("tutkinnon-osan-arvioinnin-kohdealueelta-puuttuu-otsikko", puuttuva.getNavigationNode()));
                         }
                     }
 
                     // Tarkistetaan koodittomien tutkinnon osien nimet
                     List<TutkinnonOsaViite> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
                     if (!koodittomatTutkinnonOsat.isEmpty()) {
-                        List<LokalisoituTekstiDto> nimet = new ArrayList<>();
+                        List<NavigableLokalisoituTekstiDto> nimet = new ArrayList<>();
                         for (TutkinnonOsaViite viite : koodittomatTutkinnonOsat) {
                             if (!viite.getTutkinnonOsa().hasRequiredKielet()) {
-                                updateStatus.setVaihtoOk(false);
                                 nimet.add(new NavigableLokalisoituTekstiDto(viite));
-                                updateStatus.addStatus(
-                                        TilaUpdateStatus.Status.builder()
-                                            .viesti("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi")
-                                            .navigationNode(NavigationNodeDto.of(NavigationType.tutkinnonosaviite, mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class).getNimi(), viite.getId()))
-                                            .build()
-                                );
                             }
                         }
+
+                        nimet.forEach(puuttuva -> perusteValidointi.virhe("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi", puuttuva.getNavigationNode()));
                     }
 
                     // Tarkista tutke2-osien osa-alueiden koodit
-                    List<LokalisoituTekstiDto> koodittomatOsaalueet = new ArrayList<>();
+                    List<NavigableLokalisoituTekstiDto> koodittomatOsaalueet = new ArrayList<>();
                     for (TutkinnonOsaViite tov : suoritustapa.getTutkinnonOsat()) {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
                         if (TutkinnonOsaTyyppi.isTutke(tosa.getTyyppi())) {
@@ -705,13 +649,12 @@ public class ValidatorPeruste implements Validator {
 
                     // Tarkistetaan osa-alueiden kooditukset
                     if (!koodittomatOsaalueet.isEmpty()) {
-                        updateStatus.addStatus("tutke2-osalta-puuttuu-osa-alue-koodi",
-                                suoritustapa.getSuoritustapakoodi(), koodittomatOsaalueet);
+                        koodittomatOsaalueet.forEach(puuttuva -> perusteValidointi.virhe("tutke2-osalta-puuttuu-osa-alue-koodi", puuttuva.getNavigationNode()));
                     }
 
                     // Kerätään tutkinnon osien koodit
-                    List<LokalisoituTekstiDto> virheellisetKoodistonimet = new ArrayList<>();
-                    List<LokalisoituTekstiDto> uniikitKooditTosat = new ArrayList<>();
+                    List<NavigableLokalisoituTekstiDto> virheellisetKoodistonimet = new ArrayList<>();
+                    List<NavigableLokalisoituTekstiDto> uniikitKooditTosat = new ArrayList<>();
                     Set<String> uniikitKoodit = new HashSet<>();
                     for (TutkinnonOsaViite tov : getViitteet(suoritustapa)) {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
@@ -748,15 +691,11 @@ public class ValidatorPeruste implements Validator {
                     }
 
                     if (!virheellisetKoodistonimet.isEmpty()) {
-                        updateStatus.addStatus("tutkinnon-osan-asetettua-koodia-ei-koodistossa",
-                                suoritustapa.getSuoritustapakoodi(), virheellisetKoodistonimet, ValidointiKategoria.KOODISTO);
-                        updateStatus.setVaihtoOk(false);
+                        virheellisetKoodistonimet.forEach(puuttuva -> perusteValidointi.virhe("tutkinnon-osan-asetettua-koodia-ei-koodistossa", puuttuva.getNavigationNode()));
                     }
 
                     if (!uniikitKooditTosat.isEmpty()) {
-                        updateStatus.addStatus("tutkinnon-osien-koodit-kaytossa-muissa-tutkinnon-osissa",
-                                suoritustapa.getSuoritustapakoodi(), uniikitKooditTosat, ValidointiKategoria.KOODISTO);
-                        updateStatus.setVaihtoOk(false);
+                        uniikitKooditTosat.forEach(puuttuva -> perusteValidointi.virhe("tutkinnon-osien-koodit-kaytossa-muissa-tutkinnon-osissa", puuttuva.getNavigationNode()));
                     }
                 }
 
@@ -769,29 +708,22 @@ public class ValidatorPeruste implements Validator {
                     }
                 }
                 if (!tutkinnonOsienKoodit.containsAll(koodit)) {
-                    updateStatus.addStatus("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta", ValidointiKategoria.KOODISTO);
-                    updateStatus.setVaihtoOk(false);
+                    perusteValidointi.virhe("tutkintonimikkeen-vaatimaa-tutkinnonosakoodia-ei-loytynyt-tutkinnon-osilta", null, null);
                 }
 
             }
 
             if (tila == ProjektiTila.JULKAISTU || tila == ProjektiTila.VALMIS) {
-                tarkistaPerusopetuksenPeruste(peruste, updateStatus);
+                tarkistaPerusopetuksenPeruste(peruste, perusteValidointi);
 
                 // Tarkista että kaikki vaadittu kielisisältö on asetettu
                 Map<String, String> perusteenTiedotLokalisointiVirheet = tarkistaPerusteenTekstipalaset(projekti.getPeruste());
                 for (Map.Entry<String, String> entry : perusteenTiedotLokalisointiVirheet.entrySet()) {
-                    updateStatus.setVaihtoOk(false);
-                    updateStatus.addStatus(entry.getKey(), ValidointiKategoria.PERUSTE);
+                    perusteValidointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.tiedot));
                 }
 
                 // Tarkista että kaikki vaadittu kielisisältö on asetettu
-                List<TilaUpdateStatus.Status> statukset = tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste());
-                for (TilaUpdateStatus.Status status: statukset) {
-                    updateStatus.setVaihtoOk(false);
-                    status.setValidointiKategoria(ValidointiKategoria.KIELISISALTO);
-                    updateStatus.addStatus(status);
-                }
+                validoinnit.add(tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste()));
 
             }
 
@@ -799,23 +731,17 @@ public class ValidatorPeruste implements Validator {
                 if (!projekti.getPeruste().getTyyppi().equals(PerusteTyyppi.OPAS)) {
                     Diaarinumero diaarinumero = projekti.getPeruste().getDiaarinumero();
                     if (diaarinumero == null || StringUtils.isBlank(diaarinumero.getDiaarinumero())) {
-                        updateStatus.addStatus("peruste-ei-diaarinumeroa", ValidointiKategoria.PERUSTE);
-                        updateStatus.setVaihtoOk(false);
+                        perusteValidointi.virhe("peruste-ei-diaarinumeroa", NavigationNodeDto.of(NavigationType.tiedot));
                     }
 
                     if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
-                        updateStatus.addStatus("peruste-ei-voimassaolon-alkamisaikaa", ValidointiKategoria.PERUSTE);
-                        updateStatus.setVaihtoOk(false);
+                        perusteValidointi.virhe("peruste-ei-voimassaolon-alkamisaikaa", NavigationNodeDto.of(NavigationType.tiedot));
                     }
                 }
             }
-
-            if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
-                validoiLukio(peruste, tila, updateStatus);
-            }
         }
 
-        return updateStatus;
+        return validoinnit;
     }
 
     @Override

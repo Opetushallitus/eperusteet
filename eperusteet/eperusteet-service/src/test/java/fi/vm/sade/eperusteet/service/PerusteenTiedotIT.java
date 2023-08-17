@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,31 +194,40 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testPerusteprojektiValidators() {
-        TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.LAADINTA);
+        TilaUpdateStatus status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.LAADINTA));
         assertThat(status.isVaihtoOk()).isTrue();
 
-        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
+        status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU));
         assertThat(status)
                 .returns(false, from(TilaUpdateStatus::isVaihtoOk));
 
-        assertThat(status.getInfot())
-                .extracting(TilaUpdateStatus.Status::getViesti)
+        assertThat(status.getVirheet())
+                .extracting(Validointi.Virhe::getKuvaus)
                 .contains(
-                        "koulutuskoodi-puuttuu",
-                        "kvliite-validointi-tyotehtavat-joissa-voi-toimia");
+                        "koulutuskoodi-puuttuu");
+        assertThat(status.getHuomautukset())
+                .extracting(Validointi.Virhe::getKuvaus)
+                .contains(
+                        "kvliite-validointi-suorittaneen-osaaminen",
+                        "kvliite-validointi-tyotehtavat-joissa-voi-toimia",
+                        "kvliite-validointi-arvosana-asteikko",
+                        "kvliite-validointi-jatkoopinto-kelpoisuus",
+                        "kvliite-validointi-saados-perusta",
+                        "kvliite-validointi-pohjakoulutusvaatimukset",
+                        "kvliite-validointi-lisatietoja",
+                        "kvliite-validointi-tutkintotodistuksen-saaminen",
+                        "kvliite-validointi-tutkinnosta-paattava-viranomainen",
+                        "kvliite-validointi-nimi",
+                        "kvliite-validointi-tasot");
 
-        assertThat(status.getInfot().stream().filter(info -> info.getViesti().equals("kvliite-validointi-tyotehtavat-joissa-voi-toimia")).findFirst().get())
-                .extracting("validointiStatusType").isEqualTo(ValidointiStatusType.HUOMAUTUS);
-        assertThat(status.getInfot().stream().filter(info -> info.getViesti().equals("koulutuskoodi-puuttuu")).findFirst().get())
-                .extracting("validointiStatusType").isEqualTo(ValidointiStatusType.VIRHE);
 
-        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.VIIMEISTELY);
+        status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU));
         assertThat(status)
                 .returns(false, from(TilaUpdateStatus::isVaihtoOk));
-        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.KOMMENTOINTI);
+        status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.LAADINTA));
         assertThat(status)
                 .returns(true, from(TilaUpdateStatus::isVaihtoOk));
-        status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.POISTETTU);
+        status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.POISTETTU));
         assertThat(status)
                 .returns(true, from(TilaUpdateStatus::isVaihtoOk));
     }

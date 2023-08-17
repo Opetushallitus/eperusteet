@@ -7,7 +7,9 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019Kohdealue;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -15,12 +17,14 @@ import fi.vm.sade.eperusteet.service.TutkintonimikeKoodiService;
 import fi.vm.sade.eperusteet.service.Validator;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,8 +49,8 @@ public class ValidatorAmmattitaitovaatimukset implements Validator {
     private KoodistoClient koodistoService;
 
     @Override
-    public TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila targetTila) {
-        TilaUpdateStatus status = new TilaUpdateStatus();
+    public List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila) {
+        Validointi validointi = new Validointi(ValidointiKategoria.RAKENNE);
         Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
         Peruste peruste = projekti.getPeruste();
         peruste.getSuoritustavat().stream()
@@ -64,17 +68,11 @@ public class ValidatorAmmattitaitovaatimukset implements Validator {
                     vaatimukset.forEach(v -> {
                         Koodi koodi = v.getKoodi();
                         if (koodi == null) {
-                            status.setVaihtoOk(false);
-                            status.addStatus(
-                                "tutkinnon-osan-kooditon-ammattitaitovaatimus",
-                                Suoritustapakoodi.REFORMI,
-                                Lists.newArrayList(
-                                        mapper.map(tosa.getNimi(), LokalisoituTekstiDto.class),
-                                        mapper.map(v.getVaatimus(), LokalisoituTekstiDto.class)));
+                            validointi.virhe("tutkinnon-osan-kooditon-ammattitaitovaatimus", new NavigableLokalisoituTekstiDto(tosa).getNavigationNode());
                         }
                     });
                 });
-        return status;
+        return Arrays.asList(validointi);
     }
 
     @Override

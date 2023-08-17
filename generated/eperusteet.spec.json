@@ -9272,7 +9272,10 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/TilaUpdateStatus"
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Validointi"
+              }
             }
           }
         }
@@ -12702,21 +12705,6 @@
         }
       }
     },
-    "Ongelma" : {
-      "type" : "object",
-      "properties" : {
-        "ongelma" : {
-          "type" : "string"
-        },
-        "ryhma" : {
-          "$ref" : "#/definitions/TekstiPalanen"
-        },
-        "syvyys" : {
-          "type" : "integer",
-          "format" : "int32"
-        }
-      }
-    },
     "OpasDto" : {
       "type" : "object",
       "properties" : {
@@ -13728,12 +13716,12 @@
             "type" : "object"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13741,7 +13729,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13768,12 +13756,12 @@
             "$ref" : "#/definitions/KoodistoKoodiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13781,7 +13769,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13808,12 +13796,12 @@
             "$ref" : "#/definitions/PerusteBaseDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13821,7 +13809,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13848,12 +13836,12 @@
             "$ref" : "#/definitions/PerusteHakuDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13861,7 +13849,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13888,12 +13876,12 @@
             "$ref" : "#/definitions/PerusteHakuInternalDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13901,7 +13889,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13928,12 +13916,12 @@
             "$ref" : "#/definitions/PerusteInfoDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13941,7 +13929,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13968,12 +13956,12 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -13981,7 +13969,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14008,12 +13996,12 @@
             "$ref" : "#/definitions/PerusteprojektiKevytDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -14021,7 +14009,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14048,12 +14036,12 @@
             "$ref" : "#/definitions/TiedoteDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -14061,7 +14049,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14088,12 +14076,12 @@
             "$ref" : "#/definitions/TutkinnonOsaDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -14101,7 +14089,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14128,12 +14116,12 @@
             "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "first" : {
           "type" : "boolean"
@@ -14141,7 +14129,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -16067,53 +16055,6 @@
         }
       }
     },
-    "Status" : {
-      "type" : "object",
-      "properties" : {
-        "viesti" : {
-          "type" : "string"
-        },
-        "perusteprojekti" : {
-          "$ref" : "#/definitions/PerusteprojektiListausDto"
-        },
-        "lastCheck" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "validointi" : {
-          "$ref" : "#/definitions/Validointi"
-        },
-        "nimet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          }
-        },
-        "suoritustapa" : {
-          "type" : "string",
-          "enum" : [ "OPS", "NAYTTO", "REFORMI", "PERUSOPETUS", "LISAOPETUS", "VARHAISKASVATUS", "OPAS", "ESIOPETUS", "AIPE", "TPO", "LUKIOKOULUTUS", "LUKIOKOULUTUS2019", "VAPAASIVISTYSTYO" ]
-        },
-        "kielet" : {
-          "type" : "array",
-          "uniqueItems" : true,
-          "items" : {
-            "type" : "string",
-            "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
-          }
-        },
-        "validointiKategoria" : {
-          "type" : "string",
-          "enum" : [ "MAARITTELEMATON", "TEKSTI", "KIELISISALTO", "PERUSTE", "RAKENNE", "KOODISTO" ]
-        },
-        "validointiStatusType" : {
-          "type" : "string",
-          "enum" : [ "HUOMAUTUS", "VIRHE" ]
-        },
-        "navigationNode" : {
-          "$ref" : "#/definitions/NavigationNodeDto"
-        }
-      }
-    },
     "StreamingResponseBody" : {
       "type" : "object"
     },
@@ -16355,25 +16296,6 @@
         }
       }
     },
-    "TekstiPalanen" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "teksti" : {
-          "type" : "object",
-          "additionalProperties" : {
-            "type" : "string"
-          }
-        },
-        "tunniste" : {
-          "type" : "string",
-          "format" : "uuid"
-        }
-      }
-    },
     "TermiDto" : {
       "type" : "object",
       "properties" : {
@@ -16479,21 +16401,26 @@
     "TilaUpdateStatus" : {
       "type" : "object",
       "properties" : {
-        "perusteprojekti" : {
-          "$ref" : "#/definitions/PerusteprojektiListausDto"
-        },
-        "lastCheck" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "infot" : {
+        "validoinnit" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Status"
+            "$ref" : "#/definitions/Validointi"
           }
         },
         "vaihtoOk" : {
           "type" : "boolean"
+        },
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
+        },
+        "virheet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },
@@ -17252,18 +17179,27 @@
     "Validointi" : {
       "type" : "object",
       "properties" : {
-        "ongelmat" : {
+        "kategoria" : {
+          "type" : "string",
+          "enum" : [ "MAARITTELEMATON", "TEKSTI", "KIELISISALTO", "PERUSTE", "RAKENNE", "KOODISTO" ]
+        },
+        "virheet" : {
           "type" : "array",
           "items" : {
-            "$ref" : "#/definitions/Ongelma"
+            "$ref" : "#/definitions/Virhe"
           }
         },
-        "laskettuLaajuus" : {
-          "type" : "number"
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         },
-        "sisakkaisiaOsaamisalaryhmia" : {
-          "type" : "integer",
-          "format" : "int32"
+        "huomiot" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },
@@ -17314,6 +17250,23 @@
         "laajuus" : {
           "type" : "integer",
           "format" : "int32"
+        }
+      }
+    },
+    "Virhe" : {
+      "type" : "object",
+      "properties" : {
+        "kuvaus" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "navigationNode" : {
+          "$ref" : "#/definitions/NavigationNodeDto"
         }
       }
     },
