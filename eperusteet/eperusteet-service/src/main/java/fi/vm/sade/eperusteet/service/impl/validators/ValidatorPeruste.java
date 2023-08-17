@@ -53,6 +53,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -212,9 +213,14 @@ public class ValidatorPeruste implements Validator {
     private void tarkistaPerusopetuksenOppiaine(
             Oppiaine oa,
             final Set<Kieli> vaaditutKielet,
-            Map<String, String> virheellisetKielet
+            Validointi validointi
     ) {
-        tarkistaTekstipalanen("peruste-validointi-oppiaine-nimi", oa.getNimi(), vaaditutKielet, virheellisetKielet);
+        Map<String, String> virheellisetKielet = new HashMap<>();
+        OppiaineSuppeaDto oaDto = mapper.map(oa, OppiaineSuppeaDto.class);
+
+        if (oa.getKoodiArvo() == null && oa.getKoodiUri() == null) {
+            validointi.virhe("peruste-validointi-oppiaine-koodi", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId()));
+        }
 
         if (oa.getTehtava() != null) {
             tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto", oa.getTehtava().getOtsikko(),
@@ -277,9 +283,11 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId())));
+
         if (oa.getOppimaarat() != null) {
             for (Oppiaine oppimaara : oa.getOppimaarat()) {
-                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, virheellisetKielet);
+                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, validointi);
             }
         }
     }
@@ -359,13 +367,12 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), null, null));
+
         for (Oppiaine oa : oppiaineet) {
-            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, virheellisetKielet);
+            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, validointi);
         }
 
-        for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-            validointi.virhe(entry.getKey(), null, null);
-        }
     }
 
     @SuppressWarnings("ServiceMethodEntity")
