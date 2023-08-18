@@ -1,7 +1,15 @@
 package fi.vm.sade.eperusteet.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
@@ -11,7 +19,6 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import fi.vm.sade.eperusteet.service.test.TestConfigurationDocker;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,16 +26,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +48,7 @@ import static org.junit.Assert.assertTrue;
 @Testcontainers
 @DirtiesContext
 @Transactional
-@ContextConfiguration(classes = TestConfigurationDocker.class)
+@ActiveProfiles(profiles = "docker")
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -72,12 +82,8 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     private GregorianCalendar gc;
 
-    @Container
-    static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:12.10");
-
     @Before
     public void setUp() {
-        postgreSQLContainer.start();
         TransactionStatus transaction = manager.getTransaction(new DefaultTransactionDefinition());
 
         gc = new GregorianCalendar(2017, 5, 4);

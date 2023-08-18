@@ -16,7 +16,8 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
        http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd"
-       default-lazy-init="true">
+       default-lazy-init="true"
+       profile="test">
     <!-- Enables the caching through annotations -->
     <cache:annotation-driven />
 
