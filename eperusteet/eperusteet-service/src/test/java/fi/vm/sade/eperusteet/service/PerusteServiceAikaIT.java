@@ -31,7 +31,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -45,7 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@Testcontainers
 @DirtiesContext
 @Transactional
 @ActiveProfiles(profiles = "docker")
