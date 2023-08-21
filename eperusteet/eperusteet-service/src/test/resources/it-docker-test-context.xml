@@ -7,24 +7,22 @@
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:cache="http://www.springframework.org/schema/cache"
-       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
-       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd"
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
        default-lazy-init="true"
-       profile="test">
+       profile="docker">
     <!-- Enables the caching through annotations -->
     <cache:annotation-driven />
 
     <context:property-placeholder
-        location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
-        ignore-resource-not-found="true"
-        properties-ref="defaultProps"/>
+            location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+            ignore-resource-not-found="true"
+            properties-ref="defaultProps"/>
 
     <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
@@ -64,22 +62,28 @@
         </property>
     </bean>
 
-    <bean id="dataSource"
-          class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:mem:test"/>
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.testcontainers.jdbc.ContainerDatabaseDriver"/>
+        <property name="url" value="jdbc:tc:postgresql:12.10:////test"/>
+        <property name="username" value="test"/>
+        <property name="password" value="test"/>
     </bean>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <bean id="flyway" class="org.flywaydb.core.Flyway" init-method="migrate">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="outOfOrder" value="true"/>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
         <property name="persistenceUnitName" value="eperusteet"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
         <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
         <property name="jpaPropertyMap">
             <map>
-                <entry key="hibernate.hbm2ddl.auto" value="create"/>
+                <entry key="hibernate.hbm2ddl.auto" value="none"/>
                 <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
-                <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomH2Dialect"/>
+                <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
@@ -90,8 +94,7 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>typedefs-h2.xml</value>
-                <value>orm-h2.xml</value>
+                <value>typedefs-pg.xml</value>
             </list>
         </property>
     </bean>
@@ -105,30 +108,6 @@
     <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="testPermissionEvaluator"/>
     </bean>
-
-    <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" >
-        <security:expression-handler ref="expressionHandler"/>
-<!--        <security:protect-pointcut expression="execution(* fi.vm.sade.eperusteet.service.*.*(..))" access="ROLE_DENY_ALL"/>-->
-    </security:global-method-security>
-
-    <security:authentication-manager alias="authenticationManager">
-        <security:authentication-provider>
-            <security:user-service>
-                <security:user name="test" password="{noop}test"
-                               authorities="ROLE_ADMIN, ROLE_USER, ROLE_APP_EPERUSTEET, ROLE_APP_EPERUSTEET_CRUD, ROLE_APP_EPERUSTEET_READ_UPDATE, ROLE_APP_EPERUSTEET_READ_UPDATE_1.2.246.562.10.00000000001 ,ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"/>
-                <security:user name="test1" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test2" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test3" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test4" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test5" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test6" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test7" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="test8" password="{noop}test" authorities="ROLE_USER"/>
-                <security:user name="testOphAdmin" password="{noop}test"
-                               authorities="ROLE_ADMIN, ROLE_USER, ROLE_APP_EPERUSTEET, ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_CRUD, ROLE_APP_EPERUSTEET_READ_UPDATE, ROLE_APP_EPERUSTEET_READ_UPDATE_1.2.246.562.10.00000000001 ,ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"/>
-            </security:user-service>
-        </security:authentication-provider>
-    </security:authentication-manager>
 
     <bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
         <constructor-arg>
