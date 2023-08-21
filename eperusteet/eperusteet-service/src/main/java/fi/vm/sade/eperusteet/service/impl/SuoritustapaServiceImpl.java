@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
-
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
@@ -29,11 +13,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
-import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,10 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author harrik
- */
 @Service
 public class SuoritustapaServiceImpl implements SuoritustapaService {
 
@@ -60,14 +37,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
     private RakenneRepository rakenneRepository;
 
     @Autowired
-    private TutkinnonOsaRepository tutkinnonOsaRepository;
-
-    @Autowired
     private TutkinnonOsaViiteRepository tutkinnonOsaViiteRepository;
-
-    @Autowired
-    @Dto
-    private DtoMapper mapper;
 
     @Transactional
     private Suoritustapa createCommon(Suoritustapakoodi suoritustapakoodi, LaajuusYksikko yksikko) {
@@ -96,7 +66,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
                     PerusteenOsaViite pov = perusteenOsaViiteRepository.save(new PerusteenOsaViite());
                     pov.setLapset(new ArrayList());
                     pov.setVanhempi(parent);
-                    pov.setPerusteenOsa(vanhaPov.getPerusteenOsa());
+                    pov.setPerusteenOsa(vanhaPov.getPerusteenOsa().copy());
                     parent.getLapset().add(pov);
                     kopioiSisalto(vanhaPov, pov);
                 }
