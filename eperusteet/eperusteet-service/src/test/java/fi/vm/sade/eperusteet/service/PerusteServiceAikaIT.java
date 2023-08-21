@@ -44,6 +44,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Testataan docker-tietokantaa vasten, johon ajetaan migraatiot.
+ */
+
 @DirtiesContext
 @Transactional
 @ActiveProfiles(profiles = "docker")
@@ -66,10 +70,6 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
-
-    @Autowired
-    @LockCtx(TutkinnonRakenneLockContext.class)
-    private LockService<TutkinnonRakenneLockContext> lockService;
 
     private Peruste peruste;
 
@@ -287,7 +287,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         data.setData(mapper.createObjectNode());
 
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-        julkaisu.setRevision((int) 1);
+        julkaisu.setRevision(1);
         julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
         julkaisu.setLuoja("test");
         julkaisu.setLuotu(new Date());
