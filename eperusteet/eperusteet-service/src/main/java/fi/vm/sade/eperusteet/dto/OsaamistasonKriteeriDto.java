@@ -16,6 +16,7 @@
 
 package fi.vm.sade.eperusteet.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
@@ -34,9 +35,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OsaamistasonKriteeriDto {
-    @JsonProperty("_osaamistaso")
-    private Reference osaamistasoRef;
-    private OsaamistasoDto osaamistaso;
+    private Reference osaamistaso;
     private List<LokalisoituTekstiDto> kriteerit;
 }
