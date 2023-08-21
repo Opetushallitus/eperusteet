@@ -167,6 +167,8 @@ public class ArviointiServiceIT extends AbstractIntegrationTest {
 
         Assert.assertNotNull(dtos);
         Assert.assertEquals(1, dtos.size());
+        Assert.assertNotNull(dtos.get(0).getArvioinninKohdealueet().get(0).getArvioinninKohteet().get(0).getArviointiAsteikkoDto());
+        Assert.assertNotNull(dtos.get(0).getArvioinninKohdealueet().get(0).getArvioinninKohteet().get(0).getOsaamistasonKriteerit().stream().findAny().get().getOsaamistasoDto());
     }
 
     @Test(expected = ConstraintViolationException.class)
