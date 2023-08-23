@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.service.JulkaisutService;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -28,7 +29,8 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public void teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    public CompletableFuture<Void> teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+        return null;
     }
 
     @Override
@@ -37,8 +39,9 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public void teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    public CompletableFuture<Void> teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
 
+        return null;
     }
 
     @Override
