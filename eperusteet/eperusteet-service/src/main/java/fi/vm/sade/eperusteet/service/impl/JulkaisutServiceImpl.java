@@ -105,6 +105,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toSet;
@@ -217,7 +218,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     @IgnorePerusteUpdateCheck
-    public void teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    public CompletableFuture<Void> teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste()), JulkaisuBaseDto.class);
@@ -233,7 +234,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.KESKEN);
         saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
-        self.teeJulkaisuAsync(projektiId, julkaisuBaseDto);
+        return self.teeJulkaisuAsync(projektiId, julkaisuBaseDto);
     }
 
     private JulkaisuPerusteTila getOrCreateTila(Long perusteId) {
@@ -265,7 +266,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     @IgnorePerusteUpdateCheck
     @Async("julkaisuTaskExecutor")
-    public void teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
+    public CompletableFuture<Void> teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         log.debug("teeJulkaisu: {}", projektiId);
 
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
@@ -338,6 +339,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
         saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        return null;
     }
 
     @Override
@@ -667,6 +669,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     private boolean isValidTiedote(LokalisoituTekstiDto tiedote) {
+        if (tiedote == null) {
+            return true;
+        }
+
         Set<Kieli> kielet = new HashSet<>(Arrays.asList(Kieli.FI, Kieli.SV, Kieli.EN));
         for (Kieli kieli : kielet) {
             if (tiedote.get(kieli) != null && !Jsoup.isValid(tiedote.get(kieli), ValidHtml.WhitelistType.SIMPLIFIED.getWhitelist())) {

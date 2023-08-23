@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.data.domain.Page;
@@ -25,13 +26,13 @@ public interface JulkaisutService {
     List<JulkaisuBaseDto> getJulkisetJulkaisut(long id);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
-    void teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+    CompletableFuture<Void> teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     JulkaisuTila viimeisinJulkaisuTila(@P("perusteId") Long perusteId);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
-    void teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+    CompletableFuture<Void> teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
     @PreAuthorize("hasPermission(#peruste.id, 'peruste', 'LUKU') or hasPermission(null, 'pohja', 'LUONTI')")
     Set<Long> generoiJulkaisuPdf(@P("peruste") Peruste peruste);
