@@ -1,0 +1,29 @@
+{
+	"nimi": {
+		"fi": "ap_fi",
+		"sv": "ap_sv"
+	},
+	"kielet": [
+		"fi"
+	],
+	"voimassaoloAlkaa": "1496437200000",
+	"voimassaoloLoppuu": null,
+	"siirtymaPaattyy": null,
+	"id": "600",
+	"diaarinumero": "OPH-12345-1234",
+	"osaamisalat": [],
+	"tutkintonimikkeet": null,
+	"tutkinnonosat": null,
+	"tila": "VALMIS",
+	"koulutusvienti": "false",
+	"koulutustyyppi": "koulutustyyppi_15",
+	"tyyppi": "normaali",
+	"oppaankoulutustyypit": null,
+	"laajuus": null,
+	"osaamisalanimet": null,
+	"tutkintonimikkeetnimet": null,
+	"tutkinnonosatnimet": null,
+	"koulutukset": [],
+	"suoritustavat": null,
+	"koodit": []
+}
