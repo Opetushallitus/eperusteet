@@ -51,8 +51,8 @@ import static org.junit.Assert.assertTrue;
  * Testataan docker-tietokantaa vasten, johon ajetaan migraatiot.
  */
 @DirtiesContext
-@Transactional
 @ActiveProfiles(profiles = {"docker, default"})
+@Transactional
 public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     @Autowired
@@ -116,7 +116,6 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     }
 
     @Test
-    @Transactional
     public void testJulkaisu_data() throws ExecutionException, InterruptedException, JSONException, IOException {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
