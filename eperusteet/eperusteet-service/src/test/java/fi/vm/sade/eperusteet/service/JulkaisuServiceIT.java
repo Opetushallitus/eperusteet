@@ -89,9 +89,11 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     @Before
     public void setUp() {
         gc = new GregorianCalendar(2017, Calendar.JUNE, 4);
-        projekti = createPeruste();
-        peruste = perusteService.get(projekti.getPeruste().getIdLong());
         gc.set(2017, Calendar.JUNE, 3);
+
+        projekti = createPeruste();
+
+        peruste = perusteService.get(projekti.getPeruste().getIdLong());
         peruste.setKoulutukset(new HashSet<>());
         peruste.setVoimassaoloAlkaa(gc.getTime());
         peruste.setNimi(TestUtils.lt("ap"));
