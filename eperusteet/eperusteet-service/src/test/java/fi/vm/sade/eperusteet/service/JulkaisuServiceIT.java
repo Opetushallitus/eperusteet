@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -18,6 +19,8 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractDockerIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import org.apache.tika.mime.MimeTypeException;
+import org.assertj.core.util.Maps;
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,6 +37,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -98,7 +102,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     }
 
     @Test
-    public void testJulkaisu() throws ExecutionException, InterruptedException {
+    public void testJulkaise() throws ExecutionException, InterruptedException {
         assertThat(getJulkaisut(peruste)).hasSize(0);
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
@@ -106,7 +110,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     }
 
     @Test
-    public void testJulkaisu_ilman_muutoksia() throws ExecutionException, InterruptedException {
+    public void testJulkaiseIlmanMuutoksia() throws ExecutionException, InterruptedException {
         expectedEx.expect(BusinessRuleViolationException.class);
         expectedEx.expectMessage("julkaisu-epaonnistui-peruste-ei-muuttunut-viime-julkaisun-jalkeen");
 
@@ -116,7 +120,21 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     }
 
     @Test
-    public void testJulkaisu_data() throws ExecutionException, InterruptedException, JSONException, IOException {
+    public void testJulkaiseUudelleen() throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
+        asyncResult.get();
+
+        peruste.setNimi(TestUtils.lt("updated"));
+        perusteService.update(peruste.getId(), peruste);
+
+        CompletableFuture<Void> asyncResult2 = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
+        asyncResult2.get();
+
+        assertThat(getJulkaisut(peruste)).hasSize(2);
+    }
+
+    @Test
+    public void testJulkaiseJaVertaaDataa() throws ExecutionException, InterruptedException, JSONException, IOException {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
 
@@ -142,11 +160,28 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         assertTrue(JSONCompare.compareJSON(julkaisuFile.toString(), julkaisut.getContent().get(0), JSONCompareMode.LENIENT).passed());
     }
 
+    @Test
+    public void testPaivitaJulkaisu() throws ExecutionException, InterruptedException, IOException, HttpMediaTypeNotSupportedException, MimeTypeException {
+        CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
+        asyncResult.get();
+
+        JulkaistuPeruste julkaisu = getJulkaisu(peruste);
+
+        assertThat(julkaisu.getTiedote()).extracting(TekstiPalanen::getTeksti).isEqualTo(Maps.newHashMap(Kieli.FI, "Tiedote"));
+
+        julkaisu.setTiedote(TekstiPalanen.of( Kieli.FI, "TiedotePäivitys"));
+        julkaisutService.updateJulkaisu(peruste.getId(), mapper.map(julkaisu, JulkaisuBaseDto.class));
+
+        JulkaistuPeruste paivitetty = getJulkaisu(peruste);
+
+        assertThat(paivitetty.getRevision()).isEqualTo(1);
+        assertThat(paivitetty.getTiedote()).extracting(TekstiPalanen::getTeksti).isEqualTo(Maps.newHashMap(Kieli.FI, "TiedotePäivitys"));
+    }
+
     private JulkaisuBaseDto createJulkaisu(PerusteDto peruste) {
         JulkaisuBaseDto julkaisu = new JulkaisuBaseDto();
-        julkaisu.setRevision(1);
-        julkaisu.setTiedote(LokalisoituTekstiDto.of(Kieli.FI, "Julkaisu"));
-        julkaisu.setJulkinenTiedote(LokalisoituTekstiDto.of(Kieli.FI, "Julkaisu"));
+        julkaisu.setTiedote(LokalisoituTekstiDto.of(Kieli.FI, "Tiedote"));
+        julkaisu.setJulkinenTiedote(LokalisoituTekstiDto.of(Kieli.FI, "JulkinenTiedote"));
         julkaisu.setLuoja("test");
         julkaisu.setLuotu(new Date());
         julkaisu.setPeruste(peruste);
@@ -154,8 +189,12 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         return julkaisu;
     }
 
-    private List<JulkaistuPeruste> getJulkaisut(PerusteDto ap) {
-        return julkaisutRepository.findAllByPeruste(mapper.map(ap, Peruste.class));
+    private JulkaistuPeruste getJulkaisu(PerusteDto perusteDto) {
+        return julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(mapper.map(perusteDto, Peruste.class));
+    }
+
+    private List<JulkaistuPeruste> getJulkaisut(PerusteDto perusteDto) {
+        return julkaisutRepository.findAllByPeruste(mapper.map(perusteDto, Peruste.class));
     }
 
     private PerusteprojektiDto createPeruste() {
