@@ -32,7 +32,7 @@ public class AmosaaClientImpl implements AmosaaClient {
         int sivu = 0;
 
         while (tilastot == null || !ObjectUtils.isEmpty(tilastot.getData())) {
-            tilastot = ophClientHelper.get(amosaaServiceUrl, String.format(amosaaServiceUrl + TILASTOT_URL + "/%d/100", sivu++), OpetussuunnitelmaTilastoDto.class);
+            tilastot = ophClientHelper.get(amosaaServiceUrl, String.format(amosaaServiceUrl + TILASTOT_URL + "/%d/20", sivu++), OpetussuunnitelmaTilastoDto.class);
             tulos.addAll(tilastot.getData());
         }
 

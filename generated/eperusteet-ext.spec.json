@@ -10,6 +10,23 @@
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
+    "/external/peruste/yto/**" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
+        "summary" : "Yhteisien tutkinnon osa -perusteen tietojen haku tarkalla sisältörakenteella",
+        "description" : "",
+        "operationId" : "getYtoPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          }
+        }
+      }
+    },
     "/external/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
@@ -22,6 +39,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         } ],
         "responses" : {
@@ -46,6 +64,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         } ],
         "responses" : {
@@ -70,6 +89,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         } ],
         "responses" : {
@@ -103,6 +123,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         }, {
           "name" : "perusteenOsaId",
@@ -133,6 +154,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         }, {
           "name" : "query",
@@ -615,15 +637,18 @@
         "selite" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
-        "arviointiAsteikko" : {
-          "$ref" : "#/definitions/Reference"
-        },
         "osaamistasonKriteerit" : {
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/OsaamistasonKriteeriDto"
           }
+        },
+        "_arviointiAsteikko" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "arviointiAsteikko" : {
+          "$ref" : "#/definitions/ArviointiAsteikkoDto"
         }
       }
     },
@@ -1817,6 +1842,15 @@
           "items" : {
             "$ref" : "#/definitions/OppiaineenVuosiluokkaKokonaisuusDto"
           }
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         }
       }
     },
@@ -1983,6 +2017,12 @@
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/KeskeinenSisaltoalueDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
           }
         }
       }
@@ -2269,14 +2309,17 @@
     "OsaamistasonKriteeriDto" : {
       "type" : "object",
       "properties" : {
-        "osaamistaso" : {
-          "$ref" : "#/definitions/Reference"
-        },
         "kriteerit" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/LokalisoituTekstiDto"
           }
+        },
+        "_osaamistaso" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "osaamistaso" : {
+          "$ref" : "#/definitions/OsaamistasoDto"
         }
       }
     },
@@ -2405,10 +2448,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -2445,10 +2488,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -2656,6 +2699,13 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "poikkeamismaaraysTarkennus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "poikkeamismaaraysTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
         },
         "suoritustavat" : {
           "type" : "array",
@@ -3317,6 +3367,13 @@
         "ammattitaitovaatimukset" : {
           "description" : "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.",
           "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "ammattitaitovaatimuksetLista" : {
+          "type" : "array",
+          "description" : "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.",
+          "items" : {
+            "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
+          }
         }
       }
     },
@@ -3500,6 +3557,12 @@
         },
         "paikallisestiPaatettavatAsiat" : {
           "$ref" : "#/definitions/TekstiOsaDto"
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
         }
       }
     }

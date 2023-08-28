@@ -28,7 +28,6 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -64,6 +63,7 @@ import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.Cache;
@@ -283,9 +283,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
 
             // Validoinnit
-            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
+            List<Validointi> validoinnit = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
 
-            if (!salliVirheelliset && !status.isVaihtoOk()) {
+            if (!salliVirheelliset && validoinnit.stream().anyMatch(Validointi::virheellinen)) {
                 throw new BusinessRuleViolationException("projekti-ei-validi");
             }
 

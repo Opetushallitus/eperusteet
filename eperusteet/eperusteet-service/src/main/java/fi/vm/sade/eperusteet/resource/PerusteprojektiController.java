@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +116,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/{id}/validoi", method = GET)
     @ResponseBody
-    public ResponseEntity<TilaUpdateStatus> getPerusteprojektiValidointi(@PathVariable("id") final long id) {
+    public ResponseEntity<List<Validointi>> getPerusteprojektiValidointi(@PathVariable("id") final long id) {
         return new ResponseEntity<>(service.validoiProjekti(id, ProjektiTila.JULKAISTU), HttpStatus.OK);
     }
 

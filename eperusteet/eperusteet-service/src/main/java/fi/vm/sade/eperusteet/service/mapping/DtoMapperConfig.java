@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.KVLiite;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Koulutus;
+import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
@@ -31,6 +32,7 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tiedote;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
+import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.digi.Osaamiskokonaisuus;
 import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusPaaAlue;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
@@ -58,8 +60,12 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
+import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
+import fi.vm.sade.eperusteet.dto.OsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.arviointi.ArvioinninKohdeDto;
+import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
@@ -135,6 +141,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -148,7 +155,13 @@ import org.springframework.web.client.RestClientException;
 public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
+    @Autowired
     private KoodistoClient koodistoClient;
+
+    @Lazy
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
 
     @Autowired
     public DtoMapperConfig(KoodistoClient koodistoClient) {
@@ -705,6 +718,38 @@ public class DtoMapperConfig {
         factory.classMap(Peruste.class, PerusteKaikkiDto.class)
                 .exclude("sisallot")
                 .byDefault()
+                .register();
+
+        factory.classMap(ArvioinninKohde.class, ArvioinninKohdeDto.class)
+                .byDefault()
+                .customize(new CustomMapper<ArvioinninKohde, ArvioinninKohdeDto>() {
+                    @Override
+                    public void mapAtoB(ArvioinninKohde source, ArvioinninKohdeDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        target.setArviointiAsteikkoDto(mapper.map(source.getArviointiAsteikko(), ArviointiAsteikkoDto.class));
+                    }
+
+                    @Override
+                    public void mapBtoA(ArvioinninKohdeDto source, ArvioinninKohde target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
+
+        factory.classMap(OsaamistasonKriteeri.class, OsaamistasonKriteeriDto.class)
+                .byDefault()
+                .customize(new CustomMapper<OsaamistasonKriteeri, OsaamistasonKriteeriDto>() {
+                    @Override
+                    public void mapAtoB(OsaamistasonKriteeri source, OsaamistasonKriteeriDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        target.setOsaamistasoDto(mapper.map(source.getOsaamistaso(), OsaamistasoDto.class));
+                    }
+
+                    @Override
+                    public void mapBtoA(OsaamistasonKriteeriDto source, OsaamistasonKriteeri target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
                 .register();
 
         return new DtoMapperImpl(factory.getMapperFacade());

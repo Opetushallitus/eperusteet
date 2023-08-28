@@ -59,4 +59,8 @@ public interface DokumenttiService {
     @PreAuthorize("permitAll()")
     DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision);
 
+    void updateDokumenttiPdfData(byte[] pdfData, Long dokumenttiId);
+
+    void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId);
+
 }

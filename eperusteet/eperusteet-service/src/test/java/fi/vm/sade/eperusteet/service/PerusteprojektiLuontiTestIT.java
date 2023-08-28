@@ -46,6 +46,7 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,19 +138,17 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
 
         // Julkaisu
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
         assertThat(status.isVaihtoOk()).isFalse();
-        assertThat(status.getInfot()).hasSize(1);
-        assertThat(status.getInfot())
-                .extracting("viesti")
+        assertThat(status.getVirheet()).hasSize(2);
+        assertThat(status.getVirheet())
+                .extracting("kuvaus")
                 .contains("rakenteen-validointi-virhe");
-        assertThat(status.getInfot().get(0).getValidointi().ongelmat.get(0).ongelma)
-                .isEqualTo("tutkinnolle-ei-maaritetty-kokonaislaajuutta");
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);
         rakenne.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE)));
         lockService.lock(TutkinnonRakenneLockContext.of(perusteDto.getId(), Suoritustapakoodi.REFORMI));
         rakenne = perusteService.updateTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, rakenne);
-        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
+        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
         assertThat(status.isVaihtoOk()).isFalse();
     }
 
@@ -518,9 +517,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
 
         { // Ilman kuvauksia
-            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
-            assertThat(status.getInfot())
-                    .extracting(TilaUpdateStatus.Status::getViesti)
+            TilaUpdateStatus status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU));
+            assertThat(status.getVirheet())
+                    .extracting(Validointi.Virhe::getKuvaus)
                     .contains("osaamisalan-kuvauksia-puuttuu-sisallosta");
         }
 
@@ -535,9 +534,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             tekstiKappale2.setOsaamisala(osaamisala2);
             PerusteenOsaViiteDto.Matala c = perusteService.addSisaltoLapsi(perusteDto.getId(), b.getId(), new PerusteenOsaViiteDto.Matala(tekstiKappale2));
             em.flush();
-            TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
-            assertThat(status.getInfot())
-                    .extracting(TilaUpdateStatus.Status::getViesti)
+            TilaUpdateStatus status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU));
+            assertThat(status.getVirheet())
+                    .extracting(Validointi.Virhe::getKuvaus)
                     .contains("rakenteen-validointi-virhe");
         }
     }

@@ -17,8 +17,11 @@ import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -164,8 +167,28 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public List<YllapitoDto> getSallitutYllapidot() {
-        return mapper.mapAsList(yllapitoRepository.findBySallittu(true), YllapitoDto.class);
+    public List<YllapitoDto> getYllapidot() {
+        return mapper.mapAsList(yllapitoRepository.findAll(), YllapitoDto.class);
+    }
+
+    @Override
+    @Cacheable("yllapitovalues")
+    @IgnorePerusteUpdateCheck
+    public String getYllapitoValue(String key) {
+        Yllapito yllapito = yllapitoRepository.findByKey(key);
+        return yllapito != null ? yllapito.getValue() : null;
+    }
+
+    @Override
+    public void updateYllapito(List<YllapitoDto> yllapitoList) {
+        clearCache("yllapitovalues");
+        yllapitoList.forEach(yp -> {
+            Yllapito yllapito = yllapitoRepository.findOne(yp.getId());
+            yllapito.setKey(yp.getKey());
+            yllapito.setValue(yp.getValue());
+            yllapito.setKuvaus(yp.getKuvaus());
+            yllapitoRepository.save(yllapito);
+        });
     }
 
     private void julkaisePeruste(Long perusteId, String tiedote) {

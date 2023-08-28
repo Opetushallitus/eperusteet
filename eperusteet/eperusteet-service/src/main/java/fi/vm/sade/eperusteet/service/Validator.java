@@ -5,13 +5,16 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 public interface Validator {
     @PreAuthorize("isAuthenticated()")
-    TilaUpdateStatus validate(Long perusteprojektiId, ProjektiTila targetTila);
+    List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila);
 
     @PreAuthorize("permitAll()")
     default String getName() {

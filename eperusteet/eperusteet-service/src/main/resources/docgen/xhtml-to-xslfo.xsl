@@ -360,6 +360,14 @@
                         </fo:table-cell>
                     </fo:table-row>
 
+                    <fo:table-row>
+                        <fo:table-cell number-columns-spanned="2">
+                            <fo:block font-weight="bold">
+                                <xsl:apply-templates select="/html/head/meta[@name='poikkeamismaarays']/@translate"/>
+                            </fo:block>
+                        </fo:table-cell>
+                    </fo:table-row>
+
                 </fo:table-body>
             </fo:table>
         </xsl:if>
@@ -725,7 +733,7 @@
                     </xsl:choose>
                 </fo:block>
             </fo:list-item-label>
-            <fo:list-item-body start-indent="body-start()"> 
+            <fo:list-item-body start-indent="body-start()">
                 <fo:block font-size="10pt">
                     <xsl:apply-templates select="*|text()"/>
                 </fo:block>

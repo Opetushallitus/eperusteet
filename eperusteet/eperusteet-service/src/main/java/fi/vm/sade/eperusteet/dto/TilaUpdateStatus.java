@@ -1,292 +1,51 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- * 
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- * 
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.dto;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.service.util.PerusteenRakenne.Validointi;
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.CollectionUtils;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-
-/**
- *
- * @author harrik
- */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
-public class TilaUpdateStatus extends TilaUpdateStatusBuilder {
-    @Getter
-    @Setter
-    private PerusteprojektiListausDto perusteprojekti;
+@NoArgsConstructor
+public class TilaUpdateStatus {
 
-    @Getter
-    @Setter
-    private Date lastCheck;
+    private List<Validointi> validoinnit = new ArrayList<>();
 
-    @Getter
-    @Setter
-    List<Status> infot = new ArrayList<>();
-
-    @Getter
-    @Setter
-    boolean vaihtoOk = true;
-
-    public TilaUpdateStatus() {
-        status = this;
+    public TilaUpdateStatus(List<Validointi> validoinnit) {
+        validoinnit.forEach(this::addValidointi);
     }
 
-    public void merge(TilaUpdateStatus other) {
-        if (other != null) {
-            vaihtoOk = vaihtoOk && other.isVaihtoOk();
-            infot.addAll(other.infot);
-        }
+    public boolean isVaihtoOk() {
+        return validoinnit.stream().noneMatch(Validointi::virheellinen);
     }
 
-    @Data
-    @NoArgsConstructor
-    public static class TilaUpdateStatusBuilderForSuoritustapa {
-        private TilaUpdateStatusBuilder builder;
-        @Getter
-        private Suoritustapakoodi suoritustapa;
-
-        public TilaUpdateStatusBuilderForSuoritustapa(TilaUpdateStatusBuilder builder, Suoritustapakoodi suoritustapa) {
-            this.builder = builder;
-            this.suoritustapa = suoritustapa;
-        }
-
-        public TilaUpdateStatusBuilderForSuoritustapa addErrorStatus(String viesti, LokalisoituTekstiDto... tekstit) {
-            if (isUsed()) {
-                builder.addErrorStatus(viesti, suoritustapa, tekstit);
-            }
-            return this;
-        }
-
-        public TilaUpdateStatusBuilderForSuoritustapa addErrorStatusForAll(String viesti,
-                               Supplier<Stream<LokalisoituTekstiDto>> all) {
-            if (isUsed()) {
-                LokalisoituTekstiDto[] tekstit = all.get().toArray(LokalisoituTekstiDto[]::new);
-                if (tekstit.length > 0) {
-                    builder.addErrorStatus(viesti, suoritustapa, tekstit);
-                }
-            }
-            return this;
-        }
-
-        public TilaUpdateStatusBuilderForSuoritustapa addErrorGiven(String viesti, boolean given) {
-            if (given) {
-                builder.addErrorStatus(viesti, suoritustapa);
-            }
-            return this;
-        }
-
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa toTila(ProjektiTila tila) {
-            return new TilallinenTilaUpdateStatusBuilderForSuoritustapa(this.builder, this.suoritustapa, tila);
-        }
-
-        protected boolean isUsed() {
-            return true;
-        }
-    }
-
-    @Data
-    @EqualsAndHashCode(callSuper = true)
-    public static class TilallinenTilaUpdateStatusBuilderForSuoritustapa extends TilaUpdateStatusBuilderForSuoritustapa {
-        private final ProjektiTila targetTila;
-        private Set<ProjektiTila> tilat = new HashSet<>();
-
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa(TilaUpdateStatusBuilder builder, Suoritustapakoodi suoritustapa,
-                                                      ProjektiTila targetTila) {
-            super(builder, suoritustapa);
-            this.targetTila = targetTila;
-        }
-
-        @Override
-        public boolean isUsed() {
-            return tilat.isEmpty() || tilat.contains(targetTila);
-        }
-
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa forTilat(ProjektiTila ...tilat) {
-            this.tilat = new HashSet<>(asList(tilat));
-            return this;
-        }
-
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa check(
-                        Consumer<TilallinenTilaUpdateStatusBuilderForSuoritustapa> status) {
-            if (isUsed()) {
-                status.accept(this);
-            }
-            return this;
-        }
-
-        @Override
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa addErrorStatus(String viesti, LokalisoituTekstiDto... tekstit) {
-            super.addErrorStatus(viesti, tekstit);
-            return this;
-        }
-        @Override
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa addErrorStatusForAll(String viesti,
-                                                             Supplier<Stream<LokalisoituTekstiDto>> all) {
-            super.addErrorStatusForAll(viesti, all);
-            return this;
-        }
-        @Override
-        public TilallinenTilaUpdateStatusBuilderForSuoritustapa addErrorGiven(String viesti, boolean given) {
-            super.addErrorGiven(viesti, given);
-            return this;
-        }
-    }
-
-    public TilaUpdateStatusBuilderForSuoritustapa forSuoritustapa(Suoritustapakoodi suoritustapa) {
-        return new TilaUpdateStatusBuilderForSuoritustapa(this, suoritustapa);
-    }
-
-    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
-        if (infot == null) {
-            infot = new ArrayList<>();
-        }
-        infot.add(new Status(viesti, suoritustapa, validointi, nimet));
-    }
-
-    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet) {
-        if (infot == null) {
-            infot = new ArrayList<>();
-        }
-        infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet));
-    }
-
-    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria) {
-        if (infot == null) {
-            infot = new ArrayList<>();
-        }
-        infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet, validointiKategoria));
-    }
-
-    public void addStatus(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria, ValidointiStatusType validointiStatusType) {
-        if (infot == null) {
-            infot = new ArrayList<>();
-        }
-        infot.add(new Status(viesti, suoritustapa, validointi, nimet, kielet, validointiKategoria, validointiStatusType));
-    }
-
-    public void addStatus(String viesti, ValidointiKategoria validointiKategoria, LokalisoituTekstiDto nimi) {
-        if (infot == null) {
-            infot = new ArrayList<>();
-        }
-        if (infot.stream().anyMatch(info -> info.getViesti().equals(viesti))) {
-            infot.stream()
-                    .filter(info -> info.getViesti().equals(viesti))
-                    .forEach(info -> info.getNimet().add(nimi));
-        } else {
-            infot.add(Status.builder()
-                    .viesti(viesti)
-                    .validointiKategoria(validointiKategoria)
-                    .nimet(new ArrayList<>(Arrays.asList(nimi)))
-                    .validointiStatusType(ValidointiStatusType.VIRHE)
-                .build());
-        }
-
-        status.setVaihtoOk(false);
-    }
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    public static class Status {
-        String viesti;
-        PerusteprojektiListausDto perusteprojekti;
-        Date lastCheck;
-        Validointi validointi;
-        List<LokalisoituTekstiDto> nimet = new ArrayList<>();
-        Suoritustapakoodi suoritustapa;
-        Set<Kieli> kielet;
-        ValidointiKategoria validointiKategoria = ValidointiKategoria.MAARITTELEMATON;
-        ValidointiStatusType validointiStatusType = ValidointiStatusType.VIRHE;
-        NavigationNodeDto navigationNode;
-
-        public Status() {
-        }
-        
-        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet) {
-            this.viesti = viesti;
-            this.validointi = validointi;
-            this.nimet = nimet;
-            this.suoritustapa = suoritustapa;
-        }
-
-        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet) {
-            this.viesti = viesti;
-            this.validointi = validointi;
-            this.nimet = nimet;
-            this.suoritustapa = suoritustapa;
-            this.kielet = kielet;
-        }
-
-        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria) {
-            this.viesti = viesti;
-            this.validointi = validointi;
-            this.nimet = nimet;
-            this.suoritustapa = suoritustapa;
-            this.kielet = kielet;
-            this.validointiKategoria = validointiKategoria;
-            this.navigationNode = kategoriaNavigationNode(validointiKategoria);
-        }
-
-        public Status(String viesti, Suoritustapakoodi suoritustapa, Validointi validointi, List<LokalisoituTekstiDto> nimet, Set<Kieli> kielet, ValidointiKategoria validointiKategoria, ValidointiStatusType validointiStatusType) {
-            this.viesti = viesti;
-            this.validointi = validointi;
-            this.nimet = nimet;
-            this.suoritustapa = suoritustapa;
-            this.kielet = kielet;
-            this.validointiKategoria = validointiKategoria;
-            this.validointiStatusType = validointiStatusType;
-            this.navigationNode = kategoriaNavigationNode(validointiKategoria);
-        }
-
-        private NavigationNodeDto kategoriaNavigationNode(ValidointiKategoria validointiKategoria) {
-            if (validointiKategoria == null) {
-                return null;
-            }
-
-            switch (validointiKategoria) {
-                case PERUSTE:
-                    return NavigationNodeDto.of(NavigationType.tiedot);
-                case RAKENNE:
-                    return NavigationNodeDto.of(NavigationType.muodostuminen);
-                default:
-                    return null;
+    public void addValidointi(Validointi uusiValidointi) {
+        if (!CollectionUtils.isEmpty(uusiValidointi.getVirheet()) || !CollectionUtils.isEmpty(uusiValidointi.getHuomautukset())) {
+            Optional<Validointi> validointi = validoinnit.stream().filter(v -> v.getKategoria().equals(uusiValidointi.getKategoria())).findFirst();
+            if(validointi.isPresent()) {
+                uusiValidointi.getVirheet().forEach(virhe -> validointi.get().addVirhe(virhe));
+                uusiValidointi.getHuomautukset().forEach(huomautus -> validointi.get().addHuomautus(huomautus));
+            } else {
+                validoinnit.add(uusiValidointi);
             }
         }
+    }
+
+    public List<Validointi.Virhe> getVirheet() {
+        return validoinnit.stream().map(Validointi::getVirheet).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    public List<Validointi.Virhe> getHuomautukset() {
+        return validoinnit.stream().map(Validointi::getHuomautukset).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
 }

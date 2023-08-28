@@ -11,13 +11,16 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.util.YllapitoAvaimet;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
+import fi.vm.sade.eperusteet.service.dokumentti.ExternalPdfService;
 import fi.vm.sade.eperusteet.service.dokumentti.KVLiiteBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -33,6 +36,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.pdfbox.preflight.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
@@ -47,6 +51,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -86,6 +91,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
+
+    @Autowired
+    private ExternalPdfService externalPdfService;
+
+    @Lazy
+    @Autowired
+    private MaintenanceService maintenanceService;
 
     @Value("classpath:docgen/fop.xconf")
     private Resource fopConfig;
@@ -197,21 +209,25 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Override
     @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
     @IgnorePerusteUpdateCheck
-    @Async(value = "docTaskExecutor")
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
-        Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
-        if (dokumentti == null) {
-            dokumentti = mapper.map(dto, Dokumentti.class);
-        }
-
         try {
-            dokumentti.setData(generateFor(dto));
-            dokumentti.setTila(DokumenttiTila.VALMIS);
-            dokumentti.setValmistumisaika(new Date());
-            dokumenttiRepository.save(dokumentti);
+            boolean isPdfServiceUsed = Boolean.parseBoolean(maintenanceService.getYllapitoValue(YllapitoAvaimet.USE_PDF_SERVICE_EPERUSTEET));
+
+            if (isPdfServiceUsed) {
+                externalPdfService.generatePdf(dto);
+            } else {
+                Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
+                if (dokumentti == null) {
+                    dokumentti = mapper.map(dto, Dokumentti.class);
+                }
+                dokumentti.setData(generateFor(dto));
+                dokumentti.setTila(DokumenttiTila.VALMIS);
+                dokumentti.setValmistumisaika(new Date());
+                dokumenttiRepository.save(dokumentti);
+            }
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
@@ -364,6 +380,26 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 break;
         }
         return toReturn;
+    }
+
+    @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
+    public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
+        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
+        dokumentti.setData(data);
+        dokumentti.setTila(DokumenttiTila.VALMIS);
+        dokumentti.setValmistumisaika(new Date());
+        dokumenttiRepository.save(dokumentti);
+    }
+
+    @Override
+    @Transactional
+    @IgnorePerusteUpdateCheck
+    public void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId) {
+        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
+        dokumentti.setTila(tila);
+        dokumenttiRepository.save(dokumentti);
     }
 
 }

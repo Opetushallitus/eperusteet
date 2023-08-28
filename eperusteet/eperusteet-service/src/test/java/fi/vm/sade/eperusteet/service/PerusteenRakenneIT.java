@@ -42,6 +42,8 @@ import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import javax.validation.ConstraintViolationException;
+
+import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -266,9 +268,8 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                         .tutkintonimike(KoodiDto.of("tutkintonimikkeet", "1002"))
                         .build()));
         RakenneModuuliDto rakenne = update(rakenneDto);
-        TilaUpdateStatus status = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
-        List<TilaUpdateStatus.Status> infot = status.getInfot();
-        assertThat(status.getInfot().stream().map(TilaUpdateStatus.Status::getViesti))
+        List<Validointi> validoinnit = perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU);
+        assertThat(validoinnit.stream().map(Validointi::getVirheet).flatMap(Collection::stream).map(Validointi.Virhe::getKuvaus))
             .doesNotContain("tutkintonimikkeen-osaamisala-puuttuu-perusteesta");
     }
 

@@ -1,20 +1,23 @@
 package fi.vm.sade.eperusteet.service;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import fi.vm.sade.eperusteet.domain.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
-import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
-import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import org.junit.Before;
@@ -23,13 +26,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,12 +45,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Integraatiotesti muistinvaraista kantaa vasten.
- *
- * @author isaul
+ * Testataan docker-tietokantaa vasten, johon ajetaan migraatiot.
  */
+
 @DirtiesContext
 @Transactional
+@ActiveProfiles(profiles = "docker")
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -55,37 +63,19 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     private PerusteprojektiService perusteprojektiService;
 
     @Autowired
-    private PerusteprojektiRepository perusteprojektiRepository;
-
-    @Autowired
     private PerusteRepository repo;
 
     @Autowired
     private PlatformTransactionManager manager;
 
     @Autowired
-    private EntityManager em;
-
-    @Autowired
-    private KoulutusRepository koulutusRepository;
-
-    @Autowired
     private JulkaisutRepository julkaisutRepository;
-
-    @Autowired
-    @LockCtx(TutkinnonRakenneLockContext.class)
-    private LockService<TutkinnonRakenneLockContext> lockService;
-
-    @Autowired
-    @Dto
-    private DtoMapper mapper;
 
     private Peruste peruste;
 
     private Date nykyinenAika;
 
     public PerusteServiceAikaIT() {
-
     }
 
     private GregorianCalendar gc;
@@ -292,13 +282,18 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
     }
 
     private void teeJulkaisu(Long id) {
+        ObjectMapper mapper = new ObjectMapper();
+        JulkaistuPerusteData data = new JulkaistuPerusteData();
+        data.setData(mapper.createObjectNode());
+
         JulkaistuPeruste julkaisu = new JulkaistuPeruste();
-        julkaisu.setRevision((int) 1);
+        julkaisu.setRevision(1);
         julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, "Julkaisu"));
         julkaisu.setLuoja("test");
         julkaisu.setLuotu(new Date());
         julkaisu.setPeruste(perusteRepository.getOne(id));
         julkaisu.setJulkinen(false);
+        julkaisu.setData(data);
         julkaisutRepository.save(julkaisu);
     }
 }

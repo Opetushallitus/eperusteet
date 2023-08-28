@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -119,8 +120,20 @@ public class MaintenanceController {
     }
 
     @RequestMapping(value = "/yllapito", method = GET)
-    public List<YllapitoDto> sallitutYllapidot() {
-        return maintenanceService.getSallitutYllapidot();
+    public ResponseEntity<List<YllapitoDto>> getYllapidot() {
+        return ResponseEntity.ok(maintenanceService.getYllapidot());
+    }
+
+    @RequestMapping(value = "/yllapito/{key}", method = GET)
+    public ResponseEntity<String> getYllapito(@PathVariable final String key) {
+        return ResponseEntity.ok(maintenanceService.getYllapitoValue(key));
+    }
+
+    @RequestMapping(value = "/yllapito/update", method = POST)
+    public ResponseEntity updateYllapito(@RequestBody List<YllapitoDto> yllapitoDtoList) {
+        maintenanceService.updateYllapito(yllapitoDtoList);
+        return ResponseEntity.status(HttpStatus.OK)
+                .build();
     }
 
     @ResponseBody
