@@ -33,8 +33,8 @@
         <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
         <surefire.version>2.22.2</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
+        <pdfbox.version>2.0.29</pdfbox.version>
         <fop.version>2.9</fop.version>
-        <pdfbox.version>2.0.24</pdfbox.version>
         <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
         <springfox.version>2.7.0</springfox.version>
