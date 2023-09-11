@@ -88,6 +88,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Osaamistavoite2020Dto;
@@ -449,6 +450,11 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(OsaAlue.class, OsaAlueKokonaanDto.class)
+                .byDefault()
+                .field("geneerinenArviointiasteikko", "arviointi")
+                .register();
+
+        factory.classMap(OsaAlue.class, OsaAlueKaikkiDto.class)
                 .byDefault()
                 .field("geneerinenArviointiasteikko", "arviointi")
                 .register();
