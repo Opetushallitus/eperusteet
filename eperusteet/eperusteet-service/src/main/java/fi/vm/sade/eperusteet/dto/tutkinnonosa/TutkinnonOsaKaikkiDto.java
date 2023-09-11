@@ -63,7 +63,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private String koodiArvo;
 
     @ApiModelProperty("Yhteisen tutkinnon osan osa-alueet")
-    private List<OsaAlueKokonaanDto> osaAlueet;
+    private List<OsaAlueKaikkiDto> osaAlueet;
 
     @ApiModelProperty("Ilmaisee onko kyseessä normaali vai yhteinen osa (uusi tai vanha)")
     private TutkinnonOsaTyyppi tyyppi;
