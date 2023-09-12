@@ -6,6 +6,8 @@ import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
+import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,9 +21,13 @@ public class AmosaaClientImpl implements AmosaaClient {
     private String amosaaServiceUrl;
 
     private final static String TILASTOT_URL="/api/tilastot/opetussuunnitelmat";
+    private final static String ARVIOINTIASTEIKOT_URL="/api/arviointiasteikot";
 
     @Autowired
     private OphClientHelper ophClientHelper;
+
+    @Autowired
+    RestClientFactory restClientFactory;
 
     @Override
     @Cacheable("amosaatilastot")
@@ -37,5 +43,12 @@ public class AmosaaClientImpl implements AmosaaClient {
         }
 
         return tulos;
+    }
+
+    @Override
+    public void updateArvioinnit() {
+        restClientFactory.get(amosaaServiceUrl, true)
+                        .execute(OphHttpRequest.Builder
+                                .get(amosaaServiceUrl + ARVIOINTIASTEIKOT_URL + "/update").build());
     }
 }

@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
+import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,8 @@ public class ArviointiAsteikkoController {
     @Autowired
     ArviointiAsteikkoService service;
 
+    @Autowired
+    AmosaaClient amosaaClient;
 
     @RequestMapping(method = GET)
     public List<ArviointiAsteikkoDto> getAll() {
@@ -56,6 +59,7 @@ public class ArviointiAsteikkoController {
             @RequestBody List<ArviointiAsteikkoDto> arviointiasteikotDtos
     ) {
         List<ArviointiAsteikkoDto> arviointiasteikot = service.update(arviointiasteikotDtos);
+        amosaaClient.updateArvioinnit();
         return ResponseEntity.ok(arviointiasteikot);
     }
 }
