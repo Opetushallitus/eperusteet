@@ -11,6 +11,7 @@ import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -97,31 +98,20 @@ public class ExternalController {
             @PathVariable("perusteId") final long perusteId) {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
     }
-
-    @RequestMapping(value = "/peruste/{perusteId:\\d+}/query", method = GET)
-    @ResponseBody
-    @ApiOperation(value = "Perusteen tietojen haku JsonPathilla")
-    public ResponseEntity<Object> getPerusteWithQuery(
-            @PathVariable("perusteId") final long id,
-            @RequestParam(value = "query") final String query) {
-        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, query);
-        if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return ResponseEntity.ok(result);
-    }
-
+    
     @RequestMapping(value = "/peruste/{perusteId:\\d+}/**", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Perusteen tietojen haku tarkalla sisältörakenteella")
-    public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
+    @ApiOperation(
+            value = "Perusteen tietojen haku tarkalla sisältörakenteella",
+            notes="Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.")
+    public ResponseEntity<PerusteKaikkiDto> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
         return getJulkaistuSisaltoObjectNodeWithQuery(req, id);
     }
 
     @RequestMapping(value = "/peruste/yto/**", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Yhteisien tutkinnon osa -perusteen tietojen haku tarkalla sisältörakenteella")
-    public ResponseEntity<Object> getYtoPerusteDynamicQuery(HttpServletRequest req) {
+    @ApiOperation(value = "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'")
+    public ResponseEntity<PerusteKaikkiDto> getYtoPerusteDynamicQuery(HttpServletRequest req) {
         Page<PerusteenJulkaisuData> amosaaPeruste = julkaisutService.getJulkisetJulkaisut(
                 Collections.emptyList(),
                 "",
@@ -145,9 +135,9 @@ public class ExternalController {
     }
 
 
-    private ResponseEntity<Object> getJulkaistuSisaltoObjectNodeWithQuery(HttpServletRequest req, long id) {
+    private ResponseEntity<PerusteKaikkiDto> getJulkaistuSisaltoObjectNodeWithQuery(HttpServletRequest req, long id) {
         String[] queries = req.getPathInfo().split("/");
-        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, Arrays.stream(queries).skip(4).collect(Collectors.toList()));
+        PerusteKaikkiDto result = perusteService.getJulkaistuSisaltoObjectNode(id, Arrays.stream(queries).skip(4).collect(Collectors.toList()));
         if (result == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
