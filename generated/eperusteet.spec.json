@@ -517,6 +517,23 @@
         }
       }
     },
+    "/external/peruste/yto/**" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
+        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+        "description" : "",
+        "operationId" : "getYtoPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
     "/external/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
@@ -529,6 +546,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         } ],
         "responses" : {
@@ -545,7 +563,7 @@
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
-        "description" : "",
+        "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
         "operationId" : "getPerusteDynamicQuery",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
@@ -553,13 +571,14 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "type" : "object"
+              "$ref" : "#/definitions/PerusteKaikkiDto"
             }
           }
         }
@@ -577,6 +596,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         } ],
         "responses" : {
@@ -610,6 +630,7 @@
           "in" : "path",
           "required" : true,
           "type" : "integer",
+          "pattern" : "\\d+",
           "format" : "int64"
         }, {
           "name" : "perusteenOsaId",
@@ -623,35 +644,6 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/PerusteenOsaDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/{perusteId}/query" : {
-      "get" : {
-        "tags" : [ "Julkinen" ],
-        "summary" : "Perusteen tietojen haku JsonPathilla",
-        "description" : "",
-        "operationId" : "getPerusteWithQuery",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        }, {
-          "name" : "query",
-          "in" : "query",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object"
             }
           }
         }
@@ -4636,10 +4628,10 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisu/onkoMuutoksia" : {
+    "/perusteet/{perusteId}/julkaisu/muutokset" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
-        "operationId" : "onkoMuutoksia",
+        "operationId" : "julkaisuversioMuutokset",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
           "name" : "perusteId",
@@ -4652,7 +4644,10 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "type" : "boolean"
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/FieldComparisonFailure"
+              }
             }
           }
         }
@@ -11097,6 +11092,20 @@
         }
       }
     },
+    "FieldComparisonFailure" : {
+      "type" : "object",
+      "properties" : {
+        "field" : {
+          "type" : "string"
+        },
+        "expected" : {
+          "type" : "object"
+        },
+        "actual" : {
+          "type" : "object"
+        }
+      }
+    },
     "GeneerinenArviointiasteikkoDto" : {
       "type" : "object",
       "properties" : {
@@ -11838,12 +11847,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
-        "koulutustyyppi" : {
-          "type" : "string"
-        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "koulutustyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -13268,7 +13277,7 @@
         }
       }
     },
-    "OsaAlueKokonaanDto" : {
+    "OsaAlueKaikkiDto" : {
       "type" : "object",
       "properties" : {
         "id" : {
@@ -13303,7 +13312,7 @@
         },
         "arviointi" : {
           "description" : "OSAALUE2020-mukainen arviointi",
-          "$ref" : "#/definitions/Arviointi2020Dto"
+          "$ref" : "#/definitions/GeneerinenArviointiasteikkoKaikkiDto"
         },
         "pakollisetOsaamistavoitteet" : {
           "description" : "OSAALUE2020-mukainen pakolliset osaamistavoitteet",
@@ -13316,6 +13325,56 @@
         "osaamistavoitteet" : {
           "type" : "array",
           "description" : "Vanhan malliset osaamistavoitteet (OSAALUE2014)",
+          "items" : {
+            "$ref" : "#/definitions/OsaamistavoiteLaajaDto"
+          }
+        }
+      }
+    },
+    "OsaAlueKokonaanDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tyyppi" : {
+          "type" : "string",
+          "description" : "Määrittää osaamisalueiden tyypit (vanha vai uusi)",
+          "enum" : [ "OSAALUE2014", "OSAALUE2020" ]
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "koodiUri" : {
+          "type" : "string"
+        },
+        "koodiArvo" : {
+          "type" : "string"
+        },
+        "kielikoodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "valmaTelmaSisalto" : {
+          "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
+        },
+        "arviointi" : {
+          "$ref" : "#/definitions/Arviointi2020Dto"
+        },
+        "pakollisetOsaamistavoitteet" : {
+          "$ref" : "#/definitions/Osaamistavoite2020Dto"
+        },
+        "valinnaisetOsaamistavoitteet" : {
+          "$ref" : "#/definitions/Osaamistavoite2020Dto"
+        },
+        "osaamistavoitteet" : {
+          "type" : "array",
           "items" : {
             "$ref" : "#/definitions/OsaamistavoiteLaajaDto"
           }
@@ -13553,9 +13612,6 @@
     "OsaamistasonKriteeriDto" : {
       "type" : "object",
       "properties" : {
-        "osaamistaso" : {
-          "$ref" : "#/definitions/OsaamistasoDto"
-        },
         "kriteerit" : {
           "type" : "array",
           "items" : {
@@ -13564,6 +13620,9 @@
         },
         "_osaamistaso" : {
           "$ref" : "#/definitions/Reference"
+        },
+        "osaamistaso" : {
+          "$ref" : "#/definitions/OsaamistasoDto"
         }
       }
     },
@@ -13716,12 +13775,12 @@
             "type" : "object"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13729,7 +13788,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13756,12 +13815,12 @@
             "$ref" : "#/definitions/KoodistoKoodiDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13769,7 +13828,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13796,12 +13855,12 @@
             "$ref" : "#/definitions/PerusteBaseDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13809,7 +13868,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13836,12 +13895,12 @@
             "$ref" : "#/definitions/PerusteHakuDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13849,7 +13908,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13876,12 +13935,12 @@
             "$ref" : "#/definitions/PerusteHakuInternalDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13889,7 +13948,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13916,12 +13975,12 @@
             "$ref" : "#/definitions/PerusteInfoDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13929,7 +13988,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13956,12 +14015,12 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -13969,7 +14028,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -13996,12 +14055,12 @@
             "$ref" : "#/definitions/PerusteprojektiKevytDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -14009,7 +14068,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14036,12 +14095,12 @@
             "$ref" : "#/definitions/TiedoteDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -14049,7 +14108,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14076,12 +14135,12 @@
             "$ref" : "#/definitions/TutkinnonOsaDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -14089,7 +14148,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -14116,12 +14175,12 @@
             "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
@@ -14129,7 +14188,7 @@
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -16407,14 +16466,14 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
-        },
         "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
+        },
+        "vaihtoOk" : {
+          "type" : "boolean"
         },
         "virheet" : {
           "type" : "array",
@@ -16580,7 +16639,7 @@
           "type" : "array",
           "description" : "Yhteisen tutkinnon osan osa-alueet",
           "items" : {
-            "$ref" : "#/definitions/OsaAlueKokonaanDto"
+            "$ref" : "#/definitions/OsaAlueKaikkiDto"
           }
         },
         "tyyppi" : {

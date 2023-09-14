@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.tika.mime.MimeTypeException;
+import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.parameters.P;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,7 +51,7 @@ public interface JulkaisutService {
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    boolean onkoMuutoksia(long perusteId);
+    List<FieldComparisonFailure> julkaisuversioMuutokset(long perusteId);
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void kooditaValiaikaisetKoodit(Long perusteId);

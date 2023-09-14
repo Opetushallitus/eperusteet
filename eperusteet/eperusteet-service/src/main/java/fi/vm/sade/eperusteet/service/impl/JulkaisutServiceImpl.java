@@ -72,6 +72,7 @@ import org.apache.tika.mime.MimeTypeException;
 import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.jsoup.Jsoup;
+import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,7 +223,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
         List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste()), JulkaisuBaseDto.class);
-        if (julkaisut.size() > 0 && !onkoMuutoksia(perusteprojekti.getPeruste().getId())) {
+        if (julkaisut.size() > 0 && julkaisuversioMuutokset(perusteprojekti.getPeruste().getId()).isEmpty()) {
             throw new BusinessRuleViolationException("julkaisu-epaonnistui-peruste-ei-muuttunut-viime-julkaisun-jalkeen");
         }
 
@@ -386,20 +387,20 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public boolean onkoMuutoksia(long perusteId) {
+    public List<FieldComparisonFailure> julkaisuversioMuutokset(long perusteId) {
         try {
             Peruste peruste = perusteRepository.findOne(perusteId);
             JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
 
             if (viimeisinJulkaisu == null) {
-                return false;
+                return Collections.emptyList();
             }
 
             ObjectNode data = viimeisinJulkaisu.getData().getData();
             String julkaistu = generoiOpetussuunnitelmaKaikkiDtotoString(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
             String nykyinen = generoiOpetussuunnitelmaKaikkiDtotoString(perusteService.getKaikkiSisalto(peruste.getId()));
 
-            return JSONCompare.compareJSON(julkaistu, nykyinen, JSONCompareMode.LENIENT).failed();
+            return JSONCompare.compareJSON(julkaistu, nykyinen, JSONCompareMode.NON_EXTENSIBLE).getFieldFailures();
         } catch (IOException | JSONException e) {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("onko-muutoksia-julkaisuun-verrattuna-tarkistus-epaonnistui");
@@ -416,6 +417,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
         perusteKaikkiDto.setViimeisinJulkaisuAika(null);
         perusteKaikkiDto.setTila(null);
+
         return objectMapper.writeValueAsString(perusteKaikkiDto);
     }
 

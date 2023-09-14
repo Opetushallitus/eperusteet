@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.tika.mime.MimeTypeException;
+import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
@@ -100,10 +101,10 @@ public class JulkaisuController {
         return julkaisutService.viimeisinPerusteenJulkaisuaika(perusteId);
     }
 
-    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu/onkoMuutoksia")
-    public boolean onkoMuutoksia(
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu/muutokset")
+    public List<FieldComparisonFailure> julkaisuversioMuutokset(
             @PathVariable("perusteId") final long perusteId) {
-        return julkaisutService.onkoMuutoksia(perusteId);
+        return julkaisutService.julkaisuversioMuutokset(perusteId);
     }
 
     @RequestMapping(method = GET, value = "/{perusteId}/koodita")
