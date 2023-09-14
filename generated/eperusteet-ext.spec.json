@@ -13,7 +13,7 @@
     "/external/peruste/yto/**" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Yhteisien tutkinnon osa -perusteen tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
         "description" : "",
         "operationId" : "getYtoPerusteDynamicQuery",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -56,7 +56,7 @@
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
-        "description" : "Url parametreiksi voi antaa perusteen rakennetta ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen tutkinnonOsat-listan tietueen jolla on id 7283253 ja antaa tämän koodin nimen suomenkielisen tiedon.",
+        "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
         "operationId" : "getPerusteDynamicQuery",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
@@ -2358,13 +2358,16 @@
     "Page" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2386,9 +2389,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -2398,13 +2398,16 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2424,9 +2427,6 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
