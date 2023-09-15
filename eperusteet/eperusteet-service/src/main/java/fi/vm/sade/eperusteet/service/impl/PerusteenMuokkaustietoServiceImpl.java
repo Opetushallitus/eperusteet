@@ -4,6 +4,7 @@ import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.yl.PerusteenMuokkaustietoLisaparametrit;
 import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.MuutostapahtumaDto;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.collectingAndThen;
@@ -88,6 +91,12 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
+    public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, Set<PerusteenMuokkaustietoLisaparametrit> lisaparametrit) {
+        addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), null, lisaparametrit);
+    }
+
+    @Override
     public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, String lisatieto) {
         addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), lisatieto);
     }
@@ -99,6 +108,11 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
 
     @Override
     public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, NavigationType navigationType, String lisatieto) {
+        addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, navigationType, lisatieto, null);
+    }
+
+    @Override
+    public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, NavigationType navigationType, String lisatieto, Set<PerusteenMuokkaustietoLisaparametrit> lisaparametrit) {
         try {
             // Merkataan aiemmat tapahtumat poistetuksi
             if (Objects.equals(muokkausTapahtuma.getTapahtuma(), MuokkausTapahtuma.POISTO.toString())) {
@@ -120,6 +134,7 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
                     .luotu(new Date())
                     .lisatieto(lisatieto)
                     .poistettu(Objects.equals(muokkausTapahtuma.getTapahtuma(), MuokkausTapahtuma.POISTO.toString()))
+                    .lisaparametrit(lisaparametrit)
                     .build();
 
             muokkausTietoRepository.save(muokkaustieto);

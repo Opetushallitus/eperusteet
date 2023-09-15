@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
@@ -28,6 +29,7 @@ import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -63,6 +65,9 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
     @LockCtx(VuosiluokkaKokonaisuusContext.class)
     private LockService<VuosiluokkaKokonaisuusContext> lockService;
 
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
+
     @Override
     @Transactional
     public VuosiluokkaKokonaisuusDto addVuosiluokkaKokonaisuus(Long perusteId, VuosiluokkaKokonaisuusDto dto) {
@@ -72,6 +77,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         sisaltoRepository.lock(sisalto);
         sisalto.addVuosiluokkakokonaisuus(vk);
         vk = kokonaisuusRepository.save(vk);
+        muokkausTietoService.addMuokkaustieto(perusteId, vk, MuokkausTapahtuma.LUONTI);
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }
 
@@ -83,6 +89,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         if (vk.getOppiaineet().isEmpty()) {
             sisaltoRepository.lock(sisalto);
             sisalto.removeVuosiluokkakokonaisuus(vk);
+            muokkausTietoService.addMuokkaustieto(perusteId, vk, MuokkausTapahtuma.POISTO);
             kokonaisuusRepository.delete(vk);
         } else {
             throw new BusinessRuleViolationException("Vuosiluokkakokonaisuutta ei voi poistaa koska siihen liittyy oppiaineita");
@@ -158,6 +165,7 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         kokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         kokonaisuusRepository.save(vk);
         eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
+        muokkausTietoService.addMuokkaustieto(perusteId, vk, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }
 }

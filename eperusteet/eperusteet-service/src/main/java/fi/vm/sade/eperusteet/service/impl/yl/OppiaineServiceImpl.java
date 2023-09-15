@@ -459,6 +459,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             oppiaineRepository.save(aine);
         }
 
+        muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(kohde, OpetuksenKohdealueDto.class);
     }
 
@@ -472,6 +473,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         kohdeAlueRepository.save(kohdealueet);
         oppiaineRepository.save(aine);
 
+        muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.PAIVITYS);
         return mapper.mapAsList(kohdealueet, OpetuksenKohdealueDto.class);
     }
 
@@ -486,6 +488,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         }
         Oppiaine oppiaine = oppiaineRepository.findOne(id);
         oppiaine.removeKohdealue(kohdealue);
+        muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.PAIVITYS);
     }
 
     @Override

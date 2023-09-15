@@ -16,13 +16,17 @@
 
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -65,6 +69,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Autowired
+    private PerusteenMuokkaustietoService perusteenMuokkaustietoService;
 
     private Peruste getPeruste(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
@@ -151,6 +158,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOppiaine oppimaara = mapper.map(oppiaineDto, AIPEOppiaine.class);
         oppimaara = oppiaineRepository.save(oppimaara);
         parent.getOppimaarat().add(oppimaara);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, oppimaara, MuokkausTapahtuma.LUONTI);
         return mapper.map(oppimaara, AIPEOppiaineDto.class);
     }
 
@@ -165,6 +173,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         LaajaalainenOsaaminen lo = mapper.map(laajaalainenDto, LaajaalainenOsaaminen.class);
         lo = laajaalainenOsaaminenRepository.save(lo);
         getPerusteSisalto(perusteId).getLaajaalaisetosaamiset().add(lo);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, lo, MuokkausTapahtuma.LUONTI);
         return mapper.map(lo, LaajaalainenOsaaminenDto.class);
     }
 
@@ -172,11 +181,14 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public LaajaalainenOsaaminenDto updateLaajaalainen(Long perusteId, Long laajalainenId, LaajaalainenOsaaminenDto laajaalainenDto) {
         LaajaalainenOsaaminen lo = getLaajaalainenImpl(perusteId, laajalainenId);
         mapper.map(laajaalainenDto, lo);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, lo, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(lo, LaajaalainenOsaaminenDto.class);
     }
 
     @Override
     public void removeLaajaalainen(Long perusteId, Long laajaalainenId) {
+        LaajaalainenOsaaminen lo = getLaajaalainenImpl(perusteId, laajaalainenId);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, lo, MuokkausTapahtuma.POISTO);
         laajaalainenOsaaminenRepository.delete(laajaalainenId);
     }
 
@@ -201,6 +213,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEKurssi kurssi = mapper.map(kurssiDto, AIPEKurssi.class);
         kurssi = kurssiRepository.save(kurssi);
         oppiaine.getKurssit().add(kurssi);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, kurssi, MuokkausTapahtuma.LUONTI,
+                Sets.newHashSet(
+                        new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipeoppiaine, oppiaineId),
+                        new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)
+                ));
         return mapper.map(kurssi, AIPEKurssiDto.class);
     }
 
@@ -209,6 +226,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEKurssi kurssi = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId);
         kurssiDto.setId(kurssiId);
         kurssi = mapper.map(kurssiDto, kurssi);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, kurssi, MuokkausTapahtuma.PAIVITYS,
+                Sets.newHashSet(
+                        new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipeoppiaine, oppiaineId),
+                        new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)
+                ));
         return mapper.map(kurssi, AIPEKurssiDto.class);
     }
 
@@ -220,6 +242,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public void removeKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         AIPEKurssi kurssi = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, kurssi, MuokkausTapahtuma.POISTO);
         removeKurssiImpl(oppiaine, kurssi);
     }
 
@@ -264,6 +287,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
         AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
         dto.setTavoitteet(tavoitteetDtos);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, uusioppiaine, MuokkausTapahtuma.PAIVITYS, Sets.newHashSet(new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)));
         return dto;
     }
 
@@ -274,6 +298,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOppiaine oa = mapper.map(oppiaineDto, AIPEOppiaine.class);
         oa = oppiaineRepository.save(oa);
         vaihe.getOppiaineet().add(oa);
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, oa, MuokkausTapahtuma.LUONTI, Sets.newHashSet(new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)));
         return mapper.map(oa, AIPEOppiaineDto.class);
     }
 
@@ -285,6 +310,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
             // FIXME: JoinTable, mäppäys lapsioliosta parentiin ja envers
             for (AIPEOppiaine parent : vaihe.getOppiaineet()) {
                 if (parent.getOppimaarat().remove(oppiaine)) {
+                    perusteenMuokkaustietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.POISTO);
                     break;
                 }
             }
@@ -339,6 +365,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = mapper.map(vaiheDto, AIPEVaihe.class);
         vaihe = vaiheRepository.save(vaihe);
         sisalto.getVaiheet().add(vaihe);
+
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, vaihe, MuokkausTapahtuma.LUONTI);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 
@@ -356,6 +384,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         }
 
         vaihe = vaiheRepository.save(uusivaihe);
+
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, vaihe, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(vaihe, AIPEVaiheDto.class);
     }
 
@@ -365,6 +395,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         if (!vaihe.getOppiaineet().isEmpty()) {
             throw new BusinessRuleViolationException("vaiheella-oppiaineita");
         }
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, vaihe, MuokkausTapahtuma.POISTO);
         AIPEOpetuksenSisalto perusteenSisalto = getPerusteSisalto(perusteId);
         perusteenSisalto.getVaiheet().remove(vaihe);
     }

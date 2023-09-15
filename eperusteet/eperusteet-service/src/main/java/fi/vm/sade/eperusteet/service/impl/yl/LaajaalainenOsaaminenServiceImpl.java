@@ -15,6 +15,7 @@
  */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
@@ -23,6 +24,7 @@ import fi.vm.sade.eperusteet.repository.PerusopetuksenPerusteenSisaltoRepository
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -54,6 +56,9 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
     @Dto
     private DtoMapper mapper;
 
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
+
     @Override
     public LaajaalainenOsaaminenDto addLaajaalainenOsaaminen(Long perusteId, LaajaalainenOsaaminenDto dto) {
         PerusopetuksenPerusteenSisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
@@ -62,6 +67,8 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
         sisaltoRepository.lock(sisalto);
         tmp = osaaminenRepository.save(tmp);
         sisalto.addLaajaalainenosaaminen(tmp);
+
+        muokkausTietoService.addMuokkaustieto(perusteId, tmp, MuokkausTapahtuma.LUONTI);
         return mapper.map(tmp, LaajaalainenOsaaminenDto.class);
     }
 
@@ -73,6 +80,7 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
         osaaminenRepository.lock(current);
         mapper.map(dto, current);
         osaaminenRepository.save(current);
+        muokkausTietoService.addMuokkaustieto(perusteId, current, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(current, LaajaalainenOsaaminenDto.class);
     }
 
@@ -110,6 +118,8 @@ public class LaajaalainenOsaaminenServiceImpl implements LaajaalainenOsaaminenSe
         //lukitus tarvitaan koska sisällön versio muuttuu ja yhtäaikainen versioiden teko rikkoo enversin auditoinnin
         sisaltoRepository.lock(sisalto, false);
         sisalto.removeLaajaalainenosaaminen(lo);
+
+        muokkausTietoService.addMuokkaustieto(perusteId, lo, MuokkausTapahtuma.POISTO);
         // Poista laaja-alainen osaamisen jos siihen ei ole enää viittauksia
         osaaminenRepository.delete(lo);
     }

@@ -47,10 +47,10 @@ public class OppiaineDto extends OppiaineBaseUpdateDto {
     private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     public Optional<LokalisoituTekstiDto> getNimi() {
-        if (super.getNimi().isPresent()) {
+        if (super.getNimi() != null && super.getNimi().isPresent()) {
             return super.getNimi();
         }
 
-        return Optional.of(koodi).map(KoodiDto::getNimi);
+        return Optional.ofNullable(koodi).map(KoodiDto::getNimi);
     }
 }

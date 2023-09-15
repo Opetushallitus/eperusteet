@@ -17,6 +17,7 @@ package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -28,6 +29,7 @@ import java.util.UUID;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.yl.AIPEHasId;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.Getter;
@@ -43,7 +45,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name="yl_laajaalainen_osaaminen")
-public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implements AIPEJarjestettava {
+public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implements AIPEJarjestettava, HistoriaTapahtuma {
 
     @NotNull
     @Column(updatable = false)
@@ -117,5 +119,10 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implement
     @PreUpdate
     protected void preupdate() {
         muokattu = new Date();
+    }
+
+    @Override
+    public NavigationType getNavigationType() {
+        return perusopetuksenPerusteenSisallot != null ? NavigationType.perusopetuslaajaalainenosaaminen : NavigationType.aipe_laajaalainenosaaminen;
     }
 }

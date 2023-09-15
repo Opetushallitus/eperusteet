@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -28,6 +29,7 @@ import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,7 +44,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Audited
 @Table(name = "yl_aipe_oppiaine")
-public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine>, AIPEJarjestettava, Tunnistettava {
+public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements Kloonattava<AIPEOppiaine>, AIPEJarjestettava, Tunnistettava, HistoriaTapahtuma {
 
     @NotNull
     @Column(updatable = false)
@@ -285,4 +287,8 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     }
 
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.aipeoppiaine;
+    }
 }
