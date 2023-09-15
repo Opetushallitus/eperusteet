@@ -17,6 +17,7 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tunnistettava;
@@ -27,6 +28,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.*;
 
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,7 +43,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Entity
 @Table(name = "yl_aipe_kurssi", schema = "public")
 @Audited
-public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AIPEJarjestettava, Tunnistettava {
+public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AIPEJarjestettava, Tunnistettava, HistoriaTapahtuma {
 
     @Getter
     @Column(nullable = false, unique = true, updatable = false)
@@ -109,4 +111,8 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
 
     }
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.aipekurssi;
+    }
 }

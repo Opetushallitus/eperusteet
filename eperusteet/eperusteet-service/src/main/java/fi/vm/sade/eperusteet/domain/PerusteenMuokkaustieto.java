@@ -1,14 +1,19 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.yl.PerusteenMuokkaustietoLisaparametrit;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,6 +27,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Immutable;
 
 @Getter
 @Setter
@@ -64,4 +70,9 @@ public class PerusteenMuokkaustieto implements Serializable {
 
     @NotNull
     private boolean poistettu = false;
+
+    @Immutable
+    @CollectionTable(name = "perusteen_muokkaustieto_lisaparametrit")
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<PerusteenMuokkaustietoLisaparametrit> lisaparametrit;
 }

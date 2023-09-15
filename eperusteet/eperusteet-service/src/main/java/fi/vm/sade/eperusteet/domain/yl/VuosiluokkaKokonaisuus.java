@@ -16,10 +16,12 @@
 package fi.vm.sade.eperusteet.domain.yl;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.KevytTekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -42,7 +44,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "yl_vlkokonaisuus")
 @Audited
-public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
+public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity implements HistoriaTapahtuma {
 
     @NotNull
     @Column(updatable = false)
@@ -166,4 +168,8 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity {
         }
     }
 
+    @Override
+    public NavigationType getNavigationType() {
+        return NavigationType.vuosiluokkakokonaisuus;
+    }
 }

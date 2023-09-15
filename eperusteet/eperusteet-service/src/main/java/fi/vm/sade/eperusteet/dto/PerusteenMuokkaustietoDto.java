@@ -5,6 +5,8 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.Date;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +29,5 @@ public class PerusteenMuokkaustietoDto {
     private String muokkaaja;
     private String lisatieto;
     private boolean poistettu;
+    private Set<PerusteenMuokkaustietoLisaparametritDto> lisaparametrit;
 }
