@@ -38,6 +38,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -387,7 +388,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public List<FieldComparisonFailure> julkaisuversioMuutokset(long perusteId) {
+    public List<FieldComparisonFailureDto> julkaisuversioMuutokset(long perusteId) {
         try {
             Peruste peruste = perusteRepository.findOne(perusteId);
             JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
@@ -400,7 +401,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             String julkaistu = generoiOpetussuunnitelmaKaikkiDtotoString(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
             String nykyinen = generoiOpetussuunnitelmaKaikkiDtotoString(perusteService.getKaikkiSisalto(peruste.getId()));
 
-            return JSONCompare.compareJSON(julkaistu, nykyinen, JSONCompareMode.NON_EXTENSIBLE).getFieldFailures();
+            return mapper.mapAsList(JSONCompare.compareJSON(julkaistu, nykyinen, JSONCompareMode.NON_EXTENSIBLE).getFieldFailures(), FieldComparisonFailureDto.class);
         } catch (IOException | JSONException e) {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("onko-muutoksia-julkaisuun-verrattuna-tarkistus-epaonnistui");

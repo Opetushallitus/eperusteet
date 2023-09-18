@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -102,7 +103,7 @@ public class JulkaisuController {
     }
 
     @RequestMapping(method = GET, value = "/{perusteId}/julkaisu/muutokset")
-    public List<FieldComparisonFailure> julkaisuversioMuutokset(
+    public List<FieldComparisonFailureDto> julkaisuversioMuutokset(
             @PathVariable("perusteId") final long perusteId) {
         return julkaisutService.julkaisuversioMuutokset(perusteId);
     }
