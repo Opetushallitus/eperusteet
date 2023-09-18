@@ -40,7 +40,6 @@ import java.util.Optional;
 public class AIPEOppiaineDto extends AIPEOppiaineSuppeaDto {
     private Optional<TekstiOsaDto> tehtava;
     private Optional<TekstiOsaDto> arviointi;
-    private Optional<KoodiDto> koodi;
     private Optional<TekstiOsaDto> tyotavat;
     private Optional<TekstiOsaDto> ohjaus;
     private Optional<TekstiOsaDto> sisaltoalueinfo;
