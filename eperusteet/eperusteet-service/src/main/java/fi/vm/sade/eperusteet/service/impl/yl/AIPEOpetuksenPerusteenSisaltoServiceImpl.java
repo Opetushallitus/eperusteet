@@ -18,9 +18,11 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
+import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.*;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.yl.*;
@@ -287,7 +289,29 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
         AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
         dto.setTavoitteet(tavoitteetDtos);
-        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, uusioppiaine, MuokkausTapahtuma.PAIVITYS, Sets.newHashSet(new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)));
+        perusteenMuokkaustietoService.addMuokkaustieto(perusteId,
+                new HistoriaTapahtuma() {
+                    @Override
+                    public Long getId() {
+                        return uusioppiaine.getId();
+                    }
+
+                    @Override
+                    public TekstiPalanen getNimi() {
+                        if (dto.getNimi().isPresent()) {
+                            return TekstiPalanen.of(dto.getNimi().get().getTekstit());
+                        }
+
+                        return null;
+                    }
+
+                    @Override
+                    public NavigationType getNavigationType() {
+                        return uusioppiaine.getNavigationType();
+                    }
+                },
+                MuokkausTapahtuma.PAIVITYS,
+                Sets.newHashSet(new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)));
         return dto;
     }
 
