@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 
 import java.util.Collections;
@@ -68,7 +69,7 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public List<FieldComparisonFailure> julkaisuversioMuutokset(long perusteId) {
+    public List<FieldComparisonFailureDto> julkaisuversioMuutokset(long perusteId) {
         return Collections.emptyList();
     }
 

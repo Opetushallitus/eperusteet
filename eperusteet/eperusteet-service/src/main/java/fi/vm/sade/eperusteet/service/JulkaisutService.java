@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import org.apache.tika.mime.MimeTypeException;
 import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.springframework.data.domain.Page;
@@ -51,7 +52,7 @@ public interface JulkaisutService {
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<FieldComparisonFailure> julkaisuversioMuutokset(long perusteId);
+    List<FieldComparisonFailureDto> julkaisuversioMuutokset(long perusteId);
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void kooditaValiaikaisetKoodit(Long perusteId);

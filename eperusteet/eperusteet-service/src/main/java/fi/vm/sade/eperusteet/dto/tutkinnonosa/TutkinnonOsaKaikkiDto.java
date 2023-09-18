@@ -88,9 +88,8 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     @ApiModelProperty("Vanhentunut rakenteeton tavoitteet. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
     private LokalisoituTekstiDto tavoitteet;
 
-    @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Vanhentunut tutkinnon osa -kohtainen arviointi")
+    @ApiModelProperty("Tutkinnon osa -kohtainen arviointi")
     private ArviointiDto arviointi;
 
     @Deprecated
