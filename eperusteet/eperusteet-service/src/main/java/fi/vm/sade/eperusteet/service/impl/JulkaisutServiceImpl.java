@@ -178,7 +178,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private JulkaisutService self;
 
     private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 5 * 60;
-
     public static final Set<String> DOCUMENT_TYPES;
 
     static {
@@ -412,7 +411,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila) {
-        julkaisuPerusteTilaRepository.save(julkaisuPerusteTila);
+        julkaisuPerusteTilaRepository.saveAndFlush(julkaisuPerusteTila);
     }
 
     private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
