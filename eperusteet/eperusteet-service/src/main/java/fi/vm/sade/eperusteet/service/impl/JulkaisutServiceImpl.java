@@ -339,7 +339,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
-        saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
+
         return null;
     }
 
@@ -411,7 +412,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila) {
-        julkaisuPerusteTilaRepository.saveAndFlush(julkaisuPerusteTila);
+        julkaisuPerusteTilaRepository.save(julkaisuPerusteTila);
     }
 
     private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
