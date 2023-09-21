@@ -104,6 +104,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
         // Käytetään pääkäyttäjän oikeuksia.
         return new UsernamePasswordAuthenticationToken("system",
                 "ROLE_ADMIN", AuthorityUtils.createAuthorityList("ROLE_ADMIN",
-                "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"));
+                "ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001",
+                "ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001"));
     }
 }
