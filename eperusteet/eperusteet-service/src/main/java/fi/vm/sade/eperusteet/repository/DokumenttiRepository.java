@@ -51,18 +51,16 @@ public interface DokumenttiRepository extends JpaRepository<Dokumentti, Long> {
             Sort sort
     );
 
-    List<Dokumentti> findByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersionAndValmistumisaikaIsNotNull(
+    Dokumentti findFirstByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersionOrderByAloitusaikaDesc(
             Long perusteId,
             Kieli kieli,
             Suoritustapakoodi suoritustapakoodi,
-            GeneratorVersion version,
-            Sort sort
+            GeneratorVersion version
     );
-    List<Dokumentti> findByPerusteIdAndKieliAndGeneratorVersionAndValmistumisaikaIsNotNull(
+    Dokumentti findFirstByPerusteIdAndKieliAndGeneratorVersionOrderByAloitusaikaDesc(
             Long perusteId,
             Kieli kieli,
-            GeneratorVersion version,
-            Sort sort
+            GeneratorVersion version
     );
 
     Dokumentti findByIdInAndKieli(Set<Long> id, Kieli kieli);

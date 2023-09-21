@@ -147,27 +147,25 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
-        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
-
-        List<Dokumentti> documents;
+        Dokumentti dokumentti;
 
         // Kvliite ei riipu suoritustavasta
         if (GeneratorVersion.KVLIITE.equals(version)) {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndGeneratorVersionAndValmistumisaikaIsNotNull(
-                    id, kieli, version, sort);
+            dokumentti = dokumenttiRepository.findFirstByPerusteIdAndKieliAndGeneratorVersionOrderByAloitusaikaDesc(
+                    id, kieli, version);
         } else {
-            documents = dokumenttiRepository.findByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersionAndValmistumisaikaIsNotNull(
+            dokumentti = dokumenttiRepository.findFirstByPerusteIdAndKieliAndSuoritustapakoodiAndGeneratorVersionOrderByAloitusaikaDesc(
                     id, kieli, suoritustapakoodi,
-                    version != null ? version : GeneratorVersion.UUSI, sort);
+                    version != null ? version : GeneratorVersion.UUSI);
         }
 
-        if (documents.size() > 0) {
-            DokumenttiDto dokumentti = mapper.map(documents.get(0), DokumenttiDto.class);
+        if (dokumentti != null) {
+            DokumenttiDto dokumenttiDto = mapper.map(dokumentti, DokumenttiDto.class);
             DokumenttiDto julkaisuDokumentti = getJulkaistuDokumentti(id, kieli, null);
-            if (julkaisuDokumentti != null && dokumentti.getId().equals(julkaisuDokumentti.getId())) {
-                dokumentti.setJulkaisuDokumentti(true);
+            if (julkaisuDokumentti != null && dokumenttiDto.getId().equals(julkaisuDokumentti.getId())) {
+                dokumenttiDto.setJulkaisuDokumentti(true);
             }
-            return dokumentti;
+            return dokumenttiDto;
         } else {
             DokumenttiDto dto = new DokumenttiDto();
             dto.setPerusteId(id);
