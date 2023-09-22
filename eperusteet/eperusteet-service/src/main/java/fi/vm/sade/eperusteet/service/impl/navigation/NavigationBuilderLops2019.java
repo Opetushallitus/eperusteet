@@ -117,7 +117,7 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                             mapper.map(m.getNimi(), LokalisoituTekstiDto.class),
                             m.getId())
                             .koodi(mapper.map(m.getKoodi(), fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto.class))
-                            .meta("oppiaine", m.getOppiaine() != null ? m.getOppiaine().getId() : null)
+                            .meta("oppiaineId", m.getOppiaine() != null ? m.getOppiaine().getId() : null)
                             .meta("koodi", mapper.map(m.getKoodi(), KoodiDto.class))
                             .meta("pakollinen", m.getPakollinen()))
                         .sorted(this::koodiComparator)
