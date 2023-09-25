@@ -1,6 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
+    "description" : "Valtakunnallisien perusteiden rajapintakuvaukset",
     "version" : "1",
     "title" : "ePerusteet api"
   },
@@ -2358,16 +2359,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2389,6 +2387,9 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -2398,16 +2399,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "last" : {
-          "type" : "boolean"
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2427,6 +2425,9 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -3265,7 +3266,7 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "arviointi" : {
-          "description" : "Vanhentunut tutkinnon osa -kohtainen arviointi",
+          "description" : "Tutkinnon osa -kohtainen arviointi",
           "$ref" : "#/definitions/ArviointiDto"
         },
         "ammattitaitovaatimukset" : {

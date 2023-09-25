@@ -848,7 +848,7 @@
                                     <info>
                                         <title>ePerusteet api</title>
                                         <version>1</version>
-                                        <description/>
+                                        <description>Valtakunnallisien perusteiden rajapintakuvaukset</description>
                                     </info>
                                     <swaggerFileName>eperusteet-ext.spec</swaggerFileName>
                                     <swaggerDirectory>target/openapi</swaggerDirectory>
