@@ -810,7 +810,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
-    public PerusteKaikkiDto getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
+    public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
         Peruste peruste = perusteRepository.findOne(id);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
@@ -825,7 +825,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         });
 
         try {
-            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), PerusteKaikkiDto.class);
+            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
         } catch (JsonProcessingException e) {
             log.error(Throwables.getStackTraceAsString(e));
             return null;

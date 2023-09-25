@@ -9,6 +9,7 @@ permalink: /changelog
 
   Päivämäärä | Muutokset
   ---------- | ------------ 
+  25.09.2023 | Muutettu palveluiden rajapintojen otsikot
   13.09.2023 | Poistettu /peruste/{perusteId}/query -rajapinta
   13.09.2023 | Lisätty perusteen sisältörakenteella haulle opastusta ja esimerkki
   13.09.2023 | Korjattu dokumentaatioon rajapinnoista palautuva model
