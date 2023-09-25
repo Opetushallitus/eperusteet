@@ -103,15 +103,20 @@ public class ExternalController {
     @ResponseBody
     @ApiOperation(
             value = "Perusteen tietojen haku tarkalla sisältörakenteella",
-            notes="Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.")
-    public ResponseEntity<PerusteKaikkiDto> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
+            notes="Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
+            response= PerusteKaikkiDto.class
+    )
+    public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
         return getJulkaistuSisaltoObjectNodeWithQuery(req, id);
     }
 
     @RequestMapping(value = "/peruste/yto/**", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'")
-    public ResponseEntity<PerusteKaikkiDto> getYtoPerusteDynamicQuery(HttpServletRequest req) {
+    @ApiOperation(
+            value = "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+            response= PerusteKaikkiDto.class
+    )
+    public ResponseEntity<Object> getYtoPerusteDynamicQuery(HttpServletRequest req) {
         Page<PerusteenJulkaisuData> amosaaPeruste = julkaisutService.getJulkisetJulkaisut(
                 Collections.emptyList(),
                 "",
@@ -135,9 +140,9 @@ public class ExternalController {
     }
 
 
-    private ResponseEntity<PerusteKaikkiDto> getJulkaistuSisaltoObjectNodeWithQuery(HttpServletRequest req, long id) {
+    private ResponseEntity<Object> getJulkaistuSisaltoObjectNodeWithQuery(HttpServletRequest req, long id) {
         String[] queries = req.getPathInfo().split("/");
-        PerusteKaikkiDto result = perusteService.getJulkaistuSisaltoObjectNode(id, Arrays.stream(queries).skip(4).collect(Collectors.toList()));
+        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, Arrays.stream(queries).skip(4).collect(Collectors.toList()));
         if (result == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
