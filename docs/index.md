@@ -6,7 +6,7 @@ layout: home
 ---
 
   Projects  
-  [![Build Status](https://github.com/opetushallitus/eperusteet/actions/workflows/build.yml/badge.svg)(https://github.com/Opetushallitus/eperusteet)
+  [![Build Status](https://github.com/opetushallitus/eperusteet/actions/workflows/build.yml/badge.svg)](https://github.com/Opetushallitus/eperusteet)
   [ePerusteet-amosaa](https://github.com/Opetushallitus/eperusteet-amosaa) [![Build Status](https://github.com/opetushallitus/eperusteet-amosaa/actions/workflows/build.yml/badge.svg)
   [ePerusteet-ylops](https://github.com/Opetushallitus/eperusteet-ylops) [![Build Status](https://github.com/opetushallitus/eperusteet-ylops/actions/workflows/build.yml/badge.svg)
   [ePerusteet-ui](https://github.com/Opetushallitus/eperusteet-ui) [![Build Status](https://github.com/opetushallitus/eperusteet-ui/actions/workflows/build.yml/badge.svg) 
