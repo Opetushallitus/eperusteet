@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.navigation;
 
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.*;
@@ -19,6 +19,9 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.impl.PerusteServiceImpl;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderDefault;
 import fi.vm.sade.eperusteet.service.impl.navigation.NavigationBuilderLops2019;

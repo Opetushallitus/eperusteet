@@ -131,6 +131,7 @@ import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteToteutus;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -146,6 +147,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.NavigationUtil;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
@@ -2751,7 +2753,17 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
                 .buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
+
+        asetaNumerointi(perusteId, navigationNodeDto);
         return siirraLiitteetLoppuun(navigationNodeDto);
+    }
+
+    private void asetaNumerointi(Long perusteId, NavigationNodeDto navigationNodeDto) {
+        Peruste peruste = getPeruste(perusteId);
+
+        if (peruste.getToteutus().equals(KoulutustyyppiToteutus.YKSINKERTAINEN) && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)) {
+            NavigationUtil.asetaNumerointi(navigationNodeDto);
+        }
     }
 
     @Override
