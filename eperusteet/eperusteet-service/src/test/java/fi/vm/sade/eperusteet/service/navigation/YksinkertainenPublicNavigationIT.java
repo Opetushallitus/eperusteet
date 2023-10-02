@@ -62,7 +62,7 @@ public class YksinkertainenPublicNavigationIT extends AbstractIntegrationTest {
 
     @Test
     public void testPerusopetusnavigation() {
-        NavigationNodeDto navigationNodeDto  = dispatcher.get(perusteId, NavigationBuilderPublic.class).buildNavigation(perusteId, "fi", true, 0);
+        NavigationNodeDto navigationNodeDto = perusteService.buildNavigationPublic(perusteId, "fi", true, 0);
         assertThat(navigationNodeDto).isNotNull();
         assertThat(navigationNodeDto.getChildren()).hasSize(3);
         assertThat(navigationNodeDto.getChildren().get(0).getChildren()).hasSize(2);

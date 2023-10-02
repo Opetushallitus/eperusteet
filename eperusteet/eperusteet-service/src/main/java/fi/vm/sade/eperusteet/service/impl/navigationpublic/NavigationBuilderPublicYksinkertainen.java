@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import fi.vm.sade.eperusteet.service.util.NavigationUtil;
 import fi.vm.sade.eperusteet.utils.CollectionUtil;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -57,22 +58,6 @@ public class NavigationBuilderPublicYksinkertainen implements NavigationBuilderP
             return navigationBuilderLukio.buildNavigation(perusteId, basicNavigation, esikatselu);
         }
 
-        return asetaNumerointi(basicNavigation);
+        return basicNavigation;
     }
-
-    private NavigationNodeDto asetaNumerointi(NavigationNodeDto node) {
-        asetaNumerointi(node.getChildren(), "");
-        return node;
-    }
-
-    private void asetaNumerointi(List<NavigationNodeDto> nodes, String taso) {
-        AtomicInteger nro = new AtomicInteger(0);
-        nodes.stream()
-                .filter(node -> !node.getType().equals(NavigationType.liite))
-                .forEach(node -> {
-            node.meta("numerointi", taso + nro.incrementAndGet());
-            asetaNumerointi(node.getChildren(), taso + nro.get() + ".");
-        });
-    }
-
 }
