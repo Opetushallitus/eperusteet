@@ -76,6 +76,7 @@ import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils.*;
 
+@Deprecated
 @Slf4j
 @Service
 @Profile("!test")

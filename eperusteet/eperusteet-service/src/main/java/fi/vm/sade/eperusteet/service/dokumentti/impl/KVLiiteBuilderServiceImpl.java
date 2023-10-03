@@ -50,6 +50,7 @@ import java.util.StringJoiner;
 /**
  * @author isaul
  */
+@Deprecated
 @Service
 public class KVLiiteBuilderServiceImpl implements KVLiiteBuilderService {
 

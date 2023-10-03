@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.DokumenttiVirhe;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -98,13 +99,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Lazy
     @Autowired
     private MaintenanceService maintenanceService;
-
-    @Value("classpath:docgen/fop.xconf")
-    private Resource fopConfig;
-
-    // FIXME: Tämä service pitää mockata
-    @Value("${spring.profiles.active:normal}")
-    private String activeProfile;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -304,16 +298,27 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @IgnorePerusteUpdateCheck
     public DokumenttiDto query(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id);
+        DokumenttiDto dto = mapper.map(dokumentti, DokumenttiDto.class);
+
         if (dokumentti != null) {
             Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
             String name = SecurityUtil.getAuthenticatedPrincipal().getName();
             if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS) && julkaisutRepository.findAllByPeruste(peruste).isEmpty()) {
                 return null;
             }
+
+            if (DokumenttiUtils.isTimePass(dokumentti)) {
+                log.error("dokumentin valmistus kesti yli {} minuuttia, perusteella {}", DokumenttiUtils.MAX_TIME_IN_MINUTES, dto.getPerusteId());
+                dto.setTila(DokumenttiTila.EPAONNISTUI);
+                dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
+                dto.setValmistumisaika(new Date());
+                dokumenttiStateService.save(dto);
+            }
         }
-        return mapper.map(dokumentti, DokumenttiDto.class);
+        return dto;
     }
 
+    @Deprecated
     private byte[] generateFor(DokumenttiDto dto)
             throws IOException,TransformerException, ParserConfigurationException, SAXException {
 
