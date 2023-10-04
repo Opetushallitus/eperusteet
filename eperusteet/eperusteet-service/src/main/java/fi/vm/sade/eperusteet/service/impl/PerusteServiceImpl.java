@@ -2753,17 +2753,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
                 .buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
-
-        asetaNumerointi(perusteId, navigationNodeDto);
+        NavigationUtil.asetaNumerointi(getPeruste(perusteId), navigationNodeDto);
         return siirraLiitteetLoppuun(navigationNodeDto);
-    }
-
-    private void asetaNumerointi(Long perusteId, NavigationNodeDto navigationNodeDto) {
-        Peruste peruste = getPeruste(perusteId);
-
-        if (peruste.getToteutus().equals(KoulutustyyppiToteutus.YKSINKERTAINEN) && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)) {
-            NavigationUtil.asetaNumerointi(navigationNodeDto);
-        }
     }
 
     @Override
