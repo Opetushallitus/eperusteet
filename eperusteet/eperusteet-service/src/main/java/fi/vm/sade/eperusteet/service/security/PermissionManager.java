@@ -108,7 +108,8 @@ public class PermissionManager {
         PERUSTEENOSAVIITE("perusteenosaviite"),
         TIEDOTE("tiedote"),
         ORGANISAATIO("organisaatio"),
-        OSAAMISMERKIT("osaamismerkit");
+        OSAAMISMERKIT("osaamismerkit"),
+        MAARAYS("maarays");
 
         private final String target;
 
@@ -139,6 +140,8 @@ public class PermissionManager {
                 "ROLE_APP_EPERUSTEET_READ_<oid>");
         Set<String> r4 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET");
         Set<String> r5 = Sets.newHashSet("ROLE_VIRKAILIJA", "ROLE_APP_EPERUSTEET", "ROLE_ANONYMOUS");
+        Set<String> maaraysRead = Sets.newHashSet("ROLE_APP_EPERUSTEET_MAARAYS_READ", "ROLE_APP_EPERUSTEET_MAARAYS_CRUD");
+        Set<String> maaraysCRUD = Sets.newHashSet("ROLE_APP_EPERUSTEET_MAARAYS_CRUD");
 
         // Peruste
         {
@@ -366,6 +369,18 @@ public class PermissionManager {
             allowedRolesTmp.put(Target.OSAAMISMERKIT, tmp);
         }
 
+        // MAARAYS
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, maaraysCRUD);
+            perm.put(LUKU, maaraysRead);
+            perm.put(MUOKKAUS, maaraysCRUD);
+            perm.put(POISTO, maaraysCRUD);
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.MAARAYS, tmp);
+        }
+
         if (LOG.isTraceEnabled()) {
             assert (allowedRolesTmp.keySet().containsAll(EnumSet.allOf(Target.class)));
             for (Map.Entry<Target, Map<ProjektiTila, Map<Permission, Set<String>>>> t : allowedRolesTmp.entrySet()) {
@@ -411,7 +426,7 @@ public class PermissionManager {
             LOG.trace(String.format("Checking permission %s to %s{id=%s} by %s", permission, targetType, targetId, authentication));
         }
 
-        if (Target.TIEDOTE.equals(targetType) || Target.ARVIOINTIASTEIKKO.equals(targetType)) {
+        if (Target.TIEDOTE.equals(targetType) || Target.ARVIOINTIASTEIKKO.equals(targetType) || Target.MAARAYS.equals(targetType)) {
             return hasAnyRole(authentication, getAllowedRoles(targetType, permission));
         }
 

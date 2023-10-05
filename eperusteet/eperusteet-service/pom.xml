@@ -775,6 +775,7 @@
                                         <location>${eperusteet.resources}.TilastotController</location>
                                         <location>${eperusteet.resources}.TutkinnonOsaController</location>
                                         <location>${eperusteet.resources}.UlkopuolisetController</location>
+                                        <location>${eperusteet.resources}.MuuMaaraysController</location>
                                         <location>${eperusteet.resources}.MaaraysController</location>
                                         <location>${eperusteet.resources}.MaintenanceController</location>
                                         <location>${eperusteet.resources}.OsaamismerkkiController</location>

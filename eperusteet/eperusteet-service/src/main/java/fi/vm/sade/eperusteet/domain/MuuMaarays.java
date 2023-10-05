@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -24,8 +25,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "maarays")
-public class Maarays {
+@Table(name = "muu_maarays")
+public class MuuMaarays {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -35,7 +36,7 @@ public class Maarays {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen nimi;
 
-    @CollectionTable(name = "maarays_url")
+    @CollectionTable(name = "muu_maarays_url", joinColumns = @JoinColumn(name = "maarays_id") )
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<Kieli, String> url;
 
