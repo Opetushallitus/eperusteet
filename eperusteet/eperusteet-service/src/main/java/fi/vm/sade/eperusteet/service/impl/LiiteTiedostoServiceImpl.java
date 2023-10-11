@@ -65,6 +65,8 @@ public class LiiteTiedostoServiceImpl implements LiiteTiedostoService {
             } else {
                 if (LiiteTyyppi.JULKAISUMUUTOSMAARAYS.equals(tyyppi)) {
                     return Pair.of(liitteet.addJulkaisuLiite(null, tyyppi, mime, nimi, koko, pis), extension);
+                } else if (LiiteTyyppi.OSAAMISMERKKIKUVA.equals(tyyppi)) {
+                    return Pair.of(liitteet.addOsaamismerkkiLiite(tyyppi, mime, nimi, koko, pis), extension);
                 } else {
                     return Pair.of(liitteet.add(id, tyyppi, mime, nimi, koko, pis), extension);
                 }

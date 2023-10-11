@@ -54,6 +54,10 @@ create table osaamismerkki_arviointikriteerit_AUD (
 
 create table osaamismerkki_kategoria (
                                          id int8 not null,
+                                         luoja varchar(255),
+                                         luotu timestamp,
+                                         muokattu timestamp,
+                                         muokkaaja varchar(255),
                                          liite_id uuid not null,
                                          nimi_id int8 not null,
                                          primary key (id)
@@ -64,6 +68,10 @@ create table osaamismerkki_kategoria_AUD (
                                              REV int4 not null,
                                              REVTYPE int2,
                                              REVEND int4,
+                                             luoja varchar(255),
+                                             luotu timestamp,
+                                             muokattu timestamp,
+                                             muokkaaja varchar(255),
                                              liite_id uuid,
                                              nimi_id int8,
                                              primary key (id, REV)

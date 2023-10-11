@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.domain.osaamismerkki;
 
+import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
@@ -15,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
@@ -24,7 +24,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Audited
 @Getter
 @Setter
-public class OsaamismerkkiKategoria implements Serializable {
+public class OsaamismerkkiKategoria extends AbstractAuditedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;

@@ -108,6 +108,14 @@ public class LiiteServiceImpl implements LiiteService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
+    @Transactional
+    public UUID addOsaamismerkkiLiite(LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
+        Liite liite = liitteet.add(tyyppi, mime, nimi, length, is);
+        return liite.getId();
+    }
+
+    @Override
     @Transactional
     public UUID add(Long perusteId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
         Liite liite = liitteet.add(tyyppi, mime, nimi, length, is);

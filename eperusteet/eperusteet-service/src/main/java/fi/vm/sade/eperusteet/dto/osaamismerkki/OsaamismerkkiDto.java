@@ -26,4 +26,6 @@ public class OsaamismerkkiDto {
     private Date voimassaoloLoppuu;
     private List<OsaamismerkkiOsaamistavoiteDto> osaamistavoitteet = new ArrayList<>();
     private List<OsaamismerkkiArviointikriteeriDto> arviointikriteerit = new ArrayList<>();
+    private Date muokattu;
+    private String muokkaaja;
 }
