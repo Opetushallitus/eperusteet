@@ -192,7 +192,7 @@ public class DokumenttiUtils {
     }
 
     public static boolean isTimePass(Dokumentti dokumentti) {
-        return dokumentti.getTila().equals(DokumenttiTila.LUODAAN) && isTimePass(dokumentti.getAloitusaika());
+        return (dokumentti.getTila().equals(DokumenttiTila.LUODAAN) || dokumentti.getTila().equals(DokumenttiTila.JONOSSA)) && isTimePass(dokumentti.getAloitusaika());
     }
 
     public static boolean isTimePass(DokumenttiDto dokumenttiDto) {
