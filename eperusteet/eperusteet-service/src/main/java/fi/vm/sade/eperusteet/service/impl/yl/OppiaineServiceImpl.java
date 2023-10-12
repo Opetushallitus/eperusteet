@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
@@ -50,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.domain.yl.Oppiaine.inLukioPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
@@ -419,6 +421,19 @@ public class OppiaineServiceImpl implements OppiaineService {
         if (lock) {
             oppiaineRepository.lock(ovk.getOppiaine());
         }
+
+        //hibernate deletoi ja updatee väärässä järjestyksessä jos @ordercolumn ja @jointable
+        List<Long> poistuneetTavoitteet = ovk.getTavoitteet().stream()
+                .map(OpetuksenTavoite::getId)
+                .filter(id -> !dto.getTavoitteet().stream().map(OpetuksenTavoiteDto::getId).collect(Collectors.toList()).contains(id))
+                        .collect(Collectors.toList());
+        ovk.setTavoitteet(
+                Stream.concat(
+                        ovk.getTavoitteet().stream().filter(tavoite -> !poistuneetTavoitteet.contains(tavoite.getId())),
+                        ovk.getTavoitteet().stream().filter(tavoite -> poistuneetTavoitteet.contains(tavoite.getId()))
+                        ).collect(Collectors.toList()));
+        ovk = vuosiluokkakokonaisuusRepository.saveAndFlush(ovk);
+
         mapper.map(dto, ovk);
         if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
             Revision rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
