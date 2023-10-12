@@ -12,13 +12,10 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -52,6 +49,18 @@ public class OsaamismerkkiController {
         return osaamismerkkiService.findBy(query);
     }
 
+    @RequestMapping(value = "/osaamismerkit", method = GET)
+    @ResponseBody
+    public List<OsaamismerkkiDto> getOsaamismerkit() {
+        return osaamismerkkiService.getOsaamismerkit();
+    }
+
+    @RequestMapping(value = "/osaamismerkki", method = POST)
+    @ResponseBody
+    public OsaamismerkkiDto updateOsaamismerkki(@RequestBody OsaamismerkkiDto osaamismerkkiDto) {
+        return osaamismerkkiService.updateOsaamismerkki(osaamismerkkiDto);
+    }
+
     @RequestMapping(value = "/kategoriat", method = GET)
     @ResponseBody
     public List<OsaamismerkkiKategoriaDto> getKategoriat() {
@@ -60,7 +69,6 @@ public class OsaamismerkkiController {
 
     @RequestMapping(value = "/kategoria", method = POST)
     @ResponseBody
-    @ResponseStatus(HttpStatus.OK)
     public OsaamismerkkiKategoriaDto updateKategoria(@RequestBody OsaamismerkkiKategoriaDto osaamismerkkiKategoriaDto) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         return osaamismerkkiService.updateKategoria(osaamismerkkiKategoriaDto);
     }

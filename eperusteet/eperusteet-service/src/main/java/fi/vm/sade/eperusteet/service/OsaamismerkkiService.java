@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.List;
 public interface OsaamismerkkiService {
     // TODO oikeudet
     Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query);
+
+    List<OsaamismerkkiDto> getOsaamismerkit();
+
+    OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto);
 
     List<OsaamismerkkiKategoriaDto> getKategoriat();
 

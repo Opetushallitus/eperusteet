@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
+import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaLiiteDto;
@@ -75,21 +76,38 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
 
     @Override
     public Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query) {
-
         PageRequest pageRequest = new PageRequest(
                 query.getSivu(),
                 query.getSivukoko(),
                 Sort.Direction.DESC,
                 "muokattu"
         );
-
         Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(pageRequest, query);
-
         return new PageDto<>(osaamismerkit, OsaamismerkkiDto.class, pageRequest, mapper);
     }
 
     @Override
+    public List<OsaamismerkkiDto> getOsaamismerkit() {
+        List<Osaamismerkki> osaamismerkit = osaamismerkkiRepository.findAll();
+        return mapper.mapAsList(osaamismerkit, OsaamismerkkiDto.class);
+    }
+
+    @Override
     @Transactional
+    public OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto) {
+        Osaamismerkki osaamismerkki;
+        if (osaamismerkkiDto.getId() != null) {
+            osaamismerkki = osaamismerkkiRepository.findOne(osaamismerkkiDto.getId());
+            mapper.map(osaamismerkkiDto, osaamismerkki);
+        } else {
+            osaamismerkki = mapper.map(osaamismerkkiDto, Osaamismerkki.class);
+            osaamismerkki.setTila(OsaamismerkkiTila.LAADINTA);
+        }
+        osaamismerkki = osaamismerkkiRepository.save(osaamismerkki);
+        return mapper.map(osaamismerkki, OsaamismerkkiDto.class);
+    }
+
+    @Override
     public List<OsaamismerkkiKategoriaDto> getKategoriat() {
         List<OsaamismerkkiKategoria> kategoriat = osaamismerkkiKategoriaRepository.findAll();
         return mapper.mapAsList(kategoriat, OsaamismerkkiKategoriaDto.class);
@@ -107,7 +125,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
             kategoria.setNimi(mapper.map(kategoriaDto.getNimi(), TekstiPalanen.class));
         }
 
-        UUID liiteDbId = kategoria.getLiite().getId();
+        UUID liiteDbId = kategoria.getLiite() != null ? kategoria.getLiite().getId() : null;
 
         if (kategoriaDto.getLiite().getId() == null) {
             kategoria.setLiite(addLiite(kategoriaDto.getLiite()));
@@ -137,7 +155,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
 
     private Pair<UUID, String> uploadLiite(OsaamismerkkiKategoriaLiiteDto liite) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         try {
-            byte[] decoder = Base64.getDecoder().decode(liite.getData());
+            byte[] decoder = Base64.getDecoder().decode(liite.getBinarydata());
             InputStream is = new ByteArrayInputStream(decoder);
             return liiteTiedostoService.uploadFile(
                     null,

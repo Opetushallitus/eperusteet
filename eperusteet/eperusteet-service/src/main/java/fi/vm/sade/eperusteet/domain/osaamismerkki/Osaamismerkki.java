@@ -40,7 +40,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public class Osaamismerkki extends AbstractAuditedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     @NotNull
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
@@ -49,7 +49,7 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     private TekstiPalanen nimi;
 
     @NotNull
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private OsaamismerkkiKategoria kategoria;
 
     @NotNull
@@ -66,7 +66,7 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     private Date voimassaoloLoppuu;
 
     @OrderColumn
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "osaamismerkki_osaamistavoitteet",
             joinColumns = @JoinColumn(name = "osaamismerkki_id"),
             inverseJoinColumns = @JoinColumn(name = "osaamismerkki_osaamistavoite_id"))
@@ -74,7 +74,7 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     private List<OsaamismerkkiOsaamistavoite> osaamistavoitteet = new ArrayList<>();
 
     @OrderColumn
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinTable(name = "osaamismerkki_arviointikriteerit",
             joinColumns = @JoinColumn(name = "osaamismerkki_id"),
             inverseJoinColumns = @JoinColumn(name = "osaamismerkki_arviointikriteeri_id"))

@@ -44,6 +44,8 @@
   }, {
     "name" : "OsaAlueet"
   }, {
+    "name" : "Osaamismerkit"
+  }, {
     "name" : "Palautteet"
   }, {
     "name" : "PerusopetuksenPerusteenSisalto"
@@ -1767,6 +1769,148 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/PagePerusteprojektiKevytDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/haku" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "summary" : "osaamismerkkien haku",
+        "description" : "",
+        "operationId" : "findOsaamismerkitBy",
+        "parameters" : [ {
+          "name" : "sivu",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "sivukoko",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tila",
+          "in" : "query",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "kategoria",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "voimassa",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "julkaistu",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "laadinta",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PageOsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/kategoria" : {
+      "post" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "updateKategoria",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/kategoriat" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "getKategoriat",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/osaamismerkit" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "getOsaamismerkit",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/osaamismerkki" : {
+      "post" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "updateOsaamismerkki",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OsaamismerkkiDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiDto"
             }
           }
         }
@@ -4646,7 +4790,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/FieldComparisonFailure"
+                "$ref" : "#/definitions/FieldComparisonFailureDto"
               }
             }
           }
@@ -11092,17 +11236,11 @@
         }
       }
     },
-    "FieldComparisonFailure" : {
+    "FieldComparisonFailureDto" : {
       "type" : "object",
       "properties" : {
         "field" : {
           "type" : "string"
-        },
-        "expected" : {
-          "type" : "object"
-        },
-        "actual" : {
-          "type" : "object"
         }
       }
     },
@@ -11961,7 +12099,7 @@
         },
         "tyyppi" : {
           "type" : "string",
-          "enum" : [ "TUNTEMATON", "KUVA", "DOKUMENTTI", "MAARAYSKIRJE", "MUUTOSMAARAYS", "JULKAISUMUUTOSMAARAYS", "KOULUTUSVIENNINOHJE", "KAANNOS" ]
+          "enum" : [ "TUNTEMATON", "KUVA", "OSAAMISMERKKIKUVA", "DOKUMENTTI", "MAARAYSKIRJE", "MUUTOSMAARAYS", "JULKAISUMUUTOSMAARAYS", "KOULUTUSVIENNINOHJE", "KAANNOS" ]
         },
         "luotu" : {
           "type" : "string",
@@ -13601,6 +13739,113 @@
         }
       } ]
     },
+    "OsaamismerkkiArviointikriteeriDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "arviointikriteeri" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
+    "OsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LAADINTA", "JULKAISTU" ]
+        },
+        "kategoria" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+        },
+        "voimassaoloAlkaa" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "voimassaoloLoppuu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "osaamistavoitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiOsaamistavoiteDto"
+          }
+        },
+        "arviointikriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiArviointikriteeriDto"
+          }
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        }
+      }
+    },
+    "OsaamismerkkiKategoriaDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "liite" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaLiiteDto"
+        }
+      }
+    },
+    "OsaamismerkkiKategoriaLiiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "nimi" : {
+          "type" : "string"
+        },
+        "mime" : {
+          "type" : "string"
+        },
+        "binarydata" : {
+          "type" : "string"
+        }
+      }
+    },
+    "OsaamismerkkiOsaamistavoiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "osaamistavoite" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
     "OsaamistasoDto" : {
       "type" : "object",
       "properties" : {
@@ -13772,6 +14017,13 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13791,13 +14043,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -13811,6 +14056,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -13831,12 +14083,45 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageOsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiDto"
+          }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
           "type" : "boolean"
         }
       }
@@ -13851,6 +14136,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -13871,13 +14163,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -13891,6 +14176,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -13911,13 +14203,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -13931,6 +14216,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -13951,13 +14243,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -13971,6 +14256,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -13991,13 +14283,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14011,6 +14296,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14031,13 +14323,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14051,6 +14336,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14071,13 +14363,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14091,6 +14376,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14111,13 +14403,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14131,6 +14416,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14151,13 +14443,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14171,6 +14456,13 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14190,13 +14482,6 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -16499,14 +16784,14 @@
             "$ref" : "#/definitions/Virhe"
           }
         },
+        "vaihtoOk" : {
+          "type" : "boolean"
+        },
         "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
-        },
-        "vaihtoOk" : {
-          "type" : "boolean"
         }
       }
     },
@@ -16700,7 +16985,7 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "arviointi" : {
-          "description" : "Vanhentunut tutkinnon osa -kohtainen arviointi",
+          "description" : "Tutkinnon osa -kohtainen arviointi",
           "$ref" : "#/definitions/ArviointiDto"
         },
         "ammattitaitovaatimukset" : {

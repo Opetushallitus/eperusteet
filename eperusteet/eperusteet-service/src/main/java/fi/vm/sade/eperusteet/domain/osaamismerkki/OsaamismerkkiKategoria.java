@@ -27,7 +27,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 public class OsaamismerkkiKategoria extends AbstractAuditedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
 
     @NotNull
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
