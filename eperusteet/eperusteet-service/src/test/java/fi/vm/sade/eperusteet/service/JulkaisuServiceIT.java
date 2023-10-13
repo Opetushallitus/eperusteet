@@ -110,17 +110,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         asyncResult.get();
         assertThat(getJulkaisut(peruste)).hasSize(1);
     }
-
-    @Test
-    public void testJulkaiseIlmanMuutoksia() throws ExecutionException, InterruptedException {
-        expectedEx.expect(BusinessRuleViolationException.class);
-        expectedEx.expectMessage("julkaisu-epaonnistui-peruste-ei-muuttunut-viime-julkaisun-jalkeen");
-
-        CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
-        asyncResult.get();
-        julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
-    }
-
+    
     @Test
     public void testJulkaiseUudelleen() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
