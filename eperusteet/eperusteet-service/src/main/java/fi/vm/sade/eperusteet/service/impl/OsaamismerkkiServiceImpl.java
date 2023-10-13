@@ -5,7 +5,6 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
-import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaLiiteDto;
@@ -34,6 +33,8 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -95,14 +96,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Override
     @Transactional
     public OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto) {
-        Osaamismerkki osaamismerkki;
-        if (osaamismerkkiDto.getId() != null) {
-            osaamismerkki = osaamismerkkiRepository.findOne(osaamismerkkiDto.getId());
-            mapper.map(osaamismerkkiDto, osaamismerkki);
-        } else {
-            osaamismerkki = mapper.map(osaamismerkkiDto, Osaamismerkki.class);
-            osaamismerkki.setTila(OsaamismerkkiTila.LAADINTA);
-        }
+        Osaamismerkki osaamismerkki = mapper.map(osaamismerkkiDto, Osaamismerkki.class);
         osaamismerkki = osaamismerkkiRepository.save(osaamismerkki);
         return mapper.map(osaamismerkki, OsaamismerkkiDto.class);
     }
@@ -110,7 +104,11 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Override
     public List<OsaamismerkkiKategoriaDto> getKategoriat() {
         List<OsaamismerkkiKategoria> kategoriat = osaamismerkkiKategoriaRepository.findAll();
-        return mapper.mapAsList(kategoriat, OsaamismerkkiKategoriaDto.class);
+        List<OsaamismerkkiKategoriaDto> kategoriatDto =  mapper.mapAsList(kategoriat, OsaamismerkkiKategoriaDto.class);
+        kategoriatDto.forEach(kategoria -> {
+            kategoria.getLiite().setBinarydata(getKuvaLiite(kategoria.getLiite().getId()));
+        });
+        return kategoriatDto;
     }
 
     @Override
@@ -167,6 +165,17 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
                     null, null, null);
         } catch (IOException e) {
             throw new BusinessRuleViolationException("liitteen-lisaaminen-epaonnistui");
+        }
+    }
+
+    private String getKuvaLiite(UUID liiteId) {
+        try {
+            Liite liite = liiteRepository.findById(liiteId);
+            Blob blob = liite.getData();
+            byte [] bytes = blob.getBytes(1L, (int)blob.length());
+            return Base64.getEncoder().encodeToString(bytes);
+        } catch (SQLException ignored) {
+            throw new BusinessRuleViolationException("kuvaliitteen-lataus-epaonnistui");
         }
     }
 }

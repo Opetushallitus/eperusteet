@@ -109,12 +109,6 @@ create table osaamismerkki_osaamistavoitteet_AUD (
                                                      primary key (REV, osaamismerkki_id, osaamismerkki_osaamistavoite_id, osaamistavoitteet_ORDER)
 );
 
-alter table osaamismerkki_arviointikriteerit
-    add constraint UK_crj8cm5jgfbrg5c595x6l94wn  unique (osaamismerkki_arviointikriteeri_id);
-
-alter table osaamismerkki_osaamistavoitteet
-    add constraint UK_7lhng63ms5r15dn8u575eg0y0  unique (osaamismerkki_osaamistavoite_id);
-
 alter table osaamismerkki
     add constraint FK_mp8o1vv1mk9473662ror253p3
         foreign key (kategoria_id)

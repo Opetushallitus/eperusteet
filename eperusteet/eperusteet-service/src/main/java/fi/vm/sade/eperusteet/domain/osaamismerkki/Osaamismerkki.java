@@ -20,7 +20,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -49,7 +48,8 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     private TekstiPalanen nimi;
 
     @NotNull
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE})
+    @JoinColumn(name="kategoria_id")
     private OsaamismerkkiKategoria kategoria;
 
     @NotNull
@@ -66,7 +66,7 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     private Date voimassaoloLoppuu;
 
     @OrderColumn
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "osaamismerkki_osaamistavoitteet",
             joinColumns = @JoinColumn(name = "osaamismerkki_id"),
             inverseJoinColumns = @JoinColumn(name = "osaamismerkki_osaamistavoite_id"))
@@ -74,10 +74,24 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     private List<OsaamismerkkiOsaamistavoite> osaamistavoitteet = new ArrayList<>();
 
     @OrderColumn
-    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "osaamismerkki_arviointikriteerit",
             joinColumns = @JoinColumn(name = "osaamismerkki_id"),
             inverseJoinColumns = @JoinColumn(name = "osaamismerkki_arviointikriteeri_id"))
     @Audited(targetAuditMode = NOT_AUDITED)
     private List<OsaamismerkkiArviointikriteeri> arviointikriteerit = new ArrayList<>();
+
+    public void setOsaamistavoitteet(List<OsaamismerkkiOsaamistavoite> osaamistavoitteet) {
+        this.osaamistavoitteet.clear();
+        if (osaamistavoitteet != null) {
+            this.osaamistavoitteet.addAll(osaamistavoitteet);
+        }
+    }
+
+    public void setArviointikriteerit(List<OsaamismerkkiArviointikriteeri> arviointikriteerit) {
+        this.arviointikriteerit.clear();
+        if (arviointikriteerit != null) {
+            this.arviointikriteerit.addAll(arviointikriteerit);
+        }
+    }
 }

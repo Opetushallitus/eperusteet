@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OsaamismerkkiRepository extends JpaRepository<Osaamismerkki, Long> {
+    Osaamismerkki findById(Long id);
 }
