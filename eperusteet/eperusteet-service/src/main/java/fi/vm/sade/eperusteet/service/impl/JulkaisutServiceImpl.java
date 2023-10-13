@@ -222,11 +222,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     public CompletableFuture<Void> teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
 
-        List<JulkaisuBaseDto> julkaisut = mapper.mapAsList(julkaisutRepository.findAllByPeruste(perusteprojekti.getPeruste()), JulkaisuBaseDto.class);
-        if (julkaisut.size() > 0 && julkaisuversioMuutokset(perusteprojekti.getPeruste().getId()).isEmpty()) {
-            throw new BusinessRuleViolationException("julkaisu-epaonnistui-peruste-ei-muuttunut-viime-julkaisun-jalkeen");
-        }
-
         if (!isValidTiedote(julkaisuBaseDto.getTiedote()) || !isValidTiedote(julkaisuBaseDto.getJulkinenTiedote())) {
             throw new BusinessRuleViolationException("tiedote-sisaltaa-kiellettyja-merkkeja");
         }
