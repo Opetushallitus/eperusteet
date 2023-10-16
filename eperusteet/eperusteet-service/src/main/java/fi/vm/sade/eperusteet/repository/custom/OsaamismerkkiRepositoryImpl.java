@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
+import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki_;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import fi.vm.sade.eperusteet.repository.OsaamismerkkiRepositoryCustom;
@@ -28,7 +29,9 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -99,6 +102,37 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
             Join<TekstiPalanen, LokalisoituTeksti> nimi = root.join(Osaamismerkki_.nimi).join(TekstiPalanen_.teksti);
             Predicate nimessa = cb.like(cb.lower(nimi.get(LokalisoituTeksti_.teksti)), nimiLit);
             pred = cb.and(pred, nimessa);
+        }
+
+        if (!ObjectUtils.isEmpty(tq.getTila())) {
+            Set<OsaamismerkkiTila> osaamismerkkiTilat = tq.getTila().stream()
+                    .map(OsaamismerkkiTila::of)
+                    .collect(Collectors.toSet());
+            pred = cb.and(pred, root.get(Osaamismerkki_.tila).in(osaamismerkkiTilat));
+        }
+
+        if (!ObjectUtils.isEmpty(tq.getKategoria())) {
+            pred = cb.and(pred, cb.equal(root.get(Osaamismerkki_.kategoria), tq.getKategoria()));
+        }
+
+        final Expression<Date> voimassaoloAlkaa = root.get(Osaamismerkki_.voimassaoloAlkaa);
+        final Expression<Date> voimassaoloLoppuu = root.get(Osaamismerkki_.voimassaoloLoppuu);
+        Expression<java.sql.Date> currentDate = cb.literal(new java.sql.Date(new Date().getTime()));
+
+        if (tq.isTuleva()) {
+            pred = cb.and(pred, cb.isNotNull(voimassaoloAlkaa), cb.lessThan(currentDate, voimassaoloAlkaa));
+        } else if (tq.isVoimassa()) {
+            Predicate alkaa = cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa));
+            Predicate loppuu = cb.and(cb.isNotNull(voimassaoloLoppuu), cb.lessThanOrEqualTo(currentDate, voimassaoloLoppuu));
+            Predicate pr1 = cb.and(alkaa, loppuu);
+
+            // Voimassaolon loppumista ei ole määritelty
+            Predicate pr2 = cb.and(cb.isNull(voimassaoloLoppuu),
+                    cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa)));
+
+            pred = cb.and(pred, cb.or(pr1, pr2));
+        } else if (tq.isPoistunut()) {
+            pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu)));
         }
         return pred;
     }

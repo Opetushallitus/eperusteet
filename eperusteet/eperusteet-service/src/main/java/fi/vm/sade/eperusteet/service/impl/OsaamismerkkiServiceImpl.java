@@ -81,7 +81,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
                 query.getSivu(),
                 query.getSivukoko(),
                 Sort.Direction.DESC,
-                "muokattu"
+                "nimi"
         );
         Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(pageRequest, query);
         return new PageDto<>(osaamismerkit, OsaamismerkkiDto.class, pageRequest, mapper);

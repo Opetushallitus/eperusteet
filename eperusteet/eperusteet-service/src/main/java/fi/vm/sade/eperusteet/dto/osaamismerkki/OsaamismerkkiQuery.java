@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -13,9 +13,9 @@ public class OsaamismerkkiQuery {
     private int sivu = 0;
     private int sivukoko = 25;
     private String nimi;
-    private long kategoria;
-    private List<String> tila;
-    private boolean voimassaolo;
-    private boolean julkaistu = true;
-    private boolean laadinta = true;
+    private Long kategoria;
+    private Set<String> tila;
+    private boolean voimassa = false;
+    private boolean tuleva = false;
+    private boolean poistunut = false;
 }
