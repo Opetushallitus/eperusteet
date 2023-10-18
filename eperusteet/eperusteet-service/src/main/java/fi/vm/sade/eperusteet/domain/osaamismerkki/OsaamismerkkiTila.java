@@ -3,8 +3,8 @@ package fi.vm.sade.eperusteet.domain.osaamismerkki;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum OsaamismerkkiTila {
-    LAADINTA("laadinta"),
-    JULKAISTU("julkaistu");
+    LAADINTA("LAADINTA"),
+    JULKAISTU("JULKAISTU");
 
     private final String tila;
 
