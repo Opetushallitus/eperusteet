@@ -16,6 +16,7 @@
 package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
 import fi.vm.sade.eperusteet.domain.Dokumentti;
+import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -50,7 +51,7 @@ import java.util.Map;
  * @author isaul
  */
 public class DokumenttiUtils {
-    private static final int MAX_TIME_IN_MINUTES = 5;
+    public static final int MAX_TIME_IN_MINUTES = 60;
 
     public static void addLokalisoituteksti(DokumenttiBase docBase, LokalisoituTekstiDto lTekstiDto, String tagi) {
         if (lTekstiDto != null) {
@@ -191,7 +192,7 @@ public class DokumenttiUtils {
     }
 
     public static boolean isTimePass(Dokumentti dokumentti) {
-        return isTimePass(dokumentti.getAloitusaika());
+        return (dokumentti.getTila().equals(DokumenttiTila.LUODAAN) || dokumentti.getTila().equals(DokumenttiTila.JONOSSA)) && isTimePass(dokumentti.getAloitusaika());
     }
 
     public static boolean isTimePass(DokumenttiDto dokumenttiDto) {

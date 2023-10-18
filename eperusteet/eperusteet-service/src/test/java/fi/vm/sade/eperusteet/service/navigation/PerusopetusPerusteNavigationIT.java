@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service;
+package fi.vm.sade.eperusteet.service.navigation;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -17,6 +17,11 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
+import fi.vm.sade.eperusteet.service.LockCtx;
+import fi.vm.sade.eperusteet.service.LockService;
+import fi.vm.sade.eperusteet.service.NavigationBuilder;
+import fi.vm.sade.eperusteet.service.PerusteDispatcher;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
