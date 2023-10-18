@@ -70,7 +70,8 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     static {
         IMAGE_TYPES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
                 MediaType.IMAGE_JPEG_VALUE,
-                MediaType.IMAGE_PNG_VALUE
+                MediaType.IMAGE_PNG_VALUE,
+                "image/svg+xml"
         )));
     }
 
