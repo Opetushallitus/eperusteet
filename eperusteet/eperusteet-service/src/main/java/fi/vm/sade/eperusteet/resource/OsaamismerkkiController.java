@@ -53,6 +53,16 @@ public class OsaamismerkkiController {
         return osaamismerkkiService.findBy(query);
     }
 
+    @ApiOperation(value = "julkisten osaamismerkkien haku")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
+    })
+    @RequestMapping(value = "/haku/julkiset", method = GET)
+    public Page<OsaamismerkkiDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
+        return osaamismerkkiService.findJulkisetBy(query);
+    }
+
     @RequestMapping(value = "/osaamismerkki/{id}", method = GET)
     @ResponseBody
     public OsaamismerkkiDto getJulkinenOsaamismerkki(@PathVariable("id") final Long id) {

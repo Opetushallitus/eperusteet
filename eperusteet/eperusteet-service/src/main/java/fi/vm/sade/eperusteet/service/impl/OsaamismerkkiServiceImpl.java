@@ -75,6 +75,15 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
+    public Page<OsaamismerkkiDto> findJulkisetBy(OsaamismerkkiQuery query) {
+        query.setTila(Collections.singleton(OsaamismerkkiTila.JULKAISTU.toString()));
+        query.setPoistunut(false);
+        query.setTuleva(false);
+        query.setVoimassa(true);
+        return findBy(query);
+    }
+
+    @Override
     public Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query) {
         PageRequest pageRequest = new PageRequest(
                 query.getSivu(),
