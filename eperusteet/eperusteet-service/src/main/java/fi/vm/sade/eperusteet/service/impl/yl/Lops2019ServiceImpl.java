@@ -94,7 +94,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
             throw new BusinessRuleViolationException("vain-korjaukset-sallittu");
         }
 
-        viiteService.removeSisalto(perusteId, viiteId);
+        viiteService.removeSisalto(perusteId, viiteId, false);
     }
 
     @Override

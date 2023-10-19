@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.google.common.collect.Sets;
@@ -44,10 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author harrik
- */
 @Service
 @Transactional(readOnly = true)
 public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
@@ -126,7 +107,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Override
     @Transactional
-    public void removeSisalto(Long perusteId, Long id) {
+    public void removeSisalto(Long perusteId, Long id, boolean isChild) {
         PerusteenOsaViite viite = findViite(perusteId, id);
         if (viite == null) {
             throw new NotExistsException("Perusteenosaviitettä ei ole olemassa");
@@ -137,7 +118,10 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         }
 
         if (viite.getLapset() != null && !viite.getLapset().isEmpty()) {
-            throw new BusinessRuleViolationException("Sisällöllä on lapsia, ei voida poistaa");
+            viite.getLapset().forEach(lapsi -> {
+                removeSisalto(perusteId, lapsi.getId(), true);
+            });
+            viite.getLapset().removeAll(viite.getLapset());
         }
 
         muokkausTietoService.addMuokkaustieto(perusteId, viite, MuokkausTapahtuma.POISTO);
@@ -148,8 +132,10 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             perusteenOsaService.delete(perusteenOsa.getId(), perusteId);
         }
         viite.setPerusteenOsa(null);
-        viite.getVanhempi().getLapset().remove(viite);
-        viite.setVanhempi(null);
+        if (!isChild) {
+            viite.getVanhempi().getLapset().remove(viite);
+            viite.setVanhempi(null);
+        }
         repository.delete(viite);
     }
 

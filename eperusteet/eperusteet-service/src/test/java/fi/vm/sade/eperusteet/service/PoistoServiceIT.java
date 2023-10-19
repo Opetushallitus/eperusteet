@@ -2,7 +2,6 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.PoistettuSisaltoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -11,10 +10,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
-import fi.vm.sade.eperusteet.service.util.PerusteUtils;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
@@ -58,7 +54,7 @@ public class PoistoServiceIT extends AbstractIntegrationTest {
         TestTransaction.start();
         TestTransaction.flagForCommit(); // jotta poisto ilmestyy audit tauluun
 
-        perusteenOsaViiteService.removeSisalto(peruste.getId(), uusi.getId());
+        perusteenOsaViiteService.removeSisalto(peruste.getId(), uusi.getId(), false);
 
         TestTransaction.end();
         TestTransaction.start();
