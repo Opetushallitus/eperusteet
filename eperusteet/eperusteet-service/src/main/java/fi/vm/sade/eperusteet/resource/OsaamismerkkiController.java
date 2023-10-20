@@ -87,9 +87,21 @@ public class OsaamismerkkiController {
         return osaamismerkkiService.getKategoriat();
     }
 
+    @RequestMapping(value = "/kategoriat/julkiset", method = GET)
+    @ResponseBody
+    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat() {
+        return osaamismerkkiService.getJulkisetKategoriat();
+    }
+
     @RequestMapping(value = "/kategoria/update", method = POST)
     @ResponseBody
     public OsaamismerkkiKategoriaDto updateKategoria(@RequestBody OsaamismerkkiKategoriaDto osaamismerkkiKategoriaDto) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         return osaamismerkkiService.updateKategoria(osaamismerkkiKategoriaDto);
+    }
+
+    @RequestMapping(value = "/kategoria/delete/{id}", method = DELETE)
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteKategoria(@PathVariable("id") final Long id) {
+        osaamismerkkiService.deleteKategoria(id);
     }
 }

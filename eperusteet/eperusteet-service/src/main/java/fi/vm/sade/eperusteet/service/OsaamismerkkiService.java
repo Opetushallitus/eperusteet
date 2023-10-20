@@ -20,15 +20,21 @@ public interface OsaamismerkkiService {
     @PreAuthorize("permitAll()")
     OsaamismerkkiDto getJulkinenOsaamismerkki(Long id);
 
+    @PreAuthorize("permitAll()")
+    List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat();
+
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto);
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    void deleteOsaamismerkki(Long id);
+    OsaamismerkkiKategoriaDto updateKategoria(OsaamismerkkiKategoriaDto kategoriaDto) throws HttpMediaTypeNotSupportedException, MimeTypeException;
 
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     List<OsaamismerkkiKategoriaDto> getKategoriat();
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
-    OsaamismerkkiKategoriaDto updateKategoria(OsaamismerkkiKategoriaDto kategoriaDto) throws HttpMediaTypeNotSupportedException, MimeTypeException;
+    void deleteOsaamismerkki(Long id);
+
+    @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
+    void deleteKategoria(Long id);
 }

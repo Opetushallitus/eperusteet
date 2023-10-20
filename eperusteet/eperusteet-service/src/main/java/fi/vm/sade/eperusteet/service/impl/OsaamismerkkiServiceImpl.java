@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @Transactional
 public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
@@ -123,6 +125,21 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
+    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat() {
+        List<OsaamismerkkiKategoria> kategoriat = osaamismerkkiKategoriaRepository.findAll();
+        List<Osaamismerkki> osaamismerkit = mapper.mapAsList(findJulkisetBy(new OsaamismerkkiQuery()).getContent(), Osaamismerkki.class);
+
+        List<OsaamismerkkiKategoria> julkisetKategoriat = kategoriat.stream()
+                .filter(kategoria -> osaamismerkit.stream()
+                        .map(Osaamismerkki::getKategoria)
+                        .map(OsaamismerkkiKategoria::getId)
+                        .anyMatch(merkki -> merkki.equals(kategoria.getId())))
+                .collect(toList());
+
+        return mapper.mapAsList(julkisetKategoriat, OsaamismerkkiKategoriaDto.class);
+    }
+
+    @Override
     @Transactional
     public OsaamismerkkiKategoriaDto updateKategoria(OsaamismerkkiKategoriaDto kategoriaDto) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         OsaamismerkkiKategoria kategoria;
@@ -143,6 +160,19 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         kategoria = osaamismerkkiKategoriaRepository.save(kategoria);
         deleteVanhaLiite(kategoria.getLiite().getId(), liiteDbId);
         return mapper.map(kategoria, OsaamismerkkiKategoriaDto.class);
+    }
+
+    @Override
+    @Transactional
+    public void deleteKategoria(Long id) {
+        long linkitykset = osaamismerkkiRepository.countByKategoriaId(id);
+        if (linkitykset > 0) {
+            throw new BusinessRuleViolationException("osaamismerkkiin-liitettya-kategoriaa-ei-voi-poistaa");
+        } else {
+            OsaamismerkkiKategoria kategoria = osaamismerkkiKategoriaRepository.findOne(id);
+            osaamismerkkiKategoriaRepository.delete(id);
+            liiteRepository.delete(kategoria.getLiite().getId());
+        }
     }
 
     private void deleteVanhaLiite(UUID uusiId, UUID vanhaId) {
