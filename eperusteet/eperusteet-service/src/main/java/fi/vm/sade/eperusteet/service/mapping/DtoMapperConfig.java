@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusPaaAlue;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
@@ -57,11 +58,13 @@ import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -109,6 +112,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRake
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetSuppeaDto;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.util.TemporaryKoodiGenerator;
 
@@ -152,6 +156,9 @@ public class DtoMapperConfig {
 
     @Autowired
     private LiiteRepository liiteRepository;
+
+    @Autowired
+    private KayttajanTietoService kayttajat;
 
     @Lazy
     @Autowired
@@ -747,6 +754,25 @@ public class DtoMapperConfig {
 
                     @Override
                     public void mapBtoA(OsaamistasonKriteeriDto source, OsaamistasonKriteeri target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
+
+        factory.classMap(Osaamismerkki.class, OsaamismerkkiDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Osaamismerkki, OsaamismerkkiDto>() {
+                    @Override
+                    public void mapAtoB(Osaamismerkki source, OsaamismerkkiDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        KayttajanTietoDto kayttaja = kayttajat.hae(source.getMuokkaaja());
+                        if (kayttaja != null) {
+                            target.setMuokkaaja(kayttaja.getKutsumanimi() + " " + kayttaja.getSukunimi());
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(OsaamismerkkiDto source, Osaamismerkki target, MappingContext context) {
                         super.mapBtoA(source, target, context);
                     }
                 })
