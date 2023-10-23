@@ -60,7 +60,7 @@ public class OsaamismerkkiController {
             @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
     })
     @RequestMapping(value = "/haku/julkiset", method = GET)
-    public Page<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
+    public List<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
         return osaamismerkkiService.findJulkisetBy(query);
     }
 

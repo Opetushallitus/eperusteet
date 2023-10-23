@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface OsaamismerkkiService {
     @PreAuthorize("permitAll()")
-    Page<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query);
+    List<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query);
 
     @PreAuthorize("permitAll()")
     Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query);

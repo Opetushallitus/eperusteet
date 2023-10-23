@@ -25,7 +25,6 @@ import fi.vm.sade.eperusteet.service.util.Pair;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
@@ -80,14 +79,14 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
-    public Page<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query) {
+    public List<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query) {
         query.setTila(Collections.singleton(OsaamismerkkiTila.JULKAISTU.toString()));
         query.setPoistunut(false);
         query.setTuleva(false);
         query.setVoimassa(true);
 
-        Page<OsaamismerkkiDto> osaamismerkit = findBy(query);
-        return new PageImpl<>(mapper.mapAsList(osaamismerkit.getContent(), OsaamismerkkiBaseDto.class), new PageRequest(0, 1000), osaamismerkit.getTotalElements());
+        Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(new PageRequest(0, 1000, Sort.Direction.DESC, "nimi"), query);
+        return mapper.mapAsList(osaamismerkit.getContent(), OsaamismerkkiBaseDto.class);
     }
 
     @Override
@@ -132,7 +131,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Override
     public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat() {
         List<OsaamismerkkiKategoria> kategoriat = osaamismerkkiKategoriaRepository.findAll();
-        List<Osaamismerkki> osaamismerkit = mapper.mapAsList(findJulkisetBy(new OsaamismerkkiQuery()).getContent(), Osaamismerkki.class);
+        List<Osaamismerkki> osaamismerkit = mapper.mapAsList(findJulkisetBy(new OsaamismerkkiQuery()), Osaamismerkki.class);
 
         List<OsaamismerkkiKategoria> julkisetKategoriat = kategoriat.stream()
                 .filter(kategoria -> osaamismerkit.stream()
