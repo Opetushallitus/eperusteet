@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
@@ -59,13 +60,13 @@ public class OsaamismerkkiController {
             @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
     })
     @RequestMapping(value = "/haku/julkiset", method = GET)
-    public Page<OsaamismerkkiDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
+    public Page<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
         return osaamismerkkiService.findJulkisetBy(query);
     }
 
     @RequestMapping(value = "/osaamismerkki/{id}", method = GET)
     @ResponseBody
-    public OsaamismerkkiDto getJulkinenOsaamismerkki(@PathVariable("id") final Long id) {
+    public OsaamismerkkiBaseDto getJulkinenOsaamismerkki(@PathVariable("id") final Long id) {
         return osaamismerkkiService.getJulkinenOsaamismerkki(id);
     }
 

@@ -64,6 +64,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
@@ -474,6 +475,10 @@ public class DtoMapperConfig {
 
         factory.classMap(Tiedote.class, TiedoteDto.class)
                 .fieldAToB("perusteprojekti.peruste", "peruste")
+                .byDefault()
+                .register();
+
+        factory.classMap(Osaamismerkki.class, OsaamismerkkiBaseDto.class)
                 .byDefault()
                 .register();
 

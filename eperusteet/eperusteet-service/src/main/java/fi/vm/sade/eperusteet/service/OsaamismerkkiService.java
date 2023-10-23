@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
@@ -12,13 +13,13 @@ import java.util.List;
 
 public interface OsaamismerkkiService {
     @PreAuthorize("permitAll()")
-    Page<OsaamismerkkiDto> findJulkisetBy(OsaamismerkkiQuery query);
+    Page<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query);
 
     @PreAuthorize("permitAll()")
     Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query);
 
     @PreAuthorize("permitAll()")
-    OsaamismerkkiDto getJulkinenOsaamismerkki(Long id);
+    OsaamismerkkiBaseDto getJulkinenOsaamismerkki(Long id);
 
     @PreAuthorize("permitAll()")
     List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat();

@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaLiiteDto;
@@ -24,6 +25,7 @@ import fi.vm.sade.eperusteet.service.util.Pair;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
@@ -78,12 +80,14 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
-    public Page<OsaamismerkkiDto> findJulkisetBy(OsaamismerkkiQuery query) {
+    public Page<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query) {
         query.setTila(Collections.singleton(OsaamismerkkiTila.JULKAISTU.toString()));
         query.setPoistunut(false);
         query.setTuleva(false);
         query.setVoimassa(true);
-        return findBy(query);
+
+        Page<OsaamismerkkiDto> osaamismerkit = findBy(query);
+        return new PageImpl<>(mapper.mapAsList(osaamismerkit.getContent(), OsaamismerkkiBaseDto.class), new PageRequest(0, 1000), osaamismerkit.getTotalElements());
     }
 
     @Override
@@ -99,9 +103,9 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
-    public OsaamismerkkiDto getJulkinenOsaamismerkki(Long id) {
+    public OsaamismerkkiBaseDto getJulkinenOsaamismerkki(Long id) {
         Osaamismerkki osaamismerkki = osaamismerkkiRepository.findByIdAndTila(id, OsaamismerkkiTila.JULKAISTU);
-        return mapper.map(osaamismerkki, OsaamismerkkiDto.class);
+        return mapper.map(osaamismerkki, OsaamismerkkiBaseDto.class);
     }
 
     @Override
@@ -111,6 +115,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         osaamismerkki = osaamismerkkiRepository.save(osaamismerkki);
         return mapper.map(osaamismerkki, OsaamismerkkiDto.class);
     }
+
     @Override
     @Transactional
     public void deleteOsaamismerkki(Long id) {
