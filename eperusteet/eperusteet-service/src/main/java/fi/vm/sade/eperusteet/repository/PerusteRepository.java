@@ -209,4 +209,11 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))" +
             "AND k.uri = :koodiUri")
     List<Peruste> findAllByJulkaisutOppaatKiinnitettyKoodilla(@Param("koodiUri") String koodiUri);
+
+    @Query("SELECT p " +
+            "FROM Peruste p " +
+            "WHERE p.tila != 'POISTETTU' " +
+            "AND p.tyyppi = 'NORMAALI' " +
+            "AND NOT EXISTS (SELECT m FROM Maarays m WHERE m.peruste = p)")
+    List<Peruste> findAllByEiMaaraystaEiPoistettu();
 }

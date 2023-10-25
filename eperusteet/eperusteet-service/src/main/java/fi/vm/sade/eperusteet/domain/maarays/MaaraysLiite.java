@@ -43,6 +43,7 @@ public class MaaraysLiite implements Serializable {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen nimi;
 
+    @NotNull
     @Size(max = 1024)
     private String tiedostonimi;
 

@@ -25,4 +25,7 @@ public interface MaintenanceService {
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void clearCache(String cache);
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void teeMaarayksetPerusteille();
 }
