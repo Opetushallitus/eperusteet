@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -36,13 +21,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 
-/**
- *
- * @author harrik
- */
 @Transactional
 @DirtiesContext
 public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
@@ -119,7 +100,7 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
     }
 
     @Test
-    @Rollback(true)
+    @Rollback
     public void testRemoveSisaltoOK() {
         PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         service.removeSisalto(perusteId, lapsenlapsiId);
@@ -128,12 +109,12 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));
-        assertEquals(null, repo.findOne(lapsenlapsiId));
-        assertEquals(null, em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
+        assertNull(repo.findOne(lapsenlapsiId));
+        assertNull(em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
     }
 
     @Test(expected = BusinessRuleViolationException.class)
-    @Rollback(true)
+    @Rollback
     public void testRemoveSisaltoJuuri() throws BusinessRuleViolationException {
         service.removeSisalto(perusteId, juuriId);
         assertNotEquals(null, repo.findOne(juuriId));
@@ -143,15 +124,14 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
     }
 
-    @Test(expected = BusinessRuleViolationException.class)
-    @Rollback(true)
+    @Test
+    @Rollback
     public void testRemoveSisaltoLapsia() throws BusinessRuleViolationException {
         service.removeSisalto(perusteId, lapsiId);
         assertNotEquals(null, repo.findOne(juuriId));
-        assertNotEquals(null, repo.findOne(lapsiId));
-        assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));
-        assertNotEquals(null, repo.findOne(lapsenlapsiId));
-        assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
+        assertNull(repo.findOne(lapsiId));
+        assertNull(em.find(TekstiKappale.class, tekstikappaleId));
+        assertNull(repo.findOne(lapsenlapsiId));
+        assertNull(em.find(TekstiKappale.class, tekstikappaleLapsenlapsiId));
     }
-
 }
