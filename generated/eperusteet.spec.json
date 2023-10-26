@@ -14669,6 +14669,7 @@
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> dd9f038e0 (maaraykset eräajo)
@@ -14692,6 +14693,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14712,12 +14715,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -14732,6 +14735,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -14757,6 +14761,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14777,20 +14783,16 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
-<<<<<<< HEAD
-    "PageOsaamismerkkiDto" : {
-=======
     "PageMaaraysDto" : {
->>>>>>> 037177eb8 (EP-3781)
       "type" : "object",
       "properties" : {
         "totalElements" : {
@@ -14801,6 +14803,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -14826,6 +14829,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14834,12 +14839,15 @@
           "type" : "array",
           "items" : {
 <<<<<<< HEAD
+<<<<<<< HEAD
             "$ref" : "#/definitions/OsaamismerkkiDto"
           }
         },
 <<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> 5b0d90b4a (spec update)
             "$ref" : "#/definitions/MaaraysDto"
           }
         },
@@ -14849,21 +14857,64 @@
           "format" : "int32"
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 037177eb8 (EP-3781)
 >>>>>>> ab417c4cf (EP-3781)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "last" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "PageOsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiDto"
+          }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -14880,6 +14931,7 @@
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> dd9f038e0 (maaraykset eräajo)
@@ -14903,6 +14955,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14923,12 +14977,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -14943,6 +14997,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -14968,6 +15023,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14988,12 +15045,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15008,6 +15065,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15033,6 +15091,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15053,12 +15113,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15073,6 +15133,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15098,6 +15159,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15118,12 +15181,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15138,6 +15201,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15163,6 +15227,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15183,12 +15249,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15203,6 +15269,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15228,6 +15295,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15248,12 +15317,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15268,6 +15337,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15293,6 +15363,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15313,12 +15385,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15333,6 +15405,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15358,6 +15431,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15378,12 +15453,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15398,6 +15473,7 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -15423,6 +15499,8 @@
 =======
 >>>>>>> 60ddd475d (maaraykset eräajo)
 >>>>>>> dd9f038e0 (maaraykset eräajo)
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15443,12 +15521,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -17751,6 +17829,7 @@
           }
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
         "virheet" : {
           "type" : "array",
           "items" : {
@@ -17773,20 +17852,22 @@
           }
 >>>>>>> 60ddd475d (maaraykset eräajo)
         },
+=======
+>>>>>>> 5b0d90b4a (spec update)
         "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
-<<<<<<< HEAD
         },
         "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
+        },
+        "vaihtoOk" : {
+          "type" : "boolean"
         }
       }
     },

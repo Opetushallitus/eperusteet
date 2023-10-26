@@ -261,6 +261,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maarays.setLiitteet(Stream.of(Kieli.FI, Kieli.SV, Kieli.EN).collect(Collectors.toMap(kieli -> kieli, kieli -> new MaaraysKieliLiitteet())));
         maarays.setKorvattavatMaaraykset(new ArrayList<>());
         maarays.setMuutettavatMaaraykset(new ArrayList<>());
+        maarays.setKoulutustyypit(List.of(KoulutusTyyppi.of(peruste.getKoulutustyyppi())));
 
         Optional<JulkaistuPeruste> julkaisu = peruste.getJulkaisut().stream().max(Comparator.comparing(JulkaistuPeruste::getLuotu));
         if (julkaisu.isPresent()) {
@@ -280,7 +281,11 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             maarays.setMaarayspvm(perusteKaikkiDto.getPaatospvm());
         } else {
             maarays.setTila(MaaraysTila.LUONNOS);
-            maarays.setNimi(TekstiPalanen.of(peruste.getNimi()));
+            if (peruste.getNimi() == null) {
+                maarays.setNimi(TekstiPalanen.of(Kieli.FI, "Nimetön määräys"));
+            } else {
+                maarays.setNimi(TekstiPalanen.of(peruste.getNimi()));
+            }
             if (peruste.getDiaarinumero() != null) {
                 maarays.setDiaarinumero(peruste.getDiaarinumero().getDiaarinumero());
             }

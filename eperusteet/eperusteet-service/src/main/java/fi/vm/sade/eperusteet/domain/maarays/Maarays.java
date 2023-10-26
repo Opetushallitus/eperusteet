@@ -17,6 +17,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -87,7 +88,7 @@ public class Maarays extends AbstractAuditedEntity {
     @CollectionTable(name="maarays_koulutustyypit")
     private List<KoulutusTyyppi> koulutustyypit;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "peruste_id")
     private Peruste peruste;
 
