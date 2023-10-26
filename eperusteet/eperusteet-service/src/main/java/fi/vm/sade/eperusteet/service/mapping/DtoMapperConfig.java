@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.mapping;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -35,8 +20,11 @@ import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.digi.Osaamiskokonaisuus;
 import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusPaaAlue;
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
+import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
@@ -70,11 +58,15 @@ import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
+import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
@@ -101,7 +93,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
-import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
@@ -121,9 +112,16 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRake
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetSuppeaDto;
+import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
+import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.util.TemporaryKoodiGenerator;
+
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.time.Instant;
+import java.util.Base64;
+
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.Mapper;
@@ -138,7 +136,6 @@ import ma.glasnost.orika.metadata.TypeFactory;
 import ma.glasnost.orika.unenhance.HibernateUnenhanceStrategy;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.proxy.HibernateProxy;
-import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,9 +147,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
 
-/**
- * @author jhyoty
- */
 @Slf4j
 @Configuration
 public class DtoMapperConfig {
@@ -160,6 +154,12 @@ public class DtoMapperConfig {
 
     @Autowired
     private KoodistoClient koodistoClient;
+
+    @Autowired
+    private LiiteRepository liiteRepository;
+
+    @Autowired
+    private KayttajanTietoService kayttajat;
 
     @Lazy
     @Autowired
@@ -478,6 +478,10 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
+        factory.classMap(Osaamismerkki.class, OsaamismerkkiBaseDto.class)
+                .byDefault()
+                .register();
+
         factory.classMap(Peruste.class, PerusteHakuInternalDto.class)
                 .byDefault()
                 .favorExtension(true)
@@ -755,6 +759,50 @@ public class DtoMapperConfig {
 
                     @Override
                     public void mapBtoA(OsaamistasonKriteeriDto source, OsaamistasonKriteeri target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
+
+        factory.classMap(Osaamismerkki.class, OsaamismerkkiDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Osaamismerkki, OsaamismerkkiDto>() {
+                    @Override
+                    public void mapAtoB(Osaamismerkki source, OsaamismerkkiDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        KayttajanTietoDto kayttaja = kayttajat.hae(source.getMuokkaaja());
+                        if (kayttaja != null) {
+                            target.setMuokkaaja(kayttaja.getKutsumanimi() + " " + kayttaja.getSukunimi());
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(OsaamismerkkiDto source, Osaamismerkki target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
+
+        factory.classMap(OsaamismerkkiKategoria.class, OsaamismerkkiKategoriaDto.class)
+                .byDefault()
+                .customize(new CustomMapper<OsaamismerkkiKategoria, OsaamismerkkiKategoriaDto>() {
+                    @Override
+                    public void mapAtoB(OsaamismerkkiKategoria source, OsaamismerkkiKategoriaDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (source.getLiite() != null) {
+                            try {
+                                Liite liite = liiteRepository.findById(source.getLiite().getId());
+                                Blob blob = liite.getData();
+                                byte[] bytes = blob.getBytes(1L, (int)blob.length());
+                                target.getLiite().setBinarydata(Base64.getEncoder().encodeToString(bytes));
+                            } catch (SQLException ignored) {
+                                logger.error("Osaamismerkin kuvaliitteen haku epäonnistui");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(OsaamismerkkiKategoriaDto source, OsaamismerkkiKategoria target, MappingContext context) {
                         super.mapBtoA(source, target, context);
                     }
                 })

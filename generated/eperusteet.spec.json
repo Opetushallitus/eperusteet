@@ -44,6 +44,8 @@
   }, {
     "name" : "OsaAlueet"
   }, {
+    "name" : "Osaamismerkit"
+  }, {
     "name" : "Palautteet"
   }, {
     "name" : "PerusopetuksenPerusteenSisalto"
@@ -1767,6 +1769,236 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/PagePerusteprojektiKevytDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/haku" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "summary" : "osaamismerkkien haku",
+        "description" : "",
+        "operationId" : "findOsaamismerkitBy",
+        "parameters" : [ {
+          "name" : "sivu",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "sivukoko",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tila",
+          "in" : "query",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "kategoria",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "voimassa",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tuleva",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "poistunut",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PageOsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/haku/julkiset" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "summary" : "julkisten osaamismerkkien haku",
+        "description" : "",
+        "operationId" : "findJulkisetOsaamismerkitBy",
+        "parameters" : [ {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "kategoria",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiBaseDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/kategoria/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "deleteKategoria",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/osaamismerkit/kategoria/update" : {
+      "post" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "updateKategoria",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/kategoriat" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "getKategoriat",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/kategoriat/julkiset" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "getJulkisetKategoriat",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/osaamismerkki/delete/{id}" : {
+      "delete" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "deleteOsaamismerkki",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/osaamismerkit/osaamismerkki/update" : {
+      "post" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "updateOsaamismerkki",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/OsaamismerkkiDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/osaamismerkit/osaamismerkki/{id}" : {
+      "get" : {
+        "tags" : [ "Osaamismerkit" ],
+        "operationId" : "getJulkinenOsaamismerkki",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiBaseDto"
             }
           }
         }
@@ -4646,7 +4878,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/FieldComparisonFailure"
+                "$ref" : "#/definitions/FieldComparisonFailureDto"
               }
             }
           }
@@ -11092,17 +11324,11 @@
         }
       }
     },
-    "FieldComparisonFailure" : {
+    "FieldComparisonFailureDto" : {
       "type" : "object",
       "properties" : {
         "field" : {
           "type" : "string"
-        },
-        "expected" : {
-          "type" : "object"
-        },
-        "actual" : {
-          "type" : "object"
         }
       }
     },
@@ -11961,7 +12187,7 @@
         },
         "tyyppi" : {
           "type" : "string",
-          "enum" : [ "TUNTEMATON", "KUVA", "DOKUMENTTI", "MAARAYSKIRJE", "MUUTOSMAARAYS", "JULKAISUMUUTOSMAARAYS", "KOULUTUSVIENNINOHJE", "KAANNOS" ]
+          "enum" : [ "TUNTEMATON", "KUVA", "OSAAMISMERKKIKUVA", "DOKUMENTTI", "MAARAYSKIRJE", "MUUTOSMAARAYS", "JULKAISUMUUTOSMAARAYS", "KOULUTUSVIENNINOHJE", "KAANNOS" ]
         },
         "luotu" : {
           "type" : "string",
@@ -13601,6 +13827,144 @@
         }
       } ]
     },
+    "OsaamismerkkiArviointikriteeriDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "arviointikriteeri" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
+    "OsaamismerkkiBaseDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LAADINTA", "JULKAISTU" ]
+        },
+        "kategoria" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+        },
+        "osaamistavoitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiOsaamistavoiteDto"
+          }
+        },
+        "arviointikriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiArviointikriteeriDto"
+          }
+        }
+      }
+    },
+    "OsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LAADINTA", "JULKAISTU" ]
+        },
+        "kategoria" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+        },
+        "osaamistavoitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiOsaamistavoiteDto"
+          }
+        },
+        "arviointikriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiArviointikriteeriDto"
+          }
+        },
+        "voimassaoloAlkaa" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "voimassaoloLoppuu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        }
+      }
+    },
+    "OsaamismerkkiKategoriaDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "liite" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaLiiteDto"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+    "OsaamismerkkiKategoriaLiiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "nimi" : {
+          "type" : "string"
+        },
+        "mime" : {
+          "type" : "string"
+        },
+        "binarydata" : {
+          "type" : "string"
+        }
+      }
+    },
+    "OsaamismerkkiOsaamistavoiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "osaamistavoite" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
     "OsaamistasoDto" : {
       "type" : "object",
       "properties" : {
@@ -13772,6 +14136,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13782,21 +14157,10 @@
             "type" : "object"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -13812,6 +14176,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13822,21 +14197,50 @@
             "$ref" : "#/definitions/KoodistoKoodiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageOsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiDto"
+          }
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
           "type" : "boolean"
         }
       }
@@ -13852,6 +14256,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13862,21 +14277,10 @@
             "$ref" : "#/definitions/PerusteBaseDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -13892,6 +14296,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13902,21 +14317,10 @@
             "$ref" : "#/definitions/PerusteHakuDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -13932,6 +14336,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13942,21 +14357,10 @@
             "$ref" : "#/definitions/PerusteHakuInternalDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -13972,6 +14376,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -13982,21 +14397,10 @@
             "$ref" : "#/definitions/PerusteInfoDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -14012,6 +14416,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14022,21 +14437,10 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -14052,6 +14456,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14062,21 +14477,10 @@
             "$ref" : "#/definitions/PerusteprojektiKevytDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -14092,6 +14496,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14102,21 +14517,10 @@
             "$ref" : "#/definitions/TiedoteDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -14132,6 +14536,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14142,21 +14557,10 @@
             "$ref" : "#/definitions/TutkinnonOsaDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -14172,6 +14576,17 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14182,21 +14597,10 @@
             "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -16493,11 +16897,8 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
+        "vaihtoOk" : {
+          "type" : "boolean"
         },
         "huomautukset" : {
           "type" : "array",
@@ -16505,8 +16906,11 @@
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
+        "virheet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },
@@ -16700,7 +17104,7 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "arviointi" : {
-          "description" : "Vanhentunut tutkinnon osa -kohtainen arviointi",
+          "description" : "Tutkinnon osa -kohtainen arviointi",
           "$ref" : "#/definitions/ArviointiDto"
         },
         "ammattitaitovaatimukset" : {

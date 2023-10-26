@@ -6,6 +6,7 @@ public enum LiiteTyyppi {
 
     TUNTEMATON("tuntematon"),
     KUVA("kuva"),
+    OSAAMISMERKKIKUVA("osaamismerkkikuva"),
     DOKUMENTTI("dokumentti"),
     MAARAYSKIRJE("maarayskirje"),
     MUUTOSMAARAYS("muutosmaarays"),
