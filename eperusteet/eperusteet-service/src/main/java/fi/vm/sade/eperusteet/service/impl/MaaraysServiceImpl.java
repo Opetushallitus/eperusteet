@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.repository.MaaraysLiiteRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.MaaraysService;
+import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -29,6 +30,8 @@ import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -134,6 +137,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
+    @Cacheable("maarayskokoelma_asiasanat")
     public Map<Kieli, List<String>> getAsiasanat() {
         Map<Kieli, List<String>> asiasanat = new HashMap<>();
         List<MaaraysAsiasanatFetch> asiasanatList = maaraysAsiasanaRepository.findAllBy();
@@ -152,6 +156,7 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Override
     @IgnorePerusteUpdateCheck
+    @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public MaaraysDto addMaarays(MaaraysDto maaraysDto) {
         addLiitteet(maaraysDto);
         maaraysDto.getAsiasanat().values().forEach(asiasana -> asiasana.setId(null));
@@ -163,6 +168,7 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Override
     @IgnorePerusteUpdateCheck
+    @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public MaaraysDto updateMaarays(MaaraysDto maaraysDto) {
         if (maaraysRepository.findOne(maaraysDto.getId()) == null) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
@@ -203,6 +209,7 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Override
     @IgnorePerusteUpdateCheck
+    @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public void deleteMaarays(long id) {
         if (maaraysRepository.findOne(id) == null) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");

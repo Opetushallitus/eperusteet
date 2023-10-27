@@ -12439,12 +12439,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -14667,34 +14667,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14715,12 +14687,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14735,34 +14707,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14783,12 +14727,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14803,34 +14747,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14838,43 +14754,25 @@
         "content" : {
           "type" : "array",
           "items" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            "$ref" : "#/definitions/OsaamismerkkiDto"
-          }
-        },
-<<<<<<< HEAD
-=======
-=======
-=======
->>>>>>> 5b0d90b4a (spec update)
             "$ref" : "#/definitions/MaaraysDto"
           }
         },
->>>>>>> ab417c4cf (EP-3781)
         "number" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 037177eb8 (EP-3781)
->>>>>>> ab417c4cf (EP-3781)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14909,12 +14807,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14929,34 +14827,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14977,12 +14847,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -14997,34 +14867,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15045,12 +14887,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15065,34 +14907,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15113,12 +14927,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15133,34 +14947,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15181,12 +14967,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15201,34 +14987,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15249,12 +15007,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15269,34 +15027,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15317,12 +15047,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15337,34 +15067,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15385,12 +15087,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15405,34 +15107,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15453,12 +15127,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -15473,34 +15147,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 037177eb8 (EP-3781)
-<<<<<<< HEAD
->>>>>>> ab417c4cf (EP-3781)
-=======
-=======
->>>>>>> 60ddd475d (maaraykset eräajo)
->>>>>>> dd9f038e0 (maaraykset eräajo)
-=======
->>>>>>> 5b0d90b4a (spec update)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15521,12 +15167,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -17828,37 +17474,8 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-=======
         "vaihtoOk" : {
           "type" : "boolean"
-<<<<<<< HEAD
-=======
->>>>>>> dd9f038e0 (maaraykset eräajo)
-        },
-        "vaihtoOk" : {
-          "type" : "boolean"
-        },
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
->>>>>>> 60ddd475d (maaraykset eräajo)
-        },
-=======
->>>>>>> 5b0d90b4a (spec update)
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
         },
         "virheet" : {
           "type" : "array",
@@ -17866,8 +17483,11 @@
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },
