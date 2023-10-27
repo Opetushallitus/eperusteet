@@ -14136,14 +14136,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14156,6 +14152,10 @@
           "items" : {
             "type" : "object"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14176,14 +14176,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14196,6 +14192,10 @@
           "items" : {
             "$ref" : "#/definitions/KoodistoKoodiDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14216,14 +14216,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14236,6 +14232,10 @@
           "items" : {
             "$ref" : "#/definitions/OsaamismerkkiDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14256,14 +14256,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14276,6 +14272,10 @@
           "items" : {
             "$ref" : "#/definitions/PerusteBaseDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14296,14 +14296,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14316,6 +14312,10 @@
           "items" : {
             "$ref" : "#/definitions/PerusteHakuDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14336,14 +14336,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14356,6 +14352,10 @@
           "items" : {
             "$ref" : "#/definitions/PerusteHakuInternalDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14376,14 +14376,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14396,6 +14392,10 @@
           "items" : {
             "$ref" : "#/definitions/PerusteInfoDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14416,14 +14416,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14436,6 +14432,10 @@
           "items" : {
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14456,14 +14456,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14476,6 +14472,10 @@
           "items" : {
             "$ref" : "#/definitions/PerusteprojektiKevytDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14496,14 +14496,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14516,6 +14512,10 @@
           "items" : {
             "$ref" : "#/definitions/TiedoteDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14536,14 +14536,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14556,6 +14552,10 @@
           "items" : {
             "$ref" : "#/definitions/TutkinnonOsaDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -14576,14 +14576,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -14596,6 +14592,10 @@
           "items" : {
             "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
           }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
