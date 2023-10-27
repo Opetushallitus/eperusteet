@@ -169,6 +169,8 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
             AIPEKurssiDto muuttunutKurssi = new AIPEKurssiDto();
             muuttunutKurssi.setKuvaus(TestUtils.olt("uusi kuvaus"));
             String vanhaNimi = kurssi.getNimi().get().get(Kieli.FI);
+            muuttunutKurssi.setId(kurssi.getId());
+            muuttunutKurssi.setNimi(kurssi.getNimi());
             muuttunutKurssi = sisalto.updateKurssi(perusteId, vaiheId, oppiaineId1, kurssiId, muuttunutKurssi);
             assertEquals(kurssi.getId(), muuttunutKurssi.getId());
             assertEquals(muuttunutKurssi.getKuvaus().get().get(Kieli.FI), "uusi kuvaus");
