@@ -6,6 +6,8 @@ import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
@@ -16,6 +18,7 @@ import fi.vm.sade.eperusteet.repository.OsaamismerkkiKategoriaRepository;
 import fi.vm.sade.eperusteet.repository.OsaamismerkkiRepository;
 import fi.vm.sade.eperusteet.repository.OsaamismerkkiRepositoryCustom;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
 import fi.vm.sade.eperusteet.service.OsaamismerkkiService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -30,6 +33,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.io.ByteArrayInputStream;
@@ -68,6 +72,9 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Autowired
     private LiiteTiedostoService liiteTiedostoService;
 
+    @Autowired
+    private KoodistoClient koodistoClient;
+
     public static final Set<String> IMAGE_TYPES;
 
     static {
@@ -76,6 +83,16 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
                 MediaType.IMAGE_PNG_VALUE,
                 "image/svg+xml"
         )));
+    }
+
+    @Override
+    public List<OsaamismerkkiDto> getOsaamismerkit() {
+        return mapper.mapAsList(osaamismerkkiRepository.findAll(), OsaamismerkkiDto.class) ;
+    }
+
+    @Override
+    public OsaamismerkkiDto getOsaamismerkkiByUri(String koodiUri) {
+        return mapper.map(osaamismerkkiRepository.findByKoodiUri(koodiUri), OsaamismerkkiDto.class) ;
     }
 
     @Override
@@ -111,6 +128,13 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Transactional
     public OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto) {
         Osaamismerkki osaamismerkki = mapper.map(osaamismerkkiDto, Osaamismerkki.class);
+
+        if (OsaamismerkkiTila.JULKAISTU.equals(osaamismerkki.getTila()) && ObjectUtils.isEmpty(osaamismerkki.getKoodiUri())) {
+            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.OSAAMISMERKIT, osaamismerkkiDto.getNimi());
+            if (lisattyKoodi != null) {
+                osaamismerkki.setKoodiUri(lisattyKoodi.getKoodiUri());
+            }
+        }
         osaamismerkki = osaamismerkkiRepository.save(osaamismerkki);
         return mapper.map(osaamismerkki, OsaamismerkkiDto.class);
     }
