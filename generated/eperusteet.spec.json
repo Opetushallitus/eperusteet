@@ -28,6 +28,8 @@
   }, {
     "name" : "Liitetiedostot"
   }, {
+    "name" : "Logout"
+  }, {
     "name" : "Lokalisointi"
   }, {
     "name" : "Lops2019"
@@ -913,17 +915,6 @@
         }
       }
     },
-    "/kayttajatieto/logout" : {
-      "get" : {
-        "tags" : [ "Kayttajat" ],
-        "operationId" : "logout",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
-          }
-        }
-      }
-    },
     "/kayttajatieto/{oid}" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
@@ -1157,6 +1148,26 @@
                 "$ref" : "#/definitions/KoulutusalaDto"
               }
             }
+          }
+        }
+      }
+    },
+    "/logout" : {
+      "get" : {
+        "tags" : [ "Logout" ],
+        "operationId" : "logoutGet",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Logout" ],
+        "operationId" : "logoutPOST",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
           }
         }
       }
@@ -12084,12 +12095,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -16908,7 +16919,7 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "virheet" : {
+        "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
@@ -16917,7 +16928,7 @@
         "vaihtoOk" : {
           "type" : "boolean"
         },
-        "huomautukset" : {
+        "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
