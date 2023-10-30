@@ -148,10 +148,10 @@ public class ExternalController {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkit());
     }
 
-    @RequestMapping(value = "/osaamismerkki/koodi/{uri}", method = GET)
+    @RequestMapping(value = "/osaamismerkki/{uri}", method = GET)
     @ResponseBody
     @ApiOperation(value = "Hae osaamismerkki koodiurilla")
-    public ResponseEntity<OsaamismerkkiDto> getOsaamismerkit(@PathVariable("uri") final String uri) {
+    public ResponseEntity<OsaamismerkkiDto> getOsaamismerkkiByUri(@PathVariable("uri") final String uri) {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkkiByUri(uri));
     }
 
