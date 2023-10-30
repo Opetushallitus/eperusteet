@@ -72,21 +72,4 @@ public class KayttajanTietoController {
         return service.haePerusteprojekti(oid, projektiId);
     }
 
-    @GetMapping(value = "/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.getSession().invalidate();
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                cookie.setValue("");
-                cookie.setPath("/");
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-            }
-        }
-
-        String url = request.getRequestURL().toString().replace(request.getRequestURI(),"");
-        response.sendRedirect(url + "/service-provider-app/saml/logout");
-    }
-
 }
