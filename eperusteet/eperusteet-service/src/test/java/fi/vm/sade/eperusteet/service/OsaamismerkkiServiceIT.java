@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @Transactional
 @DirtiesContext
@@ -35,40 +37,63 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void addKategoriaJaOsaamismerkki() throws HttpMediaTypeNotSupportedException, MimeTypeException {
-        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria());
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
         assertThat(osaamismerkkiService.getKategoriat()).hasSize(1);
 
-        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria));
+        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA));
         assertThat(osaamismerkkiService.findBy(new OsaamismerkkiQuery())).hasSize(1);
     }
 
     @Test
     public void findOsaamismerkit() throws HttpMediaTypeNotSupportedException, MimeTypeException {
-        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria());
-
-        OsaamismerkkiDto julkaistavaMerkki = createOsaamismerkki(kategoria);
-        julkaistavaMerkki.setTila(OsaamismerkkiTila.JULKAISTU);
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
+        OsaamismerkkiDto julkaistavaMerkki = createOsaamismerkki(kategoria, OsaamismerkkiTila.JULKAISTU);
 
         osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
-        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria));
+        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA));
 
         assertThat(osaamismerkkiService.findBy(new OsaamismerkkiQuery())).hasSize(2);
         assertThat(osaamismerkkiService.findJulkisetBy(new OsaamismerkkiQuery())).hasSize(1);
     }
 
     @Test
-    public void deleteOsaamismerkki() throws HttpMediaTypeNotSupportedException, MimeTypeException {
-        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria());
+    public void getJulkinenOsaamismerkki() throws HttpMediaTypeNotSupportedException, MimeTypeException {
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
+        OsaamismerkkiDto julkaistavaMerkki = createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA);
+        julkaistavaMerkki = osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
 
-        OsaamismerkkiDto merkki = osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria));
+        assertNull(osaamismerkkiService.getJulkinenOsaamismerkki(julkaistavaMerkki.getId()));
+
+        julkaistavaMerkki.setTila(OsaamismerkkiTila.JULKAISTU);
+        julkaistavaMerkki = osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
+
+        assertNotNull(osaamismerkkiService.getJulkinenOsaamismerkki(julkaistavaMerkki.getId()));
+    }
+
+    @Test
+    public void deleteOsaamismerkki() throws HttpMediaTypeNotSupportedException, MimeTypeException {
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
+
+        OsaamismerkkiDto merkki = osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA));
         assertThat(osaamismerkkiService.findBy(new OsaamismerkkiQuery())).hasSize(1);
         osaamismerkkiService.deleteOsaamismerkki(merkki.getId());
         assertThat(osaamismerkkiService.findBy(new OsaamismerkkiQuery())).hasSize(0);
     }
 
+    @Test
+    public void getJulkisetKategoriat() throws HttpMediaTypeNotSupportedException, MimeTypeException {
+        OsaamismerkkiKategoriaDto kategoria1 = osaamismerkkiService.updateKategoria(createKategoria("kategoria_1"));
+        osaamismerkkiService.updateKategoria(createKategoria("kategoria_2"));
+        osaamismerkkiService.updateKategoria(createKategoria("kategoria_3"));
+
+        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria1, OsaamismerkkiTila.JULKAISTU));
+
+        assertThat(osaamismerkkiService.getJulkisetKategoriat()).hasSize(1);
+    }
+
     @Test()
     public void deleteKategoria() throws HttpMediaTypeNotSupportedException, MimeTypeException {
-        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria());
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
         assertThat(osaamismerkkiService.getKategoriat()).hasSize(1);
         osaamismerkkiService.deleteKategoria(kategoria.getId());
         assertThat(osaamismerkkiService.getKategoriat()).hasSize(0);
@@ -79,12 +104,12 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
         expectedEx.expect(BusinessRuleViolationException.class);
         expectedEx.expectMessage("osaamismerkkiin-liitettya-kategoriaa-ei-voi-poistaa");
 
-        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria());
-        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria));
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
+        osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA));
         osaamismerkkiService.deleteKategoria(kategoria.getId());
     }
 
-    private OsaamismerkkiKategoriaDto createKategoria() {
+    private OsaamismerkkiKategoriaDto createKategoria(String name) {
         // 1x1 kokoinen jpeg-kuva binääristringinä, samanlaisena minä käliltä tulee bäkkärille
         String kuvaBinaarina = "/9j/4AAQSkZJRgABAQEA8ADwAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwMDAwYEBAMFBwYHBwcGBwcICQsJCAgKCAcHCg0KCgsMDAwMBwkODw0MDgsMDAz/2wBDAQICAgMDAwYDAwYMCAcIDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAz/wAARCAABAAEDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKAP/2Q==";
 
@@ -93,15 +118,15 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
         kategoriaLiite.setMime("image/jpeg");
 
         OsaamismerkkiKategoriaDto kategoria = new OsaamismerkkiKategoriaDto();
-        kategoria.setNimi(LokalisoituTekstiDto.of("kategoria"));
+        kategoria.setNimi(LokalisoituTekstiDto.of(name));
         kategoria.setLiite(kategoriaLiite);
         return kategoria;
     }
 
-   private OsaamismerkkiDto createOsaamismerkki(OsaamismerkkiKategoriaDto kategoria) {
+   private OsaamismerkkiDto createOsaamismerkki(OsaamismerkkiKategoriaDto kategoria, OsaamismerkkiTila tila) {
        OsaamismerkkiDto merkki = new OsaamismerkkiDto();
        merkki.setNimi(LokalisoituTekstiDto.of("osaamismerkki"));
-       merkki.setTila(OsaamismerkkiTila.LAADINTA);
+       merkki.setTila(tila);
        merkki.setKategoria(kategoria);
        merkki.setVoimassaoloAlkaa(DateUtils.addDays(new Date(),-1));
        merkki.setArviointikriteerit(new ArrayList<>());
