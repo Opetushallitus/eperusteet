@@ -31,7 +31,7 @@
         }
       }
     },
-    "/external/osaamismerkki/{uri}" : {
+    "/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Hae osaamismerkki koodiurilla",
@@ -2512,13 +2512,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2552,13 +2552,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
