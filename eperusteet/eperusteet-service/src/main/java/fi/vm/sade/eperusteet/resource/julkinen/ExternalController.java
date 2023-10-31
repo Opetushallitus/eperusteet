@@ -3,22 +3,21 @@ package fi.vm.sade.eperusteet.resource.julkinen;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
+import fi.vm.sade.eperusteet.service.OsaamismerkkiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +44,9 @@ public class ExternalController {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private OsaamismerkkiService osaamismerkkiService;
 
     @RequestMapping(value = "/peruste/{perusteId:\\d+}", method = GET)
     @ResponseBody
@@ -98,7 +100,7 @@ public class ExternalController {
             @PathVariable("perusteId") final long perusteId) {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
     }
-    
+
     @RequestMapping(value = "/peruste/{perusteId:\\d+}/**", method = GET)
     @ResponseBody
     @ApiOperation(
@@ -139,6 +141,19 @@ public class ExternalController {
         return getJulkaistuSisaltoObjectNodeWithQuery(req, amosaaPeruste.getContent().get(0).getId());
     }
 
+    @RequestMapping(value = "/osaamismerkit", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Hae kaikki osaamismerkit")
+    public ResponseEntity<List<OsaamismerkkiDto>> getOsaamismerkit() {
+        return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkit());
+    }
+
+    @RequestMapping(value = "/osaamismerkki/koodi/{uri}", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Hae osaamismerkki koodiurilla")
+    public ResponseEntity<OsaamismerkkiDto> getOsaamismerkkiByUri(@PathVariable("uri") final String uri) {
+        return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkkiByUri(uri));
+    }
 
     private ResponseEntity<Object> getJulkaistuSisaltoObjectNodeWithQuery(HttpServletRequest req, long id) {
         String[] queries = req.getPathInfo().split("/");
@@ -148,6 +163,4 @@ public class ExternalController {
         }
         return ResponseEntity.ok(result);
     }
-
-
 }

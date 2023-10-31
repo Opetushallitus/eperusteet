@@ -11,6 +11,49 @@
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
+    "/external/osaamismerkit" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
+        "summary" : "Hae kaikki osaamismerkit",
+        "description" : "",
+        "operationId" : "getOsaamismerkit",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/external/osaamismerkki/koodi/{uri}" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
+        "summary" : "Hae osaamismerkki koodiurilla",
+        "description" : "",
+        "operationId" : "getOsaamismerkkiByUri",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "uri",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
     "/external/peruste/yto/**" : {
       "get" : {
         "tags" : [ "Julkinen" ],
@@ -2241,6 +2284,116 @@
         }
       } ]
     },
+    "OsaamismerkkiArviointikriteeriDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "arviointikriteeri" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
+    "OsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LAADINTA", "JULKAISTU" ]
+        },
+        "kategoria" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+        },
+        "osaamistavoitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiOsaamistavoiteDto"
+          }
+        },
+        "arviointikriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiArviointikriteeriDto"
+          }
+        },
+        "voimassaoloAlkaa" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "voimassaoloLoppuu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "koodiUri" : {
+          "type" : "string"
+        }
+      }
+    },
+    "OsaamismerkkiKategoriaDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "liite" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaLiiteDto"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      }
+    },
+    "OsaamismerkkiKategoriaLiiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "nimi" : {
+          "type" : "string"
+        },
+        "mime" : {
+          "type" : "string"
+        },
+        "binarydata" : {
+          "type" : "string"
+        }
+      }
+    },
+    "OsaamismerkkiOsaamistavoiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "osaamistavoite" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
     "OsaamistasoDto" : {
       "type" : "object",
       "properties" : {
@@ -2367,19 +2520,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "first" : {
-          "type" : "boolean"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2391,8 +2543,9 @@
             "type" : "object"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -2407,19 +2560,18 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "first" : {
-          "type" : "boolean"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2431,8 +2583,9 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },

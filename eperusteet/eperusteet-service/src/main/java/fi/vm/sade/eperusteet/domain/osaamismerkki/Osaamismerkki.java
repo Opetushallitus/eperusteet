@@ -81,6 +81,9 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     @Audited(targetAuditMode = NOT_AUDITED)
     private List<OsaamismerkkiArviointikriteeri> arviointikriteerit = new ArrayList<>();
 
+    @Column(name = "koodi_uri")
+    private String koodiUri;
+
     public void setOsaamistavoitteet(List<OsaamismerkkiOsaamistavoite> osaamistavoitteet) {
         this.osaamistavoitteet.clear();
         if (osaamistavoitteet != null) {

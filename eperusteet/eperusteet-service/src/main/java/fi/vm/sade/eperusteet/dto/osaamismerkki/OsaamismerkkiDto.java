@@ -18,4 +18,5 @@ public class OsaamismerkkiDto extends OsaamismerkkiBaseDto {
     private Date voimassaoloLoppuu;
     private Date muokattu;
     private String muokkaaja;
+    private String koodiUri;
 }
