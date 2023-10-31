@@ -225,15 +225,13 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEKurssiDto updateKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, AIPEKurssiDto kurssiDto) {
-        AIPEKurssi kurssi = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId);
-        kurssiDto.setId(kurssiId);
-        kurssi = mapper.map(kurssiDto, kurssi);
+        AIPEKurssi kurssi = mapper.map(kurssiDto, AIPEKurssi.class);
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId, kurssi, MuokkausTapahtuma.PAIVITYS,
                 Sets.newHashSet(
                         new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipeoppiaine, oppiaineId),
                         new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)
                 ));
-        return mapper.map(kurssi, AIPEKurssiDto.class);
+        return mapper.map(kurssiRepository.save(kurssi), AIPEKurssiDto.class);
     }
 
     private void removeKurssiImpl(AIPEOppiaine oppiaine, AIPEKurssi kurssi) {
@@ -276,19 +274,13 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public AIPEOppiaineDto updateOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, AIPEOppiaineDto oppiaineDto) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         Peruste peruste = getPeruste(perusteId);
-        oppiaineDto.setId(oppiaineId);
-        List<AIPEKurssi> kurssit = new ArrayList(oppiaine.getKurssit());
-        AIPEOppiaine uusioppiaine = mapper.map(oppiaineDto, oppiaine);
-        uusioppiaine.addKurssit(kurssit);
-        List<OpetuksenTavoite> tavoitteet = uusioppiaine.getTavoitteet();
-        List<OpetuksenTavoiteDto> tavoitteetDtos = mapper.mapAsList(tavoitteet, OpetuksenTavoiteDto.class);
+        AIPEOppiaine uusioppiaine = mapper.map(oppiaineDto, AIPEOppiaine.class);
 
         if (PerusteTila.VALMIS.equals(peruste.getTila())) {
             AIPEOppiaine.validateChange(oppiaine, uusioppiaine);
         }
 
-        AIPEOppiaineDto dto = mapper.map(uusioppiaine, AIPEOppiaineDto.class);
-        dto.setTavoitteet(tavoitteetDtos);
+        AIPEOppiaineDto dto = mapper.map(oppiaineRepository.save(uusioppiaine), AIPEOppiaineDto.class);
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId,
                 new HistoriaTapahtuma() {
                     @Override

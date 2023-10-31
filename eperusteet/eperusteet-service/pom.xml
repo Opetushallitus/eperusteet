@@ -792,6 +792,7 @@
                                         <location>${eperusteet.resources}.KayttajanTietoController</location>
                                         <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>
                                         <location>${eperusteet.resources}.peruste.PerusteAikatauluController</location>
+                                        <location>${eperusteet.resources}.LogoutController</location>
                                         <location>
                                             ${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController
                                         </location>
