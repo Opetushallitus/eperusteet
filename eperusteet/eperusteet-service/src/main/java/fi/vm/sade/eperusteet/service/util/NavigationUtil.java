@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -25,7 +26,9 @@ public class NavigationUtil {
             NavigationType.koto_opinto);
 
     public static NavigationNodeDto asetaNumerointi(Peruste peruste, NavigationNodeDto node) {
-        if (!peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN) && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)) {
+        if (!peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)
+                && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)
+                && !KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
             asetaNumerointi(node.getChildren(), "");
         }
         return node;
