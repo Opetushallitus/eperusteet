@@ -102,7 +102,10 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -955,7 +958,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (peruste.getAipeOpetuksenPerusteenSisalto() != null && peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset() != null) {
             perusteDto.getAipeOpetuksenPerusteenSisalto()
-                    .setLaajaalaisetosaamiset(mapper.mapAsList(
+                    .setVaiheet(peruste.getAipeOpetuksenPerusteenSisalto().getVaiheet().stream()
+                    .map(vaihe -> {
+                        AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
+                        dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class));
+                        dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
+                        return dto;
+                    })
+                    .collect(Collectors.toList()));
+            perusteDto.getAipeOpetuksenPerusteenSisalto().setLaajaalaisetosaamiset(mapper.mapAsList(
                             peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset(),
                             LaajaalainenOsaaminenDto.class));
         }
