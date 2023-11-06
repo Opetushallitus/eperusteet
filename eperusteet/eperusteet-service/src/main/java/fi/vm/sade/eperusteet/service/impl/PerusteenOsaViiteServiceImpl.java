@@ -126,8 +126,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
         }
 
         muokkausTietoService.addMuokkaustieto(perusteId, viite, MuokkausTapahtuma.POISTO);
-        if (viite.getPerusteenOsa() != null && viite.getPerusteenOsa().getTila().equals(PerusteTila.LUONNOS)
-                && findViitteet(perusteId, id).size() == 1) {
+        if (viite.getPerusteenOsa() != null && findViitteet(perusteId, id).size() == 1) {
             PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
             poistoService.remove(perusteId, perusteenOsa);
             perusteenOsaService.delete(perusteenOsa.getId(), perusteId);
