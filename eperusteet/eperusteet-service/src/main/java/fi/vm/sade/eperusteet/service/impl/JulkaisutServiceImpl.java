@@ -187,11 +187,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
-    private static final List<String> pdfEnabled = Arrays.asList(
-            "koulutustyyppi_1", "koulutustyyppi_5", "koulutustyyppi_6", "koulutustyyppi_11",
-            "koulutustyyppi_12", "koulutustyyppi_15", "koulutustyyppi_17", "koulutustyyppi_18",
-            "koulutustyyppi_20", "koulutustyyppi_999907", "koulutustyyppi_10", "koulutustyyppi_40",
-            "koulutustyyppi_35", "koulutustyyppi_30");
 
     @Override
     public List<JulkaisuBaseDto> getJulkaisut(long id) {
@@ -342,44 +337,43 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     @IgnorePerusteUpdateCheck
     public Set<Long> generoiJulkaisuPdf(Peruste peruste) {
-        Set<Long> dokumentit = new HashSet<>();
 
-        if (pdfEnabled.contains(peruste.getKoulutustyyppi())) {
-
-            Set<Suoritustapakoodi> suoritustavat = peruste.getSuoritustavat().stream().map(Suoritustapa::getSuoritustapakoodi).collect(toSet());
-            if (suoritustavat.isEmpty()) {
-                if (peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
-                    suoritustavat.add(Suoritustapakoodi.OPAS);
-                } else {
-                    suoritustavat.add(Suoritustapakoodi.REFORMI);
-                }
-            }
-
-            dokumentit.addAll(suoritustavat.stream()
-                    .map(suoritustapa -> peruste.getKielet().stream()
-                            .map(kieli -> {
-                                try {
-                                    DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                            peruste.getId(),
-                                            kieli,
-                                            suoritustapa,
-                                            GeneratorVersion.UUSI
-                                    );
-                                    dokumenttiService.setStarted(createDtoFor);
-                                    dokumenttiService.generateWithDto(createDtoFor);
-                                    return createDtoFor.getId();
-                                } catch (DokumenttiException e) {
-                                    log.error(e.getLocalizedMessage(), e);
-                                }
-
-                                return null;
-                            })
-                            .collect(toSet()))
-                    .filter(id -> id != null)
-                    .flatMap(Collection::stream)
-                    .collect(toSet()));
+        if (!peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
+            return Collections.emptySet();
         }
-        return dokumentit;
+
+        Set<Suoritustapakoodi> suoritustavat = peruste.getSuoritustavat().stream().map(Suoritustapa::getSuoritustapakoodi).collect(toSet());
+        if (suoritustavat.isEmpty()) {
+            if (peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
+                suoritustavat.add(Suoritustapakoodi.OPAS);
+            } else {
+                suoritustavat.add(Suoritustapakoodi.REFORMI);
+            }
+        }
+
+        return suoritustavat.stream()
+                .map(suoritustapa -> peruste.getKielet().stream()
+                        .map(kieli -> {
+                            try {
+                                DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                                        peruste.getId(),
+                                        kieli,
+                                        suoritustapa,
+                                        GeneratorVersion.UUSI
+                                );
+                                dokumenttiService.setStarted(createDtoFor);
+                                dokumenttiService.generateWithDto(createDtoFor);
+                                return createDtoFor.getId();
+                            } catch (DokumenttiException e) {
+                                log.error(e.getLocalizedMessage(), e);
+                            }
+
+                            return null;
+                        })
+                        .collect(toSet()))
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     @Override
