@@ -15,6 +15,7 @@ import java.util.Date;
 public class OsaamismerkkiKategoriaDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
+    private LokalisoituTekstiDto kuvaus;
     private OsaamismerkkiKategoriaLiiteDto liite;
     private Date muokattu;
 }
