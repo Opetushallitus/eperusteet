@@ -44,9 +44,6 @@ import java.util.*;
 
 import static fi.vm.sade.eperusteet.service.security.PermissionManager.Permission.*;
 
-/**
- * @author harrik
- */
 @Service
 public class PermissionManager {
 
@@ -110,7 +107,8 @@ public class PermissionManager {
         TUTKINNONOSAVIITE("tutkinnonosaviite"),
         PERUSTEENOSAVIITE("perusteenosaviite"),
         TIEDOTE("tiedote"),
-        ORGANISAATIO("organisaatio");
+        ORGANISAATIO("organisaatio"),
+        OSAAMISMERKIT("osaamismerkit");
 
         private final String target;
 
@@ -354,6 +352,18 @@ public class PermissionManager {
             perm.put(POISTO, r0);
             tmp.put(null, perm);
             allowedRolesTmp.put(Target.ORGANISAATIO, tmp);
+        }
+
+        // Osaamismerkki
+        {
+            Map<ProjektiTila, Map<Permission, Set<String>>> tmp = new IdentityHashMap<>();
+            Map<Permission, Set<String>> perm = Maps.newHashMap();
+            perm.put(LUONTI, r0);
+            perm.put(LUKU, r0);
+            perm.put(MUOKKAUS, r0);
+            perm.put(POISTO, r0);
+            tmp.put(null, perm);
+            allowedRolesTmp.put(Target.OSAAMISMERKIT, tmp);
         }
 
         if (LOG.isTraceEnabled()) {
