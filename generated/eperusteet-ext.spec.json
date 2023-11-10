@@ -2306,6 +2306,9 @@
         "nimi" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
         "tila" : {
           "type" : "string",
           "enum" : [ "LAADINTA", "JULKAISTU" ]
@@ -2353,6 +2356,9 @@
           "format" : "int64"
         },
         "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "kuvaus" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "liite" : {
@@ -2512,26 +2518,17 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2543,7 +2540,16 @@
             "type" : "object"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -2552,26 +2558,17 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
-        "numberOfElements" : {
+        "number" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2583,7 +2580,16 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }

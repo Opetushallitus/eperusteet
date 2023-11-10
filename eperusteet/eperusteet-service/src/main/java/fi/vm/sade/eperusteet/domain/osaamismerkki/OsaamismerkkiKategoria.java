@@ -35,6 +35,11 @@ public class OsaamismerkkiKategoria extends AbstractAuditedEntity {
     @Audited(targetAuditMode = NOT_AUDITED)
     private TekstiPalanen nimi;
 
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Audited(targetAuditMode = NOT_AUDITED)
+    private TekstiPalanen kuvaus;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     @NotNull
     @Audited(targetAuditMode = NOT_AUDITED)

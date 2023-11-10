@@ -177,6 +177,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         } else {
             kategoria = osaamismerkkiKategoriaRepository.findOne(kategoriaDto.getId());
             kategoria.setNimi(mapper.map(kategoriaDto.getNimi(), TekstiPalanen.class));
+            kategoria.setKuvaus(mapper.map(kategoriaDto.getKuvaus(), TekstiPalanen.class));
         }
 
         UUID liiteDbId = kategoria.getLiite() != null ? kategoria.getLiite().getId() : null;

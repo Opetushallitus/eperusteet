@@ -19,6 +19,7 @@ import java.util.List;
 public class OsaamismerkkiBaseDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
+    private LokalisoituTekstiDto kuvaus;
     private OsaamismerkkiTila tila;
     private OsaamismerkkiKategoriaDto kategoria;
     private List<OsaamismerkkiOsaamistavoiteDto> osaamistavoitteet = new ArrayList<>();
