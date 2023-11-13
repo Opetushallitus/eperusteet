@@ -97,6 +97,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpEntity;
@@ -208,6 +209,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Autowired
     HttpHeaders httpHeaders;
 
+    @Lazy
     @Autowired
     private JulkaisutService julkaisutService;
 
@@ -307,14 +309,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public PerusteprojektiDto get(Long id) {
-        Perusteprojekti p = repository.findOne(id);
+        Perusteprojekti p = repository.findById(id).orElse(null);
         return mapper.map(p, PerusteprojektiDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<KayttajanTietoDto> getJasenet(Long id) {
-        Perusteprojekti p = repository.findOne(id);
+        Perusteprojekti p = repository.findById(id).orElse(null);
 
         if (p == null || ObjectUtils.isEmpty(p.getRyhmaOid())) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
@@ -352,7 +354,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     public List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> getJasenetTiedot(Long id) {
         List<CombinedDto<KayttajanTietoDto, KayttajanProjektitiedotDto>> kayttajat = new ArrayList<>();
-        Perusteprojekti p = repository.findOne(id);
+        Perusteprojekti p = repository.findById(id).orElse(null);
 
         if (p == null || ObjectUtils.isEmpty(p.getRyhmaOid())) {
             throw new BusinessRuleViolationException("Perusteprojektilla ei ole oid:a");
@@ -443,7 +445,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 boolean korvaava = diaariHaku.getTila() == ProjektiTila.JULKAISTU && diaariHaku.getLoytyi();
 
                 if (korvaava) {
-                    Perusteprojekti jyrattava = repository.findOne(diaariHaku.getId());
+                    Perusteprojekti jyrattava = repository.findById(diaariHaku.getId()).orElseThrow();
                     perusteprojekti.setPaatosPvm(jyrattava.getPaatosPvm());
                     perusteprojekti.setToimikausiAlku(jyrattava.getToimikausiAlku());
                     perusteprojekti.setToimikausiLoppu(jyrattava.getToimikausiLoppu());
@@ -570,7 +572,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional
     public PerusteprojektiDto update(Long id, PerusteprojektiDto perusteprojektiDto) {
-        Perusteprojekti vanhaProjekti = repository.findOne(id);
+        Perusteprojekti vanhaProjekti = repository.findById(id).orElse(null);
         if (vanhaProjekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
@@ -587,7 +589,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     public Set<ProjektiTila> getTilat(Long id) {
-        Perusteprojekti p = repository.findOne(id);
+        Perusteprojekti p = repository.findById(id).orElse(null);
         if (p == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);
         }
@@ -613,7 +615,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
 
-        Perusteprojekti projekti = repository.findOne(id);
+        Perusteprojekti projekti = repository.findById(id).orElse(null);
         Peruste peruste = projekti.getPeruste();
 
         if (projekti.getTila().equals(ProjektiTila.POISTETTU) && tila.equals(LAADINTA) && peruste.getViimeisinJulkaisuAika().isPresent()) {
@@ -704,7 +706,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @IgnorePerusteUpdateCheck
     @Transactional
     public void updateProjektiTila(Long id, ProjektiTila tila) {
-        Perusteprojekti projekti = repository.findOne(id);
+        Perusteprojekti projekti = repository.findById(id).orElse(null);
         projekti.setTila(tila);
         if (tila.equals(ProjektiTila.VALMIS)) {
             projekti.getPeruste().asetaTila(PerusteTila.VALMIS);
@@ -716,7 +718,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @IgnorePerusteUpdateCheck
     @Transactional
     public void avaaPerusteProjekti(Long id) {
-        Perusteprojekti projekti = repository.findOne(id);
+        Perusteprojekti projekti = repository.findById(id).orElse(null);
         projekti.setTila(LAADINTA);
         projekti.getPeruste().asetaTila(PerusteTila.LUONNOS);
         repository.save(projekti);
@@ -864,7 +866,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional
     @Override
     public List<TyoryhmaHenkiloDto> saveTyoryhma(Long perusteProjektiId, String tyoryhma, List<String> henkilot) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         removeTyoryhma(perusteProjektiId, tyoryhma);
         perusteprojektiTyoryhmaRepository.flush();
         List<PerusteprojektiTyoryhma> res = new ArrayList<>();
@@ -878,7 +880,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional
     @Override
     public TyoryhmaHenkiloDto saveTyoryhma(Long perusteProjektiId, TyoryhmaHenkiloDto tr) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         PerusteprojektiTyoryhma ppt = perusteprojektiTyoryhmaRepository.save(new PerusteprojektiTyoryhma(pp,
                 tr.getKayttajaOid(), tr.getNimi()));
         return mapper.map(ppt, TyoryhmaHenkiloDto.class);
@@ -887,7 +889,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     @Override
     public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
     }
@@ -895,7 +897,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     @Override
     public List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(Long perusteProjektiId, String nimi) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         List<PerusteprojektiTyoryhma> tr = perusteprojektiTyoryhmaRepository.findAllByPerusteprojektiAndNimi(pp, nimi);
         return mapper.mapAsList(tr, TyoryhmaHenkiloDto.class);
     }
@@ -903,14 +905,14 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional
     @Override
     public void removeTyoryhma(Long perusteProjektiId, String nimi) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         perusteprojektiTyoryhmaRepository.deleteAllByPerusteprojektiAndNimi(pp, nimi);
     }
 
     @Transactional
     @Override
     public List<String> setPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId, List<String> nimet) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
         Set<String> uniques = new HashSet<>(nimet);
         perusteenOsaTyoryhmaRepository.deleteAllByPerusteenosaAndPerusteprojekti(po, pp);
@@ -933,7 +935,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     @Override
     public List<String> getPerusteenOsaViiteTyoryhmat(Long perusteProjektiId, Long perusteenOsaId) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         PerusteenOsa po = perusteenOsaRepository.findOne(perusteenOsaId);
         List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteenosaAndPerusteprojekti(po, pp);
         List<String> res = new ArrayList<>();
@@ -946,7 +948,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Transactional(readOnly = true)
     @Override
     public List<PerusteenOsaTyoryhmaDto> getSisallonTyoryhmat(Long perusteProjektiId) {
-        Perusteprojekti pp = repository.findOne(perusteProjektiId);
+        Perusteprojekti pp = repository.findById(perusteProjektiId).orElseThrow();
         List<PerusteenOsaTyoryhma> tyoryhmat = perusteenOsaTyoryhmaRepository.findAllByPerusteprojekti(pp);
         return mapper.mapAsList(tyoryhmat, PerusteenOsaTyoryhmaDto.class);
     }

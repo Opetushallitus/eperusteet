@@ -169,7 +169,7 @@ public class TutkinnonOsaViiteServiceImpl implements TutkinnonOsaViiteService {
     }
 
     private void assertExists(Long id) {
-        if (!tutkinnonOsaViiteRepository.exists(id)) {
+        if (!tutkinnonOsaViiteRepository.existsById(id)) {
             throw new BusinessRuleViolationException("Pyydettyä tutkinnonosaviitettä ei ole olemassa");
         }
     }

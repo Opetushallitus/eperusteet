@@ -13,11 +13,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.resource.config;
+package fi.vm.sade.eperusteet.config;
 
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
+import fi.vm.sade.eperusteet.service.util.VirheServlet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -26,6 +29,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.web.servlet.config.annotation.*;
 
 import javax.persistence.EntityManagerFactory;
@@ -90,4 +94,5 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
 
         configurer.setTaskExecutor(executor).setDefaultTimeout(120000);
     }
+
 }

@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.resource.config;
+package fi.vm.sade.eperusteet.config;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;

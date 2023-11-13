@@ -13,7 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.resource.config;
+package fi.vm.sade.eperusteet.config;
 
 import com.fasterxml.classmate.GenericType;
 import com.fasterxml.classmate.TypeResolver;
@@ -26,7 +26,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.AlternateTypeRules;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -47,7 +49,7 @@ import static com.google.common.base.Predicates.not;
 @Configuration
 @EnableSwagger
 @EnableSwagger2
-@Profile("default")
+@Profile("!test")
 public class SwaggerConfig {
     private static final Logger LOG = LoggerFactory.getLogger(SwaggerConfig.class);
 
@@ -64,7 +66,7 @@ public class SwaggerConfig {
                 .directModelSubstitute(JsonNode.class, Object.class)
                 .genericModelSubstitutes(ResponseEntity.class, Optional.class)
                 .alternateTypeRules(
-                        springfox.documentation.schema.AlternateTypeRules.newRule(
+                        AlternateTypeRules.newRule(
                                 typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
                                 }),
                                 typeResolver.resolve(Object.class)))
@@ -84,10 +86,10 @@ public class SwaggerConfig {
                 .genericModelSubstitutes(ResponseEntity.class, Optional.class)
                 .forCodeGeneration(true)
                 .select()
-                .apis(not(RequestHandlerSelectors.withClassAnnotation(InternalApi.class)))
+                .apis(RequestHandlerSelectors.withClassAnnotation(InternalApi.class).negate())
                 .build()
                 .alternateTypeRules(
-                        springfox.documentation.schema.AlternateTypeRules.newRule(
+                        AlternateTypeRules.newRule(
                                 typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
                                 }),
                                 typeResolver.resolve(Object.class)))
@@ -104,10 +106,10 @@ public class SwaggerConfig {
                 .genericModelSubstitutes(ResponseEntity.class, Optional.class)
                 .forCodeGeneration(true)
                 .select()
-                .apis(not(RequestHandlerSelectors.withClassAnnotation(InternalApi.class)))
+                .apis(RequestHandlerSelectors.withClassAnnotation(InternalApi.class).negate())
                 .build()
                 .alternateTypeRules(
-                        springfox.documentation.schema.AlternateTypeRules.newRule(
+                        AlternateTypeRules.newRule(
                                 typeResolver.resolve(new GenericType<Callable<ResponseEntity<Object>>>() {
                                 }),
                                 typeResolver.resolve(Object.class)

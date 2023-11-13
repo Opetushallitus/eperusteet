@@ -42,4 +42,5 @@
 
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.resource" />
+    <context:component-scan base-package="fi.vm.sade.eperusteet.config"/>
 </beans>

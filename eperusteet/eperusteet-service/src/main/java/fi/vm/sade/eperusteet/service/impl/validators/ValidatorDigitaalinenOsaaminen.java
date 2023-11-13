@@ -51,7 +51,7 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila) {
         List<Validointi> validoinnit = new ArrayList<>();
 
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
 
         Validointi perusteValidointi = new Validointi(ValidointiKategoria.PERUSTE);
         Validointi sisaltoValidointi = new Validointi(ValidointiKategoria.KIELISISALTO);

@@ -124,7 +124,7 @@ public class PerusteImportLops2019 implements PerusteImport {
         for (LiiteDto liiteDto : projektiImport.getLiitteet()) {
             UUID uuid = liiteDto.getId();
             // Jos liite löytyy jo, käytetään olemassa olevaa
-            Liite liite = liiteRepository.findOne(uuid);
+            Liite liite = liiteRepository.findById(uuid).orElseThrow();
             if (liite == null) {
                 Liite newLiite = liiteRepository.add(
                         uuid,

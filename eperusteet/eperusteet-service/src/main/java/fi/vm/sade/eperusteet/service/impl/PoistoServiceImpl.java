@@ -84,7 +84,7 @@ public class PoistoServiceImpl implements PoistoService {
             perusteenMuokkaustietoService.addMuokkaustieto(perusteId, perusteenOsaViiteRepository.findOne(viite.getId()), MuokkausTapahtuma.PALAUTUS);
         }
 
-        poistettuSisaltoRepository.delete(poistoId);
+        poistettuSisaltoRepository.deleteById(poistoId);
     }
 
 

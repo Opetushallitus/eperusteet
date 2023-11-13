@@ -17,7 +17,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.OpintoalaDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.OpintoalaService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -499,7 +499,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         // Poistetaan, jos viitattu perusteen sisällöstä
         if (removed) {
-            oppiaineRepository.delete(oppiaineId);
+            oppiaineRepository.deleteById(oppiaineId);
         }
         muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.POISTO);
     }
@@ -571,7 +571,7 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         // Poistetaan, jos viitattu perusteen sisällöstä
         if (removed) {
-            moduuliRepository.delete(moduuliId);
+            moduuliRepository.deleteById(moduuliId);
         }
         muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.PAIVITYS);
     }

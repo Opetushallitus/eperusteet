@@ -18,7 +18,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaProfiiliDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajaprofiiliPreferenssiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.SuosikkiDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajaprofiiliService;
 import fi.vm.sade.eperusteet.service.SuosikkiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 /**
  *

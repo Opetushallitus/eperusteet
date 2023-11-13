@@ -443,7 +443,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         Oppiaine aine = getAndLockOppiaine(perusteId, oppiaineId);
         OpetuksenKohdealue kohde = null;
         if (kohdealue.getId() != null) {
-            OpetuksenKohdealue vanhaKohde = kohdeAlueRepository.findOne(kohdealue.getId());
+            OpetuksenKohdealue vanhaKohde = kohdeAlueRepository.findById(kohdealue.getId()).orElse(null);
             mapper.map(kohdealue, vanhaKohde);
         } else {
             kohde = mapper.map(kohdealue, OpetuksenKohdealue.class);
@@ -463,7 +463,7 @@ public class OppiaineServiceImpl implements OppiaineService {
 
         Set<OpetuksenKohdealue> kohdealueet = Sets.newHashSet(mapper.mapAsList(kohdealueetDto, OpetuksenKohdealue.class));
         aine.setKohdealueet(kohdealueet);
-        kohdeAlueRepository.save(kohdealueet);
+        kohdeAlueRepository.saveAll(kohdealueet);
         oppiaineRepository.save(aine);
 
         muokkausTietoService.addMuokkaustieto(perusteId, aine, MuokkausTapahtuma.PAIVITYS);
@@ -479,7 +479,7 @@ public class OppiaineServiceImpl implements OppiaineService {
         for (OpetuksenTavoite t : tavoitteet) {
             t.getKohdealueet().remove(kohdealue);
         }
-        Oppiaine oppiaine = oppiaineRepository.findOne(id);
+        Oppiaine oppiaine = oppiaineRepository.findById(id).orElse(null);
         oppiaine.removeKohdealue(kohdealue);
         muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.PAIVITYS);
     }
@@ -494,7 +494,7 @@ public class OppiaineServiceImpl implements OppiaineService {
                 LUKIOKOULUTUS.getRepository(applicationContext).findByPerusteId(perusteId);
         oppiaineIds.addAll(oppiaineet.stream().filter(oa -> oa.getOppiaineId() != null)
                 .map(OppiaineJarjestysDto::getOppiaineId).collect(toSet()));
-        Map<Long, Oppiaine> byId = oppiaineRepository.findAll(oppiaineIds).stream().collect(toMap(Oppiaine::getId, o -> o));
+        Map<Long, Oppiaine> byId = oppiaineRepository.findAllById(oppiaineIds).stream().collect(toMap(Oppiaine::getId, o -> o));
         dtosById.values().stream().sorted(comparing(OppiaineJarjestysDto::getOppiaineId, nullsFirst(naturalOrder()))).forEach(dto -> {
             Oppiaine oa = lookupOrRestoreOppiaine(perusteId, dto.getId(), tryRestoreFromRevision, byId, sisalto);
             oppiaineRepository.lock(oa);

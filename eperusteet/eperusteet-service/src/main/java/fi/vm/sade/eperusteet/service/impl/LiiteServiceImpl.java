@@ -50,7 +50,7 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public void export(Long perusteId, UUID id, OutputStream os) {
-        Liite liite = liitteet.findOne(id);
+        Liite liite = liitteet.findById(id).orElse(null);
         if (liite == null) {
             throw new NotExistsException();
         }
@@ -89,7 +89,7 @@ public class LiiteServiceImpl implements LiiteService {
     @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {
         Peruste peruste = perusteet.findOne(perusteId);
-        Liite liite = liitteet.findOne(id);
+        Liite liite = liitteet.findById(id).orElse(null);
 
         if (liite != null && liite.getPerusteet() != null && !liite.getPerusteet().contains(peruste)) {
             throw new BusinessRuleViolationException("kuva-ei-kuulu-julkaistuun-perusteeseen");
@@ -102,7 +102,7 @@ public class LiiteServiceImpl implements LiiteService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public LiiteDto get(UUID id) {
-        Liite liite = liitteet.findOne(id);
+        Liite liite = liitteet.findById(id).orElse(null);
         return mapper.map(liite, LiiteDto.class);
     }
 

@@ -39,7 +39,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiOppaineMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiTarkasteleDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.OppaineKurssiTreeStructureDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;

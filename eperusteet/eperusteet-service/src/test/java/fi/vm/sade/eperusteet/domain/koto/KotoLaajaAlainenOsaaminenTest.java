@@ -4,9 +4,11 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.vst.KotoLaajaAlainenOsaaminen;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SpringBootTest
 public class KotoLaajaAlainenOsaaminenTest {
 
     /**

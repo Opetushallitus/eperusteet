@@ -60,7 +60,7 @@ public class PerusteenMuokkaustietoServiceIT extends AbstractIntegrationTest {
     @Before
     public void setup() {
         PerusteprojektiDto projektiDto = testUtils.createPerusteprojekti();
-        projekti = perusteprojektiRepository.findOne(projektiDto.getId());
+        projekti = perusteprojektiRepository.findById(projektiDto.getId()).orElseThrow();
         peruste = projekti.getPeruste();
         Suoritustapa s = new Suoritustapa();
         s.setSuoritustapakoodi(Suoritustapakoodi.OPS);
@@ -113,7 +113,7 @@ public class PerusteenMuokkaustietoServiceIT extends AbstractIntegrationTest {
     }
 
     private List<PerusteenMuokkaustieto> getMuokkaustiedot(Long perusteId) {
-        return muokkausTietoRepository.findByPerusteIdAndLuotuBeforeOrderByLuotuDesc(perusteId, new Date(), new PageRequest(0, 100));
+        return muokkausTietoRepository.findByPerusteIdAndLuotuBeforeOrderByLuotuDesc(perusteId, new Date(), PageRequest.of(0, 100));
     }
 
     private List<PerusteenMuokkaustieto> getMuokkaustiedotValilta(Long perusteId) {

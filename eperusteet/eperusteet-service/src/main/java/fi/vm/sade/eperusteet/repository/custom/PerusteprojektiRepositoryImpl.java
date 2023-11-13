@@ -40,7 +40,7 @@ public class PerusteprojektiRepositoryImpl implements PerusteprojektiRepositoryC
         TypedQuery<Long> countQuery = getCountQuery(pquery);
         TypedQuery<Tuple> query = getQuery(pquery);
         if (page != null) {
-            query.setFirstResult(page.getOffset());
+            query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
             query.setMaxResults(page.getPageSize());
         }
 

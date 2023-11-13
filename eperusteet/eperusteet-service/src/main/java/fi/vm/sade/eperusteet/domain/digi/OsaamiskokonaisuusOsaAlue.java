@@ -36,7 +36,9 @@ public class OsaamiskokonaisuusOsaAlue extends AbstractAuditedReferenceableEntit
     private TekstiPalanen nimi;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaukset_join")
+    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaukset_join",
+            joinColumns = @JoinColumn(name = "osaamiskokonaisuus_osa_alue_id"),
+            inverseJoinColumns = @JoinColumn(name = "tasokuvaukset_id"))
     @OrderColumn
     private List<OsaamiskokonaisuusOsaAlueTasoKuvaus> tasokuvaukset = new ArrayList<>();;
 

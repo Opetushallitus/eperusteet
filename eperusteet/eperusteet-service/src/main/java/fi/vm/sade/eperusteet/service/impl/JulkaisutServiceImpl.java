@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Sets;
+import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
@@ -55,7 +56,6 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
-import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
@@ -75,13 +75,13 @@ import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.service.util.Validointi;
 import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 import org.apache.tika.mime.MimeTypeException;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -121,7 +121,7 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 @Service
 @Transactional
-@Profile("default")
+@Profile("!test")
 public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Value("${fi.vm.sade.eperusteet.salli_virheelliset:false}")
@@ -143,6 +143,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Autowired
     private LiiteRepository liiteRepository;
 
+    @Lazy
     @Autowired
     private PerusteprojektiService perusteprojektiService;
 
@@ -186,6 +187,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private JulkaistuPerusteDataStoreRepository julkaistuPerusteDataStoreRepository;
 
     @Autowired
+    private CacheManager cacheManager;
+
+    @Autowired
     @Lazy
     private JulkaisutService self;
 
@@ -204,7 +208,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     public List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id) {
         List<JulkaisuBaseDto> julkaisut = getJulkaistutPerusteet(id);
 
-        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(id);
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findById(id).orElse(null);
         if (julkaisuPerusteTila != null
                 && (julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.KESKEN) || julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.VIRHE))) {
             julkaisut.add(JulkaisuBaseDto.builder()
@@ -232,7 +236,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     @IgnorePerusteUpdateCheck
     public CompletableFuture<Void> teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
-        Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
+        Perusteprojekti perusteprojekti = perusteprojektiRepository.findById(projektiId).orElse(null);
 
         if (!isValidTiedote(julkaisuBaseDto.getTiedote()) || !isValidTiedote(julkaisuBaseDto.getJulkinenTiedote())) {
             throw new BusinessRuleViolationException("tiedote-sisaltaa-kiellettyja-merkkeja");
@@ -246,7 +250,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     private JulkaisuPerusteTila getOrCreateTila(Long perusteId) {
-        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteId);
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findById(perusteId).orElse(null);
         if (julkaisuPerusteTila == null) {
             julkaisuPerusteTila = new JulkaisuPerusteTila();
             julkaisuPerusteTila.setPerusteId(perusteId);
@@ -258,7 +262,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     public JulkaisuTila viimeisinJulkaisuTila(Long perusteId) {
-        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(perusteId);
+        JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findById(perusteId).orElse(null);
 
         if (julkaisuPerusteTila != null &&
                 julkaisuPerusteTila.getJulkaisutila().equals(JulkaisuTila.KESKEN)
@@ -277,7 +281,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     public CompletableFuture<Void> teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         log.debug("teeJulkaisu: {}", projektiId);
 
-        Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
+        Perusteprojekti perusteprojekti = perusteprojektiRepository.findById(projektiId).orElse(null);
             if (perusteprojekti == null) {
                 throw new BusinessRuleViolationException("projektia-ei-ole");
             }
@@ -337,9 +341,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
 
             if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
-                Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
+                Cache amosaaperusteet = cacheManager.getCache("amosaaperusteet");
                 if (amosaaperusteet != null) {
-                    amosaaperusteet.removeAll();
+                    amosaaperusteet.clear();
                 }
             }
 
@@ -461,7 +465,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     @IgnorePerusteUpdateCheck
     public JulkaisuBaseDto aktivoiJulkaisu(long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException {
-        Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
+        Perusteprojekti perusteprojekti = perusteprojektiRepository.findById(projektiId).orElse(null);
 
         if (perusteprojekti == null) {
             throw new BusinessRuleViolationException("projektia-ei-ole");
@@ -497,7 +501,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                                                             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
                                                             String koodi, JulkaisuSisaltoTyyppi sisaltotyyppi,
                                                             Integer sivu, Integer sivukoko) {
-        Pageable pageable = new PageRequest(sivu, sivukoko);
+        Pageable pageable = PageRequest.of(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
         if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN.toString())) {
             koulutustyyppi = List.of("");
@@ -710,9 +714,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 JulkaisuLiite mappedJulkaisuLiite = mapper.map(julkaisuLiite, JulkaisuLiite.class);
                 if (julkaisuLiite.getData() != null) {
                     Pair<UUID, String> filePair = uploadLiite(julkaisuLiite);
-                    liite = liiteRepository.findById(filePair.getFirst());
+                    liite = liiteRepository.findById(filePair.getFirst()).orElse(null);
                 } else if (julkaisuLiite.getLiite() != null && julkaisuLiite.getLiite().getId() != null) {
-                    liite = liiteRepository.findById(julkaisuLiite.getLiite().getId());
+                    liite = liiteRepository.findById(julkaisuLiite.getLiite().getId()).orElse(null);
                 }
 
                 if (liite != null) {
@@ -745,7 +749,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     private List<JulkaisuBaseDto> getJulkaistutPerusteet(Long id) {
-        Peruste peruste = perusteRepository.findOne(id);
+        Peruste peruste = perusteRepository.findById(id).orElse(null);
         if (peruste == null) {
             throw new BusinessRuleViolationException("perustetta-ei-loytynyt");
         }

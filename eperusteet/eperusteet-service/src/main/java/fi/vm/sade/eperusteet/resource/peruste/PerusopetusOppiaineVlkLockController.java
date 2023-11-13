@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.resource.AbstractLockService;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;

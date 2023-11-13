@@ -48,7 +48,7 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
     public Page<Tiedote> findBy(PageRequest page, TiedoteQuery tquery) {
         TypedQuery<Long> countQuery = getCountQuery(tquery);
         TypedQuery<Tuple> query = getQuery(page, tquery);
-        query.setFirstResult(page.getOffset());
+        query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
         query.setMaxResults(page.getPageSize());
 
         log.debug(query.unwrap(Query.class).getQueryString());

@@ -22,18 +22,19 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:property-placeholder
-        location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+        location="file:///${user.home:''}/oph-configuration/override.properties"
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
+    <!--classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties" -->
 
-    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation"  value="classpath:eperusteet-ehcache.xml"/>
-        <property name="cacheManagerName" value="eperusteetCacheManager"/>
-    </bean>
+<!--    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
+<!--        <property name="configLocation"  value="classpath:eperusteet-ehcache.xml.old"/>-->
+<!--        <property name="cacheManagerName" value="eperusteetCacheManager"/>-->
+<!--    </bean>-->
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="eperusteetEhCache"/>
-    </bean>
+<!--    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">-->
+<!--        <property name="cacheManager" ref="eperusteetEhCache"/>-->
+<!--    </bean>-->
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
@@ -59,19 +60,19 @@
         <security:expression-handler ref="expressionHandler"/>
     </security:global-method-security>
 
-    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
+<!--    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>-->
 
-    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
+<!--    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>-->
     <context:component-scan base-package="fi.vm.sade.eperusteet.v2.service"/>
-    <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
+<!--    <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>-->
     <context:component-scan base-package="fi.vm.sade.eperusteet.utils"/>
     <tx:annotation-driven order="100"/>
-    <cache:annotation-driven/>
+    <cache:annotation-driven order="50" />
     <aop:aspectj-autoproxy/>
 
     <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
-    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>
+<!--    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>-->
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
         <property name="persistenceUnitName" value="eperusteet-pu"/>
@@ -85,10 +86,11 @@
                 <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
                 <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
-                <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache:true}"/>
-                <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
-                <entry key="net.sf.ehcache.configurationResourceName" value="/eperusteet-hibernate-ehcache.xml"/>
-                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
+                <entry key="hibernate.cache.use_second_level_cache" value="false"/>
+<!--                <entry key="hibernate.cache.use_second_level_cache" value="${hibernate.cache.use_second_level_cache:true}"/>-->
+<!--                <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>-->
+<!--                <entry key="net.sf.ehcache.configurationResourceName" value="/eperusteet-hibernate-ehcache.xml"/>-->
+                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.internal.DefaultAuditStrategy"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
                 <entry key="org.hibernate.envers.revision_listener" value="fi.vm.sade.eperusteet.service.impl.AuditRevisionListener"/>
                 <entry key="hibernate.jdbc.batch_size" value="20"/>
@@ -122,13 +124,13 @@
         </property>
     </bean>
 
-    <task:annotation-driven executor="defaultExecutor"/>
-    <bean id="defaultThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
-        <property name="corePoolSize" value="2"/>
-        <property name="maxPoolSize" value="10"/>
-    </bean>
-    <bean id="defaultExecutor" class="org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor">
-        <constructor-arg ref="defaultThreadPool"/>
-    </bean>
+<!--    <task:annotation-driven executor="defaultExecutor"/>-->
+<!--    <bean id="defaultThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
+<!--        <property name="corePoolSize" value="2"/>-->
+<!--        <property name="maxPoolSize" value="10"/>-->
+<!--    </bean>-->
+<!--    <bean id="defaultExecutor" class="org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor">-->
+<!--        <constructor-arg ref="defaultThreadPool"/>-->
+<!--    </bean>-->
 
 </beans>

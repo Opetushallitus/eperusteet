@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.pdf.PdfData;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;

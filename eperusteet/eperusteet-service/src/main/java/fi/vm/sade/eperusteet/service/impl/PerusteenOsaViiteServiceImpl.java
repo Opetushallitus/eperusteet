@@ -258,11 +258,11 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
     @Override
     public <T extends Sortable> List<T> sort(Long id, Suoritustapakoodi suoritustapakoodi, List<T> sorted) {
-        Peruste peruste = perusteet.findOne(id);
+        Peruste peruste = perusteet.findById(id).orElse(null);
         List<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findByPeruste(id, suoritustapakoodi);
         muokkausTietoService.addMuokkaustieto(id, peruste, MuokkausTapahtuma.JARJESTETTY);
         viitteet = GenericAlgorithms.sort(sorted, viitteet);
-        tutkinnonOsaViiteRepository.save(viitteet);
+        tutkinnonOsaViiteRepository.saveAll(viitteet);
         return sorted;
     }
 }

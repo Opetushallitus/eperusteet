@@ -127,6 +127,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Base64;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.Mapper;
@@ -154,6 +155,7 @@ import org.springframework.web.client.RestClientException;
 
 @Slf4j
 @Configuration
+@NoArgsConstructor
 public class DtoMapperConfig {
     private static final Logger logger = LoggerFactory.getLogger(DtoMapperConfig.class);
 
@@ -174,7 +176,6 @@ public class DtoMapperConfig {
     @Dto
     private DtoMapper mapper;
 
-    @Autowired
     public DtoMapperConfig(KoodistoClient koodistoClient) {
         this.koodistoClient = koodistoClient;
     }
@@ -802,7 +803,7 @@ public class DtoMapperConfig {
                         super.mapAtoB(source, target, context);
                         if (source.getLiite() != null) {
                             try {
-                                Liite liite = liiteRepository.findById(source.getLiite().getId());
+                                Liite liite = liiteRepository.findById(source.getLiite().getId()).orElse(null);
                                 Blob blob = liite.getData();
                                 byte[] bytes = blob.getBytes(1L, (int)blob.length());
                                 target.getLiite().setBinarydata(Base64.getEncoder().encodeToString(bytes));

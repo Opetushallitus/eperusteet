@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.YlopsClient;
 import io.swagger.annotations.Api;

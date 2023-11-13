@@ -22,7 +22,7 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;

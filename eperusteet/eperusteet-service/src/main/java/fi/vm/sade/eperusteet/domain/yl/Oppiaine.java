@@ -180,7 +180,9 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     private Set<Oppiaine> oppimaarat;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable
+    @JoinTable(name = "yl_oppiaine_yl_kohdealue",
+            joinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false, updatable = false))
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     @Getter
