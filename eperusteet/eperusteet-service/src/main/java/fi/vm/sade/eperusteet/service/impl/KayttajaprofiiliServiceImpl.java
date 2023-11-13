@@ -129,7 +129,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
 
         if (kayttajaprofiili != null) {
-            Suosikki suosikki = suosikkiRepo.findOne(suosikkiId);
+            Suosikki suosikki = suosikkiRepo.findById(suosikkiId).orElse(null);
             kayttajaprofiili.getSuosikit().remove(suosikki);
         }
 
@@ -144,7 +144,7 @@ public class KayttajaprofiiliServiceImpl implements KayttajaprofiiliService {
         Kayttajaprofiili kayttajaprofiili = kayttajaprofiiliRepo.findOneEager(oid);
 
         if (kayttajaprofiili != null) {
-            Suosikki suosikki = suosikkiRepo.findOne(suosikkiId);
+            Suosikki suosikki = suosikkiRepo.findById(suosikkiId).orElse(null);
             suosikki.setNimi(suosikkiDto.getNimi());
         }
 

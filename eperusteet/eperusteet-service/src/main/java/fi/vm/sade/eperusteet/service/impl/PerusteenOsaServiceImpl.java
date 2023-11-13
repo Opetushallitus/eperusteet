@@ -114,7 +114,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public PerusteenOsaDto.Laaja get(final Long id) {
-        return mapper.map(perusteenOsaRepo.findOne(id), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
+        return mapper.map(perusteenOsaRepo.findById(id).orElse(null), fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto.Laaja.class);
     }
 
     @Override
@@ -222,7 +222,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         tutkinnonOsa.getAmmattitaitovaatimuksetLista().removeAll(updatedTutkinnonOsa.getAmmattitaitovaatimuksetLista());
         for (AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenKohdealue : tutkinnonOsa.getAmmattitaitovaatimuksetLista()) {
-            ammattitaidonvaatimusRepository.delete( ammattitaitovaatimuksenKohdealue.getId() );
+            ammattitaidonvaatimusRepository.deleteById( ammattitaitovaatimuksenKohdealue.getId() );
         }
 
     }
@@ -286,7 +286,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public OsaAlueLaajaDto addTutkinnonOsaOsaAlue(Long id, OsaAlueLaajaDto osaAlueDto) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
-        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findById(id).orElse(null);
         OsaAlue osaAlue;
 
         if (osaAlueDto != null) {
@@ -425,7 +425,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public List<OsaAlueKokonaanDto> getTutkinnonOsaOsaAlueet(Long id) {
-        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findById(id).orElse(null);
         if (tutkinnonOsa == null) {
             throw new EntityNotFoundException("Tutkinnon osaa ei löytynyt id:llä: " + id);
         }
@@ -452,7 +452,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         if (osaAlue == null) {
             throw new EntityNotFoundException("Osa-aluetta ei löytynyt id:llä: " + osaAlueId);
         }
-        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findOne(id);
+        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepo.findById(id).orElse(null);
         tutkinnonOsa.getOsaAlueet().remove(osaAlue);
         osaAlueRepository.delete(osaAlue);
     }
@@ -496,7 +496,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public void removeOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId) {
         assertExists(id);
         lockManager.ensureLockedByAuthenticatedUser(id);
-        PerusteenOsa current = perusteenOsaRepo.findOne(id);
+        PerusteenOsa current = perusteenOsaRepo.findById(id).orElse(null);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
 
         if (osaAlue == null) {
@@ -514,7 +514,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Transactional(readOnly = false)
     public OsaamistavoiteLaajaDto updateOsaamistavoite(Long id, Long osaAlueId, Long osaamistavoiteId, OsaamistavoiteLaajaDto osaamistavoite) {
         assertExists(id);
-        PerusteenOsa current = perusteenOsaRepo.findOne(id);
+        PerusteenOsa current = perusteenOsaRepo.findById(id).orElse(null);
         lockManager.ensureLockedByAuthenticatedUser(id);
         OsaAlue osaAlue = osaAlueRepository.findOne(osaAlueId);
 
@@ -527,14 +527,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
         Osaamistavoite osaamistavoiteUusi = mapper.map(osaamistavoite, Osaamistavoite.class);
         osaamistavoiteEntity.mergeState(osaamistavoiteUusi);
-        notifyUpdate(perusteenOsaRepo.findOne(id));
+        notifyUpdate(perusteenOsaRepo.findById(id).orElse(null));
         return mapper.map(osaamistavoiteEntity, OsaamistavoiteLaajaDto.class);
     }
 
     @Override
     public void delete(final Long id) {
         assertExists(id);
-        PerusteenOsa current = perusteenOsaRepo.findOne(id);
+        PerusteenOsa current = perusteenOsaRepo.findById(id).orElse(null);
         lockManager.lock(id);
 
         try {
@@ -542,7 +542,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
             for (KommenttiDto kommentti : allByPerusteenOsa) {
                 kommenttiService.deleteReally(kommentti.getId());
             }
-            perusteenOsaRepo.delete(id);
+            perusteenOsaRepo.deleteById(id);
         } finally {
             lockManager.unlock(id);
         }
@@ -575,7 +575,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public List<Revision> getVersiotByViite(Long id) {
-        PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
+        PerusteenOsaViite p = perusteenOsaViiteRepository.findById(id).orElse(null);
         if (p == null || p.getPerusteenOsa() == null) {
             throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
         }
@@ -585,7 +585,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public PerusteenOsaDto getVersioByViite(Long id, Integer versioId) {
-        PerusteenOsaViite p = perusteenOsaViiteRepository.findOne(id);
+        PerusteenOsaViite p = perusteenOsaViiteRepository.findById(id).orElse(null);
         if (p == null || p.getPerusteenOsa() == null) {
             throw new EntityNotFoundException("Perusteen osaa ei löytynyt viite id:llä: " + id);
         }
@@ -602,7 +602,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     }
 
     private void createMuokkaustieto(Long id) {
-        PerusteenOsa lisatty = perusteenOsaRepo.findOne(id);
+        PerusteenOsa lisatty = perusteenOsaRepo.findById(id).orElse(null);
         if (lisatty != null && !lisatty.getViitteet().isEmpty()) {
             Peruste peruste = lisatty.getViitteet().stream().findFirst().get().getPeruste();
             Long viiteId = lisatty.getViitteet().stream().findFirst().get().getId();
@@ -647,13 +647,13 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
 
     private void assertExists(Long id) {
-        if (!perusteenOsaRepo.exists(id)) {
+        if (!perusteenOsaRepo.existsById(id)) {
             throw new NotExistsException("Pyydettyä perusteen osaa ei ole olemassa");
         }
     }
 
     private void aiheutaUusiTutkinnonOsaViiteRevisio(Long id) {
-        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(id);
+        TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findById(id).orElse(null);
         if (viite != null) {
             viite.setMuokattu(new Date());
             tutkinnonOsaViiteRepository.save(viite);
@@ -665,7 +665,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     public Set<PerusteprojektinPerusteenosaDto> getOwningProjektit(Long id) {
         return perusteprojektiPermissionRepository.findAllByPerusteenosa(id).stream()
                 .map(pp -> pp.getPerusteProjektiId())
-                .map(perusteProjektiId -> perusteprojektiRepository.findOne(perusteProjektiId))
+                .map(perusteProjektiId -> perusteprojektiRepository.findById(perusteProjektiId).orElseThrow())
                 .map(pp -> mapper.map(pp, PerusteprojektinPerusteenosaDto.class))
                 .collect(Collectors.toSet());
     }
@@ -676,7 +676,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         if (StringUtils.isEmpty(pquery.getKoodiUri())) {
             throw new BusinessRuleViolationException("koodiUri on pakollinen");
         }
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return tutkinnonOsaRepositoryCustom.findBy(p, pquery)
                 .map((osa) -> mapper.map(osa, TutkinnonOsaDto.class));
     }
@@ -684,7 +684,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = true)
     public Page<TutkinnonOsaViiteKontekstiDto> findAllTutkinnonOsatBy(TutkinnonOsaQueryDto pquery) {
-        Pageable pageable = new PageRequest(pquery.getSivu(), pquery.getSivukoko(), new Sort(Sort.Direction.fromString("ASC"), "teksti.teksti"));
+        Pageable pageable = PageRequest.of(pquery.getSivu(), pquery.getSivukoko(), Sort.by(Sort.Direction.fromString("ASC"), "teksti.teksti"));
 
         Page<TutkinnonOsaViite> viitteet = tutkinnonOsaViiteRepository.findByPerusteAndNimi(Optional.ofNullable(pquery.getPerusteId()).orElse(0l), pquery.getNimi(), pquery.isVanhentuneet(), Kieli.of(pquery.getKieli()), pageable);
 

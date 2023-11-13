@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenMuutostietoDto;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import io.swagger.annotations.Api;
 import java.util.Date;

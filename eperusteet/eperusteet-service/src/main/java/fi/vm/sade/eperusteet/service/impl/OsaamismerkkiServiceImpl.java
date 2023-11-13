@@ -104,13 +104,13 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     public List<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query) {
         query.setTila(Collections.singleton(OsaamismerkkiTila.JULKAISTU.toString()));
 
-        Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(new PageRequest(0, 1000), query);
+        Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(PageRequest.of(0, 1000), query);
         return mapper.mapAsList(osaamismerkit.getContent(), OsaamismerkkiBaseDto.class);
     }
 
     @Override
     public Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query) {
-        PageRequest pageRequest = new PageRequest(query.getSivu(), query.getSivukoko());
+        PageRequest pageRequest = PageRequest.of(query.getSivu(), query.getSivukoko());
         Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(pageRequest, query);
         return new PageDto<>(osaamismerkit, OsaamismerkkiDto.class, pageRequest, mapper);
     }
@@ -152,7 +152,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Override
     @Transactional
     public void deleteOsaamismerkki(Long id) {
-        Osaamismerkki osaamismerkki = osaamismerkkiRepository.findOne(id);
+        Osaamismerkki osaamismerkki = osaamismerkkiRepository.findById(id).orElse(null);
         osaamismerkkiRepository.delete(osaamismerkki);
     }
 
@@ -185,7 +185,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         if (kategoriaDto.getId() == null) {
             kategoria = mapper.map(kategoriaDto, OsaamismerkkiKategoria.class);
         } else {
-            kategoria = osaamismerkkiKategoriaRepository.findOne(kategoriaDto.getId());
+            kategoria = osaamismerkkiKategoriaRepository.findById(kategoriaDto.getId()).orElseThrow();
             kategoria.setNimi(mapper.map(kategoriaDto.getNimi(), TekstiPalanen.class));
             kategoria.setKuvaus(mapper.map(kategoriaDto.getKuvaus(), TekstiPalanen.class));
         }
@@ -208,25 +208,22 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         if (linkitykset > 0) {
             throw new BusinessRuleViolationException("osaamismerkkiin-liitettya-teemaa-ei-voi-poistaa");
         } else {
-            OsaamismerkkiKategoria kategoria = osaamismerkkiKategoriaRepository.findOne(id);
-            osaamismerkkiKategoriaRepository.delete(id);
-            liiteRepository.delete(kategoria.getLiite().getId());
+            OsaamismerkkiKategoria kategoria = osaamismerkkiKategoriaRepository.findById(id).orElseThrow();
+            osaamismerkkiKategoriaRepository.deleteById(id);
+            liiteRepository.deleteById(kategoria.getLiite().getId());
         }
     }
 
     private void deleteVanhaLiite(UUID uusiId, UUID vanhaId) {
         if (vanhaId != null && !uusiId.equals(vanhaId)) {
-            Liite liite = liiteRepository.findById(vanhaId);
-            if (liite != null) {
-                liiteRepository.delete(liite);
-            }
+            liiteRepository.findById(vanhaId).ifPresent(liite -> liiteRepository.delete(liite));
         }
     }
 
     private Liite addLiite(OsaamismerkkiKategoriaLiiteDto liiteDto) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         if (liiteDto != null) {
             Pair<UUID, String> filePair = uploadLiite(liiteDto);
-            return liiteRepository.findById(filePair.getFirst());
+            return liiteRepository.findById(filePair.getFirst()).orElse(null);
         }
         return null;
     }

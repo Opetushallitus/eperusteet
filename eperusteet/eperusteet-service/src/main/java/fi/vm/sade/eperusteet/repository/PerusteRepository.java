@@ -172,7 +172,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "JOIN p.perusteenAikataulut aikataulu " +
             "WHERE aikataulu.julkinen = true " +
             "AND p.koulutustyyppi IN(:koulutustyypit) " +
-            "AND p.tila = 'LUONNOS' AND (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.id) = 0)")
+            "AND p.tila = 'LUONNOS' AND (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.id) = 0")
     Page<Peruste> findAllJulkaisuaikataulullisetPerusteet(@Param("koulutustyypit") List<String> koulutustyypit, Pageable pageable);
 
     @Query("SELECT p.koulutustyyppi, COUNT(p) AS lukumaara FROM Peruste p " +

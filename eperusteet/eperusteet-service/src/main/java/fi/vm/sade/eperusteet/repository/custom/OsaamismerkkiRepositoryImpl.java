@@ -43,7 +43,7 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
     public Page<Osaamismerkki> findBy(PageRequest page, OsaamismerkkiQuery oquery) {
         TypedQuery<Long> countQuery = getCountQuery(oquery);
         TypedQuery<Tuple> query = getQuery(oquery);
-        query.setFirstResult(page.getOffset());
+        query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
         query.setMaxResults(page.getPageSize());
 
         log.debug(query.unwrap(Query.class).getQueryString());

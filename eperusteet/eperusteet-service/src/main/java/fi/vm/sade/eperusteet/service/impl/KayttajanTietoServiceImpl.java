@@ -73,7 +73,7 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
  * @author nkala
  */
 @Service
-@Profile("default")
+@Profile("!test")
 public class KayttajanTietoServiceImpl implements KayttajanTietoService {
 
     @Value("${cas.service.oppijanumerorekisteri-service:''}")
@@ -210,7 +210,7 @@ public class KayttajanTietoServiceImpl implements KayttajanTietoService {
             throw new BusinessRuleViolationException("Haettua käyttäjää ei ole olemassa");
         }
 
-        Perusteprojekti pp = perusteprojektiRepository.findOne(projektiId);
+        Perusteprojekti pp = perusteprojektiRepository.findById(projektiId).orElse(null);
 
         if (pp == null) {
             throw new BusinessRuleViolationException("Käyttäjällä ei ole kyseistä perusteprojektia");

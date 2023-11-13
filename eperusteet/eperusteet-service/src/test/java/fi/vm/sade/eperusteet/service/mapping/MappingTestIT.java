@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.dto.fakes.Referable;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
-import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
+import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.AbstractPerusteprojektiTest;
 import org.junit.Before;
 import org.junit.Ignore;

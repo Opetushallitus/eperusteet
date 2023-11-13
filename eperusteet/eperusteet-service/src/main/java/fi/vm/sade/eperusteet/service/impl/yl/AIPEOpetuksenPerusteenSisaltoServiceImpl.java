@@ -191,7 +191,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public void removeLaajaalainen(Long perusteId, Long laajaalainenId) {
         LaajaalainenOsaaminen lo = getLaajaalainenImpl(perusteId, laajaalainenId);
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId, lo, MuokkausTapahtuma.POISTO);
-        laajaalainenOsaaminenRepository.delete(laajaalainenId);
+        laajaalainenOsaaminenRepository.deleteById(laajaalainenId);
     }
 
     @Override

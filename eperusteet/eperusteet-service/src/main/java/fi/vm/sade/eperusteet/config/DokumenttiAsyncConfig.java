@@ -14,7 +14,7 @@
  * European Union Public Licence for more details.
  */
 
-package fi.vm.sade.eperusteet.service.config;
+package fi.vm.sade.eperusteet.config;
 
 import fi.vm.sade.eperusteet.service.dokumentti.impl.DokumenttiExceptionHandler;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;

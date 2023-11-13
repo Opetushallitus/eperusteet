@@ -32,7 +32,7 @@ public class AmmattitaitovaatimusRepositoryImpl implements AmmattitaitovaatimusR
         TypedQuery<TutkinnonOsaViite> query = getTosaQuery(pquery);
         TypedQuery<Long> tosaCountQuery = getTosaCountQuery(pquery);
         if (page != null) {
-            query.setFirstResult(page.getOffset());
+            query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
             query.setMaxResults(page.getPageSize());
         }
         Page<TutkinnonOsaViite> result = new PageImpl<>(
@@ -85,7 +85,7 @@ public class AmmattitaitovaatimusRepositoryImpl implements AmmattitaitovaatimusR
         TypedQuery<Long> countQuery = getCountQuery(pquery);
         TypedQuery<Perusteprojekti> query = getQuery(pquery);
         if (page != null) {
-            query.setFirstResult(page.getOffset());
+            query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
             query.setMaxResults(page.getPageSize());
         }
         Page<Perusteprojekti> result = new PageImpl<>(

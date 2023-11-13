@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.yl.TpoOpetuksenSisaltoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

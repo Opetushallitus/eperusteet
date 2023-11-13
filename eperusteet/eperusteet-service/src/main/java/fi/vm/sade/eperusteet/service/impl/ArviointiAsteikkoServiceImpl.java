@@ -61,7 +61,7 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
     @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
     public ArviointiAsteikkoDto get(Long id) {
-        return mapper.map(repository.findOne(id), ArviointiAsteikkoDto.class);
+        return mapper.map(repository.findById(id).orElse(null), ArviointiAsteikkoDto.class);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
 
         ArviointiAsteikko arviointiasteikko = new ArviointiAsteikko();
         if (arviointiAsteikkoDto.getId() != null) {
-            arviointiasteikko = repository.findOne(arviointiAsteikkoDto.getId());
+            arviointiasteikko = repository.findById(arviointiAsteikkoDto.getId()).orElse(null);
             if (arviointiasteikko == null) {
                 throw new BusinessRuleViolationException("arviointiasteikko-ei-olemassa");
             }
@@ -77,7 +77,7 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
             List<Long> osaamistasoIds = arviointiAsteikkoDto.getOsaamistasot().stream().map(OsaamistasoDto::getId).collect(Collectors.toList());
             arviointiasteikko.getOsaamistasot().stream()
                     .filter(osaamistaso -> !osaamistasoIds.contains(osaamistaso.getId()))
-                    .forEach(osaamistaso -> osaamistasoRepository.delete(osaamistaso.getId()));
+                    .forEach(osaamistaso -> osaamistasoRepository.deleteById(osaamistaso.getId()));
         }
 
         mapper.map(arviointiAsteikkoDto, arviointiasteikko);
@@ -93,8 +93,8 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
 
     @Override
     public void delete(ArviointiAsteikkoDto arviointiAsteikkoDto) {
-        arviointiAsteikkoDto.getOsaamistasot().forEach(osaamistaso -> osaamistasoRepository.delete(osaamistaso.getId()));
-        repository.delete(arviointiAsteikkoDto.getId());
+        arviointiAsteikkoDto.getOsaamistasot().forEach(osaamistaso -> osaamistasoRepository.deleteById(osaamistaso.getId()));
+        repository.deleteById(arviointiAsteikkoDto.getId());
     }
 
     @Override
@@ -125,6 +125,6 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
 
     @Override
     public void remove(Long id) {
-        repository.delete(id);
+        repository.deleteById(id);
     }
 }

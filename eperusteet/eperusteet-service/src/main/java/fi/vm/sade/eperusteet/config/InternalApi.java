@@ -13,23 +13,19 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * European Union Public Licence for more details.
  */
-package fi.vm.sade.eperusteet.resource.config;
+package fi.vm.sade.eperusteet.config;
 
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.InitBinder;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author jhyoty
  */
-@ControllerAdvice
-public class InitBinderControllerAdvice {
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(Suoritustapakoodi.class, new EnumToUpperCaseEditor<>(Suoritustapakoodi.class));
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(value = {ElementType.METHOD, ElementType.TYPE})
+public @interface InternalApi {
 
 }

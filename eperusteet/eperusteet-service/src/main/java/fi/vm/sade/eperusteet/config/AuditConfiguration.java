@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.config;
+package fi.vm.sade.eperusteet.config;
 
 import fi.vm.sade.auditlog.ApplicationType;
 import fi.vm.sade.auditlog.Audit;

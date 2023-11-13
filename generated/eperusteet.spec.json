@@ -10208,8 +10208,7 @@
           "name" : "sivu",
           "in" : "query",
           "required" : false,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "integer"
         }, {
           "name" : "sivukoko",
           "in" : "query",
@@ -15062,16 +15061,23 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
         }
       }
     },
@@ -15104,14 +15110,40 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+>>>>>>> ab12b8ebc (EP-3491)
           "type" : "boolean"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
         },
         "last" : {
           "type" : "boolean"
+=======
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15125,6 +15157,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15142,16 +15178,43 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15165,6 +15228,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15182,16 +15249,53 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+=======
+>>>>>>> 3166a2d20 (EP-3491)
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15205,6 +15309,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15222,16 +15330,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15245,6 +15388,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15262,16 +15409,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15285,6 +15467,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15302,16 +15488,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15325,6 +15546,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15342,16 +15567,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15365,6 +15625,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15382,16 +15646,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15405,6 +15704,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15422,16 +15725,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15445,6 +15783,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15462,16 +15804,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15485,6 +15862,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15502,16 +15883,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15525,6 +15941,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15542,16 +15962,51 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -15565,6 +16020,10 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
+=======
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15582,16 +16041,82 @@
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6435b9a9b (EP-3491)
         },
         "first" : {
           "type" : "boolean"
+<<<<<<< HEAD
         },
+=======
+<<<<<<< HEAD
+=======
+        },
+<<<<<<< HEAD
+>>>>>>> ab12b8ebc (EP-3491)
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "empty" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "Pageable" : {
+      "type" : "object",
+      "properties" : {
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "unpaged" : {
+          "type" : "boolean"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "paged" : {
+          "type" : "boolean"
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> 6435b9a9b (EP-3491)
+>>>>>>> c138519dc (EP-3491)
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         }
       }
     },
@@ -17559,7 +18084,18 @@
       }
     },
     "Sort" : {
-      "type" : "object"
+      "type" : "object",
+      "properties" : {
+        "empty" : {
+          "type" : "boolean"
+        },
+        "unsorted" : {
+          "type" : "boolean"
+        },
+        "sorted" : {
+          "type" : "boolean"
+        }
+      }
     },
     "SortableDto" : {
       "type" : "object",
@@ -17926,11 +18462,49 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
+<<<<<<< HEAD
         "huomautukset" : {
+=======
+<<<<<<< HEAD
+        "vaihtoOk" : {
+          "type" : "boolean"
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        "vaihtoOk" : {
+          "type" : "boolean"
+        },
+>>>>>>> 80a2eb5c8 (EP-3491)
+        "virheet" : {
+=======
+        "huomautukset" : {
+>>>>>>> f0cc59cc7 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
+<<<<<<< HEAD
+=======
+        },
+<<<<<<< HEAD
+>>>>>>> 6435b9a9b (EP-3491)
+        "huomautukset" : {
+=======
+        "vaihtoOk" : {
+          "type" : "boolean"
+        },
+        "virheet" : {
+>>>>>>> f0cc59cc7 (EP-3491)
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
+>>>>>>> b50856135 (EP-3491)
+>>>>>>> ab12b8ebc (EP-3491)
         },
         "virheet" : {
           "type" : "array",

@@ -142,7 +142,7 @@ public class OpasServiceIT extends AbstractPerusteprojektiTest {
 
     private void luoProjektit() {
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ESIOPETUS.toString());
-        Perusteprojekti pp = repository.findOne(ppdto.getId());
+        Perusteprojekti pp = repository.findById(ppdto.getId()).orElse(null);
         Assert.assertNotNull(pp);
 
 //        PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.NORMAALI, KoulutusTyyppi.ESIOPETUS.toString());
@@ -251,7 +251,7 @@ public class OpasServiceIT extends AbstractPerusteprojektiTest {
         pquery.setTuleva(false);
         pquery.setPoistunut(false);
         pquery.setKoulutustyyppi(Arrays.asList("koulutustyyppi_2"));
-        Page<PerusteHakuDto> oppaat = opasService.findBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> oppaat = opasService.findBy(PageRequest.of(0, 10), pquery);
         assertThat(oppaat.getContent()).hasSize(2);
         assertThat(oppaat.getContent()).extracting("id").containsExactlyInAnyOrder(peruste.getId(), peruste2.getId());
 

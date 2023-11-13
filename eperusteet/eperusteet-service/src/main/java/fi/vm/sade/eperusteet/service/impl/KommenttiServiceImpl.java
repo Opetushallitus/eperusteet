@@ -69,7 +69,7 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional(readOnly = true)
     public KommenttiDto get(Long kommenttiId) {
-        Kommentti kommentti = kommentit.findOne(kommenttiId);
+        Kommentti kommentti = kommentit.findById(kommenttiId).orElse(null);
         return mapper.map(kommentti, KommenttiDto.class);
     }
 
@@ -156,7 +156,7 @@ public class KommenttiServiceImpl implements KommenttiService {
         }
 
         if (kommenttidto.getParentId() != null) {
-            Kommentti parent = kommentit.findOne(kommenttidto.getParentId());
+            Kommentti parent = kommentit.findById(kommenttidto.getParentId()).orElse(null);
             kommentti.setParentId(parent.getId());
             kommentti.setYlinId(parent.getYlinId() == null ? parent.getId() : parent.getYlinId());
         }
@@ -168,7 +168,7 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional
     public KommenttiDto update(Long kommenttiId, final KommenttiDto kommenttidto) {
-        Kommentti kommentti = kommentit.findOne(kommenttiId);
+        Kommentti kommentti = kommentit.findById(kommenttiId).orElse(null);
         SecurityUtil.allow(kommentti.getLuoja());
         permissionChecker.checkPermission(kommentti.getPerusteprojektiId(), PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);
         kommentti.setSisalto(clip(kommenttidto.getSisalto()));
@@ -178,7 +178,7 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional
     public void delete(Long kommenttiId) {
-        Kommentti kommentti = kommentit.findOne(kommenttiId);
+        Kommentti kommentti = kommentit.findById(kommenttiId).orElse(null);
         SecurityUtil.allow(kommentti.getLuoja());
         permissionChecker.checkPermission(kommentti.getPerusteprojektiId(),PermissionManager.Target.PERUSTEPROJEKTI, PermissionManager.Permission.LUKU);
         kommentti.setSisalto(null);
@@ -188,6 +188,6 @@ public class KommenttiServiceImpl implements KommenttiService {
     @Override
     @Transactional
     public void deleteReally(Long kommenttiId) {
-        kommentit.delete(kommenttiId);
+        kommentit.deleteById(kommenttiId);
     }
 }

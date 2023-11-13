@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -34,7 +35,6 @@ import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.YllapitoRepository;
-import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -223,7 +223,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     public void updateYllapito(List<YllapitoDto> yllapitoList) {
         clearCache("yllapitovalues");
         yllapitoList.forEach(yp -> {
-            Yllapito yllapito = yllapitoRepository.findOne(yp.getId());
+            Yllapito yllapito = yllapitoRepository.findById(yp.getId()).orElse(null);
             yllapito.setKey(yp.getKey());
             yllapito.setValue(yp.getValue());
             yllapito.setKuvaus(yp.getKuvaus());
@@ -277,7 +277,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             TransactionTemplate txTemplate = new TransactionTemplate(ptm);
             txTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
             txTemplate.execute(status -> {
-                maaraysRepository.save(maarayksetSubList);
+                maaraysRepository.saveAll(maarayksetSubList);
                 return true;
             });
         });

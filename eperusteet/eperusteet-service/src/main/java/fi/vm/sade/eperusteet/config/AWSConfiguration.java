@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.config;
+package fi.vm.sade.eperusteet.config;
 
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.sqs.AmazonSQS;
