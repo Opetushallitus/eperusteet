@@ -69,9 +69,7 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public List<FieldComparisonFailureDto> julkaisuversioMuutokset(long perusteId) {
-        return Collections.emptyList();
-    }
+    public boolean julkaisemattomiaMuutoksia(long perusteId) { return false; }
 
     @Override
     public void kooditaValiaikaisetKoodit(Long perusteId) {

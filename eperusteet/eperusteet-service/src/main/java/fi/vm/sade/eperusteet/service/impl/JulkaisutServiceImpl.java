@@ -28,6 +28,8 @@ import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
+import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -35,6 +37,7 @@ import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenMuutostietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -377,24 +380,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public List<FieldComparisonFailureDto> julkaisuversioMuutokset(long perusteId) {
-        try {
-            Peruste peruste = perusteRepository.findOne(perusteId);
-            JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
-
-            if (viimeisinJulkaisu == null) {
-                return Collections.emptyList();
-            }
-
-            ObjectNode data = viimeisinJulkaisu.getData().getData();
-            String julkaistu = generoiOpetussuunnitelmaKaikkiDtotoString(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
-            String nykyinen = generoiOpetussuunnitelmaKaikkiDtotoString(perusteService.getKaikkiSisalto(peruste.getId()));
-
-            return mapper.mapAsList(JSONCompare.compareJSON(julkaistu, nykyinen, JSONCompareMode.NON_EXTENSIBLE).getFieldFailures(), FieldComparisonFailureDto.class);
-        } catch (IOException | JSONException e) {
-            log.error(Throwables.getStackTraceAsString(e));
-            throw new BusinessRuleViolationException("onko-muutoksia-julkaisuun-verrattuna-tarkistus-epaonnistui");
-        }
+    public boolean julkaisemattomiaMuutoksia(long perusteId) {
+        List<MuokkaustietoKayttajallaDto> muokkaustiedot = muokkausTietoService.getPerusteenMuokkausTietos(perusteId, new Date(), 1);
+        return !muokkaustiedot.isEmpty() && muokkaustiedot.stream().noneMatch(muokkaustieto -> muokkaustieto.getTapahtuma().equals(MuokkausTapahtuma.JULKAISU));
     }
 
     @Override
