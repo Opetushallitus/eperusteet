@@ -52,7 +52,7 @@ public interface JulkaisutService {
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    List<FieldComparisonFailureDto> julkaisuversioMuutokset(long perusteId);
+    boolean julkaisemattomiaMuutoksia(long perusteId);
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void kooditaValiaikaisetKoodit(Long perusteId);

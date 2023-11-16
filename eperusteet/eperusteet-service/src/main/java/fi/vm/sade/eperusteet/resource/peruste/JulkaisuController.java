@@ -102,10 +102,10 @@ public class JulkaisuController {
         return julkaisutService.viimeisinPerusteenJulkaisuaika(perusteId);
     }
 
-    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu/muutokset")
-    public List<FieldComparisonFailureDto> julkaisuversioMuutokset(
+    @RequestMapping(method = GET, value = "/{perusteId}/julkaisu/muutoksia")
+    public boolean julkaisemattomiaMuutoksia(
             @PathVariable("perusteId") final long perusteId) {
-        return julkaisutService.julkaisuversioMuutokset(perusteId);
+        return julkaisutService.julkaisemattomiaMuutoksia(perusteId);
     }
 
     @RequestMapping(method = GET, value = "/{perusteId}/koodita")
