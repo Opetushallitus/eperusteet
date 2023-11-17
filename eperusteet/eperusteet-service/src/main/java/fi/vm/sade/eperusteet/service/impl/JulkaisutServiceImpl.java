@@ -382,7 +382,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     public boolean julkaisemattomiaMuutoksia(long perusteId) {
         List<MuokkaustietoKayttajallaDto> muokkaustiedot = muokkausTietoService.getPerusteenMuokkausTietos(perusteId, new Date(), 1);
-        return !muokkaustiedot.isEmpty() && muokkaustiedot.stream().noneMatch(muokkaustieto -> muokkaustieto.getTapahtuma().equals(MuokkausTapahtuma.JULKAISU));
+        return julkaisutRepository.countByPerusteId(perusteId) > 0
+                &&!muokkaustiedot.isEmpty()
+                && muokkaustiedot.stream().noneMatch(muokkaustieto -> muokkaustieto.getTapahtuma().equals(MuokkausTapahtuma.JULKAISU));
     }
 
     @Override
