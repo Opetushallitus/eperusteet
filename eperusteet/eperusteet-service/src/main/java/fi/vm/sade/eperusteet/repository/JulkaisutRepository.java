@@ -104,6 +104,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     long countByPeruste(Peruste peruste);
 
+    long countByPerusteId(long perusteid);
+
     JulkaistuPeruste findOneByPerusteAndLuotu(Peruste peruste, Date aikaleima);
 
     JulkaistuPeruste findFirstByPerusteAndRevisionOrderByIdDesc(Peruste peruste, int revision);
