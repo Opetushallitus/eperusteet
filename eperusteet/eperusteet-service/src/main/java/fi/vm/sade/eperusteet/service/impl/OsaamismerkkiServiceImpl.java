@@ -29,7 +29,6 @@ import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,18 +101,13 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         query.setTuleva(false);
         query.setVoimassa(true);
 
-        Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(new PageRequest(0, 1000, Sort.Direction.DESC, "nimi"), query);
+        Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(new PageRequest(0, 1000), query);
         return mapper.mapAsList(osaamismerkit.getContent(), OsaamismerkkiBaseDto.class);
     }
 
     @Override
     public Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query) {
-        PageRequest pageRequest = new PageRequest(
-                query.getSivu(),
-                query.getSivukoko(),
-                Sort.Direction.DESC,
-                "nimi"
-        );
+        PageRequest pageRequest = new PageRequest(query.getSivu(), query.getSivukoko());
         Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(pageRequest, query);
         return new PageDto<>(osaamismerkit, OsaamismerkkiDto.class, pageRequest, mapper);
     }
