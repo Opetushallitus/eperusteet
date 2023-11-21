@@ -18,6 +18,8 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -43,6 +45,7 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -56,6 +59,7 @@ import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.MaaraysService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.TutkintonimikeKoodiService;
 import fi.vm.sade.eperusteet.service.Validator;
@@ -115,6 +119,9 @@ public class ValidatorPeruste implements Validator {
 
     @Autowired
     private KoodistoClient koodistoService;
+
+    @Autowired
+    private MaaraysService maaraysService;
 
     @Override
     public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
@@ -725,6 +732,7 @@ public class ValidatorPeruste implements Validator {
                 // Tarkista että kaikki vaadittu kielisisältö on asetettu
                 validoinnit.add(tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste()));
 
+                validoinnit.add(tarkistaMaarays(projekti.getPeruste()));
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
@@ -742,6 +750,28 @@ public class ValidatorPeruste implements Validator {
         }
 
         return validoinnit;
+    }
+
+    private Validointi tarkistaMaarays(Peruste peruste) {
+        Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);
+        Maarays maarays = mapper.map(maaraysService.getPerusteenMaarays(peruste.getId()), Maarays.class);
+
+        if (maarays != null) {
+            Set<Kieli> vaaditutKielet = peruste.getKielet();
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-maarays-kuvaus", maarays.getKuvaus(), vaaditutKielet, virheellisetKielet, true);
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.tiedot));
+            }
+
+            vaaditutKielet.forEach(kieli -> {
+                if (peruste.getMaarayskirje() == null || !peruste.getMaarayskirje().getLiitteet().containsKey(kieli)) {
+                    validointi.virhe("peruste-validointi-maarays-dokumentti", NavigationNodeDto.of(NavigationType.tiedot));
+                }
+            });
+        }
+
+        return validointi;
     }
 
     @Override

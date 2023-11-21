@@ -25,6 +25,9 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
@@ -34,10 +37,12 @@ import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaTyoryhmaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteprojektiQueryDto;
@@ -65,6 +70,7 @@ import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.MaaraysService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.ProjektiValidator;
@@ -108,6 +114,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -205,6 +212,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private PermissionManager permissionManager;
+
+    @Autowired
+    private MaaraysService maaraysService;
 
     @Override
     @Transactional(readOnly = true)
@@ -478,6 +488,11 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         if (perusteprojektiDto.getPerusteId() != null) {
             liiteService.copyLiitteetForPeruste(peruste.getId(), perusteprojektiDto.getPerusteId());
+        }
+
+        if (perusteprojektiDto.getMaarays() != null) {
+            perusteprojektiDto.getMaarays().setPeruste(mapper.map(peruste, PerusteKevytDto.class));
+            maaraysService.addMaarays(perusteprojektiDto.getMaarays());
         }
 
         return mapper.map(perusteprojekti, PerusteprojektiDto.class);

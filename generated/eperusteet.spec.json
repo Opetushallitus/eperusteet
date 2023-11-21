@@ -42,6 +42,8 @@
   }, {
     "name" : "Muokkaustieto"
   }, {
+    "name" : "MuutMaaraykset"
+  }, {
     "name" : "Oppaat"
   }, {
     "name" : "OsaAlueet"
@@ -1303,18 +1305,88 @@
         }
       }
     },
-    "/maarays" : {
+    "/maaraykset" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaaraykset",
+        "parameters" : [ {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "kieli",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "OPETUSHALLITUKSEN_MUU", "AMMATILLINEN_MUU", "PERUSTE" ]
+        }, {
+          "name" : "koulutustyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "tuleva",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "voimassa",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "paattynyt",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "luonnos",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "julkaistu",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sivu",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "sivukoko",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "jarjestysTapa",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "jarjestys",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/MaaraysDto"
-              }
+              "$ref" : "#/definitions/PageMaaraysDto"
             }
           }
         }
@@ -1340,7 +1412,146 @@
         }
       }
     },
-    "/maarays/{id}" : {
+    "/maaraykset/asiasanat" : {
+      "get" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "getAsiasanat",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "array",
+                "items" : {
+                  "type" : "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maaraykset/koulutustyypit" : {
+      "get" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "getMaarayksienKoulutustyypit",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "MUU_KOULUTUS" ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maaraykset/liite" : {
+      "post" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "uploadMaaraysLiite",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/MaaraysLiiteDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    },
+    "/maaraykset/liite/{fileName}" : {
+      "get" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "getMaaraysLiite",
+        "parameters" : [ {
+          "name" : "fileName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "If-None-Match",
+          "in" : "header",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/maaraykset/nimet" : {
+      "get" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "getMaarayksetNimet",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/MaaraysKevytDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/maaraykset/peruste/{perusteId}" : {
+      "get" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "getMaaraysPerusteella",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/MaaraysDto"
+            }
+          }
+        }
+      }
+    },
+    "/maaraykset/{id}" : {
+      "get" : {
+        "tags" : [ "Maaraykset" ],
+        "operationId" : "getMaarays",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/MaaraysDto"
+            }
+          }
+        }
+      },
       "post" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "updateMaarays",
@@ -1554,6 +1765,23 @@
         }
       }
     },
+    "/maintenance/maarayksetperusteille" : {
+      "get" : {
+        "tags" : [ "Maintenance" ],
+        "operationId" : "maarayksetperusteille",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "201" : {
+            "description" : ""
+          }
+        }
+      }
+    },
     "/maintenance/puuttuvatosaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "Maintenance" ],
@@ -1703,6 +1931,87 @@
                 "$ref" : "#/definitions/MuokkaustietoKayttajallaDto"
               }
             }
+          }
+        }
+      }
+    },
+    "/muutmaaraykset" : {
+      "get" : {
+        "tags" : [ "MuutMaaraykset" ],
+        "operationId" : "getMuutMaaraykset",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/MuuMaaraysDto"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "MuutMaaraykset" ],
+        "operationId" : "addMuuMaarays",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/MuuMaaraysDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/MuuMaaraysDto"
+            }
+          }
+        }
+      }
+    },
+    "/muutmaaraykset/{id}" : {
+      "post" : {
+        "tags" : [ "MuutMaaraykset" ],
+        "operationId" : "updateMuuMaarays",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/MuuMaaraysDto"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/MuuMaaraysDto"
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "MuutMaaraykset" ],
+        "operationId" : "deleteMuuMaarays",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : ""
           }
         }
       }
@@ -1892,6 +2201,11 @@
           "in" : "query",
           "required" : false,
           "type" : "boolean"
+        }, {
+          "name" : "kieli",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
         } ],
         "responses" : {
           "200" : {
@@ -11554,6 +11868,9 @@
           "items" : {
             "$ref" : "#/definitions/JulkaisuLiiteDto"
           }
+        },
+        "muutosmaarays" : {
+          "$ref" : "#/definitions/MaaraysDto"
         }
       }
     },
@@ -12785,6 +13102,21 @@
         }
       }
     },
+    "MaaraysAsiasanaDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "asiasana" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
     "MaaraysDto" : {
       "type" : "object",
       "properties" : {
@@ -12795,17 +13127,130 @@
         "nimi" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
-        "url" : {
-          "type" : "object",
-          "additionalProperties" : {
-            "type" : "string"
-          }
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "diaarinumero" : {
+          "type" : "string"
+        },
+        "voimassaoloAlkaa" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "voimassaoloLoppuu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "maarayspvm" : {
+          "type" : "string",
+          "format" : "date-time"
         },
         "muokattu" : {
           "type" : "string",
           "format" : "date-time"
         },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "OPETUSHALLITUKSEN_MUU", "AMMATILLINEN_MUU", "PERUSTE" ]
+        },
+        "liittyyTyyppi" : {
+          "type" : "string",
+          "enum" : [ "EI_LIITY", "MUUTTAA", "KORVAA" ]
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "JULKAISTU" ]
+        },
+        "koulutustyypit" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "MUU_KOULUTUS" ]
+          }
+        },
+        "peruste" : {
+          "$ref" : "#/definitions/PerusteKevytDto"
+        },
+        "korvattavatMaaraykset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MaaraysKevytDto"
+          }
+        },
+        "muutettavatMaaraykset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MaaraysKevytDto"
+          }
+        },
+        "liitteet" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/MaaraysKieliLiitteetDto"
+          }
+        },
+        "asiasanat" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/MaaraysAsiasanaDto"
+          }
+        },
+        "muokkaajaKayttaja" : {
+          "$ref" : "#/definitions/KayttajanTietoDto"
+        },
         "muokkaaja" : {
+          "type" : "string"
+        }
+      }
+    },
+    "MaaraysKevytDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "diaarinumero" : {
+          "type" : "string"
+        }
+      }
+    },
+    "MaaraysKieliLiitteetDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "liitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MaaraysLiiteDto"
+          }
+        }
+      }
+    },
+    "MaaraysLiiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tiedostonimi" : {
+          "type" : "string"
+        },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "MAARAYSDOKUMENTTI", "LIITE" ]
+        },
+        "fileB64" : {
           "type" : "string"
         }
       }
@@ -12919,6 +13364,31 @@
         },
         "kayttajanTieto" : {
           "$ref" : "#/definitions/KayttajanTietoDto"
+        }
+      }
+    },
+    "MuuMaaraysDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "url" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
         }
       }
     },
@@ -14202,6 +14672,9 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14222,9 +14695,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14241,6 +14711,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14262,7 +14735,44 @@
         "first" : {
           "type" : "boolean"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "PageMaaraysDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "last" : {
+          "type" : "boolean"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "content" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/MaaraysDto"
+          }
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -14281,6 +14791,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14302,9 +14815,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14321,6 +14831,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14342,9 +14855,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14361,6 +14871,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14382,9 +14895,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14401,6 +14911,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14422,9 +14935,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14441,6 +14951,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14462,9 +14975,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14481,6 +14991,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14502,9 +15015,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14521,6 +15031,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14542,9 +15055,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14561,6 +15071,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14582,9 +15095,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14601,6 +15111,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14622,9 +15135,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -14641,6 +15151,9 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14660,9 +15173,6 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -15805,6 +16315,9 @@
           "type" : "string",
           "format" : "date-time"
         },
+        "perusteprojekti" : {
+          "$ref" : "#/definitions/Reference"
+        },
         "suoritustavat" : {
           "type" : "array",
           "uniqueItems" : true,
@@ -16414,6 +16927,9 @@
           "items" : {
             "$ref" : "#/definitions/PerusteAikatauluDto"
           }
+        },
+        "maarays" : {
+          "$ref" : "#/definitions/MaaraysDto"
         }
       }
     },

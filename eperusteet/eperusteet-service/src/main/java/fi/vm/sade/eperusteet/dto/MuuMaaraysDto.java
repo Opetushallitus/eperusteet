@@ -7,14 +7,13 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MaaraysDto {
+public class MuuMaaraysDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
     private Map<Kieli, String> url;

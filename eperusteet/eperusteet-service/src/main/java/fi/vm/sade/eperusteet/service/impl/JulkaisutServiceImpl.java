@@ -25,6 +25,8 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
@@ -33,6 +35,8 @@ import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -57,6 +61,7 @@ import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
+import fi.vm.sade.eperusteet.service.MaaraysService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
@@ -175,6 +180,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private TutkinnonOsaRepository tutkinnonOsaRepository;
+
+    @Autowired
+    private MaaraysService maaraysService;
 
     @Autowired
     @Lazy
@@ -314,6 +322,31 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
             julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
+
+            MaaraysDto maarays = maaraysService.getPerusteenMaarays(peruste.getId());
+            if (maarays != null) {
+                maarays.setTila(MaaraysTila.JULKAISTU);
+                if (julkaisuBaseDto.getMuutosmaarays() == null) {
+                    maarays.setNimi(mapper.map(peruste.getNimi(), LokalisoituTekstiDto.class));
+                    maarays.setDiaarinumero(peruste.getDiaarinumero().getDiaarinumero());
+                    maarays.setVoimassaoloAlkaa(peruste.getVoimassaoloAlkaa());
+                    maarays.setVoimassaoloLoppuu(peruste.getVoimassaoloLoppuu());
+                    maarays.setMaarayspvm(peruste.getPaatospvm());
+                }
+
+                maarays = maaraysService.updateMaarays(maarays);
+            }
+
+            if (julkaisuBaseDto.getMuutosmaarays() != null) {
+                if (maarays != null) {
+                    paivitaMaarayksienVoimassaolot(Collections.singletonList(mapper.map(maarays, MaaraysKevytDto.class)), julkaisuBaseDto.getMuutosmaarays().getVoimassaoloAlkaa());
+                }
+                paivitaMaarayksienVoimassaolot(julkaisuBaseDto.getMuutosmaarays().getKorvattavatMaaraykset(), julkaisuBaseDto.getMuutosmaarays().getVoimassaoloAlkaa());
+                paivitaMaarayksienVoimassaolot(julkaisuBaseDto.getMuutosmaarays().getMuutettavatMaaraykset(), julkaisuBaseDto.getMuutosmaarays().getVoimassaoloAlkaa());
+                MaaraysDto muutosMaaraysDto = maaraysService.addMaarays(julkaisuBaseDto.getMuutosmaarays());
+                julkaisu.setMuutosmaarays(mapper.map(muutosMaaraysDto, Maarays.class));
+            }
+
             julkaisutRepository.saveAndFlush(julkaisu);
 
             if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
@@ -335,6 +368,19 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
         return null;
+    }
+
+    private void paivitaMaarayksienVoimassaolot(List<MaaraysKevytDto> maaraykset, Date vrtVoimassaolo) {
+        maaraykset.forEach(maaraysDto -> {
+            MaaraysDto maarays = maaraysService.getMaarays(maaraysDto.getId());
+            if (maarays.getVoimassaoloLoppuu() == null || maarays.getVoimassaoloLoppuu().compareTo(vrtVoimassaolo) >= 0) {
+                maarays.setVoimassaoloLoppuu(new DateTime(vrtVoimassaolo).minusDays(1).toDate());
+                if (maarays.getVoimassaoloAlkaa().compareTo(maarays.getVoimassaoloLoppuu()) > 0) {
+                    maarays.setVoimassaoloAlkaa(maarays.getVoimassaoloLoppuu());
+                }
+                maaraysService.updateMaarays(maarays);
+            }
+        });
     }
 
     @Override

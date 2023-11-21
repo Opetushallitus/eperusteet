@@ -11,11 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -140,5 +142,12 @@ public class MaintenanceController {
     @RequestMapping(value = "/ammattitaitovaatimuskoodisto", method = GET)
     public void pushAllAmmattitaitovaatimuksetToKoodisto() {
         ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto();
+    }
+
+    @GetMapping(value = "/maarayksetperusteille")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<String> maarayksetperusteille() {
+        maintenanceService.teeMaarayksetPerusteille();
+        return ResponseEntity.ok("Määräykset luotu");
     }
 }

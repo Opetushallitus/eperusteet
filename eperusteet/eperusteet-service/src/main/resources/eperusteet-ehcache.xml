@@ -369,4 +369,10 @@
            eternal="false"
            timeToLiveSeconds="86400"
            overflowToDisk="false"/>
+
+    <cache name="maarayskokoelma_asiasanat"
+           maxElementsInMemory="1"
+           eternal="false"
+           timeToLiveSeconds="86400"
+           overflowToDisk="false"/>
 </ehcache>

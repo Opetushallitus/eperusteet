@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +31,5 @@ public class JulkaisuBaseDto {
     private Boolean julkinen;
     private Date muutosmaaraysVoimaan;
     private List<JulkaisuLiiteDto> liitteet = new ArrayList<>();
+    private MaaraysDto muutosmaarays;
 }

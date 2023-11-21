@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.liite.Liite;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.Getter;
@@ -62,6 +63,10 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
 
     @OneToMany(mappedBy = "julkaistuPeruste", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<JulkaisuLiite> liitteet = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "muutosmaarays_id")
+    private Maarays muutosmaarays;
 
     public void setLiitteet(List<JulkaisuLiite> liitteet) {
         this.liitteet.clear();

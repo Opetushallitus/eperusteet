@@ -1,43 +1,74 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fi.vm.sade.eperusteet.domain.*;
+import com.google.common.collect.Lists;
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
+import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.Koodi;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
+import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.Yllapito;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasana;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysKieliLiitteet;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
+import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.resource.config.InitJacksonConverter;
-import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.service.JulkaisutService;
+import fi.vm.sade.eperusteet.service.MaintenanceService;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Cache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import java.util.*;
-import java.util.stream.Collectors;
 import org.springframework.util.CollectionUtils;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
 @Slf4j
-@Profile("!test")
 public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
@@ -67,6 +98,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     private JulkaisutService julkaisutService;
+
+    @Autowired
+    private MaaraysRepository maaraysRepository;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
@@ -221,5 +255,65 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @IgnorePerusteUpdateCheck
     public void clearCache(String cache) {
         Objects.requireNonNull(cacheManager.getCache(cache)).clear();
+    }
+
+    @Override
+    public void teeMaarayksetPerusteille() {
+        List<Peruste> perusteet = perusteRepository.findAllByEiMaaraystaEiPoistettu();
+        List<Maarays> maaraykset = perusteet.stream().map(this::perusteMaarays).collect(Collectors.toList());
+
+        Lists.partition(maaraykset, 10).forEach(maarayksetSubList -> {
+            TransactionTemplate txTemplate = new TransactionTemplate(ptm);
+            txTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+            txTemplate.execute(status -> {
+                maaraysRepository.save(maarayksetSubList);
+                return true;
+            });
+        });
+    }
+
+    private Maarays perusteMaarays(Peruste peruste) {
+        Maarays maarays = new Maarays();
+        maarays.setPeruste(peruste);
+        maarays.setTyyppi(MaaraysTyyppi.PERUSTE);
+        maarays.setLiittyyTyyppi(MaaraysLiittyyTyyppi.EI_LIITY);
+        maarays.setAsiasanat(Stream.of(Kieli.FI, Kieli.SV, Kieli.EN).collect(Collectors.toMap(kieli -> kieli, kieli -> new MaaraysAsiasana())));
+        maarays.setLiitteet(Stream.of(Kieli.FI, Kieli.SV, Kieli.EN).collect(Collectors.toMap(kieli -> kieli, kieli -> new MaaraysKieliLiitteet())));
+        maarays.setKorvattavatMaaraykset(new ArrayList<>());
+        maarays.setMuutettavatMaaraykset(new ArrayList<>());
+        maarays.setKoulutustyypit(List.of(KoulutusTyyppi.of(peruste.getKoulutustyyppi())));
+
+        Optional<JulkaistuPeruste> julkaisu = peruste.getJulkaisut().stream().max(Comparator.comparing(JulkaistuPeruste::getLuotu));
+        if (julkaisu.isPresent()) {
+            PerusteKaikkiDto perusteKaikkiDto = null;
+
+            try {
+                perusteKaikkiDto = objectMapper.treeToValue(julkaisu.get().getData().getData(), PerusteKaikkiDto.class);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            maarays.setTila(MaaraysTila.JULKAISTU);
+            maarays.setNimi(TekstiPalanen.of(perusteKaikkiDto.getNimi().getTekstit()));
+            maarays.setDiaarinumero(perusteKaikkiDto.getDiaarinumero());
+            maarays.setVoimassaoloAlkaa(perusteKaikkiDto.getVoimassaoloAlkaa());
+            maarays.setVoimassaoloLoppuu(perusteKaikkiDto.getVoimassaoloLoppuu());
+            maarays.setMaarayspvm(perusteKaikkiDto.getPaatospvm());
+        } else {
+            maarays.setTila(MaaraysTila.LUONNOS);
+            if (peruste.getNimi() == null) {
+                maarays.setNimi(TekstiPalanen.of(Kieli.FI, "Nimetön määräys"));
+            } else {
+                maarays.setNimi(TekstiPalanen.of(peruste.getNimi()));
+            }
+            if (peruste.getDiaarinumero() != null) {
+                maarays.setDiaarinumero(peruste.getDiaarinumero().getDiaarinumero());
+            }
+            maarays.setVoimassaoloAlkaa(peruste.getVoimassaoloAlkaa());
+            maarays.setVoimassaoloLoppuu(peruste.getVoimassaoloLoppuu());
+            maarays.setMaarayspvm(peruste.getPaatospvm());
+        }
+
+        return maarays;
     }
 }

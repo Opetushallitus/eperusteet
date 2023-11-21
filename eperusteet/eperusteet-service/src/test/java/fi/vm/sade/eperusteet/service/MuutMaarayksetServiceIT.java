@@ -1,15 +1,9 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koulutus;
-import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.MaaraysDto;
+import fi.vm.sade.eperusteet.dto.MuuMaaraysDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Maps;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,42 +12,42 @@ import org.springframework.test.annotation.DirtiesContext;
 import static org.assertj.core.api.Assertions.*;
 
 @DirtiesContext
-public class MaaraysServiceIT extends AbstractIntegrationTest {
+public class MuutMaarayksetServiceIT extends AbstractIntegrationTest {
 
     @Autowired
-    private MaaraysService maaraysService;
+    private MuutMaarayksetService muutMaarayksetService;
 
     @Test
     public void testCRUD() {
-        assertThat(maaraysService.getMaaraykset()).isEmpty();
+        assertThat(muutMaarayksetService.getMaaraykset()).isEmpty();
 
-        maaraysService.addMaarays(MaaraysDto.builder()
+        muutMaarayksetService.addMaarays(MuuMaaraysDto.builder()
                 .nimi(LokalisoituTekstiDto.of("maarays1"))
                 .url(Maps.newHashMap(Kieli.FI, "url1"))
                 .build());
 
-        MaaraysDto maaraysDto = maaraysService.addMaarays(MaaraysDto.builder()
+        MuuMaaraysDto muuMaaraysDto = muutMaarayksetService.addMaarays(MuuMaaraysDto.builder()
                 .nimi(LokalisoituTekstiDto.of("maarays2"))
                 .url(Maps.newHashMap(Kieli.SV, "url2"))
                 .build());
 
-        assertThat(maaraysService.getMaaraykset()).hasSize(2);
-        assertThat(maaraysService.getMaaraykset()).extracting("nimi").extracting("tekstit")
+        assertThat(muutMaarayksetService.getMaaraykset()).hasSize(2);
+        assertThat(muutMaarayksetService.getMaaraykset()).extracting("nimi").extracting("tekstit")
                 .containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "maarays1"), Maps.newHashMap(Kieli.FI, "maarays2"));
 
-        assertThat(maaraysService.getMaaraykset()).extracting("url")
+        assertThat(muutMaarayksetService.getMaaraykset()).extracting("url")
                 .containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "url1"), Maps.newHashMap(Kieli.SV, "url2"));
 
-        maaraysDto.setNimi(LokalisoituTekstiDto.of("maarays2muokattu"));
-        maaraysService.updateMaarays(maaraysDto);
+        muuMaaraysDto.setNimi(LokalisoituTekstiDto.of("maarays2muokattu"));
+        muutMaarayksetService.updateMaarays(muuMaaraysDto);
 
-        assertThat(maaraysService.getMaaraykset()).extracting("nimi").extracting("tekstit")
+        assertThat(muutMaarayksetService.getMaaraykset()).extracting("nimi").extracting("tekstit")
                 .containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "maarays1"), Maps.newHashMap(Kieli.FI, "maarays2muokattu"));
 
-        maaraysService.deleteMaarays(maaraysDto.getId());
+        muutMaarayksetService.deleteMaarays(muuMaaraysDto.getId());
 
-        assertThat(maaraysService.getMaaraykset()).hasSize(1);
-        assertThat(maaraysService.getMaaraykset()).extracting("nimi").extracting("tekstit")
+        assertThat(muutMaarayksetService.getMaaraykset()).hasSize(1);
+        assertThat(muutMaarayksetService.getMaaraykset()).extracting("nimi").extracting("tekstit")
                 .containsExactlyInAnyOrder(Maps.newHashMap(Kieli.FI, "maarays1"));
     }
 
