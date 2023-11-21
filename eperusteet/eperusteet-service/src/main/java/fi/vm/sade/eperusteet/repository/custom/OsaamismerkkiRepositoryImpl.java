@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -14,7 +15,6 @@ import org.hibernate.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
@@ -25,10 +25,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +41,7 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
     @Override
     public Page<Osaamismerkki> findBy(PageRequest page, OsaamismerkkiQuery oquery) {
         TypedQuery<Long> countQuery = getCountQuery(oquery);
-        TypedQuery<Tuple> query = getQuery(page, oquery);
+        TypedQuery<Tuple> query = getQuery(oquery);
         query.setFirstResult(page.getOffset());
         query.setMaxResults(page.getPageSize());
 
@@ -67,26 +65,21 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
         return em.createQuery(query);
     }
 
-    private TypedQuery<Tuple> getQuery(PageRequest page, OsaamismerkkiQuery oquery) {
+    private TypedQuery<Tuple> getQuery(OsaamismerkkiQuery oquery) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> query = cb.createTupleQuery();
         Root<Osaamismerkki> root = query.from(Osaamismerkki.class);
-
         Predicate pred = buildPredicate(root, cb, oquery);
-        query = query.multiselect(root);
 
-        List<Order> orders = new ArrayList<>();
-        Sort sort = page.getSort();
-        sort.forEach(order -> {
-            if (order.getDirection().equals(Sort.Direction.ASC)) {
-                orders.add(cb.asc(root.get(order.getProperty())));
-            } else {
-                orders.add(cb.desc(root.get(order.getProperty())));
-            }
-        });
+        // sortataan vain nimen perusteella
+        Join<TekstiPalanen, LokalisoituTeksti> nimi = root.join(Osaamismerkki_.nimi).join(TekstiPalanen_.teksti);
+        Expression<String> n = cb.lower(nimi
+                .on(cb.equal(nimi.get(LokalisoituTeksti_.kieli), Kieli.of(oquery.getKieli())))
+                .get(LokalisoituTeksti_.teksti));
+        query = query.multiselect(root, n);
 
         query.where(pred)
-                .orderBy(orders)
+                .orderBy(cb.asc(n))
                 .distinct(true);
 
         return em.createQuery(query);
