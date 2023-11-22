@@ -25,7 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Configuration
 @EnableScheduling
-@Profile("!test")
+@Profile("!test & !docker")
 public class ScheduledConfiguration implements SchedulingConfigurer {
     private static final Logger log = LoggerFactory.getLogger(ScheduledConfiguration.class);
     private static AtomicBoolean isUpdating = new AtomicBoolean(false);
