@@ -12718,12 +12718,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -15045,6 +15045,43 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        "last" : {
+          "type" : "boolean"
+        },
+=======
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
+>>>>>>> fa1ae6eba (julkaisuit test fix)
+>>>>>>> 08a388b8e (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15067,6 +15104,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15138,6 +15176,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15162,6 +15202,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15184,8 +15252,28 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
-        "first" : {
+        "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        }
+      }
+    },
+    "PageMaaraysDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+=======
+<<<<<<< HEAD
+>>>>>>> fa1ae6eba (julkaisuit test fix)
+>>>>>>> 08a388b8e (julkaisuit test fix)
         },
 <<<<<<< HEAD
         "numberOfElements" : {
@@ -15212,9 +15300,20 @@
           "type" : "integer",
           "format" : "int32"
 >>>>>>> f0cc59cc7 (EP-3491)
+<<<<<<< HEAD
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+=======
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+>>>>>>> b90256e29 (julkaisuit test fix)
+>>>>>>> f6372c673 (julkaisuit test fix)
+>>>>>>> 08a388b8e (julkaisuit test fix)
         }
       }
     },
@@ -15233,6 +15332,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15255,6 +15382,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15290,6 +15418,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15314,6 +15444,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15336,6 +15494,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15369,6 +15528,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15393,6 +15554,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15415,6 +15604,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15448,6 +15638,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15472,6 +15664,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15494,6 +15714,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15527,6 +15748,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15551,6 +15774,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15573,6 +15824,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15606,6 +15858,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15630,6 +15884,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15652,6 +15934,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15685,6 +15968,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15709,6 +15994,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15731,6 +16044,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15764,6 +16078,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15788,6 +16104,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15810,6 +16154,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15843,6 +16188,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15867,6 +16214,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15889,6 +16264,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -15922,6 +16298,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -15946,6 +16324,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15968,6 +16374,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
         },
@@ -16001,6 +16408,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -16025,6 +16434,34 @@
 >>>>>>> b50856135 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
         },
+<<<<<<< HEAD
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+=======
+<<<<<<< HEAD
+=======
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+        "last" : {
+          "type" : "boolean"
+>>>>>>> 42870a7cf (julkaisuit test fix)
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> b90256e29 (julkaisuit test fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -16047,6 +16484,7 @@
 =======
 >>>>>>> 6435b9a9b (EP-3491)
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
 <<<<<<< HEAD
@@ -16084,6 +16522,8 @@
         "last" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b90256e29 (julkaisuit test fix)
         "empty" : {
           "type" : "boolean"
         }
@@ -16092,16 +16532,6 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
-        "offset" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "unpaged" : {
-          "type" : "boolean"
-        },
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
@@ -16112,11 +16542,36 @@
         },
         "paged" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
+<<<<<<< HEAD
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> b50856135 (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+=======
+=======
+        },
+        "unpaged" : {
+          "type" : "boolean"
+        },
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+>>>>>>> b90256e29 (julkaisuit test fix)
+>>>>>>> f6372c673 (julkaisuit test fix)
+>>>>>>> fa1ae6eba (julkaisuit test fix)
+>>>>>>> 08a388b8e (julkaisuit test fix)
         }
       }
     },
@@ -18086,13 +18541,13 @@
     "Sort" : {
       "type" : "object",
       "properties" : {
-        "empty" : {
-          "type" : "boolean"
-        },
         "unsorted" : {
           "type" : "boolean"
         },
         "sorted" : {
+          "type" : "boolean"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -18463,14 +18918,21 @@
           }
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
         "huomautukset" : {
 =======
+=======
+>>>>>>> 08a388b8e (julkaisuit test fix)
 <<<<<<< HEAD
         "vaihtoOk" : {
           "type" : "boolean"
 =======
+=======
+>>>>>>> fa1ae6eba (julkaisuit test fix)
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> 42870a7cf (julkaisuit test fix)
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -18480,6 +18942,14 @@
 >>>>>>> 80a2eb5c8 (EP-3491)
         "virheet" : {
 =======
+=======
+        "virheet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
+        },
+>>>>>>> 76f78fc10 (julkaisuit test fix)
         "huomautukset" : {
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
@@ -18496,6 +18966,7 @@
 =======
         "vaihtoOk" : {
           "type" : "boolean"
+<<<<<<< HEAD
         },
         "virheet" : {
 >>>>>>> f0cc59cc7 (EP-3491)
@@ -18503,17 +18974,53 @@
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
+<<<<<<< HEAD
 >>>>>>> b50856135 (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+<<<<<<< HEAD
+>>>>>>> fa1ae6eba (julkaisuit test fix)
+>>>>>>> 08a388b8e (julkaisuit test fix)
         },
+<<<<<<< HEAD
+=======
+        "vaihtoOk" : {
+          "type" : "boolean"
+<<<<<<< HEAD
+        },
+>>>>>>> f6372c673 (julkaisuit test fix)
         "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
+<<<<<<< HEAD
         },
+<<<<<<< HEAD
         "vaihtoOk" : {
           "type" : "boolean"
+=======
+<<<<<<< HEAD
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
+=======
+        "vaihtoOk" : {
+          "type" : "boolean"
+=======
+=======
+=======
+=======
+>>>>>>> 76f78fc10 (julkaisuit test fix)
+>>>>>>> 42870a7cf (julkaisuit test fix)
+>>>>>>> b90256e29 (julkaisuit test fix)
+>>>>>>> f6372c673 (julkaisuit test fix)
+>>>>>>> fa1ae6eba (julkaisuit test fix)
+>>>>>>> 08a388b8e (julkaisuit test fix)
         }
       }
     },

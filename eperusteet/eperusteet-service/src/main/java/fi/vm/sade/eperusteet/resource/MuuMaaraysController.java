@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.MuuMaaraysDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.service.MuutMaarayksetService;
 import io.swagger.annotations.Api;
 import java.util.List;

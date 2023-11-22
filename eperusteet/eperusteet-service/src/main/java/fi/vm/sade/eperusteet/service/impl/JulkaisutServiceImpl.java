@@ -58,6 +58,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
+import fi.vm.sade.eperusteet.service.JulkaisuPerusteTilaService;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -92,8 +93,11 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -191,6 +195,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private CacheManager cacheManager;
 
     @Autowired
+    private JulkaisuPerusteTilaService julkaisuPerusteTilaService;
+
+    @Autowired
     @Lazy
     private JulkaisutService self;
 
@@ -245,7 +252,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteprojekti.getPeruste().getId());
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.KESKEN);
-        saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        julkaisuPerusteTilaService.saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
         return self.teeJulkaisuAsync(projektiId, julkaisuBaseDto);
     }
@@ -270,7 +277,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 && (new Date().getTime() - julkaisuPerusteTila.getMuokattu().getTime()) / 1000 > JULKAISUN_ODOTUSAIKA_SEKUNNEISSA) {
             log.error("Julkaisu kesti yli {} sekuntia, perusteella {}", JULKAISUN_ODOTUSAIKA_SEKUNNEISSA, perusteId);
             julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.VIRHE);
-            saveJulkaisuPerusteTila(julkaisuPerusteTila);
+            julkaisuPerusteTilaService.saveJulkaisuPerusteTila(julkaisuPerusteTila);
         }
 
         return julkaisuPerusteTila != null ? julkaisuPerusteTila.getJulkaisutila() : JulkaisuTila.JULKAISEMATON;
@@ -352,14 +359,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         } catch(Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
             julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.VIRHE);
-            self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
+            julkaisuPerusteTilaService.saveJulkaisuPerusteTila(julkaisuPerusteTila);
             throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
         }
 
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
-        self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        julkaisuPerusteTilaService.saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
-        return null;
+        return CompletableFuture.completedFuture(null);
     }
 
     private void lisaaMaaraysKokoelmaan(JulkaisuBaseDto julkaisuBaseDto, Peruste peruste, JulkaistuPeruste julkaisu) {
@@ -447,13 +454,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         return julkaisutRepository.countByPerusteId(perusteId) > 0
                 &&!muokkaustiedot.isEmpty()
                 && muokkaustiedot.stream().noneMatch(muokkaustieto -> muokkaustieto.getTapahtuma().equals(MuokkausTapahtuma.JULKAISU));
-    }
-
-    @Override
-    @IgnorePerusteUpdateCheck
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila) {
-        julkaisuPerusteTilaRepository.save(julkaisuPerusteTila);
     }
 
     private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
@@ -666,7 +666,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     public void nollaaJulkaisuTila(Long perusteId) {
         JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteId);
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISEMATON);
-        saveJulkaisuPerusteTila(julkaisuPerusteTila);
+        julkaisuPerusteTilaService.saveJulkaisuPerusteTila(julkaisuPerusteTila);
     }
 
     private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {
