@@ -31,6 +31,7 @@ import org.junit.rules.ExpectedException;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -59,7 +60,7 @@ import static org.junit.Assert.assertTrue;
 @DirtiesContext
 @ActiveProfiles(profiles = {"docker"})
 @Transactional
-@Ignore
+@SpringBootTest
 public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     @Autowired
@@ -117,7 +118,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         assertThat(getJulkaisut(peruste)).hasSize(1);
         assertThat(perusteRepository.findOne(peruste.getId()).getGlobalVersion().getAikaleima()).isEqualTo(perusteRepository.findOne(peruste.getId()).getJulkaisut().get(0).getLuotu());
     }
-    
+
     @Test
     public void testJulkaiseUudelleen() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));

@@ -62,7 +62,7 @@ import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @Slf4j
 @Service
-@Profile("!test")
+@Profile("!test & !docker")
 public class KoodistoClientImpl implements KoodistoClient {
 
     @Value("${koodisto.service.url:https://virkailija.opintopolku.fi/koodisto-service}")
