@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.Profile;
 
 @Profile("dev")
-@ImportResource({"spring/security-context-backend-dev.xml"})
 @Configuration
+@ImportResource({"classpath*:spring/security-context-backend-dev.xml"})
 public class WebSecurityConfigurationDev {
 }

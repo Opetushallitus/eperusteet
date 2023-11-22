@@ -1,106 +1,30 @@
-<ehcache
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="../config/ehcache.xsd"
-        updateCheck="false"
-        monitoring="autodetect"
-        dynamicConfig="true"
->
-    <diskStore path="java.io.tmpdir/eperusteetcache"/>
-
-    <defaultCache
-            maxElementsInMemory="10000"
-            eternal="false"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="3600"
-            overflowToDisk="true"
-            maxElementsOnDisk="10000"
-            diskPersistent="false"
-            diskExpiryThreadIntervalSeconds="120"
-            memoryStoreEvictionPolicy="LRU"
-    />
-    <cache name="validointivirheet"
-           maxElementsInMemory="50"
-           eternal="false"
-           timeToLiveSeconds="86400"
-           overflowToDisk="false" />
-    <cache name="tila"
-           maxElementsInMemory="10000"
-           eternal="false"
-           timeToLiveSeconds="3600"
-           overflowToDisk="false" />
-    <cache name="koulutusalat"
-           maxElementsInMemory="10"
-           eternal="false"
-           timeToLiveSeconds="600"
-           overflowToDisk="false" />
-    <cache name="koodistokoodit"
-           maxElementsInMemory="10000"
-           eternal="false"
-           timeToLiveSeconds="3600"
-           overflowToDisk="false" />
-    <cache name="koodistot"
-           maxElementsInMemory="20"
-           eternal="false"
-           timeToLiveSeconds="6000"
-           overflowToDisk="false" />
-    <cache name="opintoalat"
-           maxElementsInMemory="10"
-           eternal="false"
-           timeToLiveSeconds="600"
-           overflowToDisk="false" />
-    <cache name="kayttajat"
-           maxElementsInMemory="1000"
-           eternal="false"
-           timeToLiveSeconds="3600"
-           overflowToDisk="false" />
-    <cache name="kayttajan_projekti"
-           maxElementsInMemory="10000"
-           eternal="false"
-           timeToLiveSeconds="3600"
-           overflowToDisk="false" />
-    <cache name="peruste-navigation"
-           maxElementsInMemory="500"
-           eternal="false"
-           timeToLiveSeconds="3600"
-           overflowToDisk="false"/>
-    <cache name="lokalisoinnit"
-           maxElementsInMemory="1000"
-           eternal="false"
-           timeToLiveSeconds="600"
-           overflowToDisk="false"/>
-    <cache name="kategorialokalisoinnit"
-           maxElementsInMemory="1000"
-           eternal="false"
-           timeToLiveSeconds="600"
-           overflowToDisk="false"/>
-    <cache name="amosaaperusteet"
-           maxElementsInMemory="1000"
-           eternal="false"
-           timeToLiveSeconds="3600"
-           overflowToDisk="false"/>
-    <cache name="pohjaperusteet"
-           maxElementsInMemory="1000"
-           eternal="false"
-           timeToLiveSeconds="600"
-           overflowToDisk="false"/>
-    <cache name="julkaistutkoulutustyypit"
-           maxElementsInMemory="3"
-           eternal="false"
-           timeToLiveSeconds="600"
-           overflowToDisk="false"/>
-    <cache name="amosaatilastot"
-           maxElementsInMemory="1"
-           eternal="false"
-           timeToLiveSeconds="86400"
-           overflowToDisk="false"/>
-    <cache name="ylopstilastot"
-           maxElementsInMemory="1"
-           eternal="false"
-           timeToLiveSeconds="86400"
-           overflowToDisk="false"/>
-    <cache name="yllapitovalues"
-           maxElementsInMemory="100"
-           eternal="false"
-           timeToLiveSeconds="86400"
-           overflowToDisk="false"/>
-</ehcache>
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xsi:schemaLocation="
+            http://www.ehcache.org/v3
+            http://www.ehcache.org/schema/ehcache-core-3.7.xsd">
+    <!-- Persistent cache directory -->
+    <persistence directory="spring-boot-ehcache/cache" />
+    <!-- Default cache template -->
+    <cache-template name="default">
+        <expiry>
+            <ttl unit="seconds">30</ttl>
+        </expiry>
+        <listeners>
+            <listener>
+                <class>guru.springframework.ehcache.config.CacheLogger</class>
+                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
+                <event-ordering-mode>UNORDERED</event-ordering-mode>
+                <events-to-fire-on>CREATED</events-to-fire-on>
+                <events-to-fire-on>EXPIRED</events-to-fire-on>
+                <events-to-fire-on>EVICTED</events-to-fire-on>
+            </listener>
+        </listeners>
+        <resources>
+            <heap>1000</heap>
+            <offheap unit="MB">10</offheap>
+            <disk persistent="true" unit="MB">20</disk>
+        </resources>
+    </cache-template>
+</config>
