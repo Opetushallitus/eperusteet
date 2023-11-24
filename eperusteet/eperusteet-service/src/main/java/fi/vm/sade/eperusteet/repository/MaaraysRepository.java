@@ -44,7 +44,7 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
             @Param("nimi") String nimi,
             @Param("kieli") Kieli kieli,
             @Param("tyyppi") MaaraysTyyppi tyyppi,
-            @Param("koulutustyypit") List<KoulutusTyyppi> koulutustyypit,
+            @Param("koulutustyypit") List<String> koulutustyypit,
             @Param("tila") MaaraysTila tila,
             @Param("tuleva") boolean tuleva,
             @Param("voimassa") boolean voimassa,
@@ -52,7 +52,7 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
             Pageable pageable);
 
     @Query("SELECT DISTINCT k FROM Maarays m JOIN m.koulutustyypit k")
-    List<KoulutusTyyppi> findDistinctKoulutustyypit();
+    List<String> findDistinctKoulutustyypit();
 
     Maarays findFirstByPerusteIdOrderByLuotuDesc(Long perusteId);
 

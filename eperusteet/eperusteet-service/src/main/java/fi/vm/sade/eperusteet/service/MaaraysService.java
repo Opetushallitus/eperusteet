@@ -51,7 +51,7 @@ public interface MaaraysService {
     void exportLiite(UUID id, OutputStream os) throws SQLException, IOException;
 
     @PreAuthorize("permitAll()")
-    List<KoulutusTyyppi> getMaarayksienKoulutustyypit();
+    List<String> getMaarayksienKoulutustyypit();
 
     @PreAuthorize("hasPermission(null, 'maarays', 'LUKU')")
     MaaraysDto getPerusteenMaarays(Long perusteId);

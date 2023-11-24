@@ -21,7 +21,7 @@ public class MaaraysQueryDto {
     private String nimi = "";
     private Kieli kieli = Kieli.FI;
     private MaaraysTyyppi tyyppi;
-    private List<KoulutusTyyppi> koulutustyypit;
+    private List<String> koulutustyypit;
     private boolean tuleva;
     private boolean voimassa;
     private boolean paattynyt;

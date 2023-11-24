@@ -36,7 +36,7 @@ public class MaaraysDto {
     private MaaraysTyyppi tyyppi;
     private MaaraysLiittyyTyyppi liittyyTyyppi;
     private MaaraysTila tila;
-    private List<KoulutusTyyppi> koulutustyypit;
+    private List<String> koulutustyypit;
     private PerusteKevytDto peruste;
     private List<MaaraysKevytDto> korvattavatMaaraykset = new ArrayList<>();
     private List<MaaraysKevytDto> muutettavatMaaraykset = new ArrayList<>();

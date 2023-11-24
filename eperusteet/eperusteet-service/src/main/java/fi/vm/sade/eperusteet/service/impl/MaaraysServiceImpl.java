@@ -104,7 +104,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    public List<KoulutusTyyppi> getMaarayksienKoulutustyypit() {
+    public List<String> getMaarayksienKoulutustyypit() {
         return maaraysRepository.findDistinctKoulutustyypit();
     }
 

@@ -281,7 +281,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maarays.setLiitteet(Stream.of(Kieli.FI, Kieli.SV, Kieli.EN).collect(Collectors.toMap(kieli -> kieli, kieli -> new MaaraysKieliLiitteet())));
         maarays.setKorvattavatMaaraykset(new ArrayList<>());
         maarays.setMuutettavatMaaraykset(new ArrayList<>());
-        maarays.setKoulutustyypit(List.of(KoulutusTyyppi.of(peruste.getKoulutustyyppi())));
+        maarays.setKoulutustyypit(List.of(peruste.getKoulutustyyppi()));
 
         Optional<JulkaistuPeruste> julkaisu = peruste.getJulkaisut().stream().max(Comparator.comparing(JulkaistuPeruste::getLuotu));
         if (julkaisu.isPresent()) {

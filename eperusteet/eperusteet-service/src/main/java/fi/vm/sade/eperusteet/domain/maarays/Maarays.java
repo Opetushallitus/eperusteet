@@ -84,9 +84,8 @@ public class Maarays extends AbstractAuditedEntity {
     private MaaraysTila tila = MaaraysTila.LUONNOS;
 
     @ElementCollection
-    @Enumerated(EnumType.STRING)
     @CollectionTable(name="maarays_koulutustyypit")
-    private List<KoulutusTyyppi> koulutustyypit;
+    private List<String> koulutustyypit;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "peruste_id")
