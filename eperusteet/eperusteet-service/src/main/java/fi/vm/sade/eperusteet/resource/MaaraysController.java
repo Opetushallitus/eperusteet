@@ -59,7 +59,7 @@ public class MaaraysController {
             @RequestParam(value = "nimi", defaultValue = "", required = false) String nimi,
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) String kieli,
             @RequestParam(value = "tyyppi", required = false) final MaaraysTyyppi tyyppi,
-            @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyyppi,
+            @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyypit,
             @RequestParam(value = "tuleva", required = false) boolean tuleva,
             @RequestParam(value = "voimassa", required = false) boolean voimassa,
             @RequestParam(value = "paattynyt", required = false) boolean paattynyt,
@@ -73,7 +73,7 @@ public class MaaraysController {
                         .nimi(nimi)
                         .kieli(Kieli.of(kieli))
                         .tyyppi(tyyppi)
-                        .koulutustyypit(koulutustyyppi != null ? koulutustyyppi.stream().map(KoulutusTyyppi::of).collect(Collectors.toList()) : null)
+                        .koulutustyypit(koulutustyypit)
                         .tuleva(tuleva)
                         .voimassa(voimassa)
                         .paattynyt(paattynyt)
@@ -87,7 +87,7 @@ public class MaaraysController {
     }
 
     @GetMapping(value = "/koulutustyypit")
-    public List<KoulutusTyyppi> getMaarayksienKoulutustyypit() {
+    public List<String> getMaarayksienKoulutustyypit() {
         return maaraysService.getMaarayksienKoulutustyypit();
     }
 

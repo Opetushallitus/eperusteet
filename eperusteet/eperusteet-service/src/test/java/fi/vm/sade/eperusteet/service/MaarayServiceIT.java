@@ -48,7 +48,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .diaarinumero("diaari")
                 .tila(MaaraysTila.LUONNOS)
                 .tyyppi(MaaraysTyyppi.AMMATILLINEN_MUU)
-                .koulutustyypit(Arrays.asList(KoulutusTyyppi.TUTKINTOONVALMENTAVA, KoulutusTyyppi.PERUSOPETUS))
+                .koulutustyypit(Arrays.asList(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString(), KoulutusTyyppi.PERUSOPETUS.toString()))
                 .voimassaoloAlkaa(DateTime.now().minusDays(5).toDate())
                 .maarayspvm(new Date())
                 .build());
@@ -57,7 +57,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .diaarinumero("diaari")
                 .tila(MaaraysTila.LUONNOS)
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(Arrays.asList(KoulutusTyyppi.TUTKINTOONVALMENTAVA))
+                .koulutustyypit(Arrays.asList(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString()))
                 .voimassaoloAlkaa(DateTime.now().plusDays(5).toDate())
                 .maarayspvm(new Date())
                 .build());
@@ -66,7 +66,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .diaarinumero("diaari")
                 .tila(MaaraysTila.LUONNOS)
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(Arrays.asList(KoulutusTyyppi.ESIOPETUS))
+                .koulutustyypit(Arrays.asList(KoulutusTyyppi.ESIOPETUS.toString()))
                 .voimassaoloAlkaa(DateTime.now().minusDays(6).toDate())
                 .maarayspvm(new Date())
                 .build());
@@ -75,7 +75,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .diaarinumero("diaari")
                 .tila(MaaraysTila.LUONNOS)
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(Arrays.asList(KoulutusTyyppi.ESIOPETUS))
+                .koulutustyypit(Arrays.asList(KoulutusTyyppi.ESIOPETUS.toString()))
                 .voimassaoloAlkaa(DateTime.now().minusDays(6).toDate())
                 .voimassaoloLoppuu(DateTime.now().minusDays(5).toDate())
                 .maarayspvm(new Date())
@@ -88,12 +88,12 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .hasSize(3);
         assertThat(maaraysService.getMaaraykset(createQuery()
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS, KoulutusTyyppi.ESIOPETUS))
+                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS.toString(), KoulutusTyyppi.ESIOPETUS.toString()))
                 .build()).getContent())
                 .hasSize(2);
         assertThat(maaraysService.getMaaraykset(createQuery()
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS))
+                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS.toString()))
                 .paattynyt(true)
                 .luonnos(false)
                 .julkaistu(true)
@@ -102,7 +102,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
 
         assertThat(maaraysService.getMaaraykset(createQuery()
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS))
+                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS.toString()))
                 .paattynyt(true)
                 .luonnos(true)
                 .julkaistu(false)
@@ -111,7 +111,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
 
         assertThat(maaraysService.getMaaraykset(createQuery()
                 .tyyppi(MaaraysTyyppi.OPETUSHALLITUKSEN_MUU)
-                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS))
+                .koulutustyypit(List.of(KoulutusTyyppi.ESIOPETUS.toString()))
                 .paattynyt(true)
                 .luonnos(true)
                 .julkaistu(true)
@@ -119,7 +119,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .hasSize(1);
 
         assertThat(maaraysService.getMaarayksienKoulutustyypit())
-                .containsExactlyInAnyOrder(KoulutusTyyppi.TUTKINTOONVALMENTAVA, KoulutusTyyppi.PERUSOPETUS, KoulutusTyyppi.ESIOPETUS);
+                .containsExactlyInAnyOrder(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString(), KoulutusTyyppi.PERUSOPETUS.toString(), KoulutusTyyppi.ESIOPETUS.toString());
     }
 
     @Test
@@ -191,7 +191,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
                 .tila(MaaraysTila.LUONNOS)
                 .liittyyTyyppi(MaaraysLiittyyTyyppi.EI_LIITY)
                 .tyyppi(MaaraysTyyppi.AMMATILLINEN_MUU)
-                .koulutustyypit(Arrays.asList(KoulutusTyyppi.TUTKINTOONVALMENTAVA))
+                .koulutustyypit(Arrays.asList(KoulutusTyyppi.TUTKINTOONVALMENTAVA.toString()))
                 .voimassaoloAlkaa(new Date())
                 .maarayspvm(new Date())
                 .liitteet(Map.of(Kieli.FI, new MaaraysKieliLiitteetDto()))
