@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,7 +28,7 @@ public class MaaraysKieliLiitteet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "maarays_kieli_liite")
     private List<MaaraysLiite> liitteet = new ArrayList<>();
 }
