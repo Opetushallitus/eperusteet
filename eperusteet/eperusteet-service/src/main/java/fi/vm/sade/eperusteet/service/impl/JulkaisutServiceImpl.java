@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Throwables;
@@ -30,8 +31,8 @@ import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
-import fi.vm.sade.eperusteet.dto.PerusteenMuokkaustietoDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -41,11 +42,9 @@ import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenMuutostietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -79,11 +78,7 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.apache.tika.mime.MimeTypeException;
 import org.joda.time.DateTime;
-import org.json.JSONException;
 import org.jsoup.Jsoup;
-import org.skyscreamer.jsonassert.FieldComparisonFailure;
-import org.skyscreamer.jsonassert.JSONCompare;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -109,6 +104,7 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -484,15 +480,17 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
                                                             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
-                                                            String koodi, Integer sivu, Integer sivukoko) {
+                                                            String koodi, JulkaisuSisaltoTyyppi sisaltotyyppi,
+                                                            Integer sivu, Integer sivukoko) {
         Pageable pageable = new PageRequest(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
         if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN.toString())) {
-            koulutustyyppi = Arrays.asList("");
+            koulutustyyppi = List.of("");
         } else if (CollectionUtils.isEmpty((koulutustyyppi))) {
             koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         }
-        return julkaisutRepository.findAllJulkisetJulkaisut(
+
+        Page<PerusteenJulkaisuData> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
                 koulutustyyppi,
                 nimi,
                 kieli,
@@ -505,15 +503,55 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 tyyppi,
                 diaarinumero,
                 koodi,
+                sisaltotyyppi.name().toLowerCase(),
                 pageable)
-                .map(obj -> {
-                    try {
-                        return objectMapper.readValue(obj, PerusteenJulkaisuData.class);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        throw new RuntimeException(e);
-                    }
+                .map(this::convertToPerusteData);
+
+        if (!sisaltotyyppi.equals(JulkaisuSisaltoTyyppi.PERUSTE)) {
+            return taytaPerusteet(julkaisut);
+        }
+
+        return julkaisut;
+    }
+
+    private Page<PerusteenJulkaisuData> taytaPerusteet(Page<PerusteenJulkaisuData> julkaisut) {
+        Set<String> tutkinnonosaKoodit = julkaisut.getContent().stream()
+                .filter(julkaisuData -> julkaisuData.getSisaltotyyppi().equals(JulkaisuSisaltoTyyppi.TUTKINNONOSA.name().toLowerCase()))
+                .map(julkaisuData -> julkaisuData.getTutkinnonosa().getKoodiUri())
+                .collect(Collectors.toSet());
+
+        Map<String, List<PerusteenJulkaisuData>> perusteetTutkinnonosanKoodilla = new HashMap<>();
+        julkaisutRepository.findAllJulkaistutPerusteetByKoodi(tutkinnonosaKoodit).stream()
+                .map(this::convertToPerusteData)
+                .forEach(perusteData -> {
+                    perusteData.getKoodit().forEach(koodi -> {
+                        if (!perusteetTutkinnonosanKoodilla.containsKey(koodi)) {
+                            perusteetTutkinnonosanKoodilla.put(koodi, new ArrayList<>());
+                        }
+                        perusteetTutkinnonosanKoodilla.get(koodi).add(perusteData);
+                    });
                 });
+
+        julkaisut.map(julkaisu -> {
+            if (julkaisu.getTutkinnonosa() != null && perusteetTutkinnonosanKoodilla.containsKey(julkaisu.getTutkinnonosa().getKoodiUri())) {
+                if (julkaisu.getPerusteet() == null) {
+                    julkaisu.setPerusteet(new ArrayList<>());
+                }
+                julkaisu.getPerusteet().addAll(perusteetTutkinnonosanKoodilla.get(julkaisu.getTutkinnonosa().getKoodiUri()));
+            }
+            return julkaisu;
+        });
+
+        return julkaisut;
+    }
+
+    private PerusteenJulkaisuData convertToPerusteData(String perusteObj) {
+        try {
+            return objectMapper.readValue(perusteObj, PerusteenJulkaisuData.class);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
