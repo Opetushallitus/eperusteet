@@ -174,12 +174,23 @@ public class MaaraysServiceImpl implements MaaraysService {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }
 
+        updateLiitteet(maaraysDto);
         addLiitteet(maaraysDto);
         deleteLiitteet(maaraysDto);
 
         return dtoMapper.map(
                 maaraysRepository.save(dtoMapper.map(maaraysDto, Maarays.class)),
                 MaaraysDto.class);
+    }
+
+    private void updateLiitteet(MaaraysDto maaraysDto) {
+        maaraysDto.getLiitteet().values().stream()
+                .map(MaaraysKieliLiitteetDto::getLiitteet)
+                .flatMap(Collection::stream)
+                .filter(liite -> liite.getId() != null)
+                .forEach(liite -> {
+                    maaraysLiiteRepository.save(dtoMapper.map(liite, MaaraysLiite.class));
+                });
     }
 
     private void addLiitteet(MaaraysDto maaraysDto) {

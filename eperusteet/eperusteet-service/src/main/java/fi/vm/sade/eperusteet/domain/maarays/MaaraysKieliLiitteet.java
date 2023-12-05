@@ -28,7 +28,7 @@ public class MaaraysKieliLiitteet {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JoinTable(name = "maarays_kieli_liite")
     private List<MaaraysLiite> liitteet = new ArrayList<>();
 }
