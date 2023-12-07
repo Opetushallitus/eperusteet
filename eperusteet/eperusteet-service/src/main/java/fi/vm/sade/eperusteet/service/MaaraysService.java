@@ -39,7 +39,7 @@ public interface MaaraysService {
     MaaraysDto updateMaarays(MaaraysDto muuMaaraysDto);
 
     @PreAuthorize("hasPermission(null, 'maarays', 'POISTO')")
-    void deleteMaarays(long id);
+    void deleteMaarays(Long id);
 
     @PreAuthorize("hasPermission(null, 'maarays', 'LUONTI')")
     UUID uploadFile(MaaraysLiiteDto maaraysLiiteUploadDto);

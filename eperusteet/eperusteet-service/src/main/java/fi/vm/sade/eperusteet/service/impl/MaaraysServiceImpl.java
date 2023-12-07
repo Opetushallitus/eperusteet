@@ -8,6 +8,8 @@ import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasanatFetch;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysKieliLiitteet;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiite;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiiteTyyppi;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysKieliLiitteetDto;
@@ -111,7 +113,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     @Override
     @IgnorePerusteUpdateCheck
     public MaaraysDto getPerusteenMaarays(Long perusteId) {
-        return dtoMapper.map(maaraysRepository.findFirstByPerusteIdOrderByLuotuDesc(perusteId), MaaraysDto.class);
+        return dtoMapper.map(maaraysRepository.findFirstByPerusteIdAndLiittyyTyyppiOrderByLuotuAsc(perusteId, MaaraysLiittyyTyyppi.EI_LIITY), MaaraysDto.class);
     }
 
     @Override
@@ -221,7 +223,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     @Override
     @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
-    public void deleteMaarays(long id) {
+    public void deleteMaarays(Long id) {
         if (maaraysRepository.findOne(id) == null) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }
