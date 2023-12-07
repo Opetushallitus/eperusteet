@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasanatFetch;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.dto.Voimassaolo;
@@ -54,6 +55,6 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
     @Query("SELECT DISTINCT k FROM Maarays m JOIN m.koulutustyypit k")
     List<String> findDistinctKoulutustyypit();
 
-    Maarays findFirstByPerusteIdOrderByLuotuDesc(Long perusteId);
+    Maarays findFirstByPerusteIdAndLiittyyTyyppiOrderByLuotuAsc(Long perusteId, MaaraysLiittyyTyyppi liittyyTyyppi);
 
 }

@@ -345,24 +345,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         MaaraysDto maarays = maaraysService.getPerusteenMaarays(peruste.getId());
         if (maarays != null) {
             maarays.setTila(MaaraysTila.JULKAISTU);
-            if (julkaisuBaseDto.getMuutosmaarays() == null) {
-                maarays.setNimi(mapper.map(peruste.getNimi(), LokalisoituTekstiDto.class));
-                maarays.setDiaarinumero(peruste.getDiaarinumero().getDiaarinumero());
-                maarays.setVoimassaoloAlkaa(peruste.getVoimassaoloAlkaa());
-                maarays.setVoimassaoloLoppuu(peruste.getVoimassaoloLoppuu());
-                maarays.setMaarayspvm(peruste.getPaatospvm());
-            }
-
+            maarays.setNimi(mapper.map(peruste.getNimi(), LokalisoituTekstiDto.class));
+            maarays.setDiaarinumero(peruste.getDiaarinumero().getDiaarinumero());
+            maarays.setVoimassaoloAlkaa(peruste.getVoimassaoloAlkaa());
+            maarays.setVoimassaoloLoppuu(peruste.getVoimassaoloLoppuu());
+            maarays.setMaarayspvm(peruste.getPaatospvm());
             maarays = maaraysService.updateMaarays(maarays);
         }
 
         if (julkaisuBaseDto.getMuutosmaarays() != null) {
-            if (maarays != null) {
-                paivitaMaarayksienVoimassaolot(Collections.singletonList(mapper.map(maarays, MaaraysKevytDto.class)), julkaisuBaseDto.getMuutosmaarays().getVoimassaoloAlkaa());
-            }
-            paivitaMaarayksienVoimassaolot(julkaisuBaseDto.getMuutosmaarays().getKorvattavatMaaraykset(), julkaisuBaseDto.getMuutosmaarays().getVoimassaoloAlkaa());
-            paivitaMaarayksienVoimassaolot(julkaisuBaseDto.getMuutosmaarays().getMuutettavatMaaraykset(), julkaisuBaseDto.getMuutosmaarays().getVoimassaoloAlkaa());
-
             if (peruste.getJulkaisut().isEmpty() && maarays != null) {
                 Long maaraysId = maarays.getId();
                 maaraysService.deleteMaarays(maarays.getId());
@@ -379,19 +370,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             MaaraysDto muutosMaaraysDto = maaraysService.addMaarays(julkaisuBaseDto.getMuutosmaarays());
             julkaisu.setMuutosmaarays(mapper.map(muutosMaaraysDto, Maarays.class));
         }
-    }
-
-    private void paivitaMaarayksienVoimassaolot(List<MaaraysKevytDto> maaraykset, Date vrtVoimassaolo) {
-        maaraykset.forEach(maaraysDto -> {
-            MaaraysDto maarays = maaraysService.getMaarays(maaraysDto.getId());
-            if (maarays.getVoimassaoloLoppuu() == null || maarays.getVoimassaoloLoppuu().compareTo(vrtVoimassaolo) >= 0) {
-                maarays.setVoimassaoloLoppuu(new DateTime(vrtVoimassaolo).minusDays(1).toDate());
-                if (maarays.getVoimassaoloAlkaa() != null && maarays.getVoimassaoloAlkaa().compareTo(maarays.getVoimassaoloLoppuu()) > 0) {
-                    maarays.setVoimassaoloAlkaa(maarays.getVoimassaoloLoppuu());
-                }
-                maaraysService.updateMaarays(maarays);
-            }
-        });
     }
 
     @Override
