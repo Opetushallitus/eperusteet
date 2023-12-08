@@ -171,7 +171,7 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
 
         maaraysService.addMaarays(createDto()
                 .nimi(LokalisoituTekstiDto.of("nimi3"))
-                .voimassaoloAlkaa(DateTime.now().toDate())
+                .voimassaoloAlkaa(DateTime.now().plusDays(1).toDate())
                 .build());
 
         List<MaaraysDto> maaraykset = maaraysService.getMaaraykset(createQuery()
