@@ -65,7 +65,7 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles(profiles = {"docker"})
 @Transactional
 @SpringBootTest
-@Ignore
+//@Ignore
 public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     @Autowired

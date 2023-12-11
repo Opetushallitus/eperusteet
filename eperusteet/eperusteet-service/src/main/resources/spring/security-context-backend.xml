@@ -32,28 +32,30 @@
     <beans:bean id="casFilter" class="fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter">
         <beans:constructor-arg ref="casServiceProperties"/>
         <beans:property name="authenticationManager" ref="authenticationManager"/>
-        <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>
+<!--        <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>-->
         <beans:property name="proxyReceptorUrl" value="/j_spring_cas_security_proxyreceptor"/>
         <beans:property name="filterProcessesUrl" value="/j_spring_cas_security_check"/>
     </beans:bean>
 
     <!-- This filter handles a Single Logout Request from the CAS Server -->
-    <beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
-
-    <beans:bean id="pgtStorage" class="org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl">
-        <beans:constructor-arg name="cache">
-            <beans:bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-                <beans:property name="cacheManager" ref="casTicketCache"/>
-                <beans:property name="maxElementsInMemory" value="100000"/>
-                <beans:property name="maxElementsOnDisk" value="10000000"/>
-                <beans:property name="overflowToDisk" value="true"/>
-                <beans:property name="cacheName" value="casProxyGrantingTickets"/>
-                <beans:property name="timeToLive" value="7200"/>
-                <beans:property name="timeToIdle" value="7200"/>
-                <beans:property name="eternal" value="false"/>
-            </beans:bean>
-        </beans:constructor-arg>
+    <beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter">
+        <beans:property name="ignoreInitConfiguration" value="true"/>
     </beans:bean>
+
+<!--    <beans:bean id="pgtStorage" class="org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl">-->
+<!--        <beans:constructor-arg name="cache">-->
+<!--            <beans:bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">-->
+<!--                <beans:property name="cacheManager" ref="casTicketCache"/>-->
+<!--                <beans:property name="maxElementsInMemory" value="100000"/>-->
+<!--                <beans:property name="maxElementsOnDisk" value="10000000"/>-->
+<!--                <beans:property name="overflowToDisk" value="true"/>-->
+<!--                <beans:property name="cacheName" value="casProxyGrantingTickets"/>-->
+<!--                <beans:property name="timeToLive" value="7200"/>-->
+<!--                <beans:property name="timeToIdle" value="7200"/>-->
+<!--                <beans:property name="eternal" value="false"/>-->
+<!--            </beans:bean>-->
+<!--        </beans:constructor-arg>-->
+<!--    </beans:bean>-->
 
     <beans:bean id="casEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
         <beans:property name="loginUrl" value="${web.url.cas}/login"/>
@@ -66,23 +68,23 @@
         <authentication-provider ref="casAuthenticationProvider"/>
     </authentication-manager>
 
-    <beans:bean id="casTicketsCacheBean" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
-        <beans:property name="cacheManager" ref="casTicketCache"/>
-        <beans:property name="diskExpiryThreadIntervalSeconds" value="120"/>
-        <beans:property name="diskPersistent" value="false"/>
-        <beans:property name="maxElementsInMemory" value="100000"/>
-        <beans:property name="maxElementsOnDisk" value="10000000"/>
-        <beans:property name="memoryStoreEvictionPolicy" value="LRU"/>
-        <beans:property name="overflowToDisk" value="true"/>
-        <beans:property name="cacheName" value="casTickets"/>
-        <beans:property name="timeToLive" value="7200"/>
-        <beans:property name="timeToIdle" value="7200"/>
-        <beans:property name="eternal" value="false"/>
-    </beans:bean>
+<!--    <beans:bean id="casTicketsCacheBean" class="org.springframework.cache.ehcache.EhCacheFactoryBean">-->
+<!--        <beans:property name="cacheManager" ref="casTicketCache"/>-->
+<!--        <beans:property name="diskExpiryThreadIntervalSeconds" value="120"/>-->
+<!--        <beans:property name="diskPersistent" value="false"/>-->
+<!--        <beans:property name="maxElementsInMemory" value="100000"/>-->
+<!--        <beans:property name="maxElementsOnDisk" value="10000000"/>-->
+<!--        <beans:property name="memoryStoreEvictionPolicy" value="LRU"/>-->
+<!--        <beans:property name="overflowToDisk" value="true"/>-->
+<!--        <beans:property name="cacheName" value="casTickets"/>-->
+<!--        <beans:property name="timeToLive" value="7200"/>-->
+<!--        <beans:property name="timeToIdle" value="7200"/>-->
+<!--        <beans:property name="eternal" value="false"/>-->
+<!--    </beans:bean>-->
 
-    <beans:bean id="ehCacheBasedTicketCache" class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">
-        <beans:property name="cache" ref="casTicketsCacheBean"/>
-    </beans:bean>
+<!--    <beans:bean id="ehCacheBasedTicketCache" class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">-->
+<!--        <beans:property name="cache" ref="casTicketsCacheBean"/>-->
+<!--    </beans:bean>-->
 
     <beans:bean id="casAuthenticator" class="fi.vm.sade.javautils.http.auth.CasAuthenticator">
         <beans:constructor-arg index="0" value="${web.url.cas}"/>
@@ -106,22 +108,22 @@
         <beans:property name="ticketValidator" ref="casTicketValidator"/>
         <beans:property name="key" value="${cas_key}"/>
         <!-- enable proxy authentication (in backend) -->
-        <beans:property name="statelessTicketCache" ref="ehCacheBasedTicketCache"/>
+<!--        <beans:property name="statelessTicketCache" ref="ehCacheBasedTicketCache"/>-->
     </beans:bean>
 
     <beans:bean id="casTicketValidator" class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
         <!-- enable proxy authentication (in front proxy) -->
         <beans:constructor-arg index="0" value="${web.url.cas}"/>
         <beans:property name="proxyCallbackUrl" value="${cas_service}/j_spring_cas_security_proxyreceptor"/>
-        <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>
+<!--        <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>-->
         <beans:property name="acceptAnyProxy" value="true"/>
     </beans:bean>
 
-    <beans:bean id="casTicketCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <beans:property name="configLocation" value="file://${user.home}/oph-configuration/ehcache.xml"/>
-        <beans:property name="shared" value="false"/>
-        <beans:property name="cacheManagerName" value="casTicketCache"/>
-    </beans:bean>
+<!--    <beans:bean id="casTicketCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
+<!--        <beans:property name="configLocation" value="file://${user.home}/oph-configuration/ehcache.xml"/>-->
+<!--        <beans:property name="shared" value="false"/>-->
+<!--        <beans:property name="cacheManagerName" value="casTicketCache"/>-->
+<!--    </beans:bean>-->
 
     <beans:bean id="casServiceProperties" class="org.springframework.security.cas.ServiceProperties">
         <beans:property name="service" value="${cas_service}/j_spring_cas_security_check"/>

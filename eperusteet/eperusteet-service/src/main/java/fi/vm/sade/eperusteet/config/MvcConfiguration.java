@@ -35,13 +35,9 @@ import org.springframework.web.servlet.config.annotation.*;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-/**
- *
- * @author jhyoty
- */
 @Configuration
-@EnableWebMvc
-public class MvcConfiguration extends WebMvcConfigurerAdapter {
+//@EnableWebMvc
+public class MvcConfiguration implements WebMvcConfigurer {
 
     @Autowired
     EntityManagerFactory emf;
@@ -52,10 +48,8 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/index.html").addResourceLocations("/index.html");
-        registry.addResourceHandler("/internal.html").addResourceLocations("/internal.html");
-        super.addResourceHandlers(registry); //To change body of generated methods, choose Tools | Templates.
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/ui").setViewName("forward:/ui/index.html");
     }
 
     @Override
@@ -68,7 +62,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggingInterceptor());
         registry.addInterceptor(new CacheHeaderInterceptor());
-        super.addInterceptors(registry);
+//        super.addInterceptors(registry);
     }
 
     @Bean
