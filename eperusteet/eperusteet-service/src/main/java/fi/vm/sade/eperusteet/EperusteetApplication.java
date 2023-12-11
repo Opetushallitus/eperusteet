@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
 @ImportResource({"classpath*:spring/application-context.xml"})
-public class EperusteetApplication { //extends SpringBootServletInitializer {
+public class EperusteetApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EperusteetApplication.class, args);

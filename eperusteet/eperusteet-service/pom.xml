@@ -17,7 +17,6 @@
 
     <artifactId>eperusteet-service</artifactId>
     <name>eperusteet-service</name>
-    <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -85,10 +84,10 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-cache</artifactId>-->
+<!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.boot</groupId>-->
 <!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
@@ -107,15 +106,20 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>spring-context-support</artifactId>-->
+<!--            <version>5.3.30</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
@@ -609,6 +613,10 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <!-- Maven rikkoo muuten ttf fontit -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -6,16 +6,14 @@
   http://www.springframework.org/schema/security
   http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <http use-expressions="true" request-matcher="regex">				
+    <http use-expressions="true" request-matcher="regex">
         <http-basic/>
 		<intercept-url pattern="/api/palaute" access="permitAll" method="POST"/>
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="POST"/> -->
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="PUT"/> -->
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="DELETE"/> -->
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="PATCH"/> -->
-        <intercept-url pattern="/" access="permitAll"/>
-        <intercept-url pattern="/index.html" access="permitAll"/>
-        <intercept-url pattern="/**" access="${spring_security_default_access}"/>
+        <intercept-url pattern="/**" access="permitAll"/>
         <csrf disabled="true" />
     </http>
 	

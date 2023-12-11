@@ -16,11 +16,13 @@
 package fi.vm.sade.eperusteet.config;
 
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
+import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MappingException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -64,10 +66,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author teele1
- */
+@Slf4j
 @ControllerAdvice
 public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
 
@@ -221,6 +220,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         if (suppresstrace) {
             LOG.warn("Virhetilanne: " + ex.getLocalizedMessage());
         } else {
+            log.error(Throwables.getStackTraceAsString(ex));
             LOG.error("Virhetilanne: ", ex);
         }
         return super.handleExceptionInternal(ex, map, headers, status, request);

@@ -22,19 +22,19 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:property-placeholder
-        location="file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/override.properties"
+        location="file:///${user.home:''}/oph-configuration/eperusteet.properties"
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
     <!--classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties" -->
 
-    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
-        <property name="configLocation"  value="classpath:eperusteet-ehcache.xml"/>
-        <property name="cacheManagerName" value="eperusteetCacheManager"/>
-    </bean>
+<!--    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
+<!--        <property name="configLocation"  value="classpath:eperusteet-ehcache.xml"/>-->
+<!--        <property name="cacheManagerName" value="eperusteetCacheManager"/>-->
+<!--    </bean>-->
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="eperusteetEhCache"/>
-    </bean>
+<!--    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">-->
+<!--        <property name="cacheManager" ref="eperusteetEhCache"/>-->
+<!--    </bean>-->
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
