@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.maarays.MaaraysLiiteUploadDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysQueryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -29,14 +30,14 @@ public interface MaaraysService {
     @PreAuthorize("permitAll()")
     MaaraysDto getMaarays(Long id);
 
-    @PreAuthorize("hasPermission(null, 'maarays', 'LUKU')")
+    @PreAuthorize("permitAll()")
     Map<Kieli, List<String>> getAsiasanat();
 
-    @PreAuthorize("hasPermission(null, 'maarays', 'LUONTI')")
-    MaaraysDto addMaarays(MaaraysDto muuMaaraysDto);
+    @PreAuthorize("hasPermission(null, 'maarays', 'LUONTI') or (#maarays.peruste != null && hasPermission(#maarays.peruste.id, 'peruste', 'MUOKKAUS'))")
+    MaaraysDto addMaarays(@P("maarays") MaaraysDto muuMaaraysDto);
 
-    @PreAuthorize("hasPermission(null, 'maarays', 'MUOKKAUS')")
-    MaaraysDto updateMaarays(MaaraysDto muuMaaraysDto);
+    @PreAuthorize("hasPermission(null, 'maarays', 'MUOKKAUS') or (#maarays.peruste != null && hasPermission(#maarays.peruste.id, 'peruste', 'MUOKKAUS'))")
+    MaaraysDto updateMaarays(@P("maarays") MaaraysDto muuMaaraysDto);
 
     @PreAuthorize("hasPermission(null, 'maarays', 'POISTO')")
     void deleteMaarays(Long id);
@@ -53,7 +54,7 @@ public interface MaaraysService {
     @PreAuthorize("permitAll()")
     List<String> getMaarayksienKoulutustyypit();
 
-    @PreAuthorize("hasPermission(null, 'maarays', 'LUKU')")
-    MaaraysDto getPerusteenMaarays(Long perusteId);
+    @PreAuthorize("hasPermission(null, 'maarays', 'LUKU') or hasPermission(#perusteId, 'peruste', 'LUKU')")
+    MaaraysDto getPerusteenMaarays(@P("perusteId") Long perusteId);
 
 }
