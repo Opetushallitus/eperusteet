@@ -12718,12 +12718,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
-        "koulutustyyppi" : {
-          "type" : "string"
-        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "koulutustyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -15053,7 +15053,10 @@
         },
 =======
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15076,6 +15079,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15092,10 +15098,23 @@
             "type" : "object"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15182,8 +15201,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15203,7 +15232,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15226,6 +15258,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15240,22 +15275,24 @@
             "$ref" : "#/definitions/KoodistoKoodiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
 >>>>>>> 6435b9a9b (EP-3491)
+=======
+>>>>>>> b74a1a4c9 (rebase)
         },
-        "empty" : {
+        "first" : {
           "type" : "boolean"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 7e90bad04 (rebase)
 <<<<<<< HEAD
         }
       }
@@ -15273,8 +15310,14 @@
 =======
 <<<<<<< HEAD
 >>>>>>> fa1ae6eba (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> 08a388b8e (julkaisuit test fix)
+=======
+=======
+>>>>>>> e0f08728a (rebase)
+>>>>>>> 7e90bad04 (rebase)
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
@@ -15287,6 +15330,8 @@
 <<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> 4d019de25 (rebase)
 <<<<<<< HEAD
         "last" : {
           "type" : "boolean"
@@ -15312,8 +15357,28 @@
 =======
 >>>>>>> 76f78fc10 (julkaisuit test fix)
 >>>>>>> b90256e29 (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> f6372c673 (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> 08a388b8e (julkaisuit test fix)
+=======
+=======
+=======
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15333,7 +15398,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15356,6 +15424,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15370,10 +15441,23 @@
             "$ref" : "#/definitions/MaaraysDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15424,8 +15508,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15445,7 +15539,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15468,6 +15565,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15482,10 +15582,23 @@
             "$ref" : "#/definitions/OsaamismerkkiDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15534,8 +15647,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15555,7 +15678,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15578,6 +15704,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15592,10 +15721,23 @@
             "$ref" : "#/definitions/PerusteBaseDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15644,8 +15786,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15665,7 +15817,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15688,6 +15843,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15702,10 +15860,23 @@
             "$ref" : "#/definitions/PerusteHakuDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15754,8 +15925,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15775,7 +15956,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15798,6 +15982,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15812,10 +15999,23 @@
             "$ref" : "#/definitions/PerusteHakuInternalDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15864,8 +16064,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15885,7 +16095,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -15908,6 +16121,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -15922,10 +16138,23 @@
             "$ref" : "#/definitions/PerusteInfoDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -15974,8 +16203,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -15995,7 +16234,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -16018,6 +16260,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -16032,10 +16277,23 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -16084,8 +16342,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -16105,7 +16373,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -16128,6 +16399,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -16142,10 +16416,23 @@
             "$ref" : "#/definitions/PerusteprojektiKevytDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -16194,8 +16481,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -16215,7 +16512,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -16238,6 +16538,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -16252,10 +16555,23 @@
             "$ref" : "#/definitions/TiedoteDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -16304,8 +16620,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -16325,7 +16651,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -16348,6 +16677,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -16362,10 +16694,23 @@
             "$ref" : "#/definitions/TutkinnonOsaDto"
           }
         },
-        "number" : {
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
 <<<<<<< HEAD
@@ -16414,8 +16759,18 @@
           "type" : "boolean"
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
+<<<<<<< HEAD
 >>>>>>> c138519dc (EP-3491)
+<<<<<<< HEAD
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+=======
+        "empty" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -16435,7 +16790,10 @@
 >>>>>>> ab12b8ebc (EP-3491)
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "last" : {
           "type" : "boolean"
         },
@@ -16458,6 +16816,9 @@
 >>>>>>> 42870a7cf (julkaisuit test fix)
         },
         "numberOfElements" : {
+=======
+        "number" : {
+>>>>>>> 0ae1dd67f (rebase)
           "type" : "integer",
           "format" : "int32"
         },
@@ -16472,17 +16833,29 @@
             "$ref" : "#/definitions/TutkinnonOsaViiteKontekstiDto"
           }
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
 >>>>>>> 6435b9a9b (EP-3491)
+=======
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+>>>>>>> b74a1a4c9 (rebase)
         },
 <<<<<<< HEAD
         "first" : {
@@ -16532,6 +16905,7 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
+<<<<<<< HEAD
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
@@ -16561,17 +16935,45 @@
         "unpaged" : {
           "type" : "boolean"
         },
+=======
+>>>>>>> b74a1a4c9 (rebase)
         "offset" : {
           "type" : "integer",
           "format" : "int64"
         },
         "sort" : {
           "$ref" : "#/definitions/Sort"
+<<<<<<< HEAD
 >>>>>>> 76f78fc10 (julkaisuit test fix)
 >>>>>>> b90256e29 (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> f6372c673 (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> fa1ae6eba (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> 08a388b8e (julkaisuit test fix)
+=======
+=======
+=======
+=======
+        },
+        "unpaged" : {
+          "type" : "boolean"
+        },
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "paged" : {
+          "type" : "boolean"
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> e0f08728a (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
@@ -18541,13 +18943,13 @@
     "Sort" : {
       "type" : "object",
       "properties" : {
-        "unsorted" : {
+        "empty" : {
           "type" : "boolean"
         },
         "sorted" : {
           "type" : "boolean"
         },
-        "empty" : {
+        "unsorted" : {
           "type" : "boolean"
         }
       }
@@ -18919,16 +19321,21 @@
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "huomautukset" : {
 =======
 =======
 >>>>>>> 08a388b8e (julkaisuit test fix)
+=======
+>>>>>>> 7e90bad04 (rebase)
 <<<<<<< HEAD
         "vaihtoOk" : {
           "type" : "boolean"
 =======
 =======
 >>>>>>> fa1ae6eba (julkaisuit test fix)
+=======
+>>>>>>> e0f08728a (rebase)
 <<<<<<< HEAD
 =======
 =======
@@ -18950,15 +19357,31 @@
           }
         },
 >>>>>>> 76f78fc10 (julkaisuit test fix)
+<<<<<<< HEAD
         "huomautukset" : {
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
+=======
+=======
+        "virheet" : {
+>>>>>>> 7e90bad04 (rebase)
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
 <<<<<<< HEAD
 =======
+        },
+        "vaihtoOk" : {
+          "type" : "boolean"
+        },
+>>>>>>> 0ae1dd67f (rebase)
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
+<<<<<<< HEAD
         },
 <<<<<<< HEAD
 >>>>>>> 6435b9a9b (EP-3491)
@@ -19017,10 +19440,24 @@
 =======
 >>>>>>> 76f78fc10 (julkaisuit test fix)
 >>>>>>> 42870a7cf (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> b90256e29 (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> f6372c673 (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> fa1ae6eba (julkaisuit test fix)
+<<<<<<< HEAD
 >>>>>>> 08a388b8e (julkaisuit test fix)
+=======
+=======
+=======
+=======
+=======
+>>>>>>> 0ae1dd67f (rebase)
+>>>>>>> b74a1a4c9 (rebase)
+>>>>>>> 4d019de25 (rebase)
+>>>>>>> e0f08728a (rebase)
+>>>>>>> 7e90bad04 (rebase)
         }
       }
     },
