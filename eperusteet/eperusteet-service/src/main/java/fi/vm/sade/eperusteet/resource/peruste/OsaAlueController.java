@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@RequestMapping(value = "/tutkinnonosat/{viiteId}/osaalueet")
+@RequestMapping(value = "/api/tutkinnonosat/{viiteId}/osaalueet")
 @Api(value = "OsaAlueet")
 @InternalApi
 public class OsaAlueController {

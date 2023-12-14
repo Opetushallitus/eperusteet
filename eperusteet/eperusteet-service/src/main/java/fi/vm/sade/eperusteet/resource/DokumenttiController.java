@@ -44,7 +44,7 @@ import java.util.Objects;
  * @author jussini
  */
 @RestController
-@RequestMapping("/dokumentit")
+@RequestMapping("/api/dokumentit")
 @InternalApi
 @Api(value = "Dokumentit")
 public class DokumenttiController {

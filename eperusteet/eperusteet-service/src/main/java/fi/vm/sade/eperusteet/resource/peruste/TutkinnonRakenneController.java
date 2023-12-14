@@ -60,7 +60,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * @author jhyoty
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
+@RequestMapping("/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}")
 @InternalApi
 @Api("TutkinnonRakenne")
 public class TutkinnonRakenneController {

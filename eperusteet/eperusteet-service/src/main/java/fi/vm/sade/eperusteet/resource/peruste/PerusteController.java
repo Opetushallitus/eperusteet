@@ -64,7 +64,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
-@RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Perusteet")
 public class PerusteController {
 

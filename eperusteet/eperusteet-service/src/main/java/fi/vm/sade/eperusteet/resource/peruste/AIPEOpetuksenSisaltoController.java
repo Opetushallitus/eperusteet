@@ -52,7 +52,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * @author nkala
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}/aipeopetus")
+@RequestMapping("/api/perusteet/{perusteId}/aipeopetus")
 @Api(value = "Aipeopetuksensisalto")
 @InternalApi
 public class AIPEOpetuksenSisaltoController {

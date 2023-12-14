@@ -30,7 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/osaamismerkit")
+@RequestMapping("/api/osaamismerkit")
 @Api(value = "Osaamismerkit")
 @InternalApi
 public class OsaamismerkkiController {

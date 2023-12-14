@@ -24,7 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @InternalApi
 @Api(value = "PerusopetusOppiaineVlkLukko")
-@RequestMapping("/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
+@RequestMapping("/api/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
 public class PerusopetusOppiaineVlkLockController extends AbstractLockService<OppiaineLockContext> {
 
     @Autowired

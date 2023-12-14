@@ -57,7 +57,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
-@RequestMapping("/perusteenosat")
+@RequestMapping("/api/perusteenosat")
 @Api(value = "Perusteenosat", description = "Perusteen osien hallinta")
 @InternalApi
 public class PerusteenOsaController {

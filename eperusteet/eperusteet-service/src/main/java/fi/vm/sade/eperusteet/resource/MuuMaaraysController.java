@@ -19,7 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @InternalApi
 @RestController
-@RequestMapping(value = "/muutmaaraykset")
+@RequestMapping(value = "/api/muutmaaraykset")
 @Api("MuutMaaraykset")
 public class MuuMaaraysController {
 

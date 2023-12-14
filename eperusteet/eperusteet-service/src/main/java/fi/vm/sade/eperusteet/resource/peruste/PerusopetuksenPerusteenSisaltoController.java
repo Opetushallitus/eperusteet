@@ -47,7 +47,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  * @author jhyoty
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}/perusopetus")
+@RequestMapping("/api/perusteet/{perusteId}/perusopetus")
 @Api(value = "PerusopetuksenPerusteenSisalto")
 @InternalApi
 public class PerusopetuksenPerusteenSisaltoController {

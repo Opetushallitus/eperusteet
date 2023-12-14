@@ -23,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @InternalApi
 @Api(value = "PerusopetusVuosiluokkaKokonaisuusLukko")
-@RequestMapping(value = "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
+@RequestMapping(value = "/api/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
 public class VuosiluokkaKokonaisuusLockController extends AbstractLockService<VuosiluokkaKokonaisuusContext> {
     @Autowired
     @LockCtx(VuosiluokkaKokonaisuusContext.class)

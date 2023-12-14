@@ -32,7 +32,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author jussini
  */
 @RestController
-@RequestMapping("/koulutusalat")
+@RequestMapping("/api/koulutusalat")
 @InternalApi
 public class KoulutusalaController {
 

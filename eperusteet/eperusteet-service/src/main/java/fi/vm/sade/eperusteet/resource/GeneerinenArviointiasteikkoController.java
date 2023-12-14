@@ -15,7 +15,7 @@ import java.util.List;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
-@RequestMapping("/geneerinenarviointi")
+@RequestMapping("/api/geneerinenarviointi")
 @Api(value = "GeneerinenArviointiasteikko")
 public class GeneerinenArviointiasteikkoController {
 

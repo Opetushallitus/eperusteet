@@ -40,7 +40,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author harrik
  */
 @RestController
-@RequestMapping("/kayttajaprofiili")
+@RequestMapping("/api/kayttajaprofiili")
 @InternalApi
 public class KayttajaprofiiliController {
 
