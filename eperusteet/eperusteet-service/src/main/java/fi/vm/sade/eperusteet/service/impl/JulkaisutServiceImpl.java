@@ -93,6 +93,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.io.ByteArrayInputStream;
@@ -520,27 +521,29 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 .map(julkaisuData -> julkaisuData.getTutkinnonosa().getKoodiUri())
                 .collect(Collectors.toSet());
 
-        Map<String, List<PerusteenJulkaisuData>> perusteetTutkinnonosanKoodilla = new HashMap<>();
-        julkaisutRepository.findAllJulkaistutPerusteetByKoodi(tutkinnonosaKoodit).stream()
-                .map(this::convertToPerusteData)
-                .forEach(perusteData -> {
-                    perusteData.getKoodit().forEach(koodi -> {
-                        if (!perusteetTutkinnonosanKoodilla.containsKey(koodi)) {
-                            perusteetTutkinnonosanKoodilla.put(koodi, new ArrayList<>());
-                        }
-                        perusteetTutkinnonosanKoodilla.get(koodi).add(perusteData);
+        if (!ObjectUtils.isEmpty(tutkinnonosaKoodit)) {
+            Map<String, List<PerusteenJulkaisuData>> perusteetTutkinnonosanKoodilla = new HashMap<>();
+            julkaisutRepository.findAllJulkaistutPerusteetByKoodi(tutkinnonosaKoodit).stream()
+                    .map(this::convertToPerusteData)
+                    .forEach(perusteData -> {
+                        perusteData.getKoodit().forEach(koodi -> {
+                            if (!perusteetTutkinnonosanKoodilla.containsKey(koodi)) {
+                                perusteetTutkinnonosanKoodilla.put(koodi, new ArrayList<>());
+                            }
+                            perusteetTutkinnonosanKoodilla.get(koodi).add(perusteData);
+                        });
                     });
-                });
 
-        julkaisut.map(julkaisu -> {
-            if (julkaisu.getTutkinnonosa() != null && perusteetTutkinnonosanKoodilla.containsKey(julkaisu.getTutkinnonosa().getKoodiUri())) {
-                if (julkaisu.getPerusteet() == null) {
-                    julkaisu.setPerusteet(new ArrayList<>());
+            julkaisut.map(julkaisu -> {
+                if (julkaisu.getTutkinnonosa() != null && perusteetTutkinnonosanKoodilla.containsKey(julkaisu.getTutkinnonosa().getKoodiUri())) {
+                    if (julkaisu.getPerusteet() == null) {
+                        julkaisu.setPerusteet(new ArrayList<>());
+                    }
+                    julkaisu.getPerusteet().addAll(perusteetTutkinnonosanKoodilla.get(julkaisu.getTutkinnonosa().getKoodiUri()));
                 }
-                julkaisu.getPerusteet().addAll(perusteetTutkinnonosanKoodilla.get(julkaisu.getTutkinnonosa().getKoodiUri()));
-            }
-            return julkaisu;
-        });
+                return julkaisu;
+            });
+        }
 
         return julkaisut;
     }

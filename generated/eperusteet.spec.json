@@ -12453,12 +12453,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
-        "koulutustyyppi" : {
-          "type" : "string"
-        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "koulutustyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -17508,13 +17508,13 @@
         "vaihtoOk" : {
           "type" : "boolean"
         },
-        "huomautukset" : {
+        "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "virheet" : {
+        "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
