@@ -54,7 +54,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author nkala
  */
 @RestController
-@RequestMapping("/oppaat")
+@RequestMapping("/api/oppaat")
 @Api("Oppaat")
 @InternalApi
 public class OpasController {

@@ -40,7 +40,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @InternalApi
 @RestController
-@RequestMapping("/lokalisointi")
+@RequestMapping("/api/lokalisointi")
 @Api("Lokalisointi")
 public class LokalisointiController {
 

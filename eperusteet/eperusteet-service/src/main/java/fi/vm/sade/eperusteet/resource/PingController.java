@@ -30,7 +30,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author nkala
  */
 @RestController
-@RequestMapping("/ping")
+@RequestMapping("/api/ping")
 @InternalApi
 public class PingController {
     @RequestMapping(method = GET)

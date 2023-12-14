@@ -49,7 +49,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author harrik
  */
 @RestController
-@RequestMapping("/tutkinnonosat")
+@RequestMapping("/api/tutkinnonosat")
 @Api(value = "TutkinnonosatPrivate", description = "Tutkinnon osien hallinta")
 @InternalApi
 public class TutkinnonOsaController {

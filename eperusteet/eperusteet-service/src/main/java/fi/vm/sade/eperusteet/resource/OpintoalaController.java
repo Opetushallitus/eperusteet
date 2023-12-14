@@ -32,7 +32,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author harrik
  */
 @RestController
-@RequestMapping("/opintoalat")
+@RequestMapping("/api/opintoalat")
 @InternalApi
 public class OpintoalaController {
     @Autowired

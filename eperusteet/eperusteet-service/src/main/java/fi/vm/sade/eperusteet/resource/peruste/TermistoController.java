@@ -38,7 +38,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author apvilkko
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}")
+@RequestMapping("/api/perusteet/{perusteId}")
 @InternalApi
 @Api("Termit")
 public class TermistoController {

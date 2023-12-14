@@ -41,7 +41,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  * @author nkala
  */
 @RestController
-@RequestMapping("/ulkopuoliset")
+@RequestMapping("/api/ulkopuoliset")
 @Api("Ulkopuoliset")
 @InternalApi
 public class UlkopuolisetController {

@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Time: 12.39
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}/lukiokoulutus/julkinen")
+@RequestMapping("/api/perusteet/{perusteId}/lukiokoulutus/julkinen")
 @Api(value = "Lukioperusteen julkiset tiedot")
 public class LukiokoulutusJulkisetPerusteenSisallotController {
     @Autowired

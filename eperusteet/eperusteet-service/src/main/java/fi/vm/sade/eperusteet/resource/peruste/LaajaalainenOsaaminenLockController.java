@@ -38,7 +38,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @InternalApi
 @Api(value = "PerusopetusLaajaAlainenOsaaminenLukko")
-@RequestMapping("/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko")
+@RequestMapping("/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko")
 public class LaajaalainenOsaaminenLockController extends AbstractLockService<LaajaalainenOsaaminenContext> {
     @Autowired
     @LockCtx(LaajaalainenOsaaminenContext.class)

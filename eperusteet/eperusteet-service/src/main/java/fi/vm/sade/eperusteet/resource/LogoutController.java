@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 @Api("Logout")
 @InternalApi
 public class LogoutController {

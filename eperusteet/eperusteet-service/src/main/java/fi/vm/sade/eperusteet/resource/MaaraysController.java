@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @InternalApi
 @RestController
-@RequestMapping(value = "/maaraykset")
+@RequestMapping(value = "/api/maaraykset")
 @Api("Maaraykset")
 public class MaaraysController {
 

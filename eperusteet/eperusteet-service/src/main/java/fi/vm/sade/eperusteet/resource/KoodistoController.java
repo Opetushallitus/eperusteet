@@ -44,7 +44,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * @author nkala
  */
 @RestController
-@RequestMapping("/koodisto")
+@RequestMapping("/api/koodisto")
 @InternalApi
 @PreAuthorize("isAuthenticated()")
 @Api("Koodisto")

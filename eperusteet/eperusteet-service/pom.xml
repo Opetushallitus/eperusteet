@@ -849,7 +849,6 @@
                                         <scheme>http</scheme>
                                         <scheme>https</scheme>
                                     </schemes>
-                                    <basePath>/api</basePath>
                                     <locations>
                                         <location>${eperusteet.resources}.julkinen.*</location>
                                         <location>${eperusteet.resources}.AbstractLockController</location>

@@ -19,7 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
-@RequestMapping("/perusteet/{perusteId}/tpoopetus")
+@RequestMapping("/api/perusteet/{perusteId}/tpoopetus")
 @InternalApi
 public class TpoOpetuksenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(AIPEOpetuksenSisaltoController.class);

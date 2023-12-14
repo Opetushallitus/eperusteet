@@ -76,7 +76,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  * Time: 13.32
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}/lukiokoulutus")
+@RequestMapping("/api/perusteet/{perusteId}/lukiokoulutus")
 @InternalApi
 public class LukiokoulutuksenPerusteenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(LukiokoulutuksenPerusteenSisaltoController.class);

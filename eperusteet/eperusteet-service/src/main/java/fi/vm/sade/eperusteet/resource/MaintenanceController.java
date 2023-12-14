@@ -33,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @InternalApi
 @RestController
-@RequestMapping(value = "/maintenance")
+@RequestMapping(value = "/api/maintenance")
 @Profile("!test")
 @Api("Maintenance")
 public class MaintenanceController {

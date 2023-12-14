@@ -29,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @Slf4j
 @InternalApi
 @RestController
-@RequestMapping("/perusteet/{perusteId}/lops2019")
+@RequestMapping("/api/perusteet/{perusteId}/lops2019")
 @Api("Lops2019")
 public class Lops2019Controller {
 

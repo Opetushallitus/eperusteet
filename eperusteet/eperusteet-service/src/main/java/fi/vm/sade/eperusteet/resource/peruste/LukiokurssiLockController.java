@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
         LukiokurssiLockController.BASE + "/lukko",
 })
 public class LukiokurssiLockController extends AbstractLockController<KurssiLockContext> {
-    public static final String BASE = "/perusteet/{perusteId}/lukiokoulutus/kurssit/{kurssiId}";
+    public static final String BASE = "/api/perusteet/{perusteId}/lukiokoulutus/kurssit/{kurssiId}";
 
     @Autowired
     @LockCtx(KurssiLockContext.class)
