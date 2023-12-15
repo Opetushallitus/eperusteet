@@ -1881,6 +1881,12 @@
         "tehtava" : {
           "$ref" : "#/definitions/TekstiOsaDto"
         },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
+        },
         "oppimaarat" : {
           "type" : "array",
           "uniqueItems" : true,
@@ -2518,20 +2524,17 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "numberOfElements" : {
+        "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2552,26 +2555,26 @@
         },
         "first" : {
           "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "numberOfElements" : {
+        "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2591,6 +2594,9 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
