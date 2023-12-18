@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.resource.julkinen;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
+import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
@@ -77,7 +78,9 @@ public class ExternalController {
             @RequestParam(value = "koodi", defaultValue = "", required = false) final String koodi,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, sivu, sivukoko));
+        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
+                koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
+                sivu, sivukoko));
     }
 
     @RequestMapping(value = "/peruste/{perusteId:\\d+}/perusteenosa/{perusteenOsaId}", method = GET)
@@ -131,6 +134,7 @@ public class ExternalController {
                 false,
                 "",
                 "",
+                JulkaisuSisaltoTyyppi.PERUSTE,
                 0,
                 1);
 

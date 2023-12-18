@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service;
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 
@@ -46,7 +47,7 @@ public interface JulkaisutService {
     Page<PerusteenJulkaisuData> getJulkisetJulkaisut(
             List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
-            String koodi, Integer sivu, Integer sivukoko);
+            String koodi, JulkaisuSisaltoTyyppi julkaisuSisaltoTyyppi, Integer sivu, Integer sivukoko);
 
     @PreAuthorize("permitAll()")
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);

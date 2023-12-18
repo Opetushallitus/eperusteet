@@ -143,6 +143,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
                 "normaali",
                 "",
                 "",
+                "peruste",
                 new PageRequest(0, 10));
 
         Resource resource = new ClassPathResource("material/julkaisu.json");

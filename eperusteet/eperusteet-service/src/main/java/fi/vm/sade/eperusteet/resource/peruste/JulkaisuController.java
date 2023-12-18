@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
+import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
@@ -67,9 +68,14 @@ public class JulkaisuController {
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
             @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
             @RequestParam(value = "koodi", defaultValue = "", required = false) final String koodi,
+            @RequestParam(value = "perusteet", defaultValue = "true", required = false) final boolean perusteet,
+            @RequestParam(value = "tutkinnonosat", defaultValue = "false", required = false) final boolean tutkinnonosat,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, sivu, sivukoko));
+        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
+                koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi,
+                JulkaisuSisaltoTyyppi.of(perusteet, tutkinnonosat),
+                sivu, sivukoko));
     }
 
     @RequestMapping(method = POST, value = "/{projektiId}/julkaisu")

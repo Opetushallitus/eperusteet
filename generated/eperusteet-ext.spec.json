@@ -2526,9 +2526,12 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2540,18 +2543,15 @@
             "type" : "object"
           }
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -2566,9 +2566,12 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "number" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2580,18 +2583,15 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -2885,6 +2885,9 @@
           "type" : "string",
           "format" : "date-time"
         },
+        "perusteprojekti" : {
+          "$ref" : "#/definitions/Reference"
+        },
         "suoritustavat" : {
           "type" : "array",
           "uniqueItems" : true,
@@ -2964,6 +2967,12 @@
             "$ref" : "#/definitions/SuoritustapaDto"
           }
         },
+        "koodit" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
         "julkaistu" : {
           "type" : "string",
           "format" : "date-time"
@@ -2971,6 +2980,18 @@
         "luotu" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "tutkinnonosa" : {
+          "$ref" : "#/definitions/TutkinnonOsaKaikkiDto"
+        },
+        "perusteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerusteenJulkaisuData"
+          }
+        },
+        "sisaltotyyppi" : {
+          "type" : "string"
         }
       }
     },

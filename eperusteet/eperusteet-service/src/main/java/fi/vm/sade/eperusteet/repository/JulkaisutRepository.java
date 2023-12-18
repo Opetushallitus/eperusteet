@@ -17,8 +17,10 @@ import org.springframework.stereotype.Repository;
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {
     List<JulkaistuPeruste> findAllByPeruste(Peruste peruste);
 
-    String julkaisutQuery = "FROM ( " +
-            "   SELECT * " +
+    String julkaisutQuery =
+            "FROM (SELECT * " +
+            "  FROM (" +
+            "   SELECT ROW_NUMBER() OVER(partition by id) as rownumber, * " +
             "   FROM julkaistu_peruste_Data_view data" +
             "   WHERE (" +
             "           COALESCE(:koulutustyypit, NULL) = '' " +
@@ -49,7 +51,10 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "                       AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
             "              )" +
             "       )" +
-            "   order by nimi->>:kieli asc, ?#{#pageable} " +
+            "   AND (:sisaltotyyppi = 'kaikki' OR sisaltotyyppi = :sisaltotyyppi)" +
+            "  ) subquery " +
+            "  WHERE subquery.rownumber = 1 " +
+            "  order by nimi->>:kieli asc, ?#{#pageable} " +
             ") t";
 
     @Query(nativeQuery = true,
@@ -69,7 +74,19 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("tyyppi") String tyyppi,
             @Param("diaarinumero") String diaarinumero,
             @Param("koodi") String koodi,
+            @Param("sisaltotyyppi") String sisaltotyyppi,
             Pageable pageable);
+
+    @Query(nativeQuery = true,
+            value = "SELECT CAST(row_to_json(t) as text) " +
+                    "FROM ( " +
+                    "   SELECT * " +
+                    "   FROM julkaistu_peruste_Data_view data" +
+                    "   WHERE exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodit))" +
+                    "   AND sisaltotyyppi = 'peruste' " +
+                    ") t"
+    )
+    List<String> findAllJulkaistutPerusteetByKoodi(@Param("koodit") Set<String> koodit);
 
     @Query(nativeQuery = true,
             value = "SELECT data.koulutustyyppi, COUNT(*) " +
