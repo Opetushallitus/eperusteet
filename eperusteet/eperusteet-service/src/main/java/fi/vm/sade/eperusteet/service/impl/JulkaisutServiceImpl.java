@@ -185,7 +185,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Lazy
     private JulkaisutService self;
 
-    private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 5 * 60;
+    private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 60 * 60;
     public static final Set<String> DOCUMENT_TYPES;
 
     static {
@@ -266,13 +266,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @IgnorePerusteUpdateCheck
     @Async("julkaisuTaskExecutor")
     public CompletableFuture<Void> teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
-        log.debug("teeJulkaisu: {}", projektiId);
+        log.error("teeJulkaisu: {}", projektiId);
 
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findOne(projektiId);
             if (perusteprojekti == null) {
                 throw new BusinessRuleViolationException("projektia-ei-ole");
             }
 
+        log.error("getPeruste");
         Peruste peruste = perusteprojekti.getPeruste();
         JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(peruste.getId());
 
@@ -283,6 +284,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
 
             // Validoinnit
+            log.error("validoiProjekti");
             List<Validointi> validoinnit = perusteprojektiService.validoiProjekti(projektiId, ProjektiTila.JULKAISTU);
 
             if (!salliVirheelliset && validoinnit.stream().anyMatch(Validointi::virheellinen)) {
@@ -290,14 +292,19 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
 
             // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
+            log.error("asetatila");
             peruste.asetaTila(PerusteTila.VALMIS);
             peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
             perusteRepository.save(peruste);
 
+            log.error("kooditaValiaikaisetKoodit");
             kooditaValiaikaisetKoodit(peruste.getId());
+            log.error("getKaikkiSisalto");
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
+            log.error("valueToTree");
             ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
+            log.error("generoiJulkaisuPdf");
             Set<Long> dokumentit = generoiJulkaisuPdf(peruste);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
@@ -320,8 +327,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
             julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
 
-            lisaaMaaraysKokoelmaan(julkaisuBaseDto, peruste, julkaisu);
+//            log.error("lisaaMaaraysKokoelmaan");
+//            lisaaMaaraysKokoelmaan(julkaisuBaseDto, peruste, julkaisu);
 
+            log.error("saveAndFlush");
             julkaisutRepository.saveAndFlush(julkaisu);
 
             if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
@@ -331,6 +340,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 }
             }
 
+            log.error("addMuokkaustieto");
             muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
         } catch(Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
@@ -339,9 +349,12 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
         }
 
+        log.error("setJulkaisutila");
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISTU);
+        log.error("saveJulkaisuPerusteTila");
         self.saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
+        log.error("done");
         return null;
     }
 
@@ -640,8 +653,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     private List<JulkaisuBaseDto> taytaKayttajaTiedot(List<JulkaisuBaseDto> julkaisut) {
         Map<String, KayttajanTietoDto> kayttajatiedot = kayttajanTietoService
-                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).filter(Objects::nonNull).collect(Collectors.toList()))
-                .stream().collect(Collectors.toMap(kayttajanTieto -> kayttajanTieto.getOidHenkilo(), kayttajanTieto -> kayttajanTieto));
+                .haeKayttajatiedot(julkaisut.stream().map(JulkaisuBaseDto::getLuoja).filter(Objects::nonNull).distinct().collect(Collectors.toList()))
+                .stream().collect(Collectors.toMap(KayttajanTietoDto::getOidHenkilo, kayttajanTieto -> kayttajanTieto));
         julkaisut.forEach(julkaisu -> julkaisu.setKayttajanTieto(kayttajatiedot.get(julkaisu.getLuoja())));
         return julkaisut;
     }
