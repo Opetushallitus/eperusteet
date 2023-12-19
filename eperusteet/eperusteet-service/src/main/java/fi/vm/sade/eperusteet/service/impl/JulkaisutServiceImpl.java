@@ -185,7 +185,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Lazy
     private JulkaisutService self;
 
-    private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 5 * 60;
+    private static final int JULKAISUN_ODOTUSAIKA_SEKUNNEISSA = 60 * 60;
     public static final Set<String> DOCUMENT_TYPES;
 
     static {
