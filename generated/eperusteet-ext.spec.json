@@ -11,7 +11,7 @@
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
-    "/external/osaamismerkit" : {
+    "/api/external/osaamismerkit" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Hae kaikki julkaistut osaamismerkit",
@@ -31,7 +31,7 @@
         }
       }
     },
-    "/external/osaamismerkki/koodi/{uri}" : {
+    "/api/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Hae julkaistu osaamismerkki koodiurilla",
@@ -54,6 +54,7 @@
         }
       }
     },
+<<<<<<< HEAD
     "/external/peruste/koulutuskoodi/{koodi}/**" : {
       "get" : {
         "tags" : [ "External" ],
@@ -80,6 +81,9 @@
       }
     },
     "/external/peruste/yto/**" : {
+=======
+    "/api/external/peruste/yto/**" : {
+>>>>>>> 0981733dd (rebase)
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
@@ -96,7 +100,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}" : {
+    "/api/external/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen tietojen haku",
@@ -121,7 +125,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/**" : {
+    "/api/external/peruste/{perusteId}/**" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
@@ -146,7 +150,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
+    "/api/external/peruste/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen osaamisalakuvauksien haku",
@@ -180,7 +184,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
+    "/api/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen osan haku",
@@ -211,7 +215,7 @@
         }
       }
     },
-    "/external/perusteet" : {
+    "/api/external/perusteet" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteiden haku",
@@ -2612,14 +2616,33 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
+<<<<<<< HEAD
+=======
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6c52f40cd (rebase)
+>>>>>>> 4a6870d25 (rebase)
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+<<<<<<< HEAD
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 0981733dd (rebase)
+>>>>>>> 6c52f40cd (rebase)
+>>>>>>> 4a6870d25 (rebase)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2634,10 +2657,40 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+=======
+<<<<<<< HEAD
+        "first" : {
+          "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+=======
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "empty" : {
+>>>>>>> 6c52f40cd (rebase)
+>>>>>>> 4a6870d25 (rebase)
           "type" : "boolean"
         },
         "numberOfElements" : {
@@ -2652,14 +2705,33 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
+<<<<<<< HEAD
+=======
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 6c52f40cd (rebase)
+>>>>>>> 4a6870d25 (rebase)
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+<<<<<<< HEAD
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 0981733dd (rebase)
+>>>>>>> 6c52f40cd (rebase)
+>>>>>>> 4a6870d25 (rebase)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2674,18 +2746,68 @@
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        "first" : {
+          "type" : "boolean"
+        },
+=======
+>>>>>>> 6c52f40cd (rebase)
+>>>>>>> 4a6870d25 (rebase)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+        "first" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
         "last" : {
           "type" : "boolean"
+=======
+        "empty" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Pageable" : {
+      "type" : "object",
+      "properties" : {
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "unpaged" : {
+          "type" : "boolean"
+        },
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "paged" : {
+          "type" : "boolean"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+>>>>>>> 4a6870d25 (rebase)
         }
       }
     },
@@ -3189,7 +3311,18 @@
       "type" : "object"
     },
     "Sort" : {
-      "type" : "object"
+      "type" : "object",
+      "properties" : {
+        "empty" : {
+          "type" : "boolean"
+        },
+        "sorted" : {
+          "type" : "boolean"
+        },
+        "unsorted" : {
+          "type" : "boolean"
+        }
+      }
     },
     "SuoritustapaDto" : {
       "type" : "object",
