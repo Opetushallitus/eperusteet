@@ -207,7 +207,7 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
         this.vapaatTekstit = new ArrayList<>();
         if (vapaatTekstit != null) {
             for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
-                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+                this.vapaatTekstit.add(KevytTekstiKappale.copyWithId(vapaaTeksti));
             }
         }
     }

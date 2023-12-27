@@ -163,7 +163,7 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity i
         this.vapaatTekstit = new ArrayList<>();
         if (vapaatTekstit != null) {
             for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
-                this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+                this.vapaatTekstit.add(KevytTekstiKappale.copyWithId(vapaaTeksti));
             }
         }
     }

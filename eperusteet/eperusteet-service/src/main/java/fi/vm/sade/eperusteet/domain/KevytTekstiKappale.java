@@ -79,4 +79,14 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
             return new KevytTekstiKappale(other);
         }
     }
+
+    public static KevytTekstiKappale copyWithId(KevytTekstiKappale other) {
+        if (other == null) {
+            return null;
+        }
+
+        KevytTekstiKappale kevytTekstiKappale = new KevytTekstiKappale(other);
+        kevytTekstiKappale.setId(other.getId());
+        return kevytTekstiKappale;
+    }
 }
