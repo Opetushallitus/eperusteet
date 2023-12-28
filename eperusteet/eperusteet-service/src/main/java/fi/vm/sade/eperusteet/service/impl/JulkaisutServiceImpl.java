@@ -672,10 +672,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
             julkaisu.setJulkinen(julkaisuBaseDto.getJulkinen());
             julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
-
-            if (julkaisuBaseDto.getMuutosmaarays() != null) {
-                maaraysService.updateMaarays(julkaisuBaseDto.getMuutosmaarays());
-            }
+            julkaisu.setMuutosmaarays(mapper.map(julkaisuBaseDto.getMuutosmaarays(), Maarays.class));
 
             julkaisutRepository.saveAndFlush(julkaisu);
         } catch(Exception e) {

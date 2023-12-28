@@ -39,7 +39,9 @@ public class MaaraysDto {
     private List<String> koulutustyypit;
     private PerusteKevytDto peruste;
     private List<MaaraysKevytDto> korvattavatMaaraykset = new ArrayList<>();
+    private List<MaaraysKevytDto> korvaavatMaaraykset = new ArrayList<>();
     private List<MaaraysKevytDto> muutettavatMaaraykset = new ArrayList<>();
+    private List<MaaraysKevytDto> muuttavatMaaraykset = new ArrayList<>();
     private Map<Kieli, MaaraysKieliLiitteetDto> liitteet;
     private Map<Kieli, MaaraysAsiasanaDto> asiasanat;
     private KayttajanTietoDto muokkaajaKayttaja;

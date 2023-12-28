@@ -117,6 +117,11 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
+    public List<MaaraysDto> getPerusteenMuutosmaaraykset(Long perusteId) {
+        return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppi(perusteId, MaaraysLiittyyTyyppi.MUUTTAA), MaaraysDto.class);
+    }
+
+    @Override
     public <T> List<T> getMaaraykset(Class<T> clazz) {
         return dtoMapper.mapAsList(maaraysRepository.findAll(), clazz);
     }
