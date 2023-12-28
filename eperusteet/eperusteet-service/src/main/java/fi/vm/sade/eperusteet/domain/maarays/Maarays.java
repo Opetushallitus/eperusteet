@@ -53,7 +53,7 @@ public class Maarays extends AbstractAuditedEntity {
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen nimi;
 
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private TekstiPalanen kuvaus;
 
@@ -92,12 +92,20 @@ public class Maarays extends AbstractAuditedEntity {
     private Peruste peruste;
 
     @ManyToMany
-    @JoinTable(name = "maarays_korvattavat")
+    @JoinTable(name = "maarays_korvattavat",  joinColumns = {@JoinColumn(name = "maarays_id")}, inverseJoinColumns = {@JoinColumn(name = "korvattavatmaaraykset_id")})
     private List<Maarays> korvattavatMaaraykset = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "maarays_muutettavat")
+    @JoinTable(name = "maarays_korvattavat",  joinColumns = {@JoinColumn(name = "korvattavatmaaraykset_id")}, inverseJoinColumns = {@JoinColumn(name = "maarays_id")})
+    private List<Maarays> korvaavatMaaraykset = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "maarays_muutettavat",  joinColumns = {@JoinColumn(name = "maarays_id")}, inverseJoinColumns = {@JoinColumn(name = "muutettavatmaaraykset_id")})
     private List<Maarays> muutettavatMaaraykset = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "maarays_muutettavat",  joinColumns = {@JoinColumn(name = "muutettavatmaaraykset_id")}, inverseJoinColumns = {@JoinColumn(name = "maarays_id")})
+    private List<Maarays> muuttavatMaaraykset = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "maarays_asiasanat")

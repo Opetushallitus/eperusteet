@@ -57,4 +57,7 @@ public interface MaaraysService {
     @PreAuthorize("hasPermission(null, 'maarays', 'LUKU') or hasPermission(#perusteId, 'peruste', 'LUKU')")
     MaaraysDto getPerusteenMaarays(@P("perusteId") Long perusteId);
 
+    @PreAuthorize("hasPermission(null, 'maarays', 'LUKU') or hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<MaaraysDto> getPerusteenMuutosmaaraykset(@P("perusteId") Long perusteId);
+
 }
