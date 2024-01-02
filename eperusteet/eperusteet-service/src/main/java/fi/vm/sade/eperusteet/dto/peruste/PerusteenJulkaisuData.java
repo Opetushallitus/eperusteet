@@ -24,6 +24,7 @@ public class PerusteenJulkaisuData {
     private Long voimassaoloAlkaa;
     private Long voimassaoloLoppuu;
     private Long siirtymaPaattyy;
+    private Date paatospvm;
     private String diaarinumero;
     private Set<KoodiDto> osaamisalat;
     private List<TutkintonimikeKoodiDto> tutkintonimikkeet;
