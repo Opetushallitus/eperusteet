@@ -505,13 +505,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 .map(this::convertToPerusteData);
 
         if (!sisaltotyyppi.equals(JulkaisuSisaltoTyyppi.PERUSTE)) {
-            return taytaPerusteet(julkaisut);
+            return taytaPerusteet(julkaisut, tulevat, voimassa, siirtyma, poistuneet);
         }
 
         return julkaisut;
     }
 
-    private Page<PerusteenJulkaisuData> taytaPerusteet(Page<PerusteenJulkaisuData> julkaisut) {
+    private Page<PerusteenJulkaisuData> taytaPerusteet(Page<PerusteenJulkaisuData> julkaisut, boolean tulevat,
+                                                       boolean voimassa, boolean siirtyma, boolean poistuneet) {
         Set<String> tutkinnonosaKoodit = julkaisut.getContent().stream()
                 .filter(julkaisuData -> julkaisuData.getSisaltotyyppi().equals(JulkaisuSisaltoTyyppi.TUTKINNONOSA.name().toLowerCase()))
                 .map(julkaisuData -> julkaisuData.getTutkinnonosa().getKoodiUri())
@@ -519,7 +520,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
         if (!ObjectUtils.isEmpty(tutkinnonosaKoodit)) {
             Map<String, List<PerusteenJulkaisuData>> perusteetTutkinnonosanKoodilla = new HashMap<>();
-            julkaisutRepository.findAllJulkaistutPerusteetByKoodi(tutkinnonosaKoodit).stream()
+            julkaisutRepository.findAllJulkaistutPerusteetByKoodi(tutkinnonosaKoodit, DateTime.now().getMillis(), tulevat, voimassa, siirtyma, poistuneet).stream()
                     .map(this::convertToPerusteData)
                     .forEach(perusteData -> {
                         perusteData.getKoodit().forEach(koodi -> {
