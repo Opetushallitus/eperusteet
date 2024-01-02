@@ -83,10 +83,29 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "   SELECT * " +
                     "   FROM julkaistu_peruste_Data_view data" +
                     "   WHERE exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodit))" +
+                    "   AND (" +
+                    "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
+                    "           OR (" +
+                    "               ((:tulevat = true AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
+                    "               OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
+                    "               OR (:siirtymat = true " +
+                    "                       AND (data.\"voimassaoloLoppuu\" IS NOT NULL AND data.\"siirtymaPaattyy\" IS NOT NULL " +
+                    "                       AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
+                    "               OR (:voimassa = true " +
+                    "                       AND (CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
+                    "                       AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
+                    "              )" +
+                    "       )" +
                     "   AND sisaltotyyppi = 'peruste' " +
                     ") t"
     )
-    List<String> findAllJulkaistutPerusteetByKoodi(@Param("koodit") Set<String> koodit);
+    List<String> findAllJulkaistutPerusteetByKoodi(
+            @Param("koodit") Set<String> koodit,
+            @Param("nykyhetki") Long nykyhetki,
+            @Param("tulevat") boolean tulevat,
+            @Param("voimassa") boolean voimassa,
+            @Param("siirtymat") boolean siirtymat,
+            @Param("poistuneet") boolean poistuneet);
 
     @Query(nativeQuery = true,
             value = "SELECT data.koulutustyyppi, COUNT(*) " +
