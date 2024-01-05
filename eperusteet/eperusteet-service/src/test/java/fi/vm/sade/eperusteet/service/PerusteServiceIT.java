@@ -95,9 +95,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     @Autowired
     private PerusteAikatauluService perusteAikatauluService;
 
-    @Autowired
-    private ValidatorPeruste validatorPeruste;
-
     public PerusteServiceIT() {
     }
 
@@ -191,21 +188,23 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testDiaarinumeroValidi() {
-        assertFalse(validatorPeruste.isDiaariValid(new Diaarinumero("diaari")));
-        assertFalse(validatorPeruste.isDiaariValid(new Diaarinumero("1-234/567/8910, päivitetty")));
-        assertFalse(validatorPeruste.isDiaariValid(new Diaarinumero("oph-12345-1111")));
-        assertFalse(validatorPeruste.isDiaariValid(new Diaarinumero("1-234/567/8910")));
-        assertFalse(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-12345-111")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero(null)));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("234/567/8910")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("amosaa/yhteiset")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-1-1111")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-12-1111")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-123-1111")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-1234-1111")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-12345-1111")));
-        assertTrue(validatorPeruste.isDiaariValid(new Diaarinumero("OPH-12345-1134")));
+        ValidatorPeruste validator = new ValidatorPeruste();
+
+        assertFalse(validator.isDiaariValid(new Diaarinumero("diaari")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("1-234/567/8910, päivitetty")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("oph-12345-1111")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("1-234/567/8910")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("OPH-12345-111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero(null)));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("234/567/8910")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("amosaa/yhteiset")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-1-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-12-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-123-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-1234-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-12345-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-12345-1134")));
     }
 
     @Test
