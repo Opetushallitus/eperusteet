@@ -80,6 +80,7 @@ public class SuoritustapaServiceImpl implements SuoritustapaService {
         osa.setPakollinen(vanha.getPakollinen());
         osa.setErikoisuus(vanha.getErikoisuus());
         osa.setTutkinnonOsaViite(viitemap.get(vanha.getTutkinnonOsaViite()));
+        osa.setKuvaus(vanha.getKuvaus());
         return osa;
     }
 
