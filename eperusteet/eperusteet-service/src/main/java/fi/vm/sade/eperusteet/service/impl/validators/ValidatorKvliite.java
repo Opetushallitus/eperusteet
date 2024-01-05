@@ -2,8 +2,6 @@ package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
-import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -100,5 +98,10 @@ public class ValidatorKvliite implements Validator {
         virheellisetKielet.forEach((viesti, kielet) -> {
             validointi.huomautukset(viesti, NavigationNodeDto.of(NavigationType.kvliite));
         });
+    }
+
+    @Override
+    public boolean isDiaariValid(Diaarinumero diaarinumero) {
+        return true;
     }
 }

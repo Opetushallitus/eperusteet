@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
@@ -69,5 +68,10 @@ public class ValidatorOpas implements Validator {
     @Override
     public boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
         return PerusteTyyppi.OPAS.equals(tyyppi);
+    }
+
+    @Override
+    public boolean isDiaariValid(Diaarinumero diaarinumero) {
+        return true;
     }
 }

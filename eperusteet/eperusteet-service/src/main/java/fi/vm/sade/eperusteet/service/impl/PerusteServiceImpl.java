@@ -134,7 +134,6 @@ import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteImport;
 import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteToteutus;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -205,7 +204,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -1089,15 +1087,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    public boolean isDiaariValid(String diaarinumero) {
-        return diaarinumero == null
-                || "".equals(diaarinumero)
-                || "amosaa/yhteiset".equals(diaarinumero)
-                || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
-                || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
-    }
-
-    @Override
     public PerusteDto update(Long perusteId, PerusteDto perusteDto) {
         Peruste current = perusteRepository.findOne(perusteId);
 
@@ -1127,13 +1116,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setOppaanKoulutustyypit(updated.getOppaanKoulutustyypit());
             perusteRepository.save(current);
         } else {
-            if (!isDiaariValid(perusteDto.getDiaarinumero())) {
-                throw new BusinessRuleViolationException("diaarinumero-ei-validi");
-            }
-
             perusteRepository.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
-
 
             // Liitetään määräyskirjeet
             Maarayskirje maarayskirje = updated.getMaarayskirje();

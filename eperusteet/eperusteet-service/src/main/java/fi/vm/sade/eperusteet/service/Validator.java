@@ -1,10 +1,10 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.service.util.Validointi;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +20,9 @@ public interface Validator {
     default String getName() {
         return this.getClass().getSimpleName();
     }
+
+    @PreAuthorize("permitAll()")
+    boolean isDiaariValid(Diaarinumero diaarinumero);
 
     @PreAuthorize("isAuthenticated()")
     boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi);
