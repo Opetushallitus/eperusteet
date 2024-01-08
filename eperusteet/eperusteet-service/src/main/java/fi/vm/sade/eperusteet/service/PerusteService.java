@@ -304,7 +304,7 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
