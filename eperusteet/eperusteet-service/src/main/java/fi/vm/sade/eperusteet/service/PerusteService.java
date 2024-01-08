@@ -232,7 +232,7 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio);
-    
+
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkinnonOsaTilaDto> getTutkinnonOsienTilat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
@@ -304,7 +304,7 @@ public interface PerusteService {
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    @PreAuthorize("isAuthenticated()")
     KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
