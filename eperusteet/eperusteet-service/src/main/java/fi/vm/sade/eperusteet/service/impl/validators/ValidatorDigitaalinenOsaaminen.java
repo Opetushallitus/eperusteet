@@ -164,9 +164,4 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
     public boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
         return PerusteTyyppi.DIGITAALINEN_OSAAMINEN.equals(tyyppi);
     }
-
-    @Override
-    public boolean isDiaariValid(Diaarinumero diaarinumero) {
-        return true;
-    }
 }

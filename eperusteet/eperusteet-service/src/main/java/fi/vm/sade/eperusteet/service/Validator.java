@@ -21,9 +21,6 @@ public interface Validator {
         return this.getClass().getSimpleName();
     }
 
-    @PreAuthorize("permitAll()")
-    boolean isDiaariValid(Diaarinumero diaarinumero);
-
     @PreAuthorize("isAuthenticated()")
     boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi);
 
@@ -38,5 +35,9 @@ public interface Validator {
     @PreAuthorize("isAuthenticated()")
     default boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
         return PerusteTyyppi.NORMAALI.equals(tyyppi);
+    }
+
+    default boolean isDiaariValid(Diaarinumero diaarinumero) {
+        return true;
     }
 }

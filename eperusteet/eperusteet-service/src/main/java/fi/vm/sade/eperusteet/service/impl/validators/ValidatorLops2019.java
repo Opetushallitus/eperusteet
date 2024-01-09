@@ -143,9 +143,4 @@ public class ValidatorLops2019 implements Validator {
     public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
         return KoulutustyyppiToteutus.LOPS2019.equals(toteutus);
     }
-
-    @Override
-    public boolean isDiaariValid(Diaarinumero diaarinumero) {
-        return true;
-    }
 }

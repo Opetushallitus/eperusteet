@@ -99,9 +99,4 @@ public class ValidatorKvliite implements Validator {
             validointi.huomautukset(viesti, NavigationNodeDto.of(NavigationType.kvliite));
         });
     }
-
-    @Override
-    public boolean isDiaariValid(Diaarinumero diaarinumero) {
-        return true;
-    }
 }

@@ -76,9 +76,4 @@ public class ValidatorKvliiteTaso implements Validator {
     public boolean applicableTila(ProjektiTila tila) {
         return tila.isOneOf(ProjektiTila.JULKAISTU);
     }
-
-    @Override
-    public boolean isDiaariValid(Diaarinumero diaarinumero) {
-        return true;
-    }
 }

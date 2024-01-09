@@ -62,9 +62,4 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
     public String getName() {
         return this.getClass().getSimpleName();
     }
-
-    @Override
-    public boolean isDiaariValid(Diaarinumero diaarinumero) {
-        return true;
-    }
 }
