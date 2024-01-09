@@ -15,11 +15,9 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
-import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -27,9 +25,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.yl.KeskeinenSisaltoalue;
-import fi.vm.sade.eperusteet.domain.yl.Koodillinen;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
-import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -38,15 +34,8 @@ import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TekstiOsa;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
-import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
-import fi.vm.sade.eperusteet.dto.TilaUpdateStatus;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
-import fi.vm.sade.eperusteet.dto.ValidointiStatusType;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -85,19 +74,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.KOMMENTOINTI;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.POISTETTU;
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.VALMIS;
-import static fi.vm.sade.eperusteet.domain.ProjektiTila.jalkeen;
 import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
-import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localized;
-import static fi.vm.sade.eperusteet.service.util.Util.and;
-import static fi.vm.sade.eperusteet.service.util.Util.empty;
-import static fi.vm.sade.eperusteet.service.util.Util.emptyString;
-import static java.util.stream.Collectors.toMap;
 
 @Component
 @Transactional
@@ -517,6 +501,11 @@ public class ValidatorPeruste implements Validator {
 
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
+
+        if (!isDiaariValid(peruste.getDiaarinumero())) {
+            perusteValidointi.virhe("diaarinumero-ei-validi", NavigationNodeDto.of(NavigationType.tiedot));
+        }
+
         boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
 
         // Perusteen validointi
@@ -772,6 +761,19 @@ public class ValidatorPeruste implements Validator {
         }
 
         return validointi;
+    }
+
+    @Override
+    public boolean isDiaariValid(Diaarinumero diaari) {
+        if (diaari == null) {
+            return true;
+        }
+        String diaarinumero = diaari.getDiaarinumero();
+        return diaarinumero == null
+                || "".equals(diaarinumero)
+                || "amosaa/yhteiset".equals(diaarinumero)
+                || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
+                || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
     }
 
     @Override

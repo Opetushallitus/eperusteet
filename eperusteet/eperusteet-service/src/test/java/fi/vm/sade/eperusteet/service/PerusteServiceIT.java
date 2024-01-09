@@ -1,25 +1,9 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
-import fi.vm.sade.eperusteet.domain.tuva.KoulutusOsanKoulutustyyppi;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.*;
@@ -33,6 +17,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.impl.validators.ValidatorPeruste;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -69,8 +54,6 @@ import static org.junit.Assert.*;
 
 /**
  * Integraatiotesti muistinvaraista kantaa vasten.
- *
- * @author jhyoty
  */
 @Transactional
 public class PerusteServiceIT extends AbstractIntegrationTest {
@@ -192,15 +175,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testFindByOsaamisala() {
-//        PerusteQuery pquery = new PerusteQuery();
-//        pquery.setSiirtyma(true);
-//        pquery.setKoulutuskoodi("koulutuskoodiArvo");
-//        Page<PerusteHakuDto> perusteet = perusteService.findPerusteetBy(new PageRequest(0, 10), pquery);
-//        assertEquals(1, perusteet.getTotalElements());
-    }
-
-    @Test
     public void testTutkintonimikkeenLisays() {
         List<TutkintonimikeKoodiDto> tutkintonimikeKoodit = perusteService.getTutkintonimikeKoodit(peruste.getId());
         assertTrue(tutkintonimikeKoodit.isEmpty());
@@ -214,21 +188,23 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testDiaarinumeroValidi() {
-        assertFalse(perusteService.isDiaariValid("diaari"));
-        assertFalse(perusteService.isDiaariValid("1-234/567/8910, päivitetty"));
-        assertFalse(perusteService.isDiaariValid("oph-12345-1111"));
-        assertFalse(perusteService.isDiaariValid("1-234/567/8910"));
-        assertFalse(perusteService.isDiaariValid("OPH-12345-111"));
-        assertTrue(perusteService.isDiaariValid(""));
-        assertTrue(perusteService.isDiaariValid(null));
-        assertTrue(perusteService.isDiaariValid("234/567/8910"));
-        assertTrue(perusteService.isDiaariValid("amosaa/yhteiset"));
-        assertTrue(perusteService.isDiaariValid("OPH-1-1111"));
-        assertTrue(perusteService.isDiaariValid("OPH-12-1111"));
-        assertTrue(perusteService.isDiaariValid("OPH-123-1111"));
-        assertTrue(perusteService.isDiaariValid("OPH-1234-1111"));
-        assertTrue(perusteService.isDiaariValid("OPH-12345-1111"));
-        assertTrue(perusteService.isDiaariValid("OPH-12345-1134"));
+        ValidatorPeruste validator = new ValidatorPeruste();
+
+        assertFalse(validator.isDiaariValid(new Diaarinumero("diaari")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("1-234/567/8910, päivitetty")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("oph-12345-1111")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("1-234/567/8910")));
+        assertFalse(validator.isDiaariValid(new Diaarinumero("OPH-12345-111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero(null)));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("234/567/8910")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("amosaa/yhteiset")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-1-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-12-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-123-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-1234-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-12345-1111")));
+        assertTrue(validator.isDiaariValid(new Diaarinumero("OPH-12345-1134")));
     }
 
     @Test

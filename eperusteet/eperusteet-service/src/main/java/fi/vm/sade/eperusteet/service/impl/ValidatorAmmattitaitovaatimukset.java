@@ -99,4 +99,9 @@ public class ValidatorAmmattitaitovaatimukset implements Validator {
     public boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
         return PerusteTyyppi.NORMAALI.equals(tyyppi);
     }
+
+    @Override
+    public boolean isDiaariValid(Diaarinumero diaarinumero) {
+        return true;
+    }
 }
