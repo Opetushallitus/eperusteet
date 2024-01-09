@@ -57,6 +57,6 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
 
     Maarays findFirstByPerusteIdAndLiittyyTyyppiOrderByLuotuAsc(Long perusteId, MaaraysLiittyyTyyppi liittyyTyyppi);
 
-    List<Maarays> findByPerusteIdAndLiittyyTyyppi(Long perusteId, MaaraysLiittyyTyyppi liittyyTyyppi);
+    List<Maarays> findByPerusteIdAndLiittyyTyyppiIn(Long perusteId, List<MaaraysLiittyyTyyppi> liittyyTyypit);
 
 }
