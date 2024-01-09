@@ -49,6 +49,7 @@ import java.io.OutputStream;
 import java.io.PushbackInputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
@@ -118,7 +119,7 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Override
     public List<MaaraysDto> getPerusteenMuutosmaaraykset(Long perusteId) {
-        return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppi(perusteId, MaaraysLiittyyTyyppi.MUUTTAA), MaaraysDto.class);
+        return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppiIn(perusteId, Arrays.asList(MaaraysLiittyyTyyppi.MUUTTAA, MaaraysLiittyyTyyppi.KORVAA)), MaaraysDto.class);
     }
 
     @Override

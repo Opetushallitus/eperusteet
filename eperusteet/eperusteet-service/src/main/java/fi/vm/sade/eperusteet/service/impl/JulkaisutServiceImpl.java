@@ -371,7 +371,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 );
             }
 
-            MaaraysDto muutosMaaraysDto = maaraysService.addMaarays(julkaisuBaseDto.getMuutosmaarays());
+            julkaisuBaseDto.getMuutosmaarays().setTila(MaaraysTila.JULKAISTU);
+            MaaraysDto muutosMaaraysDto = maaraysService.updateMaarays(julkaisuBaseDto.getMuutosmaarays());
             julkaisu.setMuutosmaarays(mapper.map(muutosMaaraysDto, Maarays.class));
         }
     }
