@@ -17,6 +17,10 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -80,13 +84,27 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
         }
     }
 
-    public static KevytTekstiKappale copyWithId(KevytTekstiKappale other) {
-        if (other == null) {
-            return null;
+    public static void copyWithIds(List<KevytTekstiKappale> oldList, List<KevytTekstiKappale> newList) {
+        List<Long> ids = oldList.stream().map(KevytTekstiKappale::getId).collect(Collectors.toList());
+        for(KevytTekstiKappale vapaaTeksti : newList) {
+            if (vapaaTeksti.getId() == null) {
+                oldList.add(vapaaTeksti);
+            }
+
+            if (ids.contains(vapaaTeksti.getId())) {
+                Optional<KevytTekstiKappale> optionalKevytTekstiKappale = oldList.stream().filter(vp -> vp.getId().equals(vapaaTeksti.getId())).findFirst();
+                if (optionalKevytTekstiKappale.isPresent()) {
+                    optionalKevytTekstiKappale.get().setTeksti(TekstiPalanen.of(vapaaTeksti.getTeksti()));
+                    optionalKevytTekstiKappale.get().setNimi(TekstiPalanen.of(vapaaTeksti.getNimi()));
+
+                }
+            }
         }
 
-        KevytTekstiKappale kevytTekstiKappale = new KevytTekstiKappale(other);
-        kevytTekstiKappale.setId(other.getId());
-        return kevytTekstiKappale;
+        oldList.removeAll(
+                oldList.stream()
+                        .filter(vp -> vp.getId() != null && !newList.stream()
+                                .map(KevytTekstiKappale::getId).collect(Collectors.toList()).contains(vp.getId()))
+                        .collect(Collectors.toList()));
     }
 }
