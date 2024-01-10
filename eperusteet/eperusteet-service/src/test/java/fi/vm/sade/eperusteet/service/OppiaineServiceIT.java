@@ -19,6 +19,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
+import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -99,6 +100,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
         oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
         oppiaineDto.setKoosteinen(Optional.of(false));
+        oppiaineDto.setVapaatTekstit(List.of(KevytTekstiKappaleDto.of("nimi", "teksti"), KevytTekstiKappaleDto.of("nimi2", "teksti2")));
 
         OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
@@ -118,6 +120,9 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oa = service.getOppiaine(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
 
         assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+        assertEquals(oa.getVapaatTekstit().size(), 2);
+        assertEquals(oa.getVapaatTekstit().get(0).getNimi().get(Kieli.FI), "nimi");
+        Long vapaaTekstinId = oa.getVapaatTekstit().get(0).getId();
 
         OppiaineLockContext lc = new OppiaineLockContext();
         lc.setTyyppi(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
@@ -131,9 +136,15 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         oa.getTehtava().setTeksti(Optional.empty());
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().add(0, ks);
         oa.getVuosiluokkakokonaisuudet().iterator().next().getSisaltoalueet().get(1).setNimi(null);
+        oa.getVapaatTekstit().get(0).setNimi(LokalisoituTekstiDto.of(Kieli.FI, "paivitetty_nimi"));
+        oa.setVapaatTekstit(List.of(oa.getVapaatTekstit().get(0)));
         versionDto = perusteService.getPerusteVersion(perusteId);
         oa = service.updateOppiaine(perusteId, new UpdateDto<>(oa), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
         assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+
+        assertEquals(oa.getVapaatTekstit().size(), 1);
+        assertEquals(oa.getVapaatTekstit().get(0).getNimi().get(Kieli.FI), "paivitetty_nimi");
+        assertEquals(oa.getVapaatTekstit().get(0).getId(), vapaaTekstinId);
 
         lockService.unlock(lc);
 

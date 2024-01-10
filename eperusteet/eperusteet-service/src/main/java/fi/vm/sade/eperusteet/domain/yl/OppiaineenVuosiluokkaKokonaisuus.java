@@ -204,12 +204,10 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     }
 
     public void setVapaatTekstit(List<KevytTekstiKappale> vapaatTekstit) {
-        this.vapaatTekstit = new ArrayList<>();
-        if (vapaatTekstit != null) {
-            for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
-                this.vapaatTekstit.add(KevytTekstiKappale.copyWithId(vapaaTeksti));
-            }
+        if (this.vapaatTekstit == null) {
+            this.vapaatTekstit = new ArrayList<>();
         }
+        KevytTekstiKappale.copyWithIds(this.vapaatTekstit, vapaatTekstit);
     }
 
 }

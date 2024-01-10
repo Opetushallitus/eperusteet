@@ -418,12 +418,10 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     }
 
     public void setVapaatTekstit(List<KevytTekstiKappale> vapaatTekstit) {
-        this.vapaatTekstit = new ArrayList<>();
-        if (vapaatTekstit != null) {
-            for (KevytTekstiKappale vapaaTeksti : vapaatTekstit) {
-                this.vapaatTekstit.add(KevytTekstiKappale.copyWithId(vapaaTeksti));
-            }
+        if (this.vapaatTekstit == null) {
+            this.vapaatTekstit = new ArrayList<>();
         }
+        KevytTekstiKappale.copyWithIds(this.vapaatTekstit, vapaatTekstit);
     }
 
     public Stream<Oppiaine> maarineen() {
