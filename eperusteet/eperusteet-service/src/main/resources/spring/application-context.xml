@@ -23,8 +23,7 @@
 
     <context:property-placeholder
         location="file:///${user.home:''}/oph-configuration/eperusteet.properties, file:///${user.home:''}/oph-configuration/override.properties"
-        ignore-resource-not-found="true"
-        properties-ref="defaultProps"/>
+        ignore-resource-not-found="true"/>
     <!--classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties" -->
 
 <!--    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
@@ -38,17 +37,17 @@
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <property name="properties">
-            <util:properties local-override="true">
-                <prop key="cas_mode">front</prop>
-                <prop key="cas_key">eperusteet-service</prop>
-                <prop key="cas_service">${cas.service.eperusteet-service:''}</prop>
-                <prop key="cas_callback_url">${cas.callback.eperusteet-service:''}</prop>
-                <prop key="spring_security_default_access">permitAll</prop>
-            </util:properties>
-        </property>
-    </bean>
+<!--    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+<!--        <property name="properties">-->
+<!--            <util:properties local-override="true">-->
+<!--                <prop key="cas_mode">front</prop>-->
+<!--                <prop key="cas_key">eperusteet-service</prop>-->
+<!--                <prop key="cas_service">${cas.service.eperusteet-service:''}</prop>-->
+<!--                <prop key="cas_callback_url">${cas.callback.eperusteet-service:''}</prop>-->
+<!--                <prop key="spring_security_default_access">permitAll</prop>-->
+<!--            </util:properties>-->
+<!--        </property>-->
+<!--    </bean>-->
 
     <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="eperusteetPermissionEvaluator"/>
