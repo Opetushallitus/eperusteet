@@ -36,10 +36,10 @@ public class RestClientFactoryImpl implements RestClientFactory {
 
     private static final int TIMEOUT = 60000;
 
-    @Value("${fi.vm.sade.eperusteet.oph_username}")
+    @Value("${fi.vm.sade.eperusteet.oph_username:''}")
     private String username;
 
-    @Value("${fi.vm.sade.eperusteet.oph_password}")
+    @Value("${fi.vm.sade.eperusteet.oph_password:''}")
     private String password;
 
     @Value("${web.url.cas}")

@@ -74,3 +74,8 @@ host_postgresql_eperusteet={{host_postgresql_eperusteet}}
 host_postgresql_eperusteet_port={{host_postgresql_eperusteet_port}}
 host_postgresql_eperusteet_user={{postgres_app_user}}
 host_postgresql_eperusteet_password={{host_postgresql_eperusteet_app_password}}
+
+#cas
+cas.login=${web.url.cas}/login
+cas.service=${cas.service.eperusteet-service}
+cas_callback_url=${cas.callback.eperusteet-service}
