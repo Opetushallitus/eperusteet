@@ -17,7 +17,6 @@
     </http>
 
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex">
-        <intercept-url pattern="/api/kayttajatieto" access="permitAll" requires-channel="https"/>
         <intercept-url pattern="/api/palaute" access="permitAll" method="POST"/>
         <intercept-url pattern="/api/.*" access="isAuthenticated()" method="POST"/>
         <intercept-url pattern="/api/.*" access="isAuthenticated()" method="PUT"/>

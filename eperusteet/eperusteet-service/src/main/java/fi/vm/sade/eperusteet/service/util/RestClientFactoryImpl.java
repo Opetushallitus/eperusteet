@@ -32,17 +32,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestClientFactoryImpl implements RestClientFactory {
 
-    private static final String CALLER_ID = "1.2.246.562.10.00000000001.eperusteet";
+    public static final String CALLER_ID = "1.2.246.562.10.00000000001.eperusteet";
 
     private static final int TIMEOUT = 60000;
 
-    @Value("${fi.vm.sade.eperusteet.oph_username:''}")
+    @Value("${fi.vm.sade.eperusteet.oph_username}")
     private String username;
 
-    @Value("${fi.vm.sade.eperusteet.oph_password:''}")
+    @Value("${fi.vm.sade.eperusteet.oph_password}")
     private String password;
 
-    @Value("${web.url.cas:''}")
+    @Value("${web.url.cas}")
     private String casUrl;
 
     private final ConcurrentMap<String, OphHttpClient> cache = new ConcurrentHashMap<>();
