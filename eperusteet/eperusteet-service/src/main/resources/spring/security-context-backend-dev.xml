@@ -9,7 +9,6 @@
     <http use-expressions="true" request-matcher="regex">
         <http-basic/>
 		<intercept-url pattern="/api/palaute" access="permitAll" method="POST"/>
-		<intercept-url pattern="/api/kayttajatieto" access="isAuthenticated()" requires-channel="https"/>
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="POST"/> -->
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="PUT"/> -->
 		<!-- <intercept-url pattern="/api/.*" access="isAuthenticated()" method="DELETE"/> -->
