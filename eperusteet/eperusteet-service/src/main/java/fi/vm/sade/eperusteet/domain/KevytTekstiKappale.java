@@ -83,28 +83,5 @@ public class KevytTekstiKappale extends AbstractAuditedEntity implements Seriali
             return new KevytTekstiKappale(other);
         }
     }
-
-    public static void copyWithIds(List<KevytTekstiKappale> oldList, List<KevytTekstiKappale> newList) {
-        List<Long> ids = oldList.stream().map(KevytTekstiKappale::getId).collect(Collectors.toList());
-        for(KevytTekstiKappale vapaaTeksti : newList) {
-            if (vapaaTeksti.getId() == null) {
-                oldList.add(vapaaTeksti);
-            }
-
-            if (ids.contains(vapaaTeksti.getId())) {
-                Optional<KevytTekstiKappale> optionalKevytTekstiKappale = oldList.stream().filter(vp -> vp.getId().equals(vapaaTeksti.getId())).findFirst();
-                if (optionalKevytTekstiKappale.isPresent()) {
-                    optionalKevytTekstiKappale.get().setTeksti(TekstiPalanen.of(vapaaTeksti.getTeksti()));
-                    optionalKevytTekstiKappale.get().setNimi(TekstiPalanen.of(vapaaTeksti.getNimi()));
-
-                }
-            }
-        }
-
-        oldList.removeAll(
-                oldList.stream()
-                        .filter(vp -> vp.getId() != null && !newList.stream()
-                                .map(KevytTekstiKappale::getId).collect(Collectors.toList()).contains(vp.getId()))
-                        .collect(Collectors.toList()));
-    }
+    
 }
