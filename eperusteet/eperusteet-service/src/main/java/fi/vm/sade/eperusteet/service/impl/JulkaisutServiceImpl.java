@@ -476,7 +476,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String kieli, String tyyppi, boolean tulevat,
+    public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String nimiTaiKoodi, String kieli, String tyyppi, boolean tulevat,
                                                             boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
                                                             String koodi, JulkaisuSisaltoTyyppi sisaltotyyppi,
                                                             Integer sivu, Integer sivukoko) {
@@ -491,6 +491,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         Page<PerusteenJulkaisuData> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
                 koulutustyyppi,
                 nimi,
+                nimiTaiKoodi,
                 kieli,
                 currentMillis,
                 tulevat,

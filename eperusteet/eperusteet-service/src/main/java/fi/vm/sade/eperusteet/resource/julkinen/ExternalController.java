@@ -79,7 +79,7 @@ public class ExternalController {
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
-                koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
+                koulutustyyppi, nimi, "", kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
                 sivu, sivukoko));
     }
 
@@ -124,6 +124,7 @@ public class ExternalController {
     public ResponseEntity<Object> getYtoPerusteDynamicQuery(HttpServletRequest req) {
         Page<PerusteenJulkaisuData> amosaaPeruste = julkaisutService.getJulkisetJulkaisut(
                 Collections.emptyList(),
+                "",
                 "",
                 Kieli.FI.toString(),
                 PerusteTyyppi.AMOSAA_YHTEINEN.toString(),

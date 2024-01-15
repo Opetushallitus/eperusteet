@@ -132,7 +132,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
         Page<String> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
                 List.of("koulutustyyppi_15"),
-                "",
+                "", "",
                 "fi",
                 0L,
                 true,
