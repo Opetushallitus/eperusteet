@@ -95,6 +95,7 @@
                 <entry key="hibernate.jdbc.batch_size" value="20"/>
                 <entry key="hibernate.jdbc.fetch_size" value="20"/>
                 <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor"/>
+                <entry key="hibernate.id.new_generator_mappings" value="false" />
             </map>
         </property>
         <property name="mappingResources">
