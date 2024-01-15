@@ -343,6 +343,7 @@ public class OppiaineServiceImpl implements OppiaineService {
             }
         } else {
             mapper.map(dto, aine);
+            aine = oppiaineRepository.save(aine);
         }
 
         if (dto instanceof OppiaineDto) {
