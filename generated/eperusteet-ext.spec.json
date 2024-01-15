@@ -1685,6 +1685,13 @@
         },
         "vapaaTeksti" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "oppiaineenTavoitteenOpetuksenTavoitteet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/OppiaineenTavoitteenOpetuksenTavoiteDto"
+          }
         }
       }
     },
@@ -1971,6 +1978,18 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "soveltavaKurssiKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
+    "OppiaineenTavoitteenOpetuksenTavoiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tavoite" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
@@ -2552,12 +2571,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
@@ -2592,12 +2611,12 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         }
       }
     },
