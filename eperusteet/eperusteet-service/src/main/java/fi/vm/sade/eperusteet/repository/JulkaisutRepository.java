@@ -27,20 +27,24 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "           OR koulutustyyppi IN (:koulutustyypit) " +
             "           OR exists (select 1 from jsonb_array_elements(oppaankoulutustyypit) okt where okt->>0 in (:koulutustyypit))" +
             "         ) " +
-            "   AND ( " +
-            "           (:nimi LIKE '' " +
-            "               OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')) " +
-            "               OR EXISTS (SELECT 1 FROM json_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
-            "               OR EXISTS (SELECT 1 FROM json_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
-            "               OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
-            "            )" +
-            "            OR" +
-            "            (:koodi like '' OR exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodi)))" +
+            "   AND (:nimiTaiKoodi LIKE '' " +
+            "           OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%')) " +
+            "           OR EXISTS (SELECT 1 FROM json_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))) " +
+            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))) " +
+            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))) " +
+            "           OR EXISTS (SELECT 1 FROM jsonb_array_elements(koodit) kd where kd->>0 LIKE CONCAT('%_',:nimiTaiKoodi,'%')) " +
+            "       )" +
+            "   AND (:nimi LIKE '' " +
+            "           OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')) " +
+            "           OR EXISTS (SELECT 1 FROM json_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
+            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
+            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
             "       )" +
             "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
             "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
             "   AND tyyppi = :tyyppi " +
             "   AND (:diaarinumero like '' OR LOWER(diaarinumero) LIKE LOWER(:diaarinumero)) " +
+            "   AND (:koodi like '' OR exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodi))) " +
             "   AND (" +
             "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
             "           OR (" +
@@ -67,6 +71,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
     Page<String> findAllJulkisetJulkaisut(
             @Param("koulutustyypit") List<String> koulutustyypit,
             @Param("nimi") String nimi,
+            @Param("nimiTaiKoodi") String nimiTaiKoodi,
             @Param("kieli") String kieli,
             @Param("nykyhetki") Long nykyhetki,
             @Param("tulevat") boolean tulevat,
