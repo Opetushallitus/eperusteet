@@ -59,6 +59,7 @@ public class JulkaisuController {
     public ResponseEntity<Page<PerusteenJulkaisuData>> getKoulutustyyppienJulkaisut(
             @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyyppi,
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,
+            @RequestParam(value = "nimiTaiKoodi", defaultValue = "", required = false) final String nimiTaiKoodi,
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) final String kieli,
             @RequestParam(value = "tulevat", defaultValue = "true", required = false) final boolean tulevat,
             @RequestParam(value = "voimassa", defaultValue = "true", required = false) final boolean voimassa,
@@ -73,7 +74,7 @@ public class JulkaisuController {
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
-                koulutustyyppi, nimi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi,
+                koulutustyyppi, nimi, nimiTaiKoodi, kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi,
                 JulkaisuSisaltoTyyppi.of(perusteet, tutkinnonosat),
                 sivu, sivukoko));
     }
