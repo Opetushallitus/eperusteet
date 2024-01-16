@@ -122,16 +122,16 @@
 <!--            <artifactId>spring-context-support</artifactId>-->
 <!--            <version>5.3.30</version>-->
 <!--        </dependency>-->
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-            <version>1.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.10.6</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax.cache</groupId>-->
+<!--            <artifactId>cache-api</artifactId>-->
+<!--            <version>1.1.1</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.ehcache</groupId>-->
+<!--            <artifactId>ehcache</artifactId>-->
+<!--            <version>3.10.6</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>one.util</groupId>
             <artifactId>streamex</artifactId>
@@ -308,7 +308,7 @@
 <!--        <dependency>-->
 <!--            <groupId>org.hibernate</groupId>-->
 <!--            <artifactId>hibernate-ehcache</artifactId>-->
-<!--            <version>${hibernate.version}</version>-->
+<!--            <version>4.3.11.Final</version>-->
 <!--        </dependency>-->
 <!--        <dependency>-->
 <!--            <groupId>org.hibernate</groupId>-->
@@ -446,11 +446,11 @@
             <artifactId>auditlogger</artifactId>
             <version>8.3.1-SNAPSHOT</version>
         </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>${ehcache.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>net.sf.ehcache</groupId>-->
+<!--            <artifactId>ehcache-core</artifactId>-->
+<!--            <version>${ehcache.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
