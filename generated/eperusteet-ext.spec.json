@@ -1688,7 +1688,6 @@
         },
         "oppiaineenTavoitteenOpetuksenTavoitteet" : {
           "type" : "array",
-          "uniqueItems" : true,
           "items" : {
             "$ref" : "#/definitions/OppiaineenTavoitteenOpetuksenTavoiteDto"
           }
@@ -2551,6 +2550,13 @@
           "type" : "integer",
           "format" : "int64"
         },
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2565,18 +2571,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         }
       }
     },
@@ -2590,6 +2589,13 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2605,18 +2611,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         }
       }
     },
