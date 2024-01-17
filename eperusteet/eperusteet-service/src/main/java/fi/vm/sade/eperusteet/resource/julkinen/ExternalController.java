@@ -112,7 +112,7 @@ public class ExternalController {
             response= PerusteKaikkiDto.class
     )
     public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
-        return getJulkaistuSisaltoObjectNodeWithQuery(req, id);
+        return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, 4));
     }
 
     @RequestMapping(value = "/peruste/yto/**", method = GET)
@@ -143,7 +143,40 @@ public class ExternalController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return getJulkaistuSisaltoObjectNodeWithQuery(req, amosaaPeruste.getContent().get(0).getId());
+        return getJulkaistuSisaltoObjectNodeWithQuery( amosaaPeruste.getContent().get(0).getId(), requestToQueries(req, 4));
+    }
+
+    @RequestMapping(value = "/peruste/koulutuskoodi/{koodi:\\d+}/**", method = GET)
+    @ResponseBody
+    @ApiOperation(
+            value = "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+            response= PerusteKaikkiDto.class
+    )
+    public ResponseEntity<Object> getPerusteWithKoodi(
+            HttpServletRequest req,
+            @PathVariable("koodi") final long koodi) {
+        Page<PerusteenJulkaisuData> peruste = julkaisutService.getJulkisetJulkaisut(
+                Collections.emptyList(),
+                "",
+                "",
+                Kieli.FI.toString(),
+                PerusteTyyppi.NORMAALI.toString(),
+                false,
+                true,
+                false,
+                false,
+                false,
+                "",
+                "koulutus_"+koodi,
+                JulkaisuSisaltoTyyppi.PERUSTE,
+                0,
+                1);
+
+        if (peruste.getTotalElements() != 1) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return getJulkaistuSisaltoObjectNodeWithQuery(peruste.getContent().get(0).getId(), requestToQueries(req, 5));
     }
 
     @RequestMapping(value = "/osaamismerkit", method = GET)
@@ -160,9 +193,13 @@ public class ExternalController {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkkiByUri(uri));
     }
 
-    private ResponseEntity<Object> getJulkaistuSisaltoObjectNodeWithQuery(HttpServletRequest req, long id) {
+    private List<String> requestToQueries(HttpServletRequest req, int skipCount) {
         String[] queries = req.getPathInfo().split("/");
-        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, Arrays.stream(queries).skip(4).collect(Collectors.toList()));
+        return Arrays.stream(queries).skip(skipCount).collect(Collectors.toList());
+    }
+
+    private ResponseEntity<Object> getJulkaistuSisaltoObjectNodeWithQuery(long id, List<String> queries) {
+        Object result = perusteService.getJulkaistuSisaltoObjectNode(id, queries);
         if (result == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
