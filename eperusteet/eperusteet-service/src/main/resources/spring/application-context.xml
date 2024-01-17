@@ -22,32 +22,32 @@
        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:property-placeholder
-        location="file:///${user.home:''}/oph-configuration/eperusteet.properties, file:///${user.home:''}/oph-configuration/override.properties"
-        ignore-resource-not-found="true"/>
+            location="file:///${user.home:''}/oph-configuration/eperusteet.properties, file:///${user.home:''}/oph-configuration/override.properties"
+            ignore-resource-not-found="true"/>
     <!--classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties" -->
 
-<!--    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
-<!--        <property name="configLocation"  value="classpath:eperusteet-ehcache.xml"/>-->
-<!--        <property name="cacheManagerName" value="eperusteetCacheManager"/>-->
-<!--    </bean>-->
+    <!--    <bean id="eperusteetEhCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">-->
+    <!--        <property name="configLocation"  value="classpath:eperusteet-ehcache.xml"/>-->
+    <!--        <property name="cacheManagerName" value="eperusteetCacheManager"/>-->
+    <!--    </bean>-->
 
-<!--    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">-->
-<!--        <property name="cacheManager" ref="eperusteetEhCache"/>-->
-<!--    </bean>-->
+    <!--    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">-->
+    <!--        <property name="cacheManager" ref="eperusteetEhCache"/>-->
+    <!--    </bean>-->
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
-<!--    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
-<!--        <property name="properties">-->
-<!--            <util:properties local-override="true">-->
-<!--                <prop key="cas_mode">front</prop>-->
-<!--                <prop key="cas_key">eperusteet-service</prop>-->
-<!--                <prop key="cas_service">${cas.service.eperusteet-service:''}</prop>-->
-<!--                <prop key="cas_callback_url">${cas.callback.eperusteet-service:''}</prop>-->
-<!--                <prop key="spring_security_default_access">permitAll</prop>-->
-<!--            </util:properties>-->
-<!--        </property>-->
-<!--    </bean>-->
+    <!--    <bean id="defaultProps" class="org.springframework.beans.factory.config.PropertiesFactoryBean">-->
+    <!--        <property name="properties">-->
+    <!--            <util:properties local-override="true">-->
+    <!--                <prop key="cas_mode">front</prop>-->
+    <!--                <prop key="cas_key">eperusteet-service</prop>-->
+    <!--                <prop key="cas_service">${cas.service.eperusteet-service:''}</prop>-->
+    <!--                <prop key="cas_callback_url">${cas.callback.eperusteet-service:''}</prop>-->
+    <!--                <prop key="spring_security_default_access">permitAll</prop>-->
+    <!--            </util:properties>-->
+    <!--        </property>-->
+    <!--    </bean>-->
 
     <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="eperusteetPermissionEvaluator"/>
@@ -59,11 +59,11 @@
         <security:expression-handler ref="expressionHandler"/>
     </security:global-method-security>
 
-<!--    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>-->
+    <!--    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>-->
 
-<!--    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>-->
+    <!--    <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>-->
     <context:component-scan base-package="fi.vm.sade.eperusteet.v2.service"/>
-<!--    <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>-->
+    <!--    <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>-->
     <context:component-scan base-package="fi.vm.sade.eperusteet.utils"/>
     <tx:annotation-driven order="100"/>
     <cache:annotation-driven order="50" />
@@ -71,7 +71,7 @@
 
     <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
-<!--    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>-->
+    <!--    <jee:jndi-lookup id="dataSource" jndi-name="jdbc/eperusteet" expected-type="javax.sql.DataSource"/>-->
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
         <property name="persistenceUnitName" value="eperusteet-pu"/>
@@ -120,13 +120,13 @@
         </property>
     </bean>
 
-<!--    <task:annotation-driven executor="defaultExecutor"/>-->
-<!--    <bean id="defaultThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
-<!--        <property name="corePoolSize" value="2"/>-->
-<!--        <property name="maxPoolSize" value="10"/>-->
-<!--    </bean>-->
-<!--    <bean id="defaultExecutor" class="org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor">-->
-<!--        <constructor-arg ref="defaultThreadPool"/>-->
-<!--    </bean>-->
+    <!--    <task:annotation-driven executor="defaultExecutor"/>-->
+    <!--    <bean id="defaultThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
+    <!--        <property name="corePoolSize" value="2"/>-->
+    <!--        <property name="maxPoolSize" value="10"/>-->
+    <!--    </bean>-->
+    <!--    <bean id="defaultExecutor" class="org.springframework.security.task.DelegatingSecurityContextAsyncTaskExecutor">-->
+    <!--        <constructor-arg ref="defaultThreadPool"/>-->
+    <!--    </bean>-->
 
 </beans>

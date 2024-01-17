@@ -6,7 +6,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.ImportResource;
 
 @SpringBootApplication
-@ImportResource({"classpath*:spring/application-context.xml"})
 public class EperusteetApplication {
 
 	public static void main(String[] args) {
