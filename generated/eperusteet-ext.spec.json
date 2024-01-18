@@ -54,8 +54,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/external/peruste/koulutuskoodi/{koodi}/**" : {
+    "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
@@ -80,10 +79,7 @@
         }
       }
     },
-    "/external/peruste/yto/**" : {
-=======
     "/api/external/peruste/yto/**" : {
->>>>>>> 0981733dd (rebase)
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
@@ -2617,7 +2613,10 @@
       "type" : "object",
       "properties" : {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 0d6771579 (specs)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
@@ -2627,22 +2626,47 @@
 <<<<<<< HEAD
 =======
 >>>>>>> 6c52f40cd (rebase)
+<<<<<<< HEAD
 >>>>>>> 4a6870d25 (rebase)
+=======
+=======
+>>>>>>> ad9eddcfe (specs)
+>>>>>>> 0d6771579 (specs)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
 =======
+=======
+>>>>>>> 0d6771579 (specs)
 <<<<<<< HEAD
 =======
 >>>>>>> 0981733dd (rebase)
 >>>>>>> 6c52f40cd (rebase)
+<<<<<<< HEAD
 >>>>>>> 4a6870d25 (rebase)
+=======
+=======
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> ad9eddcfe (specs)
+>>>>>>> 0d6771579 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2653,6 +2677,7 @@
             "type" : "object"
           }
         },
+<<<<<<< HEAD
         "number" : {
           "type" : "integer",
           "format" : "int32"
@@ -2672,26 +2697,25 @@
         },
         "last" : {
 =======
+=======
+>>>>>>> ad9eddcfe (specs)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "last" : {
+        "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "empty" : {
 >>>>>>> 6c52f40cd (rebase)
 >>>>>>> 4a6870d25 (rebase)
           "type" : "boolean"
+<<<<<<< HEAD
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -2699,6 +2723,8 @@
         },
         "last" : {
           "type" : "boolean"
+=======
+>>>>>>> 0d6771579 (specs)
         }
       }
     },
@@ -2706,7 +2732,10 @@
       "type" : "object",
       "properties" : {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 0d6771579 (specs)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
@@ -2716,22 +2745,47 @@
 <<<<<<< HEAD
 =======
 >>>>>>> 6c52f40cd (rebase)
+<<<<<<< HEAD
 >>>>>>> 4a6870d25 (rebase)
+=======
+=======
+>>>>>>> ad9eddcfe (specs)
+>>>>>>> 0d6771579 (specs)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
 =======
+=======
+>>>>>>> 0d6771579 (specs)
 <<<<<<< HEAD
 =======
 >>>>>>> 0981733dd (rebase)
 >>>>>>> 6c52f40cd (rebase)
+<<<<<<< HEAD
 >>>>>>> 4a6870d25 (rebase)
+=======
+=======
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+>>>>>>> ad9eddcfe (specs)
+>>>>>>> 0d6771579 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2742,6 +2796,7 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
+<<<<<<< HEAD
         "number" : {
           "type" : "integer",
           "format" : "int32"
@@ -2754,19 +2809,25 @@
         },
 =======
 >>>>>>> 6c52f40cd (rebase)
+<<<<<<< HEAD
 >>>>>>> 4a6870d25 (rebase)
+=======
+=======
+>>>>>>> ad9eddcfe (specs)
+>>>>>>> 0d6771579 (specs)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
-        "first" : {
+        "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -2775,12 +2836,10 @@
         "last" : {
           "type" : "boolean"
 =======
+=======
+>>>>>>> 0d6771579 (specs)
         "empty" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         }
       }
     },
@@ -2797,12 +2856,12 @@
         "unpaged" : {
           "type" : "boolean"
         },
+        "paged" : {
+          "type" : "boolean"
+        },
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "paged" : {
-          "type" : "boolean"
         },
         "pageSize" : {
           "type" : "integer",
