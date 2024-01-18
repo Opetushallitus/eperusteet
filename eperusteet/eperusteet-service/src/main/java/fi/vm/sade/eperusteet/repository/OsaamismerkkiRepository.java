@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OsaamismerkkiRepository extends JpaRepository<Osaamismerkki, Long> {
     Osaamismerkki findByIdAndTila(Long id, OsaamismerkkiTila tila);
+    Osaamismerkki findByKoodiUriAndTila(String koodiUri, OsaamismerkkiTila tila);
     Osaamismerkki findByKoodiUri(String koodiUri);
     long countByKategoriaId(Long id);
 }

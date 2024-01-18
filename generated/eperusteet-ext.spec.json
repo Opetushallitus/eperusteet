@@ -2322,6 +2322,9 @@
         "kategoria" : {
           "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
         },
+        "koodiUri" : {
+          "type" : "string"
+        },
         "osaamistavoitteet" : {
           "type" : "array",
           "items" : {
@@ -2347,9 +2350,6 @@
           "format" : "date-time"
         },
         "muokkaaja" : {
-          "type" : "string"
-        },
-        "koodiUri" : {
           "type" : "string"
         }
       }
@@ -2524,13 +2524,17 @@
     "Page" : {
       "type" : "object",
       "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "totalElements" : {
+        "numberOfElements" : {
           "type" : "integer",
-          "format" : "int64"
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2552,10 +2556,6 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "last" : {
           "type" : "boolean"
         }
@@ -2564,13 +2564,17 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "totalElements" : {
+        "numberOfElements" : {
           "type" : "integer",
-          "format" : "int64"
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2591,10 +2595,6 @@
         },
         "first" : {
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "last" : {
           "type" : "boolean"
