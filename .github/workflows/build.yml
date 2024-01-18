@@ -15,62 +15,10 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3
 
-      # - name: Set up JDK 11
-        # uses: actions/setup-java@v3
-        # with:
-          # java-version: '11'
-          # distribution: 'corretto'
-
-      - name: Set up Node 10
-        uses: actions/setup-node@v3
-        with:
-          node-version: '10'
-
       - name: Set up Node 16
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      # - name: Cache Maven repository
-        # uses: actions/cache@v3
-        # with:
-          # path: ~/.m2/repository
-          # key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
-          # restore-keys: |
-            # ${{ runner.os }}-maven-
-
-      # - name: Print yarn cache directory path
-        # id: yarn-cache-dir-path
-        # run: |
-          # yarn cache dir
-          # echo "::set-output name=dir::$(yarn cache dir)"
-
-      # - name: Cache yarn
-        # uses: actions/cache@v3
-        # with:
-          # path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          # key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-
-      # - name: Print npm cache directory
-        # id: npm-cache-dir
-        # run: |
-          # npm config get cache
-          # echo "::set-output name=dir::$(npm config get cache)"
-
-      # - name: Cache npm
-        # uses: actions/cache@v3
-        # with:
-          # path: ${{ steps.npm-cache-dir.outputs.dir }}
-          # key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          # restore-keys: |
-            # ${{ runner.os }}-node-
-
-      # - name: Cache yo npm
-        # uses: actions/cache@v3
-        # with:
-          # path: eperusteet/eperusteet/eperusteet-app/yo/node_modules
-          # key: ${{ runner.os }}-nodeyo-${{ hashFiles('**/package-lock.json') }}
-          # restore-keys: |
-            # ${{ runner.os }}-nodeyo-
 
       - name: Check if UI has same branch
         id: ui_branch_status
@@ -109,36 +57,6 @@ jobs:
     needs: [build-and-test-eperusteet-ui]
     runs-on: ubuntu-latest
     steps:
-      # - uses: actions/checkout@v3
-      
-      # - name: workflow number debug
-        # run: echo "${{ github.run_id }} ${{ github.run_number }} ${{ github.run_attempt }}"
-        
-      # - name: Set up JDK 11
-        # uses: actions/setup-java@v3
-        # with:
-          # java-version: '11'
-          # distribution: 'corretto'
-
-      # - name: Cache Maven repository
-        # uses: actions/cache@v3
-        # with:
-          # path: ~/.m2/repository
-          # key: ${{ runner.os }}-maven-cache-${{ hashFiles('**/pom.xml') }}
-          # restore-keys: |
-            # ${{ runner.os }}-maven-
-
-      # - name: Build with Maven
-        # run: |
-          # cd eperusteet/eperusteet-service
-          # mvn clean verify --batch-mode
-
-      # - name: Cache eperusteet-service build results
-        # uses: actions/cache@v3
-        # id: restore-service-build
-        # with:
-          # path: eperusteet/eperusteet-service/target
-          # key: ${{ github.run_number }}-${{ github.run_attempt }}-service
       - name: Checkout source
         uses: actions/checkout@v3
       - name: Download eperusteet-ui
@@ -157,7 +75,7 @@ jobs:
           ls -latr
           ls -latr eperusteet/eperusteet-service/src/main/resources/static/ui/
           cd eperusteet/eperusteet-service        
-          mvn clean verify -B -DskipTests
+          mvn clean verify -B
       - name: Upload eperusteet-service-jar
         uses: actions/upload-artifact@v3
         with:
@@ -184,35 +102,3 @@ jobs:
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
-          
-      # - uses: actions/checkout@v3
-
-      # - name: Get eperusteet-service build results
-        # uses: actions/cache@v3
-        # id: restore-service-build
-        # with:
-          # path: eperusteet/eperusteet-service/target
-          # key: ${{ github.run_number }}-${{ github.run_attempt }}-service
-
-      # - name: Get eperusteet-app build results
-        # uses: actions/cache@v3
-        # id: restore-app-build
-        # with:
-          # path: eperusteet/eperusteet-app/target
-          # key: ${{ github.run_number }}-${{ github.run_attempt }}-app
-
-      # - name: Build image
-        # run: |
-          # git clone https://github.com/Opetushallitus/ci-tools.git
-          # source ci-tools/common/setup-tools.sh
-          
-          # cd ${ARTIFACT_NAME}
-          # mv ${ARTIFACT_NAME}-service/target/${ARTIFACT_NAME}-service.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-service.war
-          # mv ${ARTIFACT_NAME}-app/target/${ARTIFACT_NAME}-app.war $DOCKER_BUILD_DIR/artifact/${ARTIFACT_NAME}-app.war
-          # cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-          # cp -vr src/main/resources/tomcat $DOCKER_BUILD_DIR/config/
-          # cd ..
-          # export BASE_IMAGE="baseimage-war-tomcat8-openjdk11:master"
-          # ./ci-tools/common/pull-image.sh
-          # ./ci-tools/github-build/build-war.sh ${ARTIFACT_NAME}
-          # ./ci-tools/github-build/upload-image.sh ${ARTIFACT_NAME}
