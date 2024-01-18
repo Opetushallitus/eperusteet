@@ -18,7 +18,7 @@
     <cache:annotation-driven />
 
     <context:property-placeholder
-        location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+        location="classpath:eperusteet-service.properties"
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
 
@@ -28,6 +28,7 @@
                 <prop key="cas_key">eperusteet-service</prop>
                 <!-- prop key="cas_service">${cas.service.eperusteet-service}</prop -->
                 <prop key="spring_security_default_access">permitAll</prop>
+                <prop key="web.url.cas">null</prop>
             </util:properties>
         </property>
     </bean>
