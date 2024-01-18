@@ -86,7 +86,7 @@ public class SwaggerConfig {
                 .genericModelSubstitutes(ResponseEntity.class, Optional.class)
                 .forCodeGeneration(true)
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(InternalApi.class).negate())
+                .apis(not(RequestHandlerSelectors.withClassAnnotation(InternalApi.class)))
                 .build()
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(
@@ -106,7 +106,7 @@ public class SwaggerConfig {
                 .genericModelSubstitutes(ResponseEntity.class, Optional.class)
                 .forCodeGeneration(true)
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(InternalApi.class).negate())
+                .apis(not(RequestHandlerSelectors.withClassAnnotation(InternalApi.class)))
                 .build()
                 .alternateTypeRules(
                         AlternateTypeRules.newRule(
