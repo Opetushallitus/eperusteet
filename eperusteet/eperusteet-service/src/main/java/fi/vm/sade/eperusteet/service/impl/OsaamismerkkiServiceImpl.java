@@ -86,12 +86,12 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
 
     @Override
     public List<OsaamismerkkiDto> getOsaamismerkit() {
-        return mapper.mapAsList(osaamismerkkiRepository.findAll(), OsaamismerkkiDto.class) ;
+        return mapper.mapAsList(osaamismerkkiRepository.findAllByTila(OsaamismerkkiTila.JULKAISTU), OsaamismerkkiDto.class) ;
     }
 
     @Override
     public OsaamismerkkiDto getOsaamismerkkiByUri(String koodiUri) {
-        return mapper.map(osaamismerkkiRepository.findByKoodiUri(koodiUri), OsaamismerkkiDto.class) ;
+        return mapper.map(osaamismerkkiRepository.findByKoodiUriAndTila(koodiUri, OsaamismerkkiTila.JULKAISTU), OsaamismerkkiDto.class) ;
     }
 
     @Override
