@@ -72,8 +72,6 @@ jobs:
           cache: 'maven'
       - name: Build
         run: |
-          ls -latr
-          ls -latr eperusteet/eperusteet-service/src/main/resources/static/ui/
           cd eperusteet/eperusteet-service        
           mvn clean verify -B
       - name: Upload eperusteet-service-jar
