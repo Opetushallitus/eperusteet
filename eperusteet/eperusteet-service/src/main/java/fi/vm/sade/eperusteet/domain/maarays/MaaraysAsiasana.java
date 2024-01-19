@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,4 +30,15 @@ public class MaaraysAsiasana {
     @ElementCollection
     @CollectionTable(name="maarays_asiasana_asiasana")
     private List<String> asiasana;
+
+    public MaaraysAsiasana copy() {
+        MaaraysAsiasana copy = new MaaraysAsiasana();
+        copy.setAsiasana(new ArrayList<>());
+
+        if (asiasana != null) {
+            copy.getAsiasana().addAll(asiasana);
+        }
+
+        return copy;
+    }
 }

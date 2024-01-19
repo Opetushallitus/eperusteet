@@ -60,4 +60,17 @@ public class MaaraysLiite implements Serializable {
     @NotNull
     private Blob data;
 
+    public MaaraysLiite copy() {
+        MaaraysLiite copy = new MaaraysLiite();
+        copy.setId(UUID.randomUUID());
+        if (nimi != null) {
+            copy.setNimi(TekstiPalanen.of(nimi.getTeksti()));
+        }
+        copy.setTiedostonimi(tiedostonimi);
+        copy.setTyyppi(tyyppi);
+        copy.setData(data);
+
+        return copy;
+    }
+
 }
