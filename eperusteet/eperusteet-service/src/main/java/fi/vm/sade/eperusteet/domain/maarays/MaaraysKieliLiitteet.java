@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Setter
@@ -31,4 +32,11 @@ public class MaaraysKieliLiitteet {
     @OneToMany
     @JoinTable(name = "maarays_kieli_liite")
     private List<MaaraysLiite> liitteet = new ArrayList<>();
+
+    public MaaraysKieliLiitteet copy() {
+        MaaraysKieliLiitteet copy = new MaaraysKieliLiitteet();
+        copy.getLiitteet().addAll(liitteet.stream().map(MaaraysLiite::copy).collect(Collectors.toList()));
+
+        return copy;
+    }
 }

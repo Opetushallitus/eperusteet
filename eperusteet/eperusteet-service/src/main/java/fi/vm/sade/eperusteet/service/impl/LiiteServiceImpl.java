@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +72,16 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     public void copyLiitteetForPeruste(Long perusteId, Long pohjaPerusteId) {
+        copyLiitteetForPeruste(perusteId, pohjaPerusteId, (liite) -> true);
+    }
+
+    @Override
+    public void copyLiitteetForPeruste(Long perusteId, Long pohjaPerusteId, Predicate<Liite> filter) {
         Peruste peruste = perusteet.findOne(perusteId);
-        liitteet.findByPerusteId(pohjaPerusteId).forEach(liite -> {
-            peruste.attachLiite(liite);
-        });
+        liitteet.findByPerusteId(pohjaPerusteId)
+                .stream()
+                .filter(filter)
+                .forEach(peruste::attachLiite);
     }
 
     @Override
