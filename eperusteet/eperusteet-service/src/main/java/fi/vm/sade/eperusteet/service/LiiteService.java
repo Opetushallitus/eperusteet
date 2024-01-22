@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,6 +11,7 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public interface LiiteService {
 
@@ -45,4 +47,7 @@ public interface LiiteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
     void copyLiitteetForPeruste(Long perusteId, Long pohjaPerusteId);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS')")
+    void copyLiitteetForPeruste(Long perusteId, Long pohjaPerusteId, Predicate<Liite> filter);
 }

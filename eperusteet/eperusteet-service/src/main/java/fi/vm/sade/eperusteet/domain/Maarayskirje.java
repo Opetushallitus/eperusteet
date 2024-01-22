@@ -58,4 +58,16 @@ public class Maarayskirje implements Serializable {
                     @JoinColumn(name = "liite_id")})
     private Map<Kieli, Liite> liitteet = new HashMap<>();
 
+    public Maarayskirje copy() {
+        Maarayskirje copy = new Maarayskirje();
+        Map<Kieli, Liite> liitteet = new HashMap<>();
+        this.liitteet.keySet().forEach(kieli -> liitteet.put(kieli, new Liite(
+                this.liitteet.get(kieli).getTyyppi(),
+                this.liitteet.get(kieli).getMime(),
+                this.liitteet.get(kieli).getNimi(),
+                this.liitteet.get(kieli).getData())));
+        copy.setLiitteet(liitteet);
+
+        return copy;
+    }
 }

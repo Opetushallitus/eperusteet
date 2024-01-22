@@ -26,9 +26,7 @@ public class NavigationUtil {
             NavigationType.koto_opinto);
 
     public static NavigationNodeDto asetaNumerointi(Peruste peruste, NavigationNodeDto node) {
-        if (!peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)
-                && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)
-                && !KoulutusTyyppi.PERUSOPETUS.toString().equals(peruste.getKoulutustyyppi())) {
+        if (!peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN) && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)) {
             asetaNumerointi(node.getChildren(), "");
         }
         return node;

@@ -22,6 +22,7 @@ public class OsaamismerkkiBaseDto {
     private LokalisoituTekstiDto kuvaus;
     private OsaamismerkkiTila tila;
     private OsaamismerkkiKategoriaDto kategoria;
+    private String koodiUri;
     private List<OsaamismerkkiOsaamistavoiteDto> osaamistavoitteet = new ArrayList<>();
     private List<OsaamismerkkiArviointikriteeriDto> arviointikriteerit = new ArrayList<>();
 }

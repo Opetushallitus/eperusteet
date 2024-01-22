@@ -57,17 +57,31 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void getJulkinenOsaamismerkki() throws HttpMediaTypeNotSupportedException, MimeTypeException {
+    public void getJulkinenOsaamismerkkiById() throws HttpMediaTypeNotSupportedException, MimeTypeException {
         OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
         OsaamismerkkiDto julkaistavaMerkki = createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA);
         julkaistavaMerkki = osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
 
-        assertNull(osaamismerkkiService.getJulkinenOsaamismerkki(julkaistavaMerkki.getId()));
+        assertNull(osaamismerkkiService.getJulkinenOsaamismerkkiById(julkaistavaMerkki.getId()));
 
         julkaistavaMerkki.setTila(OsaamismerkkiTila.JULKAISTU);
         julkaistavaMerkki = osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
 
-        assertNotNull(osaamismerkkiService.getJulkinenOsaamismerkki(julkaistavaMerkki.getId()));
+        assertNotNull(osaamismerkkiService.getJulkinenOsaamismerkkiById(julkaistavaMerkki.getId()));
+    }
+
+    @Test
+    public void getJulkinenOsaamismerkkiByKoodi() throws HttpMediaTypeNotSupportedException, MimeTypeException {
+        OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
+        OsaamismerkkiDto julkaistavaMerkki = createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA);
+        julkaistavaMerkki = osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
+
+        assertNull(osaamismerkkiService.getJulkinenOsaamismerkkiByKoodi(1234L));
+
+        julkaistavaMerkki.setTila(OsaamismerkkiTila.JULKAISTU);
+        osaamismerkkiService.updateOsaamismerkki(julkaistavaMerkki);
+
+        assertNotNull(osaamismerkkiService.getJulkinenOsaamismerkkiByKoodi(1234L));
     }
 
     @Test
@@ -128,6 +142,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
        merkki.setNimi(LokalisoituTekstiDto.of("osaamismerkki"));
        merkki.setTila(tila);
        merkki.setKategoria(kategoria);
+       merkki.setKoodiUri("osaamismerkit_1234");
        merkki.setVoimassaoloAlkaa(DateUtils.addDays(new Date(),-1));
        merkki.setArviointikriteerit(new ArrayList<>());
        merkki.setOsaamistavoitteet(new ArrayList<>());
