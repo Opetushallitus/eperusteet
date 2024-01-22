@@ -25,7 +25,10 @@ public interface OsaamismerkkiService {
     Page<OsaamismerkkiDto> findBy(OsaamismerkkiQuery query);
 
     @PreAuthorize("permitAll()")
-    OsaamismerkkiBaseDto getJulkinenOsaamismerkki(Long id);
+    OsaamismerkkiBaseDto getJulkinenOsaamismerkkiById(Long id);
+
+    @PreAuthorize("permitAll()")
+    OsaamismerkkiBaseDto getJulkinenOsaamismerkkiByKoodi(Long koodi);
 
     @PreAuthorize("permitAll()")
     List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat();

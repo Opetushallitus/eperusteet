@@ -86,12 +86,12 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
 
     @Override
     public List<OsaamismerkkiDto> getOsaamismerkit() {
-        return mapper.mapAsList(osaamismerkkiRepository.findAll(), OsaamismerkkiDto.class) ;
+        return mapper.mapAsList(osaamismerkkiRepository.findAllByTila(OsaamismerkkiTila.JULKAISTU), OsaamismerkkiDto.class) ;
     }
 
     @Override
     public OsaamismerkkiDto getOsaamismerkkiByUri(String koodiUri) {
-        return mapper.map(osaamismerkkiRepository.findByKoodiUri(koodiUri), OsaamismerkkiDto.class) ;
+        return mapper.map(osaamismerkkiRepository.findByKoodiUriAndTila(koodiUri, OsaamismerkkiTila.JULKAISTU), OsaamismerkkiDto.class) ;
     }
 
     @Override
@@ -113,8 +113,15 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
-    public OsaamismerkkiBaseDto getJulkinenOsaamismerkki(Long id) {
+    public OsaamismerkkiBaseDto getJulkinenOsaamismerkkiById(Long id) {
         Osaamismerkki osaamismerkki = osaamismerkkiRepository.findByIdAndTila(id, OsaamismerkkiTila.JULKAISTU);
+        return mapper.map(osaamismerkki, OsaamismerkkiBaseDto.class);
+    }
+
+    @Override
+    public OsaamismerkkiBaseDto getJulkinenOsaamismerkkiByKoodi(Long koodi) {
+        String koodiUri = KoodistoUriArvo.OSAAMISMERKIT + "_" + koodi;
+        Osaamismerkki osaamismerkki = osaamismerkkiRepository.findByKoodiUriAndTila(koodiUri, OsaamismerkkiTila.JULKAISTU);
         return mapper.map(osaamismerkki, OsaamismerkkiBaseDto.class);
     }
 

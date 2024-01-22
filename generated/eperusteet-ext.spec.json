@@ -14,7 +14,7 @@
     "/external/osaamismerkit" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Hae kaikki osaamismerkit",
+        "summary" : "Hae kaikki julkaistut osaamismerkit",
         "description" : "",
         "operationId" : "getOsaamismerkit",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -34,7 +34,7 @@
     "/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Hae osaamismerkki koodiurilla",
+        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
         "description" : "",
         "operationId" : "getOsaamismerkkiByUri",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -2347,6 +2347,9 @@
         "kategoria" : {
           "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
         },
+        "koodiUri" : {
+          "type" : "string"
+        },
         "osaamistavoitteet" : {
           "type" : "array",
           "items" : {
@@ -2372,9 +2375,6 @@
           "format" : "date-time"
         },
         "muokkaaja" : {
-          "type" : "string"
-        },
-        "koodiUri" : {
           "type" : "string"
         }
       }
@@ -2577,12 +2577,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2617,12 +2617,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
