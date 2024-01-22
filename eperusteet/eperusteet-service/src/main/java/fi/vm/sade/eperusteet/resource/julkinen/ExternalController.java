@@ -108,7 +108,7 @@ public class ExternalController {
     @ResponseBody
     @ApiOperation(
             value = "Perusteen tietojen haku tarkalla sisältörakenteella",
-            notes="Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
+            notes = "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
             response= PerusteKaikkiDto.class
     )
     public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
@@ -149,7 +149,8 @@ public class ExternalController {
     @RequestMapping(value = "/peruste/koulutuskoodi/{koodi:\\d+}/**", method = GET)
     @ResponseBody
     @ApiOperation(
-            value = "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+            value = "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
+            notes = "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
             response= PerusteKaikkiDto.class
     )
     public ResponseEntity<Object> getPerusteWithKoodi(
@@ -172,8 +173,12 @@ public class ExternalController {
                 0,
                 1);
 
-        if (peruste.getTotalElements() != 1) {
+        if (peruste.getTotalElements() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (peruste.getTotalElements() > 1) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
         return getJulkaistuSisaltoObjectNodeWithQuery(peruste.getContent().get(0).getId(), requestToQueries(req, 5));
@@ -201,7 +206,7 @@ public class ExternalController {
     private ResponseEntity<Object> getJulkaistuSisaltoObjectNodeWithQuery(long id, List<String> queries) {
         Object result = perusteService.getJulkaistuSisaltoObjectNode(id, queries);
         if (result == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return ResponseEntity.ok(result);
     }
