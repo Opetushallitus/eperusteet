@@ -116,7 +116,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
     @Test
     public void deleteKategoriaFail() throws HttpMediaTypeNotSupportedException, MimeTypeException {
         expectedEx.expect(BusinessRuleViolationException.class);
-        expectedEx.expectMessage("osaamismerkkiin-liitettya-kategoriaa-ei-voi-poistaa");
+        expectedEx.expectMessage("osaamismerkkiin-liitettya-teemaa-ei-voi-poistaa");
 
         OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
         osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria, OsaamismerkkiTila.LAADINTA));

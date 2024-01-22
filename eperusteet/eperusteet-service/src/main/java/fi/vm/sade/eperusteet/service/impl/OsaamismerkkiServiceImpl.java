@@ -197,7 +197,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     public void deleteKategoria(Long id) {
         long linkitykset = osaamismerkkiRepository.countByKategoriaId(id);
         if (linkitykset > 0) {
-            throw new BusinessRuleViolationException("osaamismerkkiin-liitettya-kategoriaa-ei-voi-poistaa");
+            throw new BusinessRuleViolationException("osaamismerkkiin-liitettya-teemaa-ei-voi-poistaa");
         } else {
             OsaamismerkkiKategoria kategoria = osaamismerkkiKategoriaRepository.findOne(id);
             osaamismerkkiKategoriaRepository.delete(id);
