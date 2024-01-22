@@ -1,22 +1,6 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import com.google.common.collect.Sets;
-import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.yl.*;
@@ -40,7 +24,6 @@ import fi.vm.sade.eperusteet.service.yl.LukioOpetussuunnitelmaRakenneLockContext
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +43,6 @@ import static java.util.Comparator.*;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
-/**
- *
- * @author jhyoty
- */
 @Service
 @Transactional(readOnly = true)
 public class OppiaineServiceImpl implements OppiaineService {
@@ -434,15 +413,7 @@ public class OppiaineServiceImpl implements OppiaineService {
                         ovk.getTavoitteet().stream().filter(tavoite -> poistuneetTavoitteet.contains(tavoite.getId()))
                         ).collect(Collectors.toList()));
         ovk = vuosiluokkakokonaisuusRepository.saveAndFlush(ovk);
-
         mapper.map(dto, ovk);
-        if (sisalto.getPeruste().getTila() == PerusteTila.VALMIS) {
-            Revision rev = vuosiluokkakokonaisuusRepository.getLatestRevisionId(ovk.getId());
-            OppiaineenVuosiluokkaKokonaisuus latest = vuosiluokkakokonaisuusRepository.findRevision(ovk.getId(), rev.getNumero());
-            if (!latest.structureEquals(ovk)) {
-                throw new BusinessRuleViolationException(VAIN_KORJAUKSET_SALLITTU);
-            }
-        }
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
         ovk.getOppiaine().muokattu();
         oppiaineRepository.setRevisioKommentti("Muokattu oppiaineen vuosiluokkakokonaisuutta");
