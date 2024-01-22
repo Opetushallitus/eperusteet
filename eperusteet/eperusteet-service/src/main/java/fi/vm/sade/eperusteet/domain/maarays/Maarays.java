@@ -130,4 +130,40 @@ public class Maarays extends AbstractAuditedEntity {
             this.muutettavatMaaraykset.addAll(muutettavatMaaraykset);
         }
     }
+
+    public Maarays copy() {
+        Maarays copy = new Maarays();
+
+        if (nimi != null) {
+            copy.setNimi(TekstiPalanen.of(nimi.getTeksti()));
+        }
+
+        if (kuvaus != null) {
+            copy.setKuvaus(TekstiPalanen.of(kuvaus.getTeksti()));
+        }
+
+        copy.setDiaarinumero(diaarinumero);
+        copy.setVoimassaoloAlkaa(voimassaoloAlkaa);
+        copy.setVoimassaoloLoppuu(voimassaoloLoppuu);
+        copy.setMaarayspvm(maarayspvm);
+        copy.setTyyppi(tyyppi);
+        copy.setLiittyyTyyppi(liittyyTyyppi);
+        copy.setTila(tila);
+        copy.setKoulutustyypit(new ArrayList<>());
+        copy.getKoulutustyypit().addAll(koulutustyypit);
+        copy.getKorvaavatMaaraykset().addAll(korvaavatMaaraykset);
+        copy.getKorvattavatMaaraykset().addAll(korvattavatMaaraykset);
+        copy.getMuuttavatMaaraykset().addAll(muuttavatMaaraykset);
+        copy.getMuutettavatMaaraykset().addAll(muutettavatMaaraykset);
+
+        if (asiasanat != null) {
+            asiasanat.keySet().forEach(kieli -> copy.asiasanat.put(kieli, asiasanat.get(kieli).copy()));
+        }
+
+        if (liitteet != null) {
+            liitteet.keySet().forEach(kieli -> copy.liitteet.put(kieli, liitteet.get(kieli).copy()));
+        }
+
+        return copy;
+    }
 }

@@ -14,7 +14,7 @@
     "/external/osaamismerkit" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Hae kaikki julkaistut osaamismerkit",
+        "summary" : "Hae kaikki osaamismerkit",
         "description" : "",
         "operationId" : "getOsaamismerkit",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -34,7 +34,7 @@
     "/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
+        "summary" : "Hae osaamismerkki koodiurilla",
         "description" : "",
         "operationId" : "getOsaamismerkkiByUri",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -49,6 +49,31 @@
             "description" : "successful operation",
             "schema" : {
               "$ref" : "#/definitions/OsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/koulutuskoodi/{koodi}/**" : {
+      "get" : {
+        "tags" : [ "Julkinen" ],
+        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+        "description" : "",
+        "operationId" : "getPerusteWithKoodi",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "koodi",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
             }
           }
         }
@@ -2322,9 +2347,6 @@
         "kategoria" : {
           "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
         },
-        "koodiUri" : {
-          "type" : "string"
-        },
         "osaamistavoitteet" : {
           "type" : "array",
           "items" : {
@@ -2350,6 +2372,9 @@
           "format" : "date-time"
         },
         "muokkaaja" : {
+          "type" : "string"
+        },
+        "koodiUri" : {
           "type" : "string"
         }
       }
@@ -2532,19 +2557,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2556,6 +2568,19 @@
           }
         },
         "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -2572,19 +2597,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2596,6 +2608,19 @@
           }
         },
         "number" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "first" : {
+          "type" : "boolean"
+        },
+        "last" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         }

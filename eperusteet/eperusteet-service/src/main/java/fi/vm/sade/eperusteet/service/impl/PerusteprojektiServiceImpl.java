@@ -25,6 +25,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
@@ -56,6 +57,8 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiMaarayskirjeDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.MaaraysLiiteRepository;
+import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.MaarayskirjeStatusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
@@ -215,6 +218,12 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private MaaraysService maaraysService;
+
+    @Autowired
+    private MaaraysRepository maaraysRepository;
+
+    @Autowired
+    private MaaraysLiiteRepository maaraysLiiteRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -487,7 +496,27 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         perusteprojekti = repository.saveAndFlush(perusteprojekti);
 
         if (perusteprojektiDto.getPerusteId() != null) {
-            liiteService.copyLiitteetForPeruste(peruste.getId(), perusteprojektiDto.getPerusteId());
+            liiteService.copyLiitteetForPeruste(peruste.getId(), perusteprojektiDto.getPerusteId(), (liite) -> !liite.getTyyppi().equals(LiiteTyyppi.MAARAYSKIRJE));
+
+            Peruste vanha = perusteRepository.getOne(perusteprojektiDto.getPerusteId());
+            if (vanha.getMaarayskirje() != null) {
+                Maarayskirje maarayskirje = vanha.getMaarayskirje().copy();
+                peruste.setMaarayskirje(maarayskirje);
+                for(Liite liite : maarayskirje.getLiitteet().values()) {
+                    peruste.attachLiite(liite);
+                }
+            }
+
+            List<Maarays> muutosmaaraykset = maaraysRepository.findByPerusteIdAndLiittyyTyyppiIn(perusteprojektiDto.getPerusteId(), Arrays.asList(MaaraysLiittyyTyyppi.MUUTTAA, MaaraysLiittyyTyyppi.KORVAA));
+            muutosmaaraykset.forEach(muutosmaarays -> {
+                Maarays copy = muutosmaarays.copy();
+                copy.setPeruste(peruste);
+                copy.setTila(MaaraysTila.LUONNOS);
+                copy.getLiitteet().forEach((kieli, maaraysKieliLiitteet) -> maaraysKieliLiitteet.setLiitteet(maaraysKieliLiitteet.getLiitteet().stream()
+                        .peek(liite -> maaraysLiiteRepository.save(liite))
+                        .collect(Collectors.toList())));
+                maaraysRepository.save(copy);
+            });
         }
 
         if (perusteprojektiDto.getMaarays() != null) {
