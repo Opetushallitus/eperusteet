@@ -14,7 +14,7 @@
     "/external/osaamismerkit" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Hae kaikki osaamismerkit",
+        "summary" : "Hae kaikki julkaistut osaamismerkit",
         "description" : "",
         "operationId" : "getOsaamismerkit",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -34,7 +34,7 @@
     "/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Hae osaamismerkki koodiurilla",
+        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
         "description" : "",
         "operationId" : "getOsaamismerkkiByUri",
         "produces" : [ "application/json;charset=UTF-8" ],
@@ -1710,6 +1710,12 @@
         },
         "vapaaTeksti" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "oppiaineenTavoitteenOpetuksenTavoitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OppiaineenTavoitteenOpetuksenTavoiteDto"
+          }
         }
       }
     },
@@ -1996,6 +2002,18 @@
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "soveltavaKurssiKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
+    "OppiaineenTavoitteenOpetuksenTavoiteDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tavoite" : {
           "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
@@ -2347,6 +2365,9 @@
         "kategoria" : {
           "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
         },
+        "koodiUri" : {
+          "type" : "string"
+        },
         "osaamistavoitteet" : {
           "type" : "array",
           "items" : {
@@ -2372,9 +2393,6 @@
           "format" : "date-time"
         },
         "muokkaaja" : {
-          "type" : "string"
-        },
-        "koodiUri" : {
           "type" : "string"
         }
       }
@@ -2549,13 +2567,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2571,11 +2589,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "first" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"
@@ -2589,13 +2607,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2611,11 +2629,11 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
         "first" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "last" : {
           "type" : "boolean"

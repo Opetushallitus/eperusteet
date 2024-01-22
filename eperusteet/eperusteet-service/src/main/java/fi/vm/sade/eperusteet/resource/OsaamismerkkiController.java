@@ -67,8 +67,14 @@ public class OsaamismerkkiController {
 
     @RequestMapping(value = "/osaamismerkki/{id}", method = GET)
     @ResponseBody
-    public OsaamismerkkiBaseDto getJulkinenOsaamismerkki(@PathVariable("id") final Long id) {
-        return osaamismerkkiService.getJulkinenOsaamismerkki(id);
+    public OsaamismerkkiBaseDto getJulkinenOsaamismerkkiById(@PathVariable("id") final Long id) {
+        return osaamismerkkiService.getJulkinenOsaamismerkkiById(id);
+    }
+
+    @RequestMapping(value = "/osaamismerkki/koodi/{koodi}", method = GET)
+    @ResponseBody
+    public OsaamismerkkiBaseDto getJulkinenOsaamismerkkiByKoodi(@PathVariable("koodi") final Long koodi) {
+        return osaamismerkkiService.getJulkinenOsaamismerkkiByKoodi(koodi);
     }
 
     @RequestMapping(value = "/osaamismerkki/update", method = POST)
