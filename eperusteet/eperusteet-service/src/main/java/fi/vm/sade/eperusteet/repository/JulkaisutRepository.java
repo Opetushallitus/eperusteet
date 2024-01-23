@@ -21,7 +21,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "FROM (SELECT * " +
             "  FROM (" +
             "   SELECT ROW_NUMBER() OVER(partition by id) as rownumber, * " +
-            "   FROM julkaistu_peruste_Data_view data" +
+            "   FROM julkaistu_peruste_data_store data" +
             "   WHERE (" +
             "           COALESCE(:koulutustyypit, NULL) = '' " +
             "           OR koulutustyyppi IN (:koulutustyypit) " +
@@ -89,7 +89,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             value = "SELECT CAST(row_to_json(t) as text) " +
                     "FROM ( " +
                     "   SELECT * " +
-                    "   FROM julkaistu_peruste_Data_view data" +
+                    "   FROM julkaistu_peruste_data_store data" +
                     "   WHERE exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodit))" +
                     "   AND (" +
                     "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
@@ -117,7 +117,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     @Query(nativeQuery = true,
             value = "SELECT data.koulutustyyppi, COUNT(*) " +
-                    "FROM julkaistu_peruste_Data_view data " +
+                    "FROM julkaistu_peruste_data_store data " +
                     "WHERE data.koulutustyyppi IS NOT NULL " +
                     "AND ((data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
                     "   OR (data.\"siirtymaPaattyy\" IS NOT NULL AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
