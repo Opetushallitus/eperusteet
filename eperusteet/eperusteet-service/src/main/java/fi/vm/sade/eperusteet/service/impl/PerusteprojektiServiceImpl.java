@@ -57,6 +57,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiMaarayskirjeDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysLiiteRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.MaarayskirjeStatusRepository;
@@ -224,6 +225,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private MaaraysLiiteRepository maaraysLiiteRepository;
+
+    @Autowired
+    private JulkaistuPerusteDataStoreRepository julkaistuPerusteDataStoreRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -692,6 +696,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
         projekti.setTila(tila);
         repository.save(projekti);
+        julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
         return updateStatus;
     }
 

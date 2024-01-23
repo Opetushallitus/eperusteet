@@ -46,6 +46,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KoodiRepository;
@@ -180,6 +181,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Autowired
     private MaaraysService maaraysService;
+
+    @Autowired
+    private JulkaistuPerusteDataStoreRepository julkaistuPerusteDataStoreRepository;
 
     @Autowired
     @Lazy
@@ -323,6 +327,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             lisaaMaaraysKokoelmaan(julkaisuBaseDto, peruste, julkaisu);
 
             julkaisutRepository.saveAndFlush(julkaisu);
+            julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
 
             if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
                 Cache amosaaperusteet = CacheManager.getInstance().getCache("amosaaperusteet");
