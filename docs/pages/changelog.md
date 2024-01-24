@@ -9,6 +9,8 @@ permalink: /changelog
 
   Päivämäärä | Muutokset
   ---------- | ------------ 
+  19.01.2024 | ePerusteet API - lisätty perusteen haku koulutuskoodilla: /external/peruste/koulutuskoodi/{koodi}
+  17.01.2024 | ePerusteet API - /external/perusteet -rajapintaan lisätty palauttamaan päätäspäivämäärä (paatospvm)
   31.10.2023 | ePerusteet API - lisätty osaamismerkkien haut
   25.09.2023 | Muutettu palveluiden rajapintojen otsikot
   13.09.2023 | Poistettu /peruste/{perusteId}/query -rajapinta
