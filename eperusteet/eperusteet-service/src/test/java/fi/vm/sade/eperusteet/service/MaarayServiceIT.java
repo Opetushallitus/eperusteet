@@ -7,9 +7,12 @@ import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysAsiasanaDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysKevytDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysKieliLiitteetDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysQueryDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import org.joda.time.DateTime;
 import org.junit.Test;
@@ -32,6 +35,10 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private MaaraysService maaraysService;
+
+    @Dto
+    @Autowired
+    private DtoMapper dtoMapper;
 
     @Test
     public void testAdd() {
@@ -182,6 +189,25 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
         assertThat(maaraykset.get(0).getNimi().get(Kieli.FI)).isEqualTo("nimi3");
         assertThat(maaraykset.get(1).getNimi().get(Kieli.FI)).isEqualTo("nimi1");
         assertThat(maaraykset.get(2).getNimi().get(Kieli.FI)).isEqualTo("nimi-2");
+    }
+
+    @Test
+    public void testKorvaavatMuuttavatMaaraykset() {
+        MaaraysDto maarayskorvaava = maaraysService.addMaarays(createDto().build());
+        MaaraysDto maaraysmuuttava = maaraysService.addMaarays(createDto().build());
+        MaaraysDto maarays = maaraysService.addMaarays(createDto().build());
+
+        maarayskorvaava.setKorvattavatMaaraykset(Arrays.asList(dtoMapper.map(maarays, MaaraysKevytDto.class)));
+        maaraysmuuttava.setMuutettavatMaaraykset(Arrays.asList(dtoMapper.map(maarays, MaaraysKevytDto.class)));
+        maarayskorvaava = maaraysService.updateMaarays(maarayskorvaava);
+        maaraysmuuttava = maaraysService.updateMaarays(maaraysmuuttava);
+
+        assertThat(maarayskorvaava.getKorvattavatMaaraykset().get(0).getId()).isEqualTo(maarays.getId());
+        assertThat(maaraysmuuttava.getMuutettavatMaaraykset().get(0).getId()).isEqualTo(maarays.getId());
+
+        maarays = maaraysService.getMaarays(maarays.getId());
+        assertThat(maarays.getKorvaavatMaaraykset().get(0).getId()).isEqualTo(maarayskorvaava.getId());
+        assertThat(maarays.getMuuttavatMaaraykset().get(0).getId()).isEqualTo(maaraysmuuttava.getId());
     }
 
     private MaaraysDto.MaaraysDtoBuilder createDto() {

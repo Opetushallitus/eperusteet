@@ -116,6 +116,11 @@ public class MaaraysController {
         return maaraysService.getPerusteenMuutosmaaraykset(perusteId);
     }
 
+    @GetMapping(value = "/peruste/{perusteId}/muutosmaaraykset/julkaistut")
+    public List<MaaraysDto> getPerusteenJulkaistutMuutosmaaraykset(@PathVariable("perusteId") final Long perusteId) {
+        return maaraysService.getPerusteenJulkaistutMuutosmaaraykset(perusteId);
+    }
+
     @InternalApi
     @PostMapping
     public MaaraysDto addMaarays(@RequestBody MaaraysDto maaraysDto) {

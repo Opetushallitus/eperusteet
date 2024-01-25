@@ -96,16 +96,8 @@ public class Maarays extends AbstractAuditedEntity {
     private List<Maarays> korvattavatMaaraykset = new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "maarays_korvattavat",  joinColumns = {@JoinColumn(name = "korvattavatmaaraykset_id")}, inverseJoinColumns = {@JoinColumn(name = "maarays_id")})
-    private List<Maarays> korvaavatMaaraykset = new ArrayList<>();
-
-    @ManyToMany
     @JoinTable(name = "maarays_muutettavat",  joinColumns = {@JoinColumn(name = "maarays_id")}, inverseJoinColumns = {@JoinColumn(name = "muutettavatmaaraykset_id")})
     private List<Maarays> muutettavatMaaraykset = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(name = "maarays_muutettavat",  joinColumns = {@JoinColumn(name = "muutettavatmaaraykset_id")}, inverseJoinColumns = {@JoinColumn(name = "maarays_id")})
-    private List<Maarays> muuttavatMaaraykset = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "maarays_asiasanat")
@@ -151,9 +143,7 @@ public class Maarays extends AbstractAuditedEntity {
         copy.setTila(tila);
         copy.setKoulutustyypit(new ArrayList<>());
         copy.getKoulutustyypit().addAll(koulutustyypit);
-        copy.getKorvaavatMaaraykset().addAll(korvaavatMaaraykset);
         copy.getKorvattavatMaaraykset().addAll(korvattavatMaaraykset);
-        copy.getMuuttavatMaaraykset().addAll(muuttavatMaaraykset);
         copy.getMuutettavatMaaraykset().addAll(muutettavatMaaraykset);
 
         if (asiasanat != null) {

@@ -59,4 +59,10 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
 
     List<Maarays> findByPerusteIdAndLiittyyTyyppiIn(Long perusteId, List<MaaraysLiittyyTyyppi> liittyyTyypit);
 
+    List<Maarays> findByPerusteIdAndLiittyyTyyppiInAndTila(Long perusteId, List<MaaraysLiittyyTyyppi> liittyyTyypit, MaaraysTila tila);
+
+    List<Maarays> findByKorvattavatMaarayksetIdIn(Long maaraysId);
+
+    List<Maarays> findByMuutettavatMaarayksetIdIn(Long maaraysId);
+
 }
