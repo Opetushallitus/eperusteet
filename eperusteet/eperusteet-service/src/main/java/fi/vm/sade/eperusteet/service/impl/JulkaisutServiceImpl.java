@@ -380,6 +380,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             MaaraysDto muutosMaaraysDto = maaraysService.updateMaarays(julkaisuBaseDto.getMuutosmaarays());
             julkaisu.setMuutosmaarays(mapper.map(muutosMaaraysDto, Maarays.class));
         }
+
+        maaraysService.getPerusteenMuutosmaaraykset(peruste.getId()).forEach(muutosmaarays -> {
+            muutosmaarays.setTila(MaaraysTila.JULKAISTU);
+            maaraysService.updateMaarays(muutosmaarays);
+        });
     }
 
     @Override

@@ -118,6 +118,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     public List<MaaraysDto> getPerusteenMuutosmaaraykset(Long perusteId) {
         return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppiIn(perusteId, Arrays.asList(MaaraysLiittyyTyyppi.MUUTTAA, MaaraysLiittyyTyyppi.KORVAA)), MaaraysDto.class);
     }
@@ -142,6 +143,12 @@ public class MaaraysServiceImpl implements MaaraysService {
         }
 
         return maaraysDto;
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public List<MaaraysDto> getPerusteenJulkaistutMuutosmaaraykset(Long perusteId) {
+        return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppiInAndTila(perusteId, Arrays.asList(MaaraysLiittyyTyyppi.MUUTTAA, MaaraysLiittyyTyyppi.KORVAA), MaaraysTila.JULKAISTU), MaaraysDto.class);
     }
 
     @Override

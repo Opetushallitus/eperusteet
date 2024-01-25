@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusPaaAlue;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
@@ -64,6 +65,8 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
+import fi.vm.sade.eperusteet.dto.maarays.MaaraysKevytDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
@@ -112,6 +115,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRake
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRakenneSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetSuppeaDto;
+import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -160,6 +164,9 @@ public class DtoMapperConfig {
 
     @Autowired
     private KayttajanTietoService kayttajat;
+
+    @Autowired
+    private MaaraysRepository maaraysRepository;
 
     @Lazy
     @Autowired
@@ -807,6 +814,24 @@ public class DtoMapperConfig {
                     }
                 })
                 .register();
+
+        factory.classMap(Maarays.class, MaaraysDto.class)
+                .byDefault()
+                .customize(new CustomMapper<Maarays, MaaraysDto>() {
+                    @Override
+                    public void mapAtoB(Maarays source, MaaraysDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        target.setKorvaavatMaaraykset(mapper.mapAsList(maaraysRepository.findByKorvattavatMaarayksetIdIn(target.getId()), MaaraysKevytDto.class));
+                        target.setMuuttavatMaaraykset(mapper.mapAsList(maaraysRepository.findByMuutettavatMaarayksetIdIn(target.getId()), MaaraysKevytDto.class));
+                    }
+
+                    @Override
+                    public void mapBtoA(MaaraysDto source, Maarays target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
+
 
         return new DtoMapperImpl(factory.getMapperFacade());
     }

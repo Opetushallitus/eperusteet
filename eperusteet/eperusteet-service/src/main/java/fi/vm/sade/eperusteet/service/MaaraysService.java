@@ -31,6 +31,9 @@ public interface MaaraysService {
     MaaraysDto getMaarays(Long id);
 
     @PreAuthorize("permitAll()")
+    List<MaaraysDto> getPerusteenJulkaistutMuutosmaaraykset(@P("perusteId") Long perusteId);
+
+    @PreAuthorize("permitAll()")
     Map<Kieli, List<String>> getAsiasanat();
 
     @PreAuthorize("hasPermission(null, 'maarays', 'LUONTI') or (#maarays.peruste != null && hasPermission(#maarays.peruste.id, 'peruste', 'MUOKKAUS'))")
