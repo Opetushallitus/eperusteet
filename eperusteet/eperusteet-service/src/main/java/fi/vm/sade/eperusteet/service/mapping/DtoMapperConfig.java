@@ -129,7 +129,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -830,8 +830,8 @@ public class DtoMapperConfig {
                     @Override
                     public void mapAtoB(Maarays source, MaaraysDto target, MappingContext context) {
                         super.mapAtoB(source, target, context);
-                        target.setKorvaavatMaaraykset(mapper.mapAsList(maaraysRepository.findByKorvattavatMaarayksetIdIn(target.getId()), MaaraysKevytDto.class));
-                        target.setMuuttavatMaaraykset(mapper.mapAsList(maaraysRepository.findByMuutettavatMaarayksetIdIn(target.getId()), MaaraysKevytDto.class));
+                        target.setKorvaavatMaaraykset(mapper.mapAsList(maaraysRepository.findByKorvattavatMaarayksetIdIn(Collections.singletonList(target.getId())), MaaraysKevytDto.class));
+                        target.setMuuttavatMaaraykset(mapper.mapAsList(maaraysRepository.findByMuutettavatMaarayksetIdIn(Collections.singletonList(target.getId())), MaaraysKevytDto.class));
                     }
 
                     @Override
