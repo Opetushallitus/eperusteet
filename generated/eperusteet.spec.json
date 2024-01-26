@@ -567,12 +567,7 @@
         }
       }
     },
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "/external/peruste/koulutuskoodi/{koodi}/**" : {
-=======
     "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
->>>>>>> ad9eddcfe (specs)
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
@@ -597,13 +592,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/external/peruste/yto/**" : {
-=======
-=======
->>>>>>> ad9eddcfe (specs)
     "/api/external/peruste/yto/**" : {
->>>>>>> a0e5e5b3a (C:/Program Files/Git/api change)
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
@@ -1633,8 +1622,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/maaraykset/peruste/{perusteId}/muutosmaaraykset/julkaistut" : {
+    "/api/maaraykset/peruste/{perusteId}/muutosmaaraykset/julkaistut" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getPerusteenJulkaistutMuutosmaaraykset",
@@ -1658,10 +1646,6 @@
         }
       }
     },
-    "/maaraykset/{id}" : {
-=======
-=======
->>>>>>> ad9eddcfe (specs)
     "/api/maaraykset/{id}" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
@@ -2507,8 +2491,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/osaamismerkit/osaamismerkki/koodi/{koodi}" : {
+    "/api/osaamismerkit/osaamismerkki/koodi/{koodi}" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "getJulkinenOsaamismerkkiByKoodi",
@@ -2529,10 +2512,7 @@
         }
       }
     },
-    "/osaamismerkit/osaamismerkki/update" : {
-=======
     "/api/osaamismerkit/osaamismerkki/update" : {
->>>>>>> a0e5e5b3a (C:/Program Files/Git/api change)
       "post" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "updateOsaamismerkki",
@@ -12756,22 +12736,42 @@
     },
     "Laaja" : {
       "type" : "object",
+      "discriminator" : "osanTyyppi",
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "perusteenOsa" : {
-          "$ref" : "#/definitions/Laaja"
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "lapset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Laaja"
-          }
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "_perusteenOsa" : {
-          "$ref" : "#/definitions/Reference"
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -15144,6 +15144,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -15153,6 +15157,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -15250,8 +15255,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -15273,6 +15281,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15308,6 +15318,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
 <<<<<<< HEAD
@@ -15339,6 +15353,7 @@
 >>>>>>> e0f08728a (rebase)
 >>>>>>> 7e90bad04 (rebase)
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -15391,18 +15406,17 @@
 >>>>>>> 0981733dd (rebase)
 =======
 >>>>>>> ad9eddcfe (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> b74a1a4c9 (rebase)
 >>>>>>> 4d019de25 (rebase)
@@ -15412,6 +15426,8 @@
 =======
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15447,6 +15463,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -15456,6 +15476,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -15517,8 +15538,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -15540,6 +15564,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15575,6 +15601,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -15584,6 +15614,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -15643,8 +15674,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -15666,6 +15700,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15701,6 +15737,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -15710,6 +15750,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -15769,8 +15810,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -15792,6 +15836,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15827,6 +15873,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -15836,6 +15886,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -15895,8 +15946,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -15918,6 +15972,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15953,6 +16009,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -15962,6 +16022,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16021,8 +16082,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -16044,6 +16108,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16079,6 +16145,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -16088,6 +16158,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16147,8 +16218,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -16170,6 +16244,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16205,6 +16281,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -16214,6 +16294,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16273,8 +16354,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -16296,6 +16380,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16331,6 +16417,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -16340,6 +16430,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16399,8 +16490,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -16422,6 +16516,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16457,6 +16553,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -16466,6 +16566,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16525,8 +16626,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -16548,6 +16652,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16583,6 +16689,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -16592,6 +16702,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16651,8 +16762,11 @@
 >>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
 =======
 >>>>>>> 0981733dd (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
+<<<<<<< HEAD
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> 6435b9a9b (EP-3491)
 <<<<<<< HEAD
@@ -16674,6 +16788,8 @@
           "type" : "boolean"
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16709,6 +16825,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "first" : {
           "type" : "boolean"
         },
@@ -16718,6 +16838,7 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
+<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
@@ -16774,6 +16895,8 @@
 >>>>>>> 0981733dd (rebase)
 =======
 >>>>>>> ad9eddcfe (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -16782,6 +16905,7 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16856,10 +16980,13 @@
 >>>>>>> 0981733dd (rebase)
 =======
 >>>>>>> ad9eddcfe (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "offset" : {
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         "paged" : {
@@ -16893,6 +17020,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
 >>>>>>> ad9eddcfe (specs)
+=======
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+>>>>>>> 2034e6656 (specs)
         },
         "paged" : {
           "type" : "boolean"
@@ -16901,12 +17036,9 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "unpaged" : {
           "type" : "boolean"
+<<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> 0981733dd (rebase)
 >>>>>>> 6c52f40cd (rebase)
@@ -16919,7 +17051,12 @@
 =======
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+<<<<<<< HEAD
 >>>>>>> 3064046f3 (specs)
+=======
+=======
+>>>>>>> 2034e6656 (specs)
+>>>>>>> db1959113 (specs)
         }
       }
     },
@@ -18962,17 +19099,36 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "perusteenOsa" : {
-          "$ref" : "#/definitions/Suppea"
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "lapset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Suppea"
-          }
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "_perusteenOsa" : {
-          "$ref" : "#/definitions/Reference"
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -19302,6 +19458,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "huomautukset" : {
 =======
 =======
@@ -19314,6 +19471,8 @@
 >>>>>>> ba0c99772 (rebase)
 =======
 >>>>>>> 3064046f3 (specs)
+=======
+>>>>>>> db1959113 (specs)
 <<<<<<< HEAD
         "vaihtoOk" : {
           "type" : "boolean"
@@ -19347,8 +19506,13 @@
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 76f78fc10 (julkaisuit test fix)
 <<<<<<< HEAD
+=======
+=======
+>>>>>>> 2034e6656 (specs)
+>>>>>>> db1959113 (specs)
         "huomautukset" : {
 >>>>>>> f0cc59cc7 (EP-3491)
 >>>>>>> ab12b8ebc (EP-3491)
@@ -19370,13 +19534,13 @@
         },
         "vaihtoOk" : {
           "type" : "boolean"
-<<<<<<< HEAD
         },
         "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 >>>>>>> b50856135 (EP-3491)
@@ -19477,76 +19641,112 @@
 =======
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+<<<<<<< HEAD
 >>>>>>> 3064046f3 (specs)
+=======
+=======
+>>>>>>> 2034e6656 (specs)
+>>>>>>> db1959113 (specs)
         }
       }
     },
     "TutkinnonOsaDto" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/Laaja"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "tavoitteet" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "arviointi" : {
-            "$ref" : "#/definitions/ArviointiDto"
-          },
-          "ammattitaitovaatimuksetLista" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
-            }
-          },
-          "ammattitaitovaatimukset" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "ammattitaidonOsoittamistavat" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "kuvaus" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "koodi" : {
-            "$ref" : "#/definitions/KoodiDto"
-          },
-          "koodiUri" : {
-            "type" : "string"
-          },
-          "koodiArvo" : {
-            "type" : "string"
-          },
-          "osaAlueet" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/OsaAlueDto"
-            }
-          },
-          "vapaatTekstit" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/KevytTekstiKappaleDto"
-            }
-          },
-          "tyyppi" : {
-            "type" : "string",
-            "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
-          },
-          "valmaTelmaSisalto" : {
-            "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
-          },
-          "ammattitaitovaatimukset2019" : {
-            "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
-          },
-          "geneerinenArviointiasteikko" : {
-            "$ref" : "#/definitions/Reference"
-          },
-          "alkuperainenPeruste" : {
-            "$ref" : "#/definitions/PerusteKevytDto"
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "tavoitteet" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "arviointi" : {
+          "$ref" : "#/definitions/ArviointiDto"
+        },
+        "ammattitaitovaatimuksetLista" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
           }
+        },
+        "ammattitaitovaatimukset" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "ammattitaidonOsoittamistavat" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "koodiUri" : {
+          "type" : "string"
+        },
+        "koodiArvo" : {
+          "type" : "string"
+        },
+        "osaAlueet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaAlueDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
+        },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
+        },
+        "valmaTelmaSisalto" : {
+          "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
+        },
+        "ammattitaitovaatimukset2019" : {
+          "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
+        },
+        "geneerinenArviointiasteikko" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "alkuperainenPeruste" : {
+          "$ref" : "#/definitions/PerusteKevytDto"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
-      } ]
+      }
     },
     "TutkinnonOsaKaikkiDto" : {
       "type" : "object",

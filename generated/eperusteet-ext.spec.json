@@ -2614,6 +2614,7 @@
       "properties" : {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 0d6771579 (specs)
@@ -2632,10 +2633,13 @@
 =======
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         "totalPages" : {
@@ -2653,6 +2657,8 @@
 >>>>>>> 4a6870d25 (rebase)
 =======
 =======
+=======
+>>>>>>> 2034e6656 (specs)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
@@ -2661,12 +2667,17 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
+        "last" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2677,11 +2688,11 @@
             "type" : "object"
           }
         },
-<<<<<<< HEAD
         "number" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
@@ -2699,21 +2710,20 @@
 =======
 =======
 >>>>>>> ad9eddcfe (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
         "empty" : {
+<<<<<<< HEAD
 >>>>>>> 6c52f40cd (rebase)
 >>>>>>> 4a6870d25 (rebase)
+=======
+>>>>>>> 2034e6656 (specs)
           "type" : "boolean"
 <<<<<<< HEAD
         },
@@ -2733,6 +2743,7 @@
       "properties" : {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 0d6771579 (specs)
@@ -2751,10 +2762,13 @@
 =======
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         "totalPages" : {
@@ -2772,6 +2786,8 @@
 >>>>>>> 4a6870d25 (rebase)
 =======
 =======
+=======
+>>>>>>> 2034e6656 (specs)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
@@ -2780,12 +2796,17 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "number" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
+        "last" : {
+          "type" : "boolean"
+        },
+<<<<<<< HEAD
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2796,11 +2817,11 @@
             "$ref" : "#/definitions/PerusteenJulkaisuData"
           }
         },
-<<<<<<< HEAD
         "number" : {
           "type" : "integer",
           "format" : "int32"
         },
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -2815,12 +2836,15 @@
 =======
 >>>>>>> ad9eddcfe (specs)
 >>>>>>> 0d6771579 (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
+<<<<<<< HEAD
         "last" : {
           "type" : "boolean"
         },
@@ -2838,6 +2862,8 @@
 =======
 =======
 >>>>>>> 0d6771579 (specs)
+=======
+>>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -2846,17 +2872,10 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
-        "offset" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "unpaged" : {
+        "paged" : {
           "type" : "boolean"
         },
-        "paged" : {
+        "unpaged" : {
           "type" : "boolean"
         },
         "pageNumber" : {
@@ -2866,7 +2885,17 @@
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
+<<<<<<< HEAD
 >>>>>>> 4a6870d25 (rebase)
+=======
+        },
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+>>>>>>> 2034e6656 (specs)
         }
       }
     },
@@ -3372,13 +3401,13 @@
     "Sort" : {
       "type" : "object",
       "properties" : {
-        "empty" : {
-          "type" : "boolean"
-        },
         "sorted" : {
           "type" : "boolean"
         },
         "unsorted" : {
+          "type" : "boolean"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
