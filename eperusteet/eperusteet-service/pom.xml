@@ -19,31 +19,35 @@
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <postgresql.version>42.5.5</postgresql.version>
         <jackson.version>2.15.2</jackson.version>
+        <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        <batik.version>1.13</batik.version>
+        <buildhelper.skipAttach>true</buildhelper.skipAttach>
+        <eperusteet.backend-utils.version>2.5</eperusteet.backend-utils.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
-        <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <jsoup.version>1.9.2</jsoup.version>
-        <eperusteet.backend-utils.version>2.5</eperusteet.backend-utils.version>
-        <ehcache.version>2.6.11</ehcache.version>
-        <slf4j.version>1.7.36</slf4j.version>
-        <batik.version>1.17</batik.version>
-        <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
-        <surefire.version>3.2.2</surefire.version>
-        <failsafe.version>3.2.2</failsafe.version>
-        <pdfbox.version>2.0.29</pdfbox.version>
-        <fop.version>2.9</fop.version>
-        <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
-        <springfox.version>2.7.0</springfox.version>
-        <schema.file>${project.basedir}/target/schema.ddl</schema.file>
+        <failsafe.version>3.2.2</failsafe.version>
+        <flyway.version>5.2.4</flyway.version>
+        <fop.version>2.9</fop.version>
         <hibernate.export.type>CREATE</hibernate.export.type>
-        <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
+        <jackson.version>2.15.2</jackson.version>
+        <jsoup.version>1.9.2</jsoup.version>
+        <lombok.version>1.18.4</lombok.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <lombok.version>1.18.30</lombok.version>
-        <lombok.version>1.18.4</lombok.version>
         <org.apache.tomcat.version>9.0.84</org.apache.tomcat.version>
+        <pdfbox.version>2.0.29</pdfbox.version>
+        <postgresql.version>42.5.1</postgresql.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <schema.file>${project.basedir}/target/schema.ddl</schema.file>
+        <spring.security.test.version>5.7.11</spring.security.test.version>
+        <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
+        <springfox.version>2.7.0</springfox.version>
+        <surefire.version>3.2.2</surefire.version>
+        <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
     </properties>
     <dependencies>
         <dependency>
@@ -81,10 +85,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-log4j2</artifactId>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
