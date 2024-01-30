@@ -121,6 +121,7 @@ public class DefaultConfigs {
         props.put("hibernate.ejb.interceptor", hibernateInterceptor());
         props.put("hibernate.id.new_generator_mappings", false);
         entityManagerFactory.setJpaPropertyMap(props);
+        entityManagerFactory.setMappingResources("hibernate-typedefs.hbm.xml");
         return entityManagerFactory;
     }
 
