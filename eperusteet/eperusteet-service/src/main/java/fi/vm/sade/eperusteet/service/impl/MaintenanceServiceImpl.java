@@ -28,6 +28,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -101,6 +102,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     private MaaraysRepository maaraysRepository;
+
+    @Autowired
+    private JulkaistuPerusteDataStoreRepository julkaistuPerusteDataStoreRepository;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
@@ -247,6 +251,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             ObjectNode data = objectMapper.valueToTree(sisalto);
             julkaisu.setData(new JulkaistuPerusteData(data));
             julkaisutRepository.save(julkaisu);
+            julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
             return true;
         });
     }
