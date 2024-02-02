@@ -36,7 +36,6 @@ import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
 @Configuration
-//@EnableWebMvc
 public class MvcConfiguration implements WebMvcConfigurer {
 
     @Autowired
