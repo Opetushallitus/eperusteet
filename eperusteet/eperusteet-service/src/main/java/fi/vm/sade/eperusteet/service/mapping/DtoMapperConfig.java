@@ -119,6 +119,7 @@ import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import fi.vm.sade.eperusteet.service.util.TemporaryKoodiGenerator;
 
 import java.sql.Blob;
@@ -777,9 +778,12 @@ public class DtoMapperConfig {
                     @Override
                     public void mapAtoB(Osaamismerkki source, OsaamismerkkiDto target, MappingContext context) {
                         super.mapAtoB(source, target, context);
-                        KayttajanTietoDto kayttaja = kayttajat.hae(source.getMuokkaaja());
-                        if (kayttaja != null) {
-                            target.setMuokkaaja(kayttaja.getKutsumanimi() + " " + kayttaja.getSukunimi());
+
+                        if (SecurityUtil.isAuthenticated()) {
+                            KayttajanTietoDto kayttaja = kayttajat.hae(source.getMuokkaaja());
+                            if (kayttaja != null) {
+                                target.setMuokkaaja(kayttaja.getKutsumanimi() + " " + kayttaja.getSukunimi());
+                            }
                         }
                     }
 
