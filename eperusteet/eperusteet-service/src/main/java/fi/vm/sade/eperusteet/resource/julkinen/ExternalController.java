@@ -4,7 +4,9 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiExternalDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -187,7 +189,7 @@ public class ExternalController {
     @RequestMapping(value = "/osaamismerkit", method = GET)
     @ResponseBody
     @ApiOperation(value = "Hae kaikki julkaistut osaamismerkit")
-    public ResponseEntity<List<OsaamismerkkiDto>> getOsaamismerkit() {
+    public ResponseEntity<List<OsaamismerkkiExternalDto>> getOsaamismerkit() {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkit());
     }
 

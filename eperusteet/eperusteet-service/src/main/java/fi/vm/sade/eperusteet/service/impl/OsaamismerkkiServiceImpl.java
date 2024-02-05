@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiExternalDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaLiiteDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
@@ -85,8 +86,8 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
-    public List<OsaamismerkkiDto> getOsaamismerkit() {
-        return mapper.mapAsList(osaamismerkkiRepository.findAllByTila(OsaamismerkkiTila.JULKAISTU), OsaamismerkkiDto.class) ;
+    public List<OsaamismerkkiExternalDto> getOsaamismerkit() {
+        return mapper.mapAsList(osaamismerkkiRepository.findAllByTila(OsaamismerkkiTila.JULKAISTU), OsaamismerkkiExternalDto.class) ;
     }
 
     @Override
