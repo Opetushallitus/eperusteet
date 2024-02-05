@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
+import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiExternalDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import org.apache.tika.mime.MimeTypeException;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public interface OsaamismerkkiService {
     @PreAuthorize("permitAll()")
-    List<OsaamismerkkiDto> getOsaamismerkit();
+    List<OsaamismerkkiExternalDto> getOsaamismerkit();
 
     @PreAuthorize("permitAll()")
     OsaamismerkkiDto getOsaamismerkkiByUri(String koodiUri);
