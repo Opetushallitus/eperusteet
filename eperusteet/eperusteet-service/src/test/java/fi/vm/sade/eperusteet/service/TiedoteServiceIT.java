@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,10 +38,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- *
- * @author mikkom
- */
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class TiedoteServiceIT extends AbstractIntegrationTest {
     @Autowired
@@ -182,7 +177,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_julkaisupaikka").getResultList()).isEmpty();
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_koulutustyyppi").getResultList()).isEmpty();
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_peruste").getResultList()).isEmpty();
-        
+
     }
 
     @Test

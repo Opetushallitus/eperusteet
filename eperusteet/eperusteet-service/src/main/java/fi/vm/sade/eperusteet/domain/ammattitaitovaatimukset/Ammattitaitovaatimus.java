@@ -10,9 +10,6 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-/**
- * Created by autio on 20.10.2015.
- */
 @Entity
 @Table(name = "ammattitaitovaatimus")
 @Audited

@@ -2,7 +2,6 @@ package fi.vm.sade.eperusteet.service.impl.navigation;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
@@ -11,12 +10,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
 @Component
 @Transactional
 public class NavigationBuilderAipe {
-    
+
     @Autowired
     private AIPEOpetuksenPerusteenSisaltoService aipeOpetuksenPerusteenSisaltoService;
 

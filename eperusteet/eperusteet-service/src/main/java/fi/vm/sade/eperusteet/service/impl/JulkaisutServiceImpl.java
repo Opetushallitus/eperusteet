@@ -37,7 +37,6 @@ import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
-import fi.vm.sade.eperusteet.dto.maarays.MaaraysKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;

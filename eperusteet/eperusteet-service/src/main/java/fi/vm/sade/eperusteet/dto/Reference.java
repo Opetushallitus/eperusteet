@@ -4,17 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.ReferenceableEntity;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 /**
  * Kuvaa viitettä toiseen entiteettiin.
- *
- * @author jhyoty
  */
 @Data
 public class Reference {

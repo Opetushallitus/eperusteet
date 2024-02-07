@@ -12,9 +12,6 @@ import java.util.Map;
 
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
-/**
- * @author isaul
- */
 @Entity
 @Table(name = "muutosmaarays")
 @Audited

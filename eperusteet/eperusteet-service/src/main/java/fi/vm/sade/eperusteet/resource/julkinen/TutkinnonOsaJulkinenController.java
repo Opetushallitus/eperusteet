@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.resource.julkinen;
 
-
 import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteKontekstiDto;

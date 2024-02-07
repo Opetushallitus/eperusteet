@@ -11,7 +11,6 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
-import fi.vm.sade.eperusteet.dto.peruste.Navigable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

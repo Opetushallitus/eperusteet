@@ -8,9 +8,6 @@ import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 
 import java.lang.reflect.Method;
 
-/**
- * @author isaul
- */
 public class DokumenttiExceptionHandler implements AsyncUncaughtExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiExceptionHandler.class);
 

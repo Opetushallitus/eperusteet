@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.domain.validation;
 
 import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import java.util.Collection;
 import javax.validation.UnexpectedTypeException;
 import org.springframework.util.ObjectUtils;
@@ -11,7 +10,6 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class ValidKoodiValidator implements ConstraintValidator<ValidKoodisto, Object> {
     private List<String> koodistot = new ArrayList<>();

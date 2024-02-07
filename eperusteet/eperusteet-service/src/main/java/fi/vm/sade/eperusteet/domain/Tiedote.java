@@ -1,25 +1,16 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
-import fi.vm.sade.eperusteet.service.util.SecurityUtil;
-import java.util.Date;
-import java.util.EnumSet;
 import java.util.Set;
 import javax.persistence.*;
 
-import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-/**
- *
- * @author mikkom
- */
 @Entity
 @Table(name="tiedote")
 @Audited

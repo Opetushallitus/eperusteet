@@ -4,7 +4,6 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
-import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiExternalDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;

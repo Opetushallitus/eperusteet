@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.dto.maarays;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
@@ -15,10 +14,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor

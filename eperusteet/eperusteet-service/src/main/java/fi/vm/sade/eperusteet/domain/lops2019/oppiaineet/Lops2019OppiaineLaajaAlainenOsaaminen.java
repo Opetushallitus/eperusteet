@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.domain.lops2019.oppiaineet;
 
 import fi.vm.sade.eperusteet.domain.Copyable;
-import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
@@ -11,7 +10,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 

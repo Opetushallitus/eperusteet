@@ -1,19 +1,3 @@
-/*
- *  Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- *  This program is free software: Licensed under the EUPL, Version 1.1 or - as
- *  soon as they will be approved by the European Commission - subsequent versions
- *  of the EUPL (the "Licence");
- *
- *  You may not use this work except in compliance with the Licence.
- *  You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *  European Union Public Licence for more details.
- */
-
 package fi.vm.sade.eperusteet.service.impl.yl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
@@ -23,7 +7,6 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
 import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuudetYleiskuvausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.AihekokonaisuusListausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioAihekokonaisuusLuontiDto;
@@ -50,9 +33,6 @@ import java.util.List;
 import static fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuus.inPeruste;
 import static fi.vm.sade.eperusteet.service.util.OptionalUtil.found;
 
-/**
- * User: jsikio
- */
 @Service
 public class AihekokonaisuudetServiceImpl implements AihekokonaisuudetService {
 

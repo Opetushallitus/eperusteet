@@ -8,7 +8,6 @@ import ma.glasnost.orika.metadata.Type;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Inheritance;
 import javax.persistence.PersistenceContext;
 
 @Component

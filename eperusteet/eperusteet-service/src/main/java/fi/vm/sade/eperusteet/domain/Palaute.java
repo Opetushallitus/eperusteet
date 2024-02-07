@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Entity;
