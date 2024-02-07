@@ -62,7 +62,6 @@ public class MvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LoggingInterceptor());
         registry.addInterceptor(new CacheHeaderInterceptor());
-//        super.addInterceptors(registry);
     }
 
     @Bean
