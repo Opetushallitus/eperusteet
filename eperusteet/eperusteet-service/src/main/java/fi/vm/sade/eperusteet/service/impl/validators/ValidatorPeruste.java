@@ -204,7 +204,8 @@ public class ValidatorPeruste implements Validator {
     private void tarkistaPerusopetuksenOppiaine(
             Oppiaine oa,
             final Set<Kieli> vaaditutKielet,
-            Validointi validointi
+            Validointi validointi,
+            boolean isOppimaara
     ) {
         Map<String, String> virheellisetKielet = new HashMap<>();
         OppiaineSuppeaDto oaDto = mapper.map(oa, OppiaineSuppeaDto.class);
@@ -215,14 +216,14 @@ public class ValidatorPeruste implements Validator {
 
         if (oa.getTehtava() != null) {
             tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto", oa.getTehtava().getOtsikko(),
-                    vaaditutKielet, virheellisetKielet);
+                    vaaditutKielet, virheellisetKielet, !isOppimaara);
             tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto", oa.getTehtava().getTeksti(),
-                    vaaditutKielet, virheellisetKielet);
+                    vaaditutKielet, virheellisetKielet, !isOppimaara);
         }
 
         Set<OpetuksenKohdealue> kohdealueet = oa.getKohdealueet();
         for (OpetuksenKohdealue ka : kohdealueet) {
-            tarkistaTekstipalanen("peruste-validointi-oppiaine-kohdealue", ka.getNimi(), vaaditutKielet, virheellisetKielet);
+            tarkistaTekstipalanen("peruste-validointi-oppiaine-kohdealue", ka.getNimi(), vaaditutKielet, virheellisetKielet, !isOppimaara);
         }
 
         Set<OppiaineenVuosiluokkaKokonaisuus> oavlks = oa.getVuosiluokkakokonaisuudet();
@@ -230,25 +231,25 @@ public class ValidatorPeruste implements Validator {
             TekstiOsa arviointi = oavlk.getArviointi();
             if (arviointi != null) {
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", arviointi.getOtsikko(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", arviointi.getTeksti(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
             }
 
             TekstiOsa ohjaus = oavlk.getOhjaus();
             if (ohjaus != null) {
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", ohjaus.getOtsikko(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", ohjaus.getTeksti(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
             }
 
             TekstiOsa tehtava = oavlk.getTehtava();
             if (tehtava != null) {
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", tehtava.getOtsikko(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-sisalto", tehtava.getTeksti(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
             }
 
             TekstiOsa tyotavat = oavlk.getTyotavat();
@@ -262,15 +263,15 @@ public class ValidatorPeruste implements Validator {
             List<KeskeinenSisaltoalue> sisaltoalueet = oavlk.getSisaltoalueet();
             for (KeskeinenSisaltoalue sa : sisaltoalueet) {
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-sisaltoalue", sa.getNimi(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-sisaltoalue", sa.getKuvaus(),
-                        vaaditutKielet, virheellisetKielet);
+                        vaaditutKielet, virheellisetKielet, !isOppimaara);
             }
 
             List<OpetuksenTavoite> tavoitteet = oavlk.getTavoitteet();
             for (OpetuksenTavoite tavoite : tavoitteet) {
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-tavoite-tavoite-teksti",
-                        tavoite.getTavoite(), vaaditutKielet, virheellisetKielet);
+                        tavoite.getTavoite(), vaaditutKielet, virheellisetKielet, false, !isOppimaara);
             }
         }
 
@@ -278,7 +279,7 @@ public class ValidatorPeruste implements Validator {
 
         if (oa.getOppimaarat() != null) {
             for (Oppiaine oppimaara : oa.getOppimaarat()) {
-                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, validointi);
+                tarkistaPerusopetuksenOppiaine(oppimaara, vaaditutKielet, validointi, true);
             }
         }
     }
@@ -361,7 +362,7 @@ public class ValidatorPeruste implements Validator {
         virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), null, null));
 
         for (Oppiaine oa : oppiaineet) {
-            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, validointi);
+            tarkistaPerusopetuksenOppiaine(oa, vaaditutKielet, validointi, false);
         }
 
     }
