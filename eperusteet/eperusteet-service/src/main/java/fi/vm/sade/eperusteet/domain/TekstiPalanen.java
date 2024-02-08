@@ -158,16 +158,22 @@ public class TekstiPalanen implements Serializable {
         return tekstit.entrySet().iterator().next().getValue();
     }
 
+
     static public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
                                       final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet) {
-        tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, false);
+        tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, true, true);
+    }
+
+    static public void tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
+                                             final Set<Kieli> pakolliset, Map<String, String> virheellisetKielet, boolean kaikkiPakollisia) {
+        tarkistaTekstipalanen(nimi, palanen, pakolliset, virheellisetKielet, !kaikkiPakollisia, kaikkiPakollisia);
     }
 
     static public boolean tarkistaTekstipalanen(final String nimi, final TekstiPalanen palanen,
                                       final Set<Kieli> pakolliset,
-                                      Map<String, String> virheellisetKielet, boolean pakollinen) {
+                                      Map<String, String> virheellisetKielet, boolean salliTyhja, boolean kaikkiPakollisia) {
         if (palanen == null || palanen.getTeksti() == null) {
-            if (pakollinen) {
+            if (!salliTyhja) {
                 for (Kieli kieli : pakolliset) {
                     virheellisetKielet.put(nimi, kieli.name());
                 }
@@ -176,29 +182,25 @@ public class TekstiPalanen implements Serializable {
             return true;
         }
 
-        // Oispa lambdat
-        boolean onJollainVaaditullaKielella = false;
-        boolean checkOf = true;
-        if (!pakollinen) {
+        if (!kaikkiPakollisia) {
             for (Kieli kieli : pakolliset) {
                 String osa = palanen.getTeksti().get(kieli);
                 if (osa != null && !osa.isEmpty()) {
-                    onJollainVaaditullaKielella = true;
-                    break;
+                    return true;
                 }
             }
         }
 
-        if (pakollinen || onJollainVaaditullaKielella) {
+        if (kaikkiPakollisia) {
             for (Kieli kieli : pakolliset) {
                 Map<Kieli, String> teksti = palanen.getTeksti();
                 if (!teksti.containsKey(kieli) || teksti.get(kieli) == null || teksti.get(kieli).isEmpty()) {
                     virheellisetKielet.put(nimi, kieli.name());
-                    checkOf = false;
+                    return false;
                 }
             }
         }
 
-        return checkOf;
+        return true;
     }
 }
