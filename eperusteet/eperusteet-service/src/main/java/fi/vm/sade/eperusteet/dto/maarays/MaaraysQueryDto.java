@@ -2,7 +2,6 @@ package fi.vm.sade.eperusteet.dto.maarays;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import lombok.AllArgsConstructor;

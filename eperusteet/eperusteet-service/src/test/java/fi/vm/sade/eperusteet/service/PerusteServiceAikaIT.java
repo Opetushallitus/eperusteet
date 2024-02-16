@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-
 @DirtiesContext
 @Transactional
 public class PerusteServiceAikaIT extends AbstractIntegrationTest {

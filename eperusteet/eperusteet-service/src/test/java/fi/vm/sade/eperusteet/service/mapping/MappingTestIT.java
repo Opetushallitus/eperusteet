@@ -18,7 +18,6 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @DirtiesContext
 @Transactional
 public class MappingTestIT extends AbstractPerusteprojektiTest {

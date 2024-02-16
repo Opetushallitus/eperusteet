@@ -15,10 +15,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-/**
- *
- * @author jhyoty
- */
 @Repository
 public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, Long>, PerusteRepositoryCustom {
     @Query("SELECT s.sisalto FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
@@ -159,7 +155,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND tila != 'POISTETTU' " +
             "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) ")
     List<Peruste> findJulkaistutPerusteet();
-    
+
     @Query("SELECT distinct p FROM Peruste p " +
             "LEFT JOIN p.julkaisut j " +
             "WHERE ((:koulutustyyppi IS NULL AND p.koulutustyyppi IS NOT NULL) OR p.koulutustyyppi = :koulutustyyppi) " +

@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.dto.osaamismerkki;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;

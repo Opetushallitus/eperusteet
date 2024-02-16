@@ -11,7 +11,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -29,10 +28,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-/**
- *
- * @author mikkom
- */
 @RestController
 @RequestMapping("/tiedotteet")
 @Api(value = "Tiedotteet", description = "Tiedotteiden hallinta")
@@ -67,7 +62,7 @@ public class TiedoteController {
     public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery tquery) {
         return tiedoteService.findBy(tquery);
     }
-    
+
     @RequestMapping(method = GET)
     public List<TiedoteDto> getAllTiedotteet(
             @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,

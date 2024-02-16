@@ -7,9 +7,6 @@ import org.apache.fop.events.model.EventSeverity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author isaul
- */
 public class DokumenttiEventListener implements EventListener {
     private static final Logger LOG = LoggerFactory.getLogger(DokumenttiEventListener.class);
 

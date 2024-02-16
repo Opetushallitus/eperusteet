@@ -1,12 +1,8 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.maarays.Maarays;
-import fi.vm.sade.eperusteet.dto.maarays.MaaraysAsiasanaDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysLiiteDto;
-import fi.vm.sade.eperusteet.dto.maarays.MaaraysLiiteUploadDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysQueryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;

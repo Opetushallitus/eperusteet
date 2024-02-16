@@ -1,20 +1,15 @@
 package fi.vm.sade.eperusteet.service.mapping;
 
-import fi.ratamaa.dtoconverter.annotation.DtoMap;
 import fi.vm.sade.eperusteet.domain.GeneerinenArviointiasteikko;
 import fi.vm.sade.eperusteet.domain.GeneerisenOsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
-import fi.vm.sade.eperusteet.dto.GeneerisenArvioinninOsaamistasonKriteeriDto;
 import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
 import fi.vm.sade.eperusteet.dto.OsaamistasonKriteerit2020Dto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
-import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.converter.BidirectionalConverter;
 import ma.glasnost.orika.metadata.Type;
@@ -23,7 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 @Component
 public class ArviointiConverter extends BidirectionalConverter<GeneerinenArviointiasteikko, Arviointi2020Dto> {

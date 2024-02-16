@@ -16,8 +16,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 /**
  * Julkaisutestejä varten tehty ja käyttää eri profiileja kuin muut testit.
- *
- * @author jhyoty
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfiguration.class)

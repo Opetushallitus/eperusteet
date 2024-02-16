@@ -11,7 +11,6 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import fi.vm.sade.eperusteet.utils.CollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;

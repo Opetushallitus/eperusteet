@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.domain;
 
-import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import lombok.Getter;
 import lombok.Setter;
 

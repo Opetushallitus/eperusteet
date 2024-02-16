@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
-import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasana;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasanatFetch;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
