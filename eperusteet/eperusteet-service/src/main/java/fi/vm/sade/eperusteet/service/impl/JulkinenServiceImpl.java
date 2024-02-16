@@ -1,0 +1,94 @@
+package fi.vm.sade.eperusteet.service.impl;
+
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
+import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuTyyppi;
+import fi.vm.sade.eperusteet.service.AmosaaClient;
+import fi.vm.sade.eperusteet.service.JulkaisutService;
+import fi.vm.sade.eperusteet.service.JulkinenService;
+import fi.vm.sade.eperusteet.service.YlopsClient;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@Transactional
+public class JulkinenServiceImpl implements JulkinenService {
+
+    @Autowired
+    private JulkaisutService julkaisutService;
+
+    @Autowired
+    private AmosaaClient amosaaClient;
+
+    @Autowired
+    private YlopsClient ylopsClient;
+
+    @Dto
+    @Autowired
+    private DtoMapper mapper;
+
+    @Autowired
+    @Lazy
+    private JulkinenService self;
+
+    @Override
+    public Page<JulkiEtusivuDto> haeEtusivu(String nimi, String kieli, Integer sivu, Integer sivukoko) {
+        List<JulkiEtusivuDto> julkiEtusivuDtos = self.getPerusteet();
+        julkiEtusivuDtos.addAll(self.getAmosaaOpetussuunnitelmat());
+        julkiEtusivuDtos.addAll(self.getYlopsOpetussuunnitelmat());
+
+        julkiEtusivuDtos = julkiEtusivuDtos.stream()
+                .filter(dto -> nimi.isEmpty() || (dto.getNimi().get(kieli) != null && dto.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase())))
+                .collect(Collectors.toList());
+
+        int startIdx = sivu * sivukoko;
+        int endIdx = Math.min(startIdx + sivukoko, julkiEtusivuDtos.size());
+        List<JulkiEtusivuDto> currentPage = endIdx < startIdx ? Collections.emptyList() : julkiEtusivuDtos.subList(startIdx, endIdx);
+
+        return new PageImpl<>(currentPage, new PageRequest(sivu, sivukoko), julkiEtusivuDtos.size());
+    }
+
+//    @Cacheable("julkinenEtusivuPerusteet")
+    @Override
+    public List<JulkiEtusivuDto> getPerusteet() {
+        return julkaisutService.getKaikkiPerusteet().stream()
+                .map(peruste -> {
+            JulkiEtusivuDto dto = mapper.map(peruste, JulkiEtusivuDto.class);
+            dto.setTyyppi(JulkiEtusivuTyyppi.PERUSTE);
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JulkiEtusivuDto> getAmosaaOpetussuunnitelmat() {
+        return amosaaClient.getOpetussuunnitelmatEtusivu().stream().map(opetussuunnitelma -> {
+            JulkiEtusivuDto dto = mapper.map(opetussuunnitelma, JulkiEtusivuDto.class);
+            dto.setVoimassaoloAlkaa(opetussuunnitelma.getVoimaantulo());
+            dto.setTyyppi(JulkiEtusivuTyyppi.TOTEUTUSSUUNNITELMA);
+            return dto;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<JulkiEtusivuDto> getYlopsOpetussuunnitelmat() {
+        return ylopsClient.getOpetussuunnitelmatEtusivu().stream().map(opetussuunnitelma -> {
+            JulkiEtusivuDto dto = mapper.map(opetussuunnitelma, JulkiEtusivuDto.class);
+            dto.setTyyppi(JulkiEtusivuTyyppi.OPETUSSUUNNITELMA);
+            return dto;
+        }).collect(Collectors.toList());
+    }
+}

@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.dto.julkinen.OpetussuunnitelmaEtusivuDto;
 import fi.vm.sade.eperusteet.dto.tilastot.OpetussuunnitelmaTilastoDto;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
@@ -22,6 +23,7 @@ public class AmosaaClientImpl implements AmosaaClient {
 
     private final static String TILASTOT_URL="/api/tilastot/opetussuunnitelmat";
     private final static String ARVIOINTIASTEIKOT_URL="/api/arviointiasteikot";
+    private final static String KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL ="/api/julkinen/kaikkijulkaistut";
 
     @Autowired
     private OphClientHelper ophClientHelper;
@@ -50,5 +52,10 @@ public class AmosaaClientImpl implements AmosaaClient {
         restClientFactory.get(amosaaServiceUrl, true)
                         .execute(OphHttpRequest.Builder
                                 .get(amosaaServiceUrl + ARVIOINTIASTEIKOT_URL + "/update").build());
+    }
+
+    @Override
+    public List<OpetussuunnitelmaEtusivuDto> getOpetussuunnitelmatEtusivu() {
+        return ophClientHelper.getList(amosaaServiceUrl, amosaaServiceUrl + KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL, OpetussuunnitelmaEtusivuDto.class);
     }
 }

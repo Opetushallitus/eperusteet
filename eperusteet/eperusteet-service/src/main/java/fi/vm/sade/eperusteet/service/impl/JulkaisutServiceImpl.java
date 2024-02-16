@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
+import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -574,6 +575,12 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
+    public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
+        return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), false, true, false, false).stream()
+                .map(this::convertToPerusteData).collect(Collectors.toList());
+    }
+
+    @Override
     @IgnorePerusteUpdateCheck
     public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
         JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(perusteId);
@@ -581,7 +588,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             return viimeisinJulkaisu.getLuotu();
         } else {
             Peruste peruste = perusteRepository.findOne(perusteId);
-            if (peruste != null && (peruste.getTila().equals(Tila.JULKAISTU) || peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN))) {
+            if (peruste != null && (peruste.getTila().equals(PerusteTila.VALMIS) || peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN))) {
                 return peruste.getGlobalVersion().getAikaleima();
             }
         }
