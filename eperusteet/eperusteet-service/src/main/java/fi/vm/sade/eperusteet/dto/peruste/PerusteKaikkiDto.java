@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TutkintoonvalmentavaSisaltoDto;
 import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
@@ -35,11 +36,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -127,5 +134,20 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
             }
         }
         return new HashSet<>();
+    }
+
+    public List<TutkinnonOsaKaikkiDto> getTutkinnonOsat() {
+        if (tutkinnonOsat == null) {
+            return null;
+        }
+
+        return tutkinnonOsat.stream().peek(tutkinnonosa -> {
+            Map<Long, TutkinnonOsaViiteSuppeaDto> viitteetLaajuusMap = suoritustavat.stream()
+                    .map(SuoritustapaLaajaDto::getTutkinnonOsat)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toMap((viite -> viite.getTutkinnonOsa().getIdLong()), viite -> viite));
+            tutkinnonosa.setLaajuus(Optional.ofNullable(viitteetLaajuusMap.get(tutkinnonosa.getId())).map(TutkinnonOsaViiteSuppeaDto::getLaajuus).orElse(null));
+            tutkinnonosa.setLaajuusMaksimi(Optional.ofNullable(viitteetLaajuusMap.get(tutkinnonosa.getId())).map(TutkinnonOsaViiteSuppeaDto::getLaajuusMaksimi).orElse(null));
+        }).collect(Collectors.toList());
     }
 }
