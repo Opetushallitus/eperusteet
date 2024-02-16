@@ -72,4 +72,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
+
+    @PreAuthorize("permitAll()")
+    List<PerusteenJulkaisuData> getKaikkiPerusteet();
 }

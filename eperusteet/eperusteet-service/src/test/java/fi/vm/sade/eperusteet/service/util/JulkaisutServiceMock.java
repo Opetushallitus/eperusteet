@@ -102,4 +102,9 @@ public class JulkaisutServiceMock implements JulkaisutService {
     public void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
 
     }
+
+    @Override
+    public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
+        return null;
+    }
 }
