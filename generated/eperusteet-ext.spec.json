@@ -2620,13 +2620,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2646,6 +2639,13 @@
         },
         "first" : {
           "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2659,13 +2659,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2685,6 +2678,13 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -3505,6 +3505,12 @@
         },
         "koodiArvo" : {
           "type" : "string"
+        },
+        "laajuus" : {
+          "type" : "number"
+        },
+        "laajuusMaksimi" : {
+          "type" : "number"
         },
         "osaAlueet" : {
           "type" : "array",
