@@ -23,6 +23,9 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 public interface JulkaisutService {
     @PreAuthorize("permitAll()")
+    List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id);
+
+    @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkaisut(long id);
 
     @PreAuthorize("permitAll()")

@@ -201,7 +201,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
-    public List<JulkaisuBaseDto> getJulkaisut(long id) {
+    public List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id) {
         List<JulkaisuBaseDto> julkaisut = getJulkaistutPerusteet(id);
 
         JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(id);
@@ -215,6 +215,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return taytaKayttajaTiedot(julkaisut);
+    }
+
+    @Override
+    public List<JulkaisuBaseDto> getJulkaisut(long id) {
+        return new ArrayList<>(getJulkaistutPerusteet(id));
     }
 
     @Override
