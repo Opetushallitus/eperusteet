@@ -536,7 +536,7 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/OsaamismerkkiDto"
+                "$ref" : "#/definitions/OsaamismerkkiExternalDto"
               }
             }
           }
@@ -569,8 +569,8 @@
     "/external/peruste/koulutuskoodi/{koodi}/**" : {
       "get" : {
         "tags" : [ "Julkinen" ],
-        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
-        "description" : "",
+        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
+        "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
         "operationId" : "getPerusteWithKoodi",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
@@ -5424,6 +5424,31 @@
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "getJulkisetJulkaisut",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/JulkaisuBaseDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/perusteet/{perusteId}/julkaisut/kaikki" : {
+      "get" : {
+        "tags" : [ "Julkaisut" ],
+        "operationId" : "getKaikkiJulkaisut",
         "produces" : [ "application/json;charset=UTF-8" ],
         "parameters" : [ {
           "name" : "perusteId",
@@ -14586,6 +14611,13 @@
             "$ref" : "#/definitions/OsaamismerkkiArviointikriteeriDto"
           }
         },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        },
         "voimassaoloAlkaa" : {
           "type" : "string",
           "format" : "date-time"
@@ -14593,13 +14625,51 @@
         "voimassaoloLoppuu" : {
           "type" : "string",
           "format" : "date-time"
+        }
+      }
+    },
+    "OsaamismerkkiExternalDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
         },
-        "muokattu" : {
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LAADINTA", "JULKAISTU" ]
+        },
+        "kategoria" : {
+          "$ref" : "#/definitions/OsaamismerkkiKategoriaDto"
+        },
+        "koodiUri" : {
+          "type" : "string"
+        },
+        "osaamistavoitteet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiOsaamistavoiteDto"
+          }
+        },
+        "arviointikriteerit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaamismerkkiArviointikriteeriDto"
+          }
+        },
+        "voimassaoloAlkaa" : {
           "type" : "string",
           "format" : "date-time"
         },
-        "muokkaaja" : {
-          "type" : "string"
+        "voimassaoloLoppuu" : {
+          "type" : "string",
+          "format" : "date-time"
         }
       }
     },
@@ -14818,13 +14888,20 @@
     "Page" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -14845,6 +14922,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageKoodistoKoodiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -14852,19 +14942,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PageKoodistoKoodiDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -14885,6 +14962,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageMaaraysDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -14892,19 +14982,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PageMaaraysDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -14925,6 +15002,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageOsaamismerkkiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -14932,19 +15022,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PageOsaamismerkkiDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -14965,6 +15042,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PagePerusteBaseDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -14972,19 +15062,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteBaseDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15005,6 +15082,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PagePerusteHakuDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15012,19 +15102,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteHakuDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15045,6 +15122,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PagePerusteHakuInternalDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15052,19 +15142,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteHakuInternalDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15085,6 +15162,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PagePerusteInfoDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15092,19 +15182,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteInfoDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15125,6 +15202,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PagePerusteenJulkaisuData" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15132,19 +15222,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteenJulkaisuData" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15165,6 +15242,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PagePerusteprojektiKevytDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15172,19 +15262,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteprojektiKevytDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15205,6 +15282,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageTiedoteDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15212,19 +15302,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PageTiedoteDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15245,6 +15322,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageTutkinnonOsaDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15252,19 +15342,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PageTutkinnonOsaDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15285,6 +15362,19 @@
         },
         "first" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "PageTutkinnonOsaViiteKontekstiDto" : {
+      "type" : "object",
+      "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -15292,19 +15382,6 @@
         },
         "last" : {
           "type" : "boolean"
-        }
-      }
-    },
-    "PageTutkinnonOsaViiteKontekstiDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15324,13 +15401,6 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
           "type" : "boolean"
         }
       }
@@ -17655,11 +17725,8 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
+        "vaihtoOk" : {
+          "type" : "boolean"
         },
         "virheet" : {
           "type" : "array",
@@ -17667,8 +17734,11 @@
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },
