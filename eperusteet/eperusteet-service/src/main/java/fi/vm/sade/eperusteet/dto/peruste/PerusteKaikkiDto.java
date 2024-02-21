@@ -145,7 +145,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
             Map<Long, TutkinnonOsaViiteSuppeaDto> viitteetLaajuusMap = suoritustavat.stream()
                     .map(SuoritustapaLaajaDto::getTutkinnonOsat)
                     .flatMap(Collection::stream)
-                    .collect(Collectors.toMap((viite -> viite.getTutkinnonOsa().getIdLong()), viite -> viite));
+                    .collect(Collectors.toMap((viite -> viite.getTutkinnonOsa().getIdLong()), viite -> viite, (first, second) -> first));
             tutkinnonosa.setLaajuus(Optional.ofNullable(viitteetLaajuusMap.get(tutkinnonosa.getId())).map(TutkinnonOsaViiteSuppeaDto::getLaajuus).orElse(null));
             tutkinnonosa.setLaajuusMaksimi(Optional.ofNullable(viitteetLaajuusMap.get(tutkinnonosa.getId())).map(TutkinnonOsaViiteSuppeaDto::getLaajuusMaksimi).orElse(null));
         }).collect(Collectors.toList());
