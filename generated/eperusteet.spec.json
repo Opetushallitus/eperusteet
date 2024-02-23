@@ -5444,8 +5444,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/perusteet/{perusteId}/julkaisut/kaikki" : {
+    "/api/perusteet/{perusteId}/julkaisut/kaikki" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "getKaikkiJulkaisut",
@@ -5470,10 +5469,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kaikki" : {
-=======
     "/api/perusteet/{perusteId}/kaikki" : {
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen kaikkien tietojen haku",
@@ -14890,77 +14886,14 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-<<<<<<< HEAD
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "numberOfElements" : {
+        "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> b74a1a4c9 (rebase)
-=======
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-        "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-<<<<<<< HEAD
-=======
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
->>>>>>> 76f78fc10 (julkaisuit test fix)
-        "last" : {
-          "type" : "boolean"
->>>>>>> 42870a7cf (julkaisuit test fix)
-        },
-        "numberOfElements" : {
-=======
-        "number" : {
->>>>>>> 0ae1dd67f (rebase)
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
->>>>>>> f9584f27c (C:/Program Files/Git/api change)
-        },
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
-=======
->>>>>>> 0981733dd (rebase)
->>>>>>> 4a6870d25 (rebase)
-=======
->>>>>>> 0d6771579 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -14978,10 +14911,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -14991,79 +14920,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PageKoodistoKoodiDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15079,7 +14939,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15098,85 +14957,18 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
-<<<<<<< HEAD
-<<<<<<< HEAD
-        }
-      }
-    },
-    "PageMaaraysDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-=======
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
->>>>>>> e0f08728a (rebase)
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-=======
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
->>>>>>> f0cc59cc7 (EP-3491)
-<<<<<<< HEAD
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-=======
-=======
-=======
->>>>>>> 76f78fc10 (julkaisuit test fix)
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> f6372c673 (julkaisuit test fix)
-=======
-=======
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15193,7 +14985,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15212,10 +15003,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15225,81 +15012,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PageOsaamismerkkiDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-=======
->>>>>>> 3166a2d20 (EP-3491)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15315,7 +15031,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15334,10 +15049,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15347,79 +15058,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteBaseDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15435,7 +15077,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15454,10 +15095,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15467,79 +15104,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteHakuDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15555,7 +15123,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15574,10 +15141,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15587,79 +15150,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteHakuInternalDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15675,7 +15169,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15694,10 +15187,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15707,79 +15196,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteInfoDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15795,7 +15215,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15814,10 +15233,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15827,79 +15242,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteenJulkaisuData" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -15915,7 +15261,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -15934,10 +15279,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -15947,79 +15288,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PagePerusteprojektiKevytDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -16035,7 +15307,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -16054,10 +15325,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -16067,79 +15334,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PageTiedoteDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -16155,7 +15353,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -16174,10 +15371,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -16187,79 +15380,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PageTutkinnonOsaDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -16275,7 +15399,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -16294,10 +15417,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -16307,79 +15426,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "PageTutkinnonOsaViiteKontekstiDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -16395,7 +15445,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> b50856135 (EP-3491)
         },
         "size" : {
           "type" : "integer",
@@ -16414,10 +15463,6 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
         },
@@ -16427,59 +15472,10 @@
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -16488,139 +15484,26 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "pageSize" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "paged" : {
-          "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
-<<<<<<< HEAD
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> b50856135 (EP-3491)
-=======
-=======
-=======
-=======
-        },
-        "unpaged" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b74a1a4c9 (rebase)
-        "offset" : {
-=======
-        "pageSize" : {
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-          "type" : "integer",
-          "format" : "int32"
-        },
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
->>>>>>> 76f78fc10 (julkaisuit test fix)
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> f6372c673 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
-=======
-=======
-=======
-        "paged" : {
-          "type" : "boolean"
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-        },
-        "unpaged" : {
-          "type" : "boolean"
-        },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "offset" : {
           "type" : "integer",
           "format" : "int64"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "paged" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
-<<<<<<< HEAD
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> e0f08728a (rebase)
-=======
-=======
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> a0e5e5b3a (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
-=======
-=======
-=======
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
->>>>>>> ad9eddcfe (specs)
-=======
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
->>>>>>> 2034e6656 (specs)
-        },
-        "paged" : {
+        "unpaged" : {
           "type" : "boolean"
         },
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "unpaged" : {
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "paged" : {
           "type" : "boolean"
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 0981733dd (rebase)
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         }
       }
     },
@@ -19005,45 +17888,12 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "vaihtoOk" : {
-          "type" : "boolean"
-=======
-=======
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
->>>>>>> e0f08728a (rebase)
-=======
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
-=======
->>>>>>> 4a6870d25 (rebase)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 42870a7cf (julkaisuit test fix)
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        "vaihtoOk" : {
-          "type" : "boolean"
-        },
->>>>>>> 80a2eb5c8 (EP-3491)
-=======
->>>>>>> 0d6771579 (specs)
         "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
         },
-=======
->>>>>>> 2034e6656 (specs)
         "huomautukset" : {
           "type" : "array",
           "items" : {
@@ -19052,92 +17902,6 @@
         },
         "vaihtoOk" : {
           "type" : "boolean"
-        },
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b50856135 (EP-3491)
-=======
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-        },
-<<<<<<< HEAD
-=======
-        "vaihtoOk" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-        },
->>>>>>> f6372c673 (julkaisuit test fix)
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-<<<<<<< HEAD
-        },
-<<<<<<< HEAD
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-=======
-        "vaihtoOk" : {
-          "type" : "boolean"
-=======
-=======
-=======
-=======
->>>>>>> 76f78fc10 (julkaisuit test fix)
->>>>>>> 42870a7cf (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> f6372c673 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
-=======
-=======
-=======
->>>>>>> 0ae1dd67f (rebase)
-<<<<<<< HEAD
->>>>>>> b74a1a4c9 (rebase)
-<<<<<<< HEAD
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> e0f08728a (rebase)
-=======
-=======
-=======
-=======
->>>>>>> f9584f27c (C:/Program Files/Git/api change)
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> a0e5e5b3a (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
-=======
-=======
-=======
->>>>>>> 0981733dd (rebase)
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         }
       }
     },
@@ -19292,6 +18056,12 @@
         },
         "koodiArvo" : {
           "type" : "string"
+        },
+        "laajuus" : {
+          "type" : "number"
+        },
+        "laajuusMaksimi" : {
+          "type" : "number"
         },
         "osaAlueet" : {
           "type" : "array",
