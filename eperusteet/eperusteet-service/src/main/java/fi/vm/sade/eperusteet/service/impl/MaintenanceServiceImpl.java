@@ -233,9 +233,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(perusteId);
-            List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPeruste(peruste);
 
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
+            Date julkaisuaika = new Date();
+            peruste.getGlobalVersion().setAikaleima(julkaisuaika);
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             Set<Long> dokumentit = julkaisutService.generoiJulkaisuPdf(peruste);
@@ -243,13 +244,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             julkaisu.setRevision(julkaisutService.seuraavaVapaaJulkaisuNumero(perusteId));
             julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));
             julkaisu.setLuoja("maintenance");
-            julkaisu.setLuotu(new Date());
+            julkaisu.setLuotu(julkaisuaika);
             julkaisu.setPeruste(peruste);
             julkaisu.setJulkinen(true);
             julkaisu.setDokumentit(dokumentit);
 
             ObjectNode data = objectMapper.valueToTree(sisalto);
             julkaisu.setData(new JulkaistuPerusteData(data));
+            perusteRepository.save(peruste);
             julkaisutRepository.save(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
             return true;
