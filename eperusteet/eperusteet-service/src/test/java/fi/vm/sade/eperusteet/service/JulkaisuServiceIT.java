@@ -14,6 +14,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -72,6 +73,9 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     private JulkaisutService julkaisutService;
 
     @Autowired
+    private PerusteRepository perusteRepository;
+
+    @Autowired
     @Dto
     private DtoMapper mapper;
 
@@ -109,6 +113,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
         assertThat(getJulkaisut(peruste)).hasSize(1);
+        assertThat(perusteRepository.findOne(peruste.getId()).getGlobalVersion().getAikaleima()).isEqualTo(perusteRepository.findOne(peruste.getId()).getJulkaisut().get(0).getLuotu());
     }
     
     @Test
