@@ -2612,72 +2612,14 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0d6771579 (specs)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
-=======
->>>>>>> 0d6771579 (specs)
-<<<<<<< HEAD
-=======
->>>>>>> 0981733dd (rebase)
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
-=======
->>>>>>> 2034e6656 (specs)
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2692,121 +2634,38 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-=======
-<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
         },
         "last" : {
-=======
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "first" : {
           "type" : "boolean"
         },
-        "empty" : {
-<<<<<<< HEAD
->>>>>>> 6c52f40cd (rebase)
->>>>>>> 4a6870d25 (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-          "type" : "boolean"
-<<<<<<< HEAD
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
+        "empty" : {
           "type" : "boolean"
-=======
->>>>>>> 0d6771579 (specs)
         }
       }
     },
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 0d6771579 (specs)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
-=======
->>>>>>> 0d6771579 (specs)
-<<<<<<< HEAD
-=======
->>>>>>> 0981733dd (rebase)
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
-=======
->>>>>>> 2034e6656 (specs)
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2821,49 +2680,22 @@
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
           "type" : "boolean"
         },
-<<<<<<< HEAD
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-=======
-=======
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 2034e6656 (specs)
         "empty" : {
           "type" : "boolean"
         }
@@ -2872,6 +2704,17 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "paged" : {
           "type" : "boolean"
         },
@@ -2881,21 +2724,6 @@
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "pageSize" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-=======
-        },
-        "offset" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
->>>>>>> 2034e6656 (specs)
         }
       }
     },
@@ -3401,13 +3229,13 @@
     "Sort" : {
       "type" : "object",
       "properties" : {
+        "empty" : {
+          "type" : "boolean"
+        },
         "sorted" : {
           "type" : "boolean"
         },
         "unsorted" : {
-          "type" : "boolean"
-        },
-        "empty" : {
           "type" : "boolean"
         }
       }
