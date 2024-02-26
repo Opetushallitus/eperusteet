@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
 import fi.vm.sade.eperusteet.service.exception.SkeduloituAjoAlreadyRunningException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,6 +35,9 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     @Autowired
     private List<ScheduledTask> tasks = new ArrayList<>();
 
+    @Autowired
+    private OphSessionMappingStorage ophSessionMappingStorage;
+
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.setErrorHandler(err -> log.error(err.getMessage(), err));
@@ -53,6 +57,11 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar registrar) {
         registrar.setScheduler(this.scheduler);
+    }
+
+    @Scheduled(cron = "0 0 * * * *")
+    public void cleanOphSession() {
+        ophSessionMappingStorage.clean();
     }
 
     @Scheduled(cron = "0 0 3 * * *")
