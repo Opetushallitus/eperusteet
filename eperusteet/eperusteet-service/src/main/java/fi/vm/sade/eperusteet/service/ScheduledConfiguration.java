@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
 import fi.vm.sade.eperusteet.service.exception.SkeduloituAjoAlreadyRunningException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -40,6 +41,9 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     @Autowired
     private JulkinenService julkinenService;
 
+    @Autowired
+    private OphSessionMappingStorage ophSessionMappingStorage;
+
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.setErrorHandler(err -> log.error(err.getMessage(), err));
@@ -65,6 +69,10 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     public void cacheJulkinenEtusivu() {
         maintenanceService.clearCache("julkinenEtusivu");
         julkinenService.getJulkisivuDatat();
+    }
+    @Scheduled(cron = "0 0 * * * *")
+    public void cleanOphSession() {
+        ophSessionMappingStorage.clean();
     }
 
     @Scheduled(cron = "0 0 3 * * *")

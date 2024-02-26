@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.config;
 
+import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
 import fi.vm.sade.eperusteet.service.util.RestClientFactoryImpl;
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.http.auth.CasAuthenticator;
@@ -7,6 +8,7 @@ import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +54,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("${fi.vm.sade.eperusteet.oph_password}")
     private String eperusteet_password;
+
+    @Autowired
+    private OphSessionMappingStorage ophSessionMappingStorage;
+
     @Bean
     public CasAuthenticator casAuthenticator() {
         return new CasAuthenticator(this.webUrlCas, eperusteet_username, eperusteet_password, hostAlb, null, false, null);
@@ -112,6 +118,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
         singleSignOutFilter.setIgnoreInitConfiguration(true);
+        singleSignOutFilter.setSessionMappingStorage(ophSessionMappingStorage);
         return singleSignOutFilter;
     }
 
