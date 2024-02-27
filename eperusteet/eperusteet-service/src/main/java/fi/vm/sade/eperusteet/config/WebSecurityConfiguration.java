@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
+import org.springframework.security.cas.authentication.CasAuthenticationToken;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +25,16 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.WebAttributes;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Profile({"!dev & !test"})
 @Configuration
@@ -106,6 +117,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         OpintopolkuCasAuthenticationFilter casAuthenticationFilter = new OpintopolkuCasAuthenticationFilter(serviceProperties());
         casAuthenticationFilter.setAuthenticationManager(authenticationManager());
         casAuthenticationFilter.setFilterProcessesUrl("/j_spring_cas_security_check");
+        casAuthenticationFilter.setAuthenticationSuccessHandler(new SavedRequestAwareAuthenticationSuccessHandler());
         return casAuthenticationFilter;
     }
 
@@ -139,14 +151,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .headers().disable()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/buildversion.txt").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/palaute").permitAll()
-                .anyRequest().authenticated()
+                    .antMatchers("/buildversion.txt").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                    .antMatchers(HttpMethod.POST, "/api/palaute").permitAll()
+                    .anyRequest().authenticated()
                 .and()
                 .addFilter(casAuthenticationFilter())
-                .exceptionHandling()
-                .authenticationEntryPoint(casAuthenticationEntryPoint())
+                    .exceptionHandling()
+                    .authenticationEntryPoint(casAuthenticationEntryPoint())
                 .and()
                 .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
     }
