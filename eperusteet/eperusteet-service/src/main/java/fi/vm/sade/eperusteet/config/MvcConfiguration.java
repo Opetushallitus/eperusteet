@@ -16,11 +16,8 @@
 package fi.vm.sade.eperusteet.config;
 
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
-import fi.vm.sade.eperusteet.resource.util.LoggingInterceptor;
-import fi.vm.sade.eperusteet.service.util.VirheServlet;
+import fi.vm.sade.eperusteet.resource.util.ProfilingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -29,8 +26,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
@@ -60,7 +60,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoggingInterceptor());
+        registry.addInterceptor(new ProfilingInterceptor());
         registry.addInterceptor(new CacheHeaderInterceptor());
     }
 
