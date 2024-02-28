@@ -26,11 +26,11 @@ import org.springframework.web.servlet.ModelAndView;
  *
  * @author jhyoty
  */
-public class LoggingInterceptor implements HandlerInterceptor {
+public class ProfilingInterceptor implements HandlerInterceptor {
 
     private static final Logger LOG = LoggerFactory.getLogger("fi.vm.sade.eperusteet.PROFILING");
 
-    public LoggingInterceptor() {
+    public ProfilingInterceptor() {
     }
 
     @Override
