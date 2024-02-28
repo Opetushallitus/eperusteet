@@ -26,10 +26,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.ldap.LdapBindAuthenticationManagerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 
@@ -59,6 +63,9 @@ public class WebSecurityConfiguration {
 
     @Value("${host.alb}")
     private String hostAlb;
+
+    @Value("${host.virkailija}")
+    private String hostVirkailija;
 
     @Value("${web.url.cas}")
     private String webUrlCas;
@@ -141,7 +148,6 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .headers().disable()
                 .csrf().disable()
                 .authorizeRequests()
                     .antMatchers("/buildversion.txt").permitAll()
@@ -153,7 +159,14 @@ public class WebSecurityConfiguration {
                     .exceptionHandling()
                     .authenticationEntryPoint(casAuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
+                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class)
+                .logout((logout) -> {
+                    logout.logoutUrl("/api/logout");
+                    logout.logoutSuccessUrl("https://" + this.hostVirkailija + "/service-provider-app/saml/logout");
+                    logout.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)));
+                    logout.invalidateHttpSession(true);
+                })
+                .headers().defaultsDisabled().cacheControl();
         return http.build();
     }
 

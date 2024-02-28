@@ -27,8 +27,6 @@
   }, {
     "name" : "Liitetiedostot"
   }, {
-    "name" : "Logout"
-  }, {
     "name" : "Lokalisointi"
   }, {
     "name" : "Lops2019"
@@ -1260,26 +1258,6 @@
                 "$ref" : "#/definitions/KoulutusalaDto"
               }
             }
-          }
-        }
-      }
-    },
-    "/api/logout" : {
-      "get" : {
-        "tags" : [ "Logout" ],
-        "operationId" : "logoutGet",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "Logout" ],
-        "operationId" : "logoutPOST",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
           }
         }
       }
@@ -12721,53 +12699,33 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
-        "koulutustyyppi" : {
-          "type" : "string"
-        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "koulutustyyppi" : {
+          "type" : "string"
         }
       }
     },
     "Laaja" : {
       "type" : "object",
-      "discriminator" : "osanTyyppi",
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "luotu" : {
-          "type" : "string",
-          "format" : "date-time"
+        "perusteenOsa" : {
+          "$ref" : "#/definitions/Laaja"
         },
-        "muokattu" : {
-          "type" : "string",
-          "format" : "date-time"
+        "lapset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Laaja"
+          }
         },
-        "muokkaaja" : {
-          "type" : "string"
-        },
-        "nimi" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "tila" : {
-          "type" : "string",
-          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
-        },
-        "tunniste" : {
-          "type" : "string",
-          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
-        },
-        "valmis" : {
-          "type" : "boolean"
-        },
-        "kaannettava" : {
-          "type" : "boolean"
-        },
-        "osanTyyppi" : {
-          "type" : "string"
+        "_perusteenOsa" : {
+          "$ref" : "#/definitions/Reference"
         }
       }
     },
@@ -15042,20 +15000,26 @@
       "properties" : {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> ea8aa0b2c (logout changes)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> 3064046f3 (specs)
 =======
 >>>>>>> 8d2be6eaf (interceptor fix)
+=======
+>>>>>>> ea8aa0b2c (logout changes)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
@@ -15146,18 +15110,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -15289,11 +15249,15 @@
     "PageKoodistoKoodiDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -15321,6 +15285,7 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
 <<<<<<< HEAD
@@ -15411,15 +15376,16 @@
 =======
         },
 >>>>>>> 8d2be6eaf (interceptor fix)
+=======
+>>>>>>> ea8aa0b2c (logout changes)
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15441,11 +15407,15 @@
     "PageMaaraysDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -15473,18 +15443,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -15580,11 +15546,15 @@
     "PageOsaamismerkkiDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -15612,18 +15582,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -15717,11 +15683,15 @@
     "PagePerusteBaseDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -15749,18 +15719,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -15854,11 +15820,15 @@
     "PagePerusteHakuDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -15886,18 +15856,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -15991,11 +15957,15 @@
     "PagePerusteHakuInternalDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16023,18 +15993,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16128,11 +16094,15 @@
     "PagePerusteInfoDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16160,18 +16130,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16265,11 +16231,15 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16297,18 +16267,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16402,11 +16368,15 @@
     "PagePerusteprojektiKevytDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16434,18 +16404,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16539,11 +16505,15 @@
     "PageTiedoteDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16571,18 +16541,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16676,11 +16642,15 @@
     "PageTutkinnonOsaDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16708,18 +16678,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -16813,11 +16779,15 @@
     "PageTutkinnonOsaViiteKontekstiDto" : {
       "type" : "object",
       "properties" : {
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "totalPages" : {
+        "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
 <<<<<<< HEAD
@@ -16845,18 +16815,14 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "first" : {
+          "type" : "boolean"
         },
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -17051,16 +17017,13 @@
         "unpaged" : {
           "type" : "boolean"
         },
-        "pageSize" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
         },
         "paged" : {
           "type" : "boolean"
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -17083,6 +17046,12 @@
 >>>>>>> db1959113 (specs)
 =======
 >>>>>>> 8d2be6eaf (interceptor fix)
+=======
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+>>>>>>> ea8aa0b2c (logout changes)
         }
       }
     },
@@ -19125,36 +19094,17 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "luotu" : {
-          "type" : "string",
-          "format" : "date-time"
+        "perusteenOsa" : {
+          "$ref" : "#/definitions/Suppea"
         },
-        "muokattu" : {
-          "type" : "string",
-          "format" : "date-time"
+        "lapset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Suppea"
+          }
         },
-        "muokkaaja" : {
-          "type" : "string"
-        },
-        "nimi" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "tila" : {
-          "type" : "string",
-          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
-        },
-        "tunniste" : {
-          "type" : "string",
-          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
-        },
-        "valmis" : {
-          "type" : "boolean"
-        },
-        "kaannettava" : {
-          "type" : "boolean"
-        },
-        "osanTyyppi" : {
-          "type" : "string"
+        "_perusteenOsa" : {
+          "$ref" : "#/definitions/Reference"
         }
       }
     },
@@ -19686,102 +19636,71 @@
       }
     },
     "TutkinnonOsaDto" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "luotu" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "muokattu" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "muokkaaja" : {
-          "type" : "string"
-        },
-        "nimi" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "tila" : {
-          "type" : "string",
-          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
-        },
-        "tunniste" : {
-          "type" : "string",
-          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
-        },
-        "valmis" : {
-          "type" : "boolean"
-        },
-        "kaannettava" : {
-          "type" : "boolean"
-        },
-        "tavoitteet" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "arviointi" : {
-          "$ref" : "#/definitions/ArviointiDto"
-        },
-        "ammattitaitovaatimuksetLista" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "tavoitteet" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "arviointi" : {
+            "$ref" : "#/definitions/ArviointiDto"
+          },
+          "ammattitaitovaatimuksetLista" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
+            }
+          },
+          "ammattitaitovaatimukset" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "ammattitaidonOsoittamistavat" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "kuvaus" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "koodi" : {
+            "$ref" : "#/definitions/KoodiDto"
+          },
+          "koodiUri" : {
+            "type" : "string"
+          },
+          "koodiArvo" : {
+            "type" : "string"
+          },
+          "osaAlueet" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/OsaAlueDto"
+            }
+          },
+          "vapaatTekstit" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KevytTekstiKappaleDto"
+            }
+          },
+          "tyyppi" : {
+            "type" : "string",
+            "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
+          },
+          "valmaTelmaSisalto" : {
+            "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
+          },
+          "ammattitaitovaatimukset2019" : {
+            "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
+          },
+          "geneerinenArviointiasteikko" : {
+            "$ref" : "#/definitions/Reference"
+          },
+          "alkuperainenPeruste" : {
+            "$ref" : "#/definitions/PerusteKevytDto"
           }
-        },
-        "ammattitaitovaatimukset" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "ammattitaidonOsoittamistavat" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "kuvaus" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "koodi" : {
-          "$ref" : "#/definitions/KoodiDto"
-        },
-        "koodiUri" : {
-          "type" : "string"
-        },
-        "koodiArvo" : {
-          "type" : "string"
-        },
-        "osaAlueet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/OsaAlueDto"
-          }
-        },
-        "vapaatTekstit" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/KevytTekstiKappaleDto"
-          }
-        },
-        "tyyppi" : {
-          "type" : "string",
-          "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
-        },
-        "valmaTelmaSisalto" : {
-          "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
-        },
-        "ammattitaitovaatimukset2019" : {
-          "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
-        },
-        "geneerinenArviointiasteikko" : {
-          "$ref" : "#/definitions/Reference"
-        },
-        "alkuperainenPeruste" : {
-          "$ref" : "#/definitions/PerusteKevytDto"
-        },
-        "osanTyyppi" : {
-          "type" : "string"
         }
-      }
+      } ]
     },
     "TutkinnonOsaKaikkiDto" : {
       "type" : "object",

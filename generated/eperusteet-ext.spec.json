@@ -2637,18 +2637,18 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -2683,18 +2683,18 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "last" : {
+          "type" : "boolean"
+        },
+        "first" : {
+          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -2715,10 +2715,10 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "paged" : {
+        "unpaged" : {
           "type" : "boolean"
         },
-        "unpaged" : {
+        "paged" : {
           "type" : "boolean"
         },
         "pageNumber" : {
@@ -3229,10 +3229,10 @@
     "Sort" : {
       "type" : "object",
       "properties" : {
-        "empty" : {
+        "sorted" : {
           "type" : "boolean"
         },
-        "sorted" : {
+        "empty" : {
           "type" : "boolean"
         },
         "unsorted" : {
