@@ -9,9 +9,5 @@ public interface JulkinenService {
 
     Page<JulkiEtusivuDto> haeEtusivu(String nimi, String kieli, Integer sivu, Integer sivukoko);
 
-    List<JulkiEtusivuDto> getPerusteet();
-
-    List<JulkiEtusivuDto> getAmosaaOpetussuunnitelmat();
-
-    List<JulkiEtusivuDto> getYlopsOpetussuunnitelmat();
+    List<JulkiEtusivuDto> getJulkisivuDatat();
 }

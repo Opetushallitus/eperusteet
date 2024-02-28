@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Transactional
@@ -47,9 +48,7 @@ public class JulkinenServiceImpl implements JulkinenService {
 
     @Override
     public Page<JulkiEtusivuDto> haeEtusivu(String nimi, String kieli, Integer sivu, Integer sivukoko) {
-        List<JulkiEtusivuDto> julkiEtusivuDtos = self.getPerusteet();
-        julkiEtusivuDtos.addAll(self.getAmosaaOpetussuunnitelmat());
-        julkiEtusivuDtos.addAll(self.getYlopsOpetussuunnitelmat());
+        List<JulkiEtusivuDto> julkiEtusivuDtos = self.getJulkisivuDatat();
 
         julkiEtusivuDtos = julkiEtusivuDtos.stream()
                 .filter(dto -> nimi.isEmpty() || (dto.getNimi().get(kieli) != null && dto.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase())))
@@ -62,9 +61,15 @@ public class JulkinenServiceImpl implements JulkinenService {
         return new PageImpl<>(currentPage, new PageRequest(sivu, sivukoko), julkiEtusivuDtos.size());
     }
 
-//    @Cacheable("julkinenEtusivuPerusteet")
     @Override
-    public List<JulkiEtusivuDto> getPerusteet() {
+    @Cacheable("julkinenEtusivu")
+    public List<JulkiEtusivuDto> getJulkisivuDatat() {
+        return Stream.of(getPerusteet(), getAmosaaOpetussuunnitelmat(), getYlopsOpetussuunnitelmat())
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<JulkiEtusivuDto> getPerusteet() {
         return julkaisutService.getKaikkiPerusteet().stream()
                 .map(peruste -> {
             JulkiEtusivuDto dto = mapper.map(peruste, JulkiEtusivuDto.class);
@@ -73,8 +78,7 @@ public class JulkinenServiceImpl implements JulkinenService {
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public List<JulkiEtusivuDto> getAmosaaOpetussuunnitelmat() {
+    private List<JulkiEtusivuDto> getAmosaaOpetussuunnitelmat() {
         return amosaaClient.getOpetussuunnitelmatEtusivu().stream().map(opetussuunnitelma -> {
             JulkiEtusivuDto dto = mapper.map(opetussuunnitelma, JulkiEtusivuDto.class);
             dto.setVoimassaoloAlkaa(opetussuunnitelma.getVoimaantulo());
@@ -83,8 +87,7 @@ public class JulkinenServiceImpl implements JulkinenService {
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public List<JulkiEtusivuDto> getYlopsOpetussuunnitelmat() {
+    private List<JulkiEtusivuDto> getYlopsOpetussuunnitelmat() {
         return ylopsClient.getOpetussuunnitelmatEtusivu().stream().map(opetussuunnitelma -> {
             JulkiEtusivuDto dto = mapper.map(opetussuunnitelma, JulkiEtusivuDto.class);
             dto.setTyyppi(JulkiEtusivuTyyppi.OPETUSSUUNNITELMA);

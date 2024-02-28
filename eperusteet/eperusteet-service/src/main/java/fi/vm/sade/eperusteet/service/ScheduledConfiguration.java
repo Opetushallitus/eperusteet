@@ -34,6 +34,12 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     @Autowired
     private List<ScheduledTask> tasks = new ArrayList<>();
 
+    @Autowired
+    private MaintenanceService maintenanceService;
+
+    @Autowired
+    private JulkinenService julkinenService;
+
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.setErrorHandler(err -> log.error(err.getMessage(), err));
@@ -53,6 +59,12 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     @Override
     public void configureTasks(ScheduledTaskRegistrar registrar) {
         registrar.setScheduler(this.scheduler);
+    }
+
+    @Scheduled(cron = "0 0 1 * * *")
+    public void cacheJulkinenEtusivu() {
+        maintenanceService.clearCache("julkinenEtusivu");
+        julkinenService.getJulkisivuDatat();
     }
 
     @Scheduled(cron = "0 0 3 * * *")
