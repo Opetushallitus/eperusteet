@@ -11,7 +11,7 @@
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
-    "/external/osaamismerkit" : {
+    "/api/external/osaamismerkit" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Hae kaikki julkaistut osaamismerkit",
@@ -31,7 +31,7 @@
         }
       }
     },
-    "/external/osaamismerkki/koodi/{uri}" : {
+    "/api/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Hae julkaistu osaamismerkki koodiurilla",
@@ -54,7 +54,7 @@
         }
       }
     },
-    "/external/peruste/koulutuskoodi/{koodi}/**" : {
+    "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
@@ -79,7 +79,7 @@
         }
       }
     },
-    "/external/peruste/yto/**" : {
+    "/api/external/peruste/yto/**" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
@@ -96,7 +96,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}" : {
+    "/api/external/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen tietojen haku",
@@ -121,7 +121,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/**" : {
+    "/api/external/peruste/{perusteId}/**" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
@@ -146,7 +146,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
+    "/api/external/peruste/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen osaamisalakuvauksien haku",
@@ -180,7 +180,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
+    "/api/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteen osan haku",
@@ -211,7 +211,7 @@
         }
       }
     },
-    "/external/perusteet" : {
+    "/api/external/perusteet" : {
       "get" : {
         "tags" : [ "Julkinen" ],
         "summary" : "Perusteiden haku",
@@ -2612,13 +2612,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2640,11 +2640,17 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -2652,13 +2658,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -2680,12 +2686,44 @@
         "first" : {
           "type" : "boolean"
         },
+        "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
+        "empty" : {
           "type" : "boolean"
+        }
+      }
+    },
+    "Pageable" : {
+      "type" : "object",
+      "properties" : {
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "paged" : {
+          "type" : "boolean"
+        },
+        "unpaged" : {
+          "type" : "boolean"
+        },
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -3178,7 +3216,18 @@
       "type" : "object"
     },
     "Sort" : {
-      "type" : "object"
+      "type" : "object",
+      "properties" : {
+        "empty" : {
+          "type" : "boolean"
+        },
+        "sorted" : {
+          "type" : "boolean"
+        },
+        "unsorted" : {
+          "type" : "boolean"
+        }
+      }
     },
     "SuoritustapaDto" : {
       "type" : "object",

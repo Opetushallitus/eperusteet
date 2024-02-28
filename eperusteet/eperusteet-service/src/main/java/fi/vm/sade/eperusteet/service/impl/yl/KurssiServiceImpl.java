@@ -279,7 +279,7 @@ public class KurssiServiceImpl implements KurssiService {
         LukioOpetussuunnitelmaRakenne rakenne = sisalto.getOpetussuunnitelma();
         rakenneRepository.lock(rakenne);
         oppiaineService.reArrangeLukioOppiaineet(perusteId, structure.getOppiaineet(), tryRestoreFromRevision);
-        Map<Long, Lukiokurssi> kurssitById = lukiokurssiRepository.findAll(structure.getKurssit().stream()
+        Map<Long, Lukiokurssi> kurssitById = lukiokurssiRepository.findAllById(structure.getKurssit().stream()
                     .map(LukiokurssiOppaineMuokkausDto::getId)
                     .collect(toSet())).stream()
                 .collect(toMap(Lukiokurssi::getId, k -> k));
@@ -291,7 +291,7 @@ public class KurssiServiceImpl implements KurssiService {
                                 + " in lukioperuste at revision " + tryRestoreFromRevision));
                 long id = createLukiokurssi(perusteId, mapper.map(oldKurssi, new LukioKurssiLuontiDto()));
                 logger.info("Restored Lukiokurssi {} to id={}", oldKurssi.getId(), id);
-                Lukiokurssi newKurssi = lukiokurssiRepository.findOne(id);
+                Lukiokurssi newKurssi = lukiokurssiRepository.findById(id).orElse(null);
                 kurssitById.put(id, newKurssi);
                 kurssitById.put(kurssiDto.getId(), newKurssi); // new id differs
             }

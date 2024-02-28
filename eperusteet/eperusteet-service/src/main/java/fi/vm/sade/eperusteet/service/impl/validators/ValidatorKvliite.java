@@ -34,7 +34,7 @@ public class ValidatorKvliite implements Validator {
 
     @Override
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila tila) {
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
         KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(projekti.getPeruste().getId());
         Set<Kieli> vaaditutKielet = new HashSet<Kieli>() {{
             add(Kieli.FI);

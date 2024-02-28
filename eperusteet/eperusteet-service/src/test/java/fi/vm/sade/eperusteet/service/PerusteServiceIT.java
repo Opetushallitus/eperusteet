@@ -153,7 +153,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testGetAll() {
-        Page<PerusteHakuDto> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
+        Page<PerusteHakuDto> perusteet = perusteService.getAll(PageRequest.of(0, 10), Kieli.FI.toString());
         assertEquals(4, perusteet.getTotalElements());
     }
 
@@ -161,7 +161,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     public void testFindBy() {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setPoistunut(false);
-        Page<PerusteHakuInternalDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuInternalDto> perusteet = perusteService.findByInternal(PageRequest.of(0, 10), pquery);
         assertEquals(3, perusteet.getTotalElements());
     }
 
@@ -170,8 +170,17 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setSiirtyma(true);
         pquery.setKoulutuskoodi("koulutuskoodiArvo");
-        Page<PerusteHakuInternalDto> perusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuInternalDto> perusteet = perusteService.findByInternal(PageRequest.of(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
+    }
+
+    @Test
+    public void testFindByOsaamisala() {
+//        PerusteQuery pquery = new PerusteQuery();
+//        pquery.setSiirtyma(true);
+//        pquery.setKoulutuskoodi("koulutuskoodiArvo");
+//        Page<PerusteHakuDto> perusteet = perusteService.findPerusteetBy(PageRequest.of(0, 10), pquery);
+//        assertEquals(1, perusteet.getTotalElements());
     }
 
     @Test

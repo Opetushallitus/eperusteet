@@ -66,7 +66,7 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         TypedQuery<Long> countQuery = getCountQuery(pquery, koodistostaHaetut);
         TypedQuery<Tuple> query = getQuery(pquery, koodistostaHaetut);
         if (page != null) {
-            query.setFirstResult(page.getOffset());
+            query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
             query.setMaxResults(page.getPageSize());
         }
 

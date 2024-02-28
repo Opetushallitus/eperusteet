@@ -83,7 +83,7 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
 
     protected void setup() {
         PerusteprojektiDto projektiDto = testUtils.createPerusteprojekti();
-        projekti = perusteprojektiRepository.findOne(projektiDto.getId());
+        projekti = perusteprojektiRepository.findById(projektiDto.getId()).orElseThrow();
         peruste = projekti.getPeruste();
         suoritustapa = peruste.getSuoritustapa(Suoritustapakoodi.REFORMI);
         rakenne = suoritustapa.getRakenne();

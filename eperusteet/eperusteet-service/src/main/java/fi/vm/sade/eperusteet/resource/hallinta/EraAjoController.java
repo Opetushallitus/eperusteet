@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
-@RequestMapping("/eraajo")
+@RequestMapping("/api/eraajo")
 @ApiIgnore
 public class EraAjoController {
 

@@ -21,7 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
-@RequestMapping("/tutkinnonosat")
+@RequestMapping("/api/tutkinnonosat")
 @Api(value = "Tutkinnonosat", description = "Tutkinnon osat")
 public class TutkinnonOsaJulkinenController {
     @Autowired

@@ -70,7 +70,7 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Override
     public <T> T getOne(Long id, Class<T> type) {
-        GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findOne(id);
+        GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findById(id).orElse(null);
         if (asteikko == null) {
             throw new BusinessRuleViolationException("geneerinen-arivointiasteikko-ei-loytynyt");
         }
@@ -101,7 +101,7 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Override
     public GeneerinenArviointiasteikkoDto update(Long id, GeneerinenArviointiasteikkoDto asteikkoDto) {
-        GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findOne(id);
+        GeneerinenArviointiasteikko asteikko = geneerinenArviointiasteikkoRepository.findById(id).orElse(null);
 
         if (asteikko.isJulkaistu()) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -136,12 +136,12 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
         if (geneerinenArviointiJulkaistu(id)) {
             throw new BusinessRuleViolationException("julkaistua-ei-voi-poistaa");
         }
-        geneerinenArviointiasteikkoRepository.delete(id);
+        geneerinenArviointiasteikkoRepository.deleteById(id);
     }
 
     @Override
     public GeneerinenArviointiasteikkoDto kopioi(Long id) {
-        GeneerinenArviointiasteikko vanha = geneerinenArviointiasteikkoRepository.findOne(id);
+        GeneerinenArviointiasteikko vanha = geneerinenArviointiasteikkoRepository.findById(id).orElse(null);
         if (!vanha.isJulkaistu()) {
             throw new BusinessRuleViolationException("vain-julkaistun-voi-kopioida");
         }

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-@Profile("default")
+@Profile("!test")
 @Service
 @Transactional
 public class JulkaistuPerusteDataStoreRepositoryImpl implements JulkaistuPerusteDataStoreRepository {

@@ -18,6 +18,7 @@ package fi.vm.sade.eperusteet.domain.liite;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -35,6 +36,7 @@ import java.util.UUID;
  */
 @Entity
 @Table(name = "liite")
+@NoArgsConstructor
 public class Liite implements Serializable {
 
     @Id
@@ -81,10 +83,6 @@ public class Liite implements Serializable {
     @Getter
     @Setter
     private String lisatieto;
-
-    protected Liite() {
-        //JPA
-    }
 
     public Liite(UUID uuid, LiiteTyyppi tyyppi, String mime, String nimi, Blob data) {
         this.id = uuid;

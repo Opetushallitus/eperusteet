@@ -21,7 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfiguration.class)
-@ActiveProfiles(profiles = {"docker", "default"})
+@ActiveProfiles(profiles = {"docker"})
 public class AbstractDockerIntegrationTest {
 
     @Autowired

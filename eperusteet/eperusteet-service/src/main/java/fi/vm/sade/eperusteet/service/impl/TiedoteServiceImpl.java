@@ -76,7 +76,7 @@ public class TiedoteServiceImpl implements TiedoteService {
             nouseva = true;
         }
 
-        PageRequest pageRequest = new PageRequest(
+        PageRequest pageRequest = PageRequest.of(
                 tquery.getSivu(),
                 tquery.getSivukoko(),
                 nouseva ? Sort.Direction.ASC :  Sort.Direction.DESC,
@@ -117,7 +117,7 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Override
     @Transactional(readOnly = true)
     public TiedoteDto getTiedote(Long tiedoteId) {
-        Tiedote tiedote = repository.findOne(tiedoteId);
+        Tiedote tiedote = repository.findById(tiedoteId).orElse(null);
         TiedoteDto tdto = mapper.map(tiedote, TiedoteDto.class);
         if (tdto != null && SecurityUtil.isAuthenticated()) {
             KayttajanTietoDto ktd = kayttajat.hae(tiedote.getLuoja());
@@ -137,7 +137,7 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     public TiedoteDto updateTiedote(TiedoteDto tiedoteDto) {
-        Tiedote tiedote = repository.findOne(tiedoteDto.getId());
+        Tiedote tiedote = repository.findById(tiedoteDto.getId()).orElse(null);
         assertExists(tiedote, "Päivitettävää tietoa ei ole olemassa");
         mapper.map(tiedoteDto, tiedote);
         tiedote.preupdate();
@@ -147,7 +147,7 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     public void removeTiedote(Long tiedoteId) {
-        Tiedote tiedote = repository.findOne(tiedoteId);
+        Tiedote tiedote = repository.findById(tiedoteId).orElse(null);
         repository.delete(tiedote);
     }
 

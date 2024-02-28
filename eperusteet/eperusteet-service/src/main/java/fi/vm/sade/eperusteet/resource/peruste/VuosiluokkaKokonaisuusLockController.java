@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.resource.AbstractLockService;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
@@ -23,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @InternalApi
 @Api(value = "PerusopetusVuosiluokkaKokonaisuusLukko")
-@RequestMapping(value = "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
+@RequestMapping(value = "/api/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
 public class VuosiluokkaKokonaisuusLockController extends AbstractLockService<VuosiluokkaKokonaisuusContext> {
     @Autowired
     @LockCtx(VuosiluokkaKokonaisuusContext.class)

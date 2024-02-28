@@ -83,7 +83,7 @@ public class ValidatorLops2019 implements Validator {
         List<Validointi> validoinnit = new ArrayList<>();
 
         Validointi lukioValidointi = new Validointi(ValidointiKategoria.RAKENNE);
-        Perusteprojekti projekti = repository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = repository.findById(perusteprojektiId).orElse(null);
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + perusteprojektiId);

@@ -15,7 +15,7 @@
  */
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @InternalApi
-@RequestMapping(value = "/perusteet/{perusteId}/suoritustavat/{koodi}/rakenne/lukko")
+@RequestMapping(value = "/api/perusteet/{perusteId}/suoritustavat/{koodi}/rakenne/lukko")
 @Api("TutkinnonRakenneLock")
 public class TutkinnonRakenneLockController extends AbstractLockController<TutkinnonRakenneLockContext> {
     @Autowired

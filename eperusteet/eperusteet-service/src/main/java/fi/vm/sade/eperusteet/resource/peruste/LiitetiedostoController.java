@@ -43,7 +43,7 @@ import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("/perusteet/{perusteId}")
+@RequestMapping("/api/perusteet/{perusteId}")
 @Api("Liitetiedostot")
 public class LiitetiedostoController {
 

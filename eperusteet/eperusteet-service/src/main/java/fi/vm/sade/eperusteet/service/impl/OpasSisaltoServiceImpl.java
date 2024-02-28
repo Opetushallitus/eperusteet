@@ -25,7 +25,7 @@ public class OpasSisaltoServiceImpl implements OpasSisaltoService {
 
     @Override
     public OpasSisaltoKevytDto update(Long perusteId, OpasSisaltoKevytDto opasSisaltoDto) {
-        OpasSisalto opasSisalto = opasSisaltoRepository.findOne(opasSisaltoDto.getId());
+        OpasSisalto opasSisalto = opasSisaltoRepository.findById(opasSisaltoDto.getId()).orElseThrow();
         List<OppaanKiinnitettyKoodi> oppaanKiinnitetytKoodit = mapper.mapAsList(opasSisaltoDto.getOppaanKiinnitetytKoodit(), OppaanKiinnitettyKoodi.class);
         opasSisalto.setOppaanKiinnitetytKoodit(oppaanKiinnitetytKoodit.stream().map(oppaanKiinnitettyKoodi -> {
             oppaanKiinnitettyKoodi.setOpasSisalto(opasSisalto);

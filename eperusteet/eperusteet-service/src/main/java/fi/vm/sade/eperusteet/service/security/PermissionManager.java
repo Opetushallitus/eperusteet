@@ -463,7 +463,7 @@ public class PermissionManager {
             if (Target.PERUSTE.equals(targetType)) {
                 peruste = perusteet.findOne((Long) targetId);
             } else {
-                peruste = projektiRepository.findOne((Long) targetId).getPeruste();
+                peruste = projektiRepository.findById((Long) targetId).map(Perusteprojekti::getPeruste).orElse(null);
             }
 
             if (peruste == null) {
@@ -547,7 +547,7 @@ public class PermissionManager {
         Map<Target, Set<Permission>> permissionMap = new HashMap<>();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Perusteprojekti projekti = projektiRepository.findOne(id);
+        Perusteprojekti projekti = projektiRepository.findById(id).orElse(null);
         if (projekti == null) {
             throw new NotExistsException("Perusteprojektia ei ole olemassa");
         }
@@ -627,7 +627,7 @@ public class PermissionManager {
                 return setOf(perusteProjektit.findByPeruste(id));
             }
             case PERUSTEPROJEKTI: {
-                return setOf(perusteProjektit.findById(id));
+                return setOf(perusteProjektit.findByPairId(id));
             }
             case PERUSTEENOSA: {
                 return setOf(perusteProjektit.findTilaByPerusteenOsaId(id));

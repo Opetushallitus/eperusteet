@@ -6,7 +6,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
 import java.util.List;
 
@@ -29,7 +29,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @Slf4j
 @InternalApi
 @RestController
-@RequestMapping("/perusteet/{perusteId}/lops2019")
+@RequestMapping("/api/perusteet/{perusteId}/lops2019")
 @Api("Lops2019")
 public class Lops2019Controller {
 

@@ -88,12 +88,16 @@ public class OppiaineenVuosiluokkaKokonaisuus extends AbstractAuditedReferenceab
     private TekstiPalanen opetuksenTavoitteetOtsikko;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable
+    @JoinTable(name = "yl_oppiaineen_vlkok_yl_opetuksen_tavoite",
+            joinColumns = @JoinColumn(name = "yl_oppiaineen_vlkok_id"),
+            inverseJoinColumns = @JoinColumn(name = "tavoitteet_id"))
     @OrderColumn
     private List<OpetuksenTavoite> tavoitteet = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable
+    @JoinTable(name = "yl_oppiaineen_vlkok_yl_keskeinen_sisaltoalue",
+            joinColumns = @JoinColumn(name = "yl_oppiaineen_vlkok_id"),
+            inverseJoinColumns = @JoinColumn(name = "sisaltoalueet_id"))
     @OrderColumn
     private List<KeskeinenSisaltoalue> sisaltoalueet = new ArrayList<>();
 

@@ -37,7 +37,7 @@ public class MuutMaarayksetServiceImpl implements MuutMaarayksetService {
 
     @Override
     public MuuMaaraysDto updateMaarays(MuuMaaraysDto muuMaaraysDto) {
-        if (muuMaaraysRepository.findOne(muuMaaraysDto.getId()) == null) {
+        if (!muuMaaraysRepository.findById(muuMaaraysDto.getId()).isPresent()) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }
 
@@ -48,10 +48,10 @@ public class MuutMaarayksetServiceImpl implements MuutMaarayksetService {
 
     @Override
     public void deleteMaarays(long id) {
-        if (muuMaaraysRepository.findOne(id) == null) {
+        if (!muuMaaraysRepository.findById(id).isPresent()) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }
 
-        muuMaaraysRepository.delete(id);
+        muuMaaraysRepository.deleteById(id);
     }
 }

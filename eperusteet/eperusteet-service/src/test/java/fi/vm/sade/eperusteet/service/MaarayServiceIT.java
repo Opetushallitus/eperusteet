@@ -23,6 +23,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -197,8 +198,8 @@ public class MaarayServiceIT extends AbstractIntegrationTest {
         MaaraysDto maaraysmuuttava = maaraysService.addMaarays(createDto().build());
         MaaraysDto maarays = maaraysService.addMaarays(createDto().build());
 
-        maarayskorvaava.setKorvattavatMaaraykset(Arrays.asList(dtoMapper.map(maarays, MaaraysKevytDto.class)));
-        maaraysmuuttava.setMuutettavatMaaraykset(Arrays.asList(dtoMapper.map(maarays, MaaraysKevytDto.class)));
+        maarayskorvaava.setKorvattavatMaaraykset(Collections.singletonList(dtoMapper.map(maarays, MaaraysKevytDto.class)));
+        maaraysmuuttava.setMuutettavatMaaraykset(Collections.singletonList(dtoMapper.map(maarays, MaaraysKevytDto.class)));
         maarayskorvaava = maaraysService.updateMaarays(maarayskorvaava);
         maaraysmuuttava = maaraysService.updateMaarays(maaraysmuuttava);
 

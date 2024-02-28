@@ -20,7 +20,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Puu;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
@@ -45,7 +45,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * @author jhyoty
  */
 @RestController
-@RequestMapping("/perusteet/{perusteId}/suoritustavat/{suoritustapa}")
+@RequestMapping("/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}")
 @InternalApi
 @Api(value = "Sisallot")
 public class PerusteenSisaltoController {

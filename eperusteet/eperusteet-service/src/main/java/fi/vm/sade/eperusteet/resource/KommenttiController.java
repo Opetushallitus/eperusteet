@@ -17,7 +17,7 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.KommenttiDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KommenttiService;
 import java.util.List;
@@ -39,7 +39,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * @author nkala
  */
 @RestController
-@RequestMapping("/kommentit")
+@RequestMapping("/api/kommentit")
 @InternalApi
 public class KommenttiController {
 

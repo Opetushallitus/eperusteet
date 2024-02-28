@@ -28,7 +28,7 @@ public class ValidatorOpas implements Validator {
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila) {
         List<Validointi> validoinnit = new ArrayList<>();
 
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
         Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);
 
         if (projekti.getPeruste().getVoimassaoloAlkaa() == null) {
