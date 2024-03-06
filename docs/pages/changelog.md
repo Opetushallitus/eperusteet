@@ -9,7 +9,7 @@ permalink: /changelog
 
   Päivämäärä | Muutokset
   ---------- | ------------ 
-  26.02.2024 - OPS-työkalu API - Lisätty opetussuunnitelman perusteen haku -rajapinta
+  26.02.2024 | OPS-työkalu API - Lisätty opetussuunnitelman perusteen haku -rajapinta
   26.02.2024 | OPS-työkalu API - Lisätty koulutustyypit-hakuehto opetussuunnitelmen hakuun 
   19.01.2024 | ePerusteet API - lisätty perusteen haku koulutuskoodilla: /external/peruste/koulutuskoodi/{koodi}
   17.01.2024 | ePerusteet API - /external/perusteet -rajapintaan lisätty palauttamaan päätäspäivämäärä (paatospvm)
