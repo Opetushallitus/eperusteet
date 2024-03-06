@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.dto.julkinen.AmosaaKoulutustoimijaDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuTyyppi;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +53,12 @@ public class JulkinenServiceImpl implements JulkinenService {
         List<JulkiEtusivuDto> julkiEtusivuDtos = self.getJulkisivuDatat();
 
         julkiEtusivuDtos = julkiEtusivuDtos.stream()
-                .filter(dto -> nimi.isEmpty() || (dto.getNimi().get(kieli) != null && dto.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase())))
+                .filter(dto -> nimi.isEmpty()
+                        || (dto.getNimi().get(kieli) != null && dto.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase()))
+                        || Optional.ofNullable(dto.getKoulutustoimija()).map(AmosaaKoulutustoimijaDto::getNimi).map(n -> n.get(kieli)).map(n -> n.toLowerCase().contains(nimi.toLowerCase())).orElse(false)
+                        || Optional.ofNullable(dto.getOrganisaatiot()).map(organisaatiot -> organisaatiot.stream()
+                            .anyMatch(organisaatio -> organisaatio.getNimi() != null && organisaatio.getNimi().containsKey(kieli) && organisaatio.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase()))).orElse(false))
+                .sorted(Comparator.comparing(dto -> dto.getNimi().get(kieli)))
                 .collect(Collectors.toList());
 
         int startIdx = sivu * sivukoko;
