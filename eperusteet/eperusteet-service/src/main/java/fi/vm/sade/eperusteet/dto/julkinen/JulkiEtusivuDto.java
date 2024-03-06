@@ -1,12 +1,10 @@
 package fi.vm.sade.eperusteet.dto.julkinen;
 
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
