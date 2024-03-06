@@ -251,8 +251,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
             ObjectNode data = objectMapper.valueToTree(sisalto);
             julkaisu.setData(new JulkaistuPerusteData(data));
-            perusteRepository.save(peruste);
-            julkaisutRepository.save(julkaisu);
+            perusteRepository.saveAndFlush(peruste);
+            julkaisutRepository.saveAndFlush(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
             return true;
         });

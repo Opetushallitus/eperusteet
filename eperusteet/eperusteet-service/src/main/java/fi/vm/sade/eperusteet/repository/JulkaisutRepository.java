@@ -149,7 +149,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             value = "SELECT data.koulutustyyppi, COUNT(*) " +
                     "FROM julkaistu_peruste_data_store data " +
                     "WHERE data.koulutustyyppi IS NOT NULL " +
-                    "AND ((data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
+                    "AND (data.\"voimassaoloAlkaa\" IS NULL OR CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
+                    "AND ((data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki) " +
                     "   OR (data.\"siirtymaPaattyy\" IS NOT NULL AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
                     "AND LOWER(CAST(kielet as text)) LIKE LOWER(CONCAT('%', :kieli,'%')) " +
                     "GROUP BY data.koulutustyyppi")
