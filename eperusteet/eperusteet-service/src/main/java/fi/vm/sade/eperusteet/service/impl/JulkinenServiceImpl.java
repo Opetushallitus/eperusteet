@@ -59,6 +59,7 @@ public class JulkinenServiceImpl implements JulkinenService {
                         || Optional.ofNullable(dto.getOrganisaatiot()).map(organisaatiot -> organisaatiot.stream()
                             .anyMatch(organisaatio -> organisaatio.getNimi() != null && organisaatio.getNimi().containsKey(kieli) && organisaatio.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase()))).orElse(false))
                 .sorted(Comparator.comparing(dto -> dto.getNimi() != null && dto.getNimi().get(kieli) != null ? dto.getNimi().get(kieli) : ""))
+                .sorted(Comparator.comparing(dto -> dto.getTyyppi().equals(JulkiEtusivuTyyppi.PERUSTE) ? 0 : 1))
                 .collect(Collectors.toList());
 
         int startIdx = sivu * sivukoko;
