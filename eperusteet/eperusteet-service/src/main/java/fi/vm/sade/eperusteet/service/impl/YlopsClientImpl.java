@@ -17,6 +17,9 @@ public class YlopsClientImpl implements YlopsClient {
     @Value("${fi.vm.sade.eperusteet.eperusteet.ylops.service:''}")
     private String ylopsServiceUrl;
 
+    @Value("${fi.vm.sade.eperusteet.eperusteet.ylops.service.internal:''}")
+    private String ylopsServiceInternalUrl;
+
     private final static String TILASTOT_URL="/api/opetussuunnitelmat/adminlist";
     private final static String KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL ="/api//opetussuunnitelmat/julkiset/kaikki";
 
@@ -26,7 +29,7 @@ public class YlopsClientImpl implements YlopsClient {
     @Override
     @Cacheable("ylopstilastot")
     public JsonNode getTilastot() {
-        return ophClientHelper.get(ylopsServiceUrl, ylopsServiceUrl + TILASTOT_URL, JsonNode.class);
+        return ophClientHelper.get(ylopsServiceInternalUrl, ylopsServiceInternalUrl + TILASTOT_URL, JsonNode.class);
     }
 
     @Override

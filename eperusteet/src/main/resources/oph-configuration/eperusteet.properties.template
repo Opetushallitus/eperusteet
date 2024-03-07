@@ -14,7 +14,8 @@ host.cas={{host_cas}}
 host.ilb={{host_ilb}}
 host.alb={{host_alb}}
 host.virkailija={{host_virkailija}}
-server.name={{ansible_hostname}}
+ansible.hostname={{ansible_hostname}}
+server.name={{server_name}}
 fi.vm.sade.eperusteet.oph_username={{eperusteet_app_username}}
 fi.vm.sade.eperusteet.oph_password={{eperusteet_app_password}}
 
@@ -33,7 +34,7 @@ activeMq.targetDestination.learningopportunityprovider.public=fi.vm.sade.learnin
 activeMq.targetDestination.organisaatio=fi.vm.sade.organisaatio.service
 activeMq.targetDestinationAdmin.tarjonta=fi.vm.sade.tarjonta.admin.service
 activeMq.targetDestinationPublic.tarjonta=fi.vm.sade.tarjonta.public.service
-cas.callback.eperusteet-service=http://${server.name}:8322/eperusteet-service
+cas.callback.eperusteet-service=http://${ansible.hostname}:8322/eperusteet-service
 cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
 cas.group-search-filter=(uniqueMember\={0})
@@ -61,6 +62,9 @@ root.organisaatio.oid=1.2.246.562.10.00000000001
 user.home.conf=${user.home}/oph-configuration
 user.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/userService
 web.url.cas=https\://${host.cas}/cas
+
+fi.vm.sade.eperusteet.eperusteet.ylops.service.internal=http://eperusteet-ylops.${server.name}.internal:8080/eperusteet-ylops-service
+fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal=http://eperusteet-amosaa.${server.name}.internal:8080/eperusteet-amosaa-service
 
 #SQS palautejono
 sqs.palaute_queue_url={{palaute_queue_url}}
