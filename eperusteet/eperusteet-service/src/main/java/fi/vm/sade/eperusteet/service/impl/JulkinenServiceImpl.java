@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.AmosaaKoulutustoimijaDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuTyyppi;
@@ -59,7 +60,7 @@ public class JulkinenServiceImpl implements JulkinenService {
                         || Optional.ofNullable(dto.getOrganisaatiot()).map(organisaatiot -> organisaatiot.stream()
                             .anyMatch(organisaatio -> organisaatio.getNimi() != null && organisaatio.getNimi().containsKey(kieli) && organisaatio.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase()))).orElse(false))
                 .sorted(Comparator.comparing(dto -> dto.getNimi() != null && dto.getNimi().get(kieli) != null ? dto.getNimi().get(kieli) : ""))
-                .sorted(Comparator.comparing(dto -> dto.getTyyppi().equals(JulkiEtusivuTyyppi.PERUSTE) ? 0 : 1))
+                .sorted(Comparator.comparing(dto -> dto.getEtusivuTyyppi().equals(JulkiEtusivuTyyppi.PERUSTE) ? 0 : dto.getEtusivuTyyppi().equals(JulkiEtusivuTyyppi.OPAS) ? 1 : 2))
                 .collect(Collectors.toList());
 
         int startIdx = sivu * sivukoko;
@@ -81,7 +82,7 @@ public class JulkinenServiceImpl implements JulkinenService {
         return julkaisutService.getKaikkiPerusteet().stream()
                 .map(peruste -> {
             JulkiEtusivuDto dto = mapper.map(peruste, JulkiEtusivuDto.class);
-            dto.setTyyppi(JulkiEtusivuTyyppi.PERUSTE);
+            dto.setEtusivuTyyppi(PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.OPAS) ? JulkiEtusivuTyyppi.OPAS : JulkiEtusivuTyyppi.PERUSTE);
             return dto;
         }).collect(Collectors.toList());
     }
@@ -90,7 +91,9 @@ public class JulkinenServiceImpl implements JulkinenService {
         return amosaaClient.getOpetussuunnitelmatEtusivu().stream().map(opetussuunnitelma -> {
             JulkiEtusivuDto dto = mapper.map(opetussuunnitelma, JulkiEtusivuDto.class);
             dto.setVoimassaoloAlkaa(opetussuunnitelma.getVoimaantulo());
-            dto.setTyyppi(JulkiEtusivuTyyppi.TOTEUTUSSUUNNITELMA);
+            if (opetussuunnitelma.getKoulutustyyppi() != null) {
+                dto.setEtusivuTyyppi(opetussuunnitelma.getKoulutustyyppi().isAmmatillinen() ? JulkiEtusivuTyyppi.TOTEUTUSSUUNNITELMA : JulkiEtusivuTyyppi.OPETUSSUUNNITELMA);
+            }
             return dto;
         }).collect(Collectors.toList());
     }
@@ -98,7 +101,7 @@ public class JulkinenServiceImpl implements JulkinenService {
     private List<JulkiEtusivuDto> getYlopsOpetussuunnitelmat() {
         return ylopsClient.getOpetussuunnitelmatEtusivu().stream().map(opetussuunnitelma -> {
             JulkiEtusivuDto dto = mapper.map(opetussuunnitelma, JulkiEtusivuDto.class);
-            dto.setTyyppi(JulkiEtusivuTyyppi.OPETUSSUUNNITELMA);
+            dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.OPETUSSUUNNITELMA);
             return dto;
         }).collect(Collectors.toList());
     }
