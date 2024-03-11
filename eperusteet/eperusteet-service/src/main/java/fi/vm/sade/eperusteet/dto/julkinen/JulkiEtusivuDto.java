@@ -13,12 +13,11 @@ import java.util.Set;
 @AllArgsConstructor
 public class JulkiEtusivuDto {
     private Long id;
-    private JulkiEtusivuTyyppi tyyppi;
+    private JulkiEtusivuTyyppi etusivuTyyppi;
     private String koulutustyyppi;
     private Map<String, String> nimi;
     private Date voimassaoloAlkaa;
     private Date voimassaoloLoppuu;
     private AmosaaKoulutustoimijaDto koulutustoimija;
     private Set<YlopsOrganisaatioDto> organisaatiot;
-
 }
