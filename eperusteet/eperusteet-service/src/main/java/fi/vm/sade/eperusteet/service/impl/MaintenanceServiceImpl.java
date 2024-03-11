@@ -191,6 +191,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    @Async
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
     public void teeJulkaisu(long perusteId, String tiedote) {
