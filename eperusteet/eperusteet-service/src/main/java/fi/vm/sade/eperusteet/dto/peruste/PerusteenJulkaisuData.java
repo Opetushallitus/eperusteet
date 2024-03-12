@@ -36,6 +36,7 @@ public class PerusteenJulkaisuData {
     private Date julkaistu;
     private Long luotu;
     private String tyyppi;
+    private Set<String> kielet;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TutkinnonOsaKaikkiDto tutkinnonosa;

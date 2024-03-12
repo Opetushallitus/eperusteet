@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.service.mapping;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.KVLiite;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
@@ -59,6 +60,8 @@ import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.fakes.Referer;
 import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
+import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
+import fi.vm.sade.eperusteet.dto.julkinen.OpetussuunnitelmaEtusivuDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
@@ -126,6 +129,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -836,6 +840,23 @@ public class DtoMapperConfig {
                 })
                 .register();
 
+        factory.classMap(OpetussuunnitelmaEtusivuDto.class, JulkiEtusivuDto.class)
+                .byDefault()
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(OpetussuunnitelmaEtusivuDto source, JulkiEtusivuDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (source.getJulkaisukielet() != null) {
+                            target.setKielet(source.getJulkaisukielet().stream().map(Kieli::name).collect(Collectors.toSet()));
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(JulkiEtusivuDto source, OpetussuunnitelmaEtusivuDto target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
 
         return new DtoMapperImpl(factory.getMapperFacade());
     }

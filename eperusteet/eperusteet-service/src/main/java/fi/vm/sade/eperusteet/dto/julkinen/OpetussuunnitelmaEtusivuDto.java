@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.julkinen;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +24,7 @@ public class OpetussuunnitelmaEtusivuDto {
     private AmosaaKoulutustoimijaDto koulutustoimija;
     private AmosaaCachedPeruste peruste;
     private Set<YlopsOrganisaatioDto> organisaatiot;
+    private Set<Kieli> julkaisukielet;
 
     public KoulutusTyyppi getKoulutustyyppi() {
         if (peruste != null) {
