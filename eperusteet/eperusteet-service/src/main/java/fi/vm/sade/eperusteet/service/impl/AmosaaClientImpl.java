@@ -21,9 +21,6 @@ public class AmosaaClientImpl implements AmosaaClient {
     @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service:''}")
     private String amosaaServiceUrl;
 
-    @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal:''}")
-    private String amosaaServiceInternalUrl;
-
     private final static String TILASTOT_URL="/api/tilastot/opetussuunnitelmat";
     private final static String ARVIOINTIASTEIKOT_URL="/api/arviointiasteikot";
     private final static String KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL ="/api/julkinen/kaikkijulkaistut";
@@ -43,7 +40,7 @@ public class AmosaaClientImpl implements AmosaaClient {
         int sivu = 0;
 
         while (tilastot == null || !ObjectUtils.isEmpty(tilastot.getData())) {
-            tilastot = ophClientHelper.get(amosaaServiceInternalUrl, String.format(amosaaServiceInternalUrl + TILASTOT_URL + "/%d/20", sivu++), OpetussuunnitelmaTilastoDto.class);
+            tilastot = ophClientHelper.get(amosaaServiceUrl, String.format(amosaaServiceUrl + TILASTOT_URL + "/%d/20", sivu++), OpetussuunnitelmaTilastoDto.class);
             tulos.addAll(tilastot.getData());
         }
 
