@@ -14,27 +14,11 @@ host.cas={{host_cas}}
 host.ilb={{host_ilb}}
 host.alb={{host_alb}}
 host.virkailija={{host_virkailija}}
-ansible.hostname={{ansible_hostname}}
-server.name={{server_name}}
+server.name={{ansible_hostname}}
 fi.vm.sade.eperusteet.oph_username={{eperusteet_app_username}}
 fi.vm.sade.eperusteet.oph_password={{eperusteet_app_password}}
 
 # Oletusarvoja
-cas.service.oppijanumerorekisteri-service=http://oppijanumerorekisteri.{{server_name}}.internal:8080/oppijanumerorekisteri-service
-cas.service.kayttooikeus-service=http://kayttooikeus.{{server_name}}.internal:8080/kayttooikeus-service
-#cas.service.eperusteet-service=http://eperusteet.{{server_name}}.internal:8080/eperusteet-service
-cas.service.organisaatio-service=http://organisaatio.{{server_name}}.internal:8080/organisaatio-service
-fi.vm.sade.eperusteet.eperusteet.amosaa.service=http://eperusteet-amosaa.{{server_name}}.internal:8080/eperusteet-amosaa-service
-fi.vm.sade.eperusteet.eperusteet.ylops.service=http://eperusteet-ylops.{{server_name}}.internal:8080/eperusteet-ylops-service
-fi.vm.sade.eperusteet.eperusteet.pdf-service=http://eperusteet-pdf.{{server_name}}.internal:8080/eperusteet-pdf-service
-koodisto.service.url=http://koodisto.{{server_name}}.internal:8080/koodisto-service
-palaute-service.url=http://palaute.{{server_name}}.internal:8080/palaute
-web.url.cas=http://cas.{{server_name}}.internal:8080/cas
-
-web.url.cas.login=https\://${host.cas}/cas/login
-cas.service.eperusteet-service=https\://${host.virkailija}/eperusteet-service
-cas.service.eperusteet-service.internal=http://eperusteet.{{server_name}}.internal:8080/eperusteet-service
-
 accessRight.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/accessRightService
 accessRightAdmin.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/accessRightAdminService
 accessRightHistory.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/accessRightHistoryService
@@ -49,17 +33,27 @@ activeMq.targetDestination.learningopportunityprovider.public=fi.vm.sade.learnin
 activeMq.targetDestination.organisaatio=fi.vm.sade.organisaatio.service
 activeMq.targetDestinationAdmin.tarjonta=fi.vm.sade.tarjonta.admin.service
 activeMq.targetDestinationPublic.tarjonta=fi.vm.sade.tarjonta.public.service
-cas.callback.eperusteet-service=http://${ansible.hostname}:8322/eperusteet-service
+cas.callback.eperusteet-service=http://${server.name}:8322/eperusteet-service
 cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
 cas.group-search-filter=(uniqueMember\={0})
 cas.sendRenew=false
+cas.service.oppijanumerorekisteri-service=https\://${host.virkailija}/oppijanumerorekisteri-service
+cas.service.kayttooikeus-service=https\://${host.virkailija}/kayttooikeus-service
+cas.service.eperusteet-service=https\://${host.virkailija}/eperusteet-service
+cas.service.organisaatio-service=https\://${host.virkailija}/organisaatio-service
+fi.vm.sade.eperusteet.eperusteet.amosaa.service=https://${host.virkailija}/eperusteet-amosaa-service
+fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal=http://eperusteet-amosaa.{{server_name}}.internal:8080/eperusteet-amosaa-service
+fi.vm.sade.eperusteet.eperusteet.ylops.service=https://${host.virkailija}/eperusteet-ylops-service
+fi.vm.sade.eperusteet.eperusteet.ylops.service.internal=http://eperusteet-ylops.{{server_name}}.internal:8080/eperusteet-ylops-service
+fi.vm.sade.eperusteet.eperusteet.pdf-service=https://${host.virkailija}/eperusteet-pdf-service
 cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
 customAttribute.webservice.url.backend=https://${host.virkailija}/authentication-service/services/customAttributeService
 flyway.initOnMigrate=true
 koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodiService
 koodisto.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodistoService
+koodisto.service.url=https://${host.virkailija}/koodisto-service
 jpa.schemaUpdate=validate
 jpa.showSql=false
 log4j.properties.file=${user.home.conf}/log4j.properties
@@ -68,7 +62,9 @@ oid.webservice.url.backend=${host.ilb}/services/oidService
 root.organisaatio.oid=1.2.246.562.10.00000000001
 user.home.conf=${user.home}/oph-configuration
 user.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/userService
+web.url.cas=https\://${host.cas}/cas
 
 #SQS palautejono
 sqs.palaute_queue_url={{palaute_queue_url}}
 sqs.aws_region={{aws_region}}
+palaute-service.url=https://${host.virkailija}/palaute

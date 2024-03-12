@@ -31,6 +31,7 @@ import java.util.concurrent.Future;
  */
 public interface KayttajanTietoService {
 
+    @PreAuthorize("isAuthenticated()")
     KayttajanTietoDto haeKirjautaunutKayttaja();
 
     @PreAuthorize("isAuthenticated()")

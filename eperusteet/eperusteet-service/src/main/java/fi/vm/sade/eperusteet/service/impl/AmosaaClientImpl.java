@@ -4,9 +4,6 @@ import fi.vm.sade.eperusteet.dto.julkinen.OpetussuunnitelmaEtusivuDto;
 import fi.vm.sade.eperusteet.dto.tilastot.OpetussuunnitelmaTilastoDto;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
-import java.util.ArrayList;
-import java.util.List;
-
 import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +12,18 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AmosaaClientImpl implements AmosaaClient {
 
     @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service:''}")
     private String amosaaServiceUrl;
+
+    @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal:''}")
+    private String amosaaServiceInternalUrl;
 
     private final static String TILASTOT_URL="/api/tilastot/opetussuunnitelmat";
     private final static String ARVIOINTIASTEIKOT_URL="/api/arviointiasteikot";
@@ -31,6 +35,13 @@ public class AmosaaClientImpl implements AmosaaClient {
     @Autowired
     RestClientFactory restClientFactory;
 
+    @PostConstruct
+    public void post() {
+        if (ObjectUtils.isEmpty(amosaaServiceInternalUrl)) {
+            amosaaServiceInternalUrl = amosaaServiceUrl;
+        }
+    }
+
     @Override
     @Cacheable("amosaatilastot")
     public List<Object> getTilastot() {
@@ -40,7 +51,7 @@ public class AmosaaClientImpl implements AmosaaClient {
         int sivu = 0;
 
         while (tilastot == null || !ObjectUtils.isEmpty(tilastot.getData())) {
-            tilastot = ophClientHelper.get(amosaaServiceUrl, String.format(amosaaServiceUrl + TILASTOT_URL + "/%d/20", sivu++), OpetussuunnitelmaTilastoDto.class);
+            tilastot = ophClientHelper.get(amosaaServiceUrl, String.format(amosaaServiceInternalUrl + TILASTOT_URL + "/%d/20", sivu++), OpetussuunnitelmaTilastoDto.class);
             tulos.addAll(tilastot.getData());
         }
 
@@ -51,11 +62,11 @@ public class AmosaaClientImpl implements AmosaaClient {
     public void updateArvioinnit() {
         restClientFactory.get(amosaaServiceUrl, true)
                         .execute(OphHttpRequest.Builder
-                                .get(amosaaServiceUrl + ARVIOINTIASTEIKOT_URL + "/update").build());
+                                .get(amosaaServiceInternalUrl + ARVIOINTIASTEIKOT_URL + "/update").build());
     }
 
     @Override
     public List<OpetussuunnitelmaEtusivuDto> getOpetussuunnitelmatEtusivu() {
-        return ophClientHelper.getList(amosaaServiceUrl, amosaaServiceUrl + KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL, OpetussuunnitelmaEtusivuDto.class);
+        return ophClientHelper.getList(amosaaServiceUrl, amosaaServiceInternalUrl + KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL, OpetussuunnitelmaEtusivuDto.class);
     }
 }
