@@ -20,4 +20,5 @@ public class JulkiEtusivuDto {
     private Date voimassaoloLoppuu;
     private AmosaaKoulutustoimijaDto koulutustoimija;
     private Set<YlopsOrganisaatioDto> organisaatiot;
+    private Set<String> kielet;
 }

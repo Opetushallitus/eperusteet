@@ -12115,6 +12115,13 @@
           "items" : {
             "$ref" : "#/definitions/YlopsOrganisaatioDto"
           }
+        },
+        "kielet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
         }
       }
     },
@@ -16820,6 +16827,13 @@
         "tyyppi" : {
           "type" : "string"
         },
+        "kielet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string"
+          }
+        },
         "tutkinnonosa" : {
           "$ref" : "#/definitions/TutkinnonOsaKaikkiDto"
         },
@@ -17858,16 +17872,16 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "virheet" : {
+        "vaihtoOk" : {
+          "type" : "boolean"
+        },
+        "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
-        },
-        "huomautukset" : {
+        "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
