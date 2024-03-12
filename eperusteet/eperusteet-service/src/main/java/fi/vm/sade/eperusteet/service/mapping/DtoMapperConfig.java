@@ -847,7 +847,7 @@ public class DtoMapperConfig {
                     public void mapAtoB(OpetussuunnitelmaEtusivuDto source, JulkiEtusivuDto target, MappingContext context) {
                         super.mapAtoB(source, target, context);
                         if (source.getJulkaisukielet() != null) {
-                            target.setKielet(source.getJulkaisukielet().stream().map(Kieli::name).collect(Collectors.toSet()));
+                            target.setKielet(source.getJulkaisukielet());
                         }
                     }
 

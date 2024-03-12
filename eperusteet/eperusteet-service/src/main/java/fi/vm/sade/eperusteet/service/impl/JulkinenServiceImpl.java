@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.AmosaaKoulutustoimijaDto;
@@ -54,7 +55,7 @@ public class JulkinenServiceImpl implements JulkinenService {
         List<JulkiEtusivuDto> julkiEtusivuDtos = self.getJulkisivuDatat();
 
         julkiEtusivuDtos = julkiEtusivuDtos.stream()
-                .filter(dto -> dto.getKielet() != null && dto.getKielet().contains(kieli))
+                .filter(dto -> dto.getKielet() != null && dto.getKielet().contains(Kieli.of(kieli)))
                 .filter(dto -> nimi.isEmpty()
                         || (dto.getNimi().get(kieli) != null && dto.getNimi().get(kieli).toLowerCase().contains(nimi.toLowerCase()))
                         || Optional.ofNullable(dto.getKoulutustoimija()).map(AmosaaKoulutustoimijaDto::getNimi).map(n -> n.get(kieli)).map(n -> n.toLowerCase().contains(nimi.toLowerCase())).orElse(false)

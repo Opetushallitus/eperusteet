@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.dto.peruste;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.KoulutusDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -9,6 +10,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,7 +39,7 @@ public class PerusteenJulkaisuData {
     private Date julkaistu;
     private Long luotu;
     private String tyyppi;
-    private Set<String> kielet;
+    private Set<Kieli> kielet;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private TutkinnonOsaKaikkiDto tutkinnonosa;
@@ -45,4 +48,5 @@ public class PerusteenJulkaisuData {
     private List<PerusteenJulkaisuData> perusteet;
 
     private String sisaltotyyppi;
+
 }
