@@ -56,7 +56,7 @@
     </beans:bean>
 
     <beans:bean id="casEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
-        <beans:property name="loginUrl" value="${web.url.cas.login}"/>
+        <beans:property name="loginUrl" value="${web.url.cas}/login"/>
         <beans:property name="serviceProperties" ref="casServiceProperties"/>
     </beans:bean>
 
@@ -112,7 +112,7 @@
     <beans:bean id="casTicketValidator" class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
         <!-- enable proxy authentication (in front proxy) -->
         <beans:constructor-arg index="0" value="${web.url.cas}"/>
-        <beans:property name="proxyCallbackUrl" value="${cas.service.eperusteet-service.internal}/j_spring_cas_security_proxyreceptor"/>
+        <beans:property name="proxyCallbackUrl" value="${cas_service}/j_spring_cas_security_proxyreceptor"/>
         <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>
         <beans:property name="acceptAnyProxy" value="true"/>
     </beans:bean>
@@ -124,7 +124,7 @@
     </beans:bean>
 
     <beans:bean id="casServiceProperties" class="org.springframework.security.cas.ServiceProperties">
-        <beans:property name="service" value="${cas.service.eperusteet-service}/j_spring_cas_security_check"/>
+        <beans:property name="service" value="${cas_service}/j_spring_cas_security_check"/>
         <beans:property name="sendRenew" value="${cas.sendRenew}"/>
         <beans:property name="authenticateAllArtifacts" value="true"/>
     </beans:bean>
