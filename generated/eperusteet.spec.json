@@ -12120,7 +12120,8 @@
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
           }
         }
       }
@@ -12674,12 +12675,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -15013,12 +15014,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15053,12 +15054,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15093,12 +15094,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15133,12 +15134,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15173,12 +15174,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15213,12 +15214,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15253,12 +15254,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15293,12 +15294,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15333,12 +15334,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15373,12 +15374,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15413,12 +15414,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15453,12 +15454,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15493,12 +15494,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15533,12 +15534,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -16831,7 +16832,8 @@
           "type" : "array",
           "uniqueItems" : true,
           "items" : {
-            "type" : "string"
+            "type" : "string",
+            "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
           }
         },
         "tutkinnonosa" : {
@@ -17875,13 +17877,13 @@
         "vaihtoOk" : {
           "type" : "boolean"
         },
-        "huomautukset" : {
+        "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "virheet" : {
+        "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
