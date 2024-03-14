@@ -25,6 +25,7 @@ public class OpetussuunnitelmaEtusivuDto {
     private AmosaaCachedPeruste peruste;
     private Set<YlopsOrganisaatioDto> organisaatiot;
     private Set<Kieli> julkaisukielet;
+    private JotpaTyyppi jotpatyyppi;
 
     public KoulutusTyyppi getKoulutustyyppi() {
         if (peruste != null) {
