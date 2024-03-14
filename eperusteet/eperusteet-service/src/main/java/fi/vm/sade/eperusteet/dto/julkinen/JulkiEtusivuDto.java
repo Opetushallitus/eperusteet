@@ -22,4 +22,5 @@ public class JulkiEtusivuDto {
     private AmosaaKoulutustoimijaDto koulutustoimija;
     private Set<YlopsOrganisaatioDto> organisaatiot;
     private Set<Kieli> kielet;
+    private JotpaTyyppi jotpatyyppi;
 }
