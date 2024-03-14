@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki_;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import fi.vm.sade.eperusteet.repository.OsaamismerkkiRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
@@ -102,6 +103,13 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
                     .map(OsaamismerkkiTila::of)
                     .collect(Collectors.toSet());
             pred = cb.and(pred, root.get(Osaamismerkki_.tila).in(osaamismerkkiTilat));
+        }
+
+        if (!ObjectUtils.isEmpty(tq.getKoodit())) {
+            Set<String> koodit = tq.getKoodit().stream()
+                    .map(koodi -> KoodistoUriArvo.OSAAMISMERKIT + "_" + koodi)
+                    .collect(Collectors.toSet());
+            pred = cb.and(pred, root.get(Osaamismerkki_.koodiUri).in(koodit));
         }
 
         if (!ObjectUtils.isEmpty(tq.getKategoria())) {
