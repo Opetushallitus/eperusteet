@@ -42,8 +42,8 @@ public interface MaaraysService {
     @PreAuthorize("hasPermission(null, 'maarays', 'MUOKKAUS') or (#maarays.peruste != null && hasPermission(#maarays.peruste.id, 'peruste', 'MUOKKAUS'))")
     MaaraysDto updateMaarays(@P("maarays") MaaraysDto muuMaaraysDto);
 
-    @PreAuthorize("hasPermission(null, 'maarays', 'POISTO')")
-    void deleteMaarays(Long id);
+    @PreAuthorize("hasPermission(null, 'maarays', 'POISTO') or (#perusteId != null && hasPermission(#perusteId, 'peruste', 'MUOKKAUS'))")
+    void deleteMaarays(Long id, Long perusteId);
 
     @PreAuthorize("hasPermission(null, 'maarays', 'LUONTI')")
     UUID uploadFile(MaaraysLiiteDto maaraysLiiteUploadDto);
