@@ -373,7 +373,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         if (julkaisuBaseDto.getMuutosmaarays() != null) {
             if (peruste.getJulkaisut().isEmpty() && maarays != null) {
                 Long maaraysId = maarays.getId();
-                maaraysService.deleteMaarays(maarays.getId());
+                maaraysService.deleteMaarays(maarays.getId(), peruste.getId());
                 julkaisuBaseDto.getMuutosmaarays().setKorvattavatMaaraykset(
                         julkaisuBaseDto.getMuutosmaarays().getKorvattavatMaaraykset().stream()
                                 .filter(korvattava -> !korvattava.getId().equals(maaraysId)).collect(Collectors.toList())
