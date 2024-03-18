@@ -2,16 +2,22 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.OpasTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.AmosaaKoulutustoimijaDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuTyyppi;
+import fi.vm.sade.eperusteet.dto.julkinen.TietoaPalvelustaDto;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.JulkinenService;
 import fi.vm.sade.eperusteet.service.YlopsClient;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
@@ -50,6 +56,9 @@ public class JulkinenServiceImpl implements JulkinenService {
     @Lazy
     private JulkinenService self;
 
+    @Autowired
+    private PerusteRepository perusteRepository;
+
     @Override
     public Page<JulkiEtusivuDto> haeEtusivu(String nimi, String kieli, Integer sivu, Integer sivukoko) {
         List<JulkiEtusivuDto> julkiEtusivuDtos = self.getJulkisivuDatat();
@@ -78,6 +87,15 @@ public class JulkinenServiceImpl implements JulkinenService {
         return Stream.of(getPerusteet(), getAmosaaOpetussuunnitelmat(), getYlopsOpetussuunnitelmat())
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public TietoaPalvelustaDto getTietoaPalvelusta() {
+        return perusteRepository.findByOpasTyyppi(OpasTyyppi.TIETOAPALVELUSTA).stream()
+                .filter(peruste -> peruste.getTila().equals(PerusteTila.VALMIS))
+                .map(peruste -> mapper.map(peruste, TietoaPalvelustaDto.class))
+                .findFirst()
+                .orElseThrow(NotExistsException::new);
     }
 
     private List<JulkiEtusivuDto> getPerusteet() {

@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
+import fi.vm.sade.eperusteet.dto.julkinen.TietoaPalvelustaDto;
 import fi.vm.sade.eperusteet.service.JulkinenService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,5 +26,10 @@ public class JulkinenController {
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
         return julkinenService.haeEtusivu(nimi, kieli, sivu, sivukoko);
+    }
+
+    @GetMapping("/tietoapalvelusta")
+    public TietoaPalvelustaDto getTietoaPalvelusta() {
+        return julkinenService.getTietoaPalvelusta();
     }
 }
