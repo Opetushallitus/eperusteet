@@ -1007,6 +1007,20 @@
         }
       }
     },
+    "/api/julkinen/tietoapalvelusta" : {
+      "get" : {
+        "tags" : [ "julkinen" ],
+        "operationId" : "getTietoaPalvelusta",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/TietoaPalvelustaDto"
+            }
+          }
+        }
+      }
+    },
     "/api/kayttajatieto" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
@@ -12712,12 +12726,12 @@
     "KoulutustyyppiLukumaara" : {
       "type" : "object",
       "properties" : {
+        "koulutustyyppi" : {
+          "type" : "string"
+        },
         "lukumaara" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "koulutustyyppi" : {
-          "type" : "string"
         }
       }
     },
@@ -15031,13 +15045,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15059,15 +15073,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15077,13 +15091,13 @@
     "PageJulkiEtusivuDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15105,15 +15119,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15123,13 +15137,13 @@
     "PageKoodistoKoodiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15151,15 +15165,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15169,13 +15183,13 @@
     "PageMaaraysDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15197,15 +15211,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15215,13 +15229,13 @@
     "PageOsaamismerkkiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15243,15 +15257,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15261,13 +15275,13 @@
     "PagePerusteBaseDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15289,15 +15303,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15307,13 +15321,13 @@
     "PagePerusteHakuDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15335,15 +15349,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15353,13 +15367,13 @@
     "PagePerusteHakuInternalDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15381,15 +15395,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15399,13 +15413,13 @@
     "PagePerusteInfoDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15427,15 +15441,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15445,13 +15459,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15473,15 +15487,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15491,13 +15505,13 @@
     "PagePerusteprojektiKevytDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15519,15 +15533,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15537,13 +15551,13 @@
     "PageTiedoteDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15565,15 +15579,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15583,13 +15597,13 @@
     "PageTutkinnonOsaDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15611,15 +15625,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15629,13 +15643,13 @@
     "PageTutkinnonOsaViiteKontekstiDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15657,15 +15671,15 @@
         "first" : {
           "type" : "boolean"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -15682,17 +15696,17 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "pageNumber" : {
+        "paged" : {
+          "type" : "boolean"
+        },
+        "pageSize" : {
           "type" : "integer",
           "format" : "int32"
         },
         "unpaged" : {
           "type" : "boolean"
         },
-        "paged" : {
-          "type" : "boolean"
-        },
-        "pageSize" : {
+        "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
         }
@@ -15980,6 +15994,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
     },
@@ -16135,6 +16156,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -16310,6 +16338,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -16509,6 +16544,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -16748,6 +16790,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -18081,6 +18130,18 @@
         }
       }
     },
+    "TietoaPalvelustaDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
     "TilaUpdateStatus" : {
       "type" : "object",
       "properties" : {
@@ -18090,7 +18151,7 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "virheet" : {
+        "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
@@ -18099,7 +18160,7 @@
         "vaihtoOk" : {
           "type" : "boolean"
         },
-        "huomautukset" : {
+        "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
