@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MaarayskirjeStatus;
+import fi.vm.sade.eperusteet.domain.OpasTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteAikataulu;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
