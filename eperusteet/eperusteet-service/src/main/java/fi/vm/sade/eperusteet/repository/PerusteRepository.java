@@ -212,4 +212,6 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND p.tyyppi = 'NORMAALI' " +
             "AND NOT EXISTS (SELECT m FROM Maarays m WHERE m.peruste = p)")
     List<Peruste> findAllByEiMaaraystaEiPoistettu();
+
+    List<Peruste> findByOpasTyyppi(OpasTyyppi opasTyyppi);
 }

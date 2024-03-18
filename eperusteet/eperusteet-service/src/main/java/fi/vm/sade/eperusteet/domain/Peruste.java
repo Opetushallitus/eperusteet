@@ -317,6 +317,19 @@ public class Peruste extends AbstractAuditedEntity
     @Column(name = "poikkeamismaarays_tyyppi")
     private PoikkeamismaaraysTyyppi poikkeamismaaraysTyyppi;
 
+    @Getter
+    @Setter
+    @Enumerated(EnumType.STRING)
+    private OpasTyyppi opasTyyppi;
+
+    @ValidHtml(whitelist = WhitelistType.SIMPLIFIED)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @JoinColumn(name = "tietoa_palvelusta_kuvaus")
+    private TekstiPalanen tietoapalvelustaKuvaus;
+
     public Optional<Date> getViimeisinJulkaisuAika() {
         if (CollectionUtils.isNotEmpty(julkaisut)) {
             return julkaisut.stream()

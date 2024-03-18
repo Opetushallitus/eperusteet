@@ -17,6 +17,7 @@ import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
+import fi.vm.sade.eperusteet.domain.OpasTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -409,7 +410,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @IgnorePerusteUpdateCheck
     public Set<Long> generoiJulkaisuPdf(Peruste peruste) {
 
-        if (!peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
+        if ((!peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) || OpasTyyppi.TIETOAPALVELUSTA.equals(peruste.getOpasTyyppi())) {
             return Collections.emptySet();
         }
 
