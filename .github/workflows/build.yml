@@ -30,6 +30,8 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Build with Maven
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd eperusteet/eperusteet-service
           mvn clean verify --batch-mode

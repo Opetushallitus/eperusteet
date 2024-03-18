@@ -1698,6 +1698,12 @@
           "required" : true,
           "type" : "integer",
           "format" : "int64"
+        }, {
+          "name" : "perusteId",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int64"
         } ],
         "responses" : {
           "204" : {
@@ -2292,16 +2298,6 @@
           },
           "collectionFormat" : "multi"
         }, {
-          "name" : "koodit",
-          "in" : "query",
-          "required" : false,
-          "type" : "array",
-          "items" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "collectionFormat" : "multi"
-        }, {
           "name" : "kategoria",
           "in" : "query",
           "required" : false,
@@ -2355,16 +2351,6 @@
           "required" : false,
           "type" : "integer",
           "format" : "int64"
-        }, {
-          "name" : "koodit",
-          "in" : "query",
-          "required" : false,
-          "type" : "array",
-          "items" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "collectionFormat" : "multi"
         } ],
         "responses" : {
           "200" : {
@@ -12143,6 +12129,10 @@
             "type" : "string",
             "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
           }
+        },
+        "jotpatyyppi" : {
+          "type" : "string",
+          "enum" : [ "VST", "MUU" ]
         }
       }
     },
@@ -15034,12 +15024,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15074,12 +15064,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15114,12 +15104,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15154,12 +15144,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15194,12 +15184,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15234,12 +15224,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15274,12 +15264,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15314,12 +15304,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15354,12 +15344,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15394,12 +15384,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15434,12 +15424,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15474,12 +15464,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15514,12 +15504,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15554,12 +15544,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -17894,12 +17884,6 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-        },
         "virheet" : {
           "type" : "array",
           "items" : {
@@ -17908,6 +17892,12 @@
         },
         "vaihtoOk" : {
           "type" : "boolean"
+        },
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },
