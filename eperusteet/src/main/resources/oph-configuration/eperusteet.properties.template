@@ -54,6 +54,7 @@ flyway.initOnMigrate=true
 koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodiService
 koodisto.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodistoService
 koodisto.service.url=https://${host.virkailija}/koodisto-service
+koodisto.service.internal.url=http://koodisto.{{server_name}}.internal:8080/koodisto-service
 jpa.schemaUpdate=validate
 jpa.showSql=false
 log4j.properties.file=${user.home.conf}/log4j.properties
