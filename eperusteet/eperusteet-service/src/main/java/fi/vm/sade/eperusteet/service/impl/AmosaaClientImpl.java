@@ -12,7 +12,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class AmosaaClientImpl implements AmosaaClient {
     @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service:''}")
     private String amosaaServiceUrl;
 
-    @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal:''}")
+    @Value("${fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal:${fi.vm.sade.eperusteet.eperusteet.amosaa.service:''}}")
     private String amosaaServiceInternalUrl;
 
     private final static String TILASTOT_URL="/api/tilastot/opetussuunnitelmat";
@@ -34,13 +33,6 @@ public class AmosaaClientImpl implements AmosaaClient {
 
     @Autowired
     RestClientFactory restClientFactory;
-
-    @PostConstruct
-    public void post() {
-        if (ObjectUtils.isEmpty(amosaaServiceInternalUrl)) {
-            amosaaServiceInternalUrl = amosaaServiceUrl;
-        }
-    }
 
     @Override
     @Cacheable("amosaatilastot")

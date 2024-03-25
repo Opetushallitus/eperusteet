@@ -19,7 +19,7 @@ public class YlopsClientImpl implements YlopsClient {
     @Value("${fi.vm.sade.eperusteet.eperusteet.ylops.service:''}")
     private String ylopsServiceUrl;
 
-    @Value("${fi.vm.sade.eperusteet.eperusteet.ylops.service.internal:''}")
+    @Value("${fi.vm.sade.eperusteet.eperusteet.ylops.service.internal:${fi.vm.sade.eperusteet.eperusteet.ylops.service:''}}")
     private String ylopsServiceUrl_internal;
 
     private final static String TILASTOT_URL="/api/opetussuunnitelmat/adminlist";
@@ -27,13 +27,6 @@ public class YlopsClientImpl implements YlopsClient {
 
     @Autowired
     private OphClientHelper ophClientHelper;
-
-    @PostConstruct
-    public void post() {
-        if (ObjectUtils.isEmpty(ylopsServiceUrl_internal)) {
-            ylopsServiceUrl_internal = ylopsServiceUrl;
-        }
-    }
 
     @Override
     @Cacheable("ylopstilastot")
