@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
@@ -7,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
@@ -26,6 +28,8 @@ import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -49,6 +53,7 @@ import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Service
 @Transactional
 public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
@@ -98,9 +103,6 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     @Override
     public List<OsaamismerkkiBaseDto> findJulkisetBy(OsaamismerkkiQuery query) {
         query.setTila(Collections.singleton(OsaamismerkkiTila.JULKAISTU.toString()));
-        query.setPoistunut(false);
-        query.setTuleva(false);
-        query.setVoimassa(true);
 
         Page<Osaamismerkki> osaamismerkit = osaamismerkkiRepositoryCustom.findBy(new PageRequest(0, 1000), query);
         return mapper.mapAsList(osaamismerkit.getContent(), OsaamismerkkiBaseDto.class);
@@ -131,12 +133,18 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     public OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto) {
         Osaamismerkki osaamismerkki = mapper.map(osaamismerkkiDto, Osaamismerkki.class);
 
-        if (OsaamismerkkiTila.JULKAISTU.equals(osaamismerkki.getTila()) && ObjectUtils.isEmpty(osaamismerkki.getKoodiUri())) {
-            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.OSAAMISMERKIT, osaamismerkkiDto.getNimi());
-            if (lisattyKoodi != null) {
-                osaamismerkki.setKoodiUri(lisattyKoodi.getKoodiUri());
+        if (OsaamismerkkiTila.JULKAISTU.equals(osaamismerkki.getTila())) {
+            if (ObjectUtils.isEmpty(osaamismerkki.getKoodiUri())) {
+                KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.OSAAMISMERKIT, osaamismerkkiDto.getNimi());
+                if (lisattyKoodi != null) {
+                    osaamismerkki.setKoodiUri(lisattyKoodi.getKoodiUri());
+                }
+            }
+            else if (hasRelevantKoodiDataChanged(osaamismerkkiDto)) {
+                updateKoodistoKoodi(osaamismerkkiDto);
             }
         }
+
         osaamismerkki = osaamismerkkiRepository.save(osaamismerkki);
         return mapper.map(osaamismerkki, OsaamismerkkiDto.class);
     }
@@ -237,6 +245,44 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
                     null, null, null);
         } catch (IOException e) {
             throw new BusinessRuleViolationException("liitteen-lisaaminen-epaonnistui");
+        }
+    }
+
+    private boolean hasRelevantKoodiDataChanged(OsaamismerkkiDto osaamismerkkiDto) {
+        OsaamismerkkiDto osaamismerkkiDb = mapper.map(osaamismerkkiRepository.findOne(osaamismerkkiDto.getId()), OsaamismerkkiDto.class);
+
+        return !osaamismerkkiDto.getNimi().equals(osaamismerkkiDb.getNimi())
+                || (osaamismerkkiDto.getVoimassaoloAlkaa() != null && !osaamismerkkiDto.getVoimassaoloAlkaa().equals(osaamismerkkiDb.getVoimassaoloAlkaa()))
+                || (osaamismerkkiDto.getVoimassaoloLoppuu() != null && !osaamismerkkiDto.getVoimassaoloLoppuu().equals(osaamismerkkiDb.getVoimassaoloLoppuu()));
+    }
+
+    private void updateKoodistoKoodi(OsaamismerkkiDto osaamismerkkiDto) {
+        KoodistoKoodiDto koodistoKoodi = koodistoClient.get(KoodistoUriArvo.OSAAMISMERKIT, osaamismerkkiDto.getKoodiUri());
+        KoodistoMetadataDto[] metadata = koodistoKoodi.getMetadata();
+
+        for (KoodistoMetadataDto meta : metadata) {
+            if (Kieli.SV.equals(Kieli.of(meta.getKieli()))) {
+                meta.setNimi(osaamismerkkiDto.getNimi().get(Kieli.SV));
+                meta.setKuvaus(osaamismerkkiDto.getKuvaus() != null ? osaamismerkkiDto.getKuvaus().get(Kieli.SV) : null);
+            }
+            else {
+                meta.setNimi(osaamismerkkiDto.getNimi().get(Kieli.FI));
+                meta.setKuvaus(osaamismerkkiDto.getKuvaus() != null ? osaamismerkkiDto.getKuvaus().get(Kieli.FI) : null);
+            }
+        }
+
+        KoodistoKoodiDto koodi = new KoodistoKoodiDto();
+        koodi.setVersio(koodistoKoodi.getVersio());
+        koodi.setVersion(koodistoKoodi.getVersion());
+        koodi.setKoodiUri(koodistoKoodi.getKoodiUri());
+        koodi.setKoodiArvo(koodistoKoodi.getKoodiArvo());
+        koodi.setMetadata(metadata);
+        koodi.setVoimassaAlkuPvm(DateUtils.addHours(osaamismerkkiDto.getVoimassaoloAlkaa(), 2));
+        koodi.setVoimassaLoppuPvm(osaamismerkkiDto.getVoimassaoloLoppuu() != null ? DateUtils.addHours(osaamismerkkiDto.getVoimassaoloLoppuu(), 2) : null);
+
+        KoodistoKoodiDto updatedKoodi = koodistoClient.updateKoodi(koodi);
+        if (updatedKoodi == null) {
+            log.error("Koodin päivittäminen epäonnistui: {}", koodistoKoodi.getKoodiUri());
         }
     }
 }

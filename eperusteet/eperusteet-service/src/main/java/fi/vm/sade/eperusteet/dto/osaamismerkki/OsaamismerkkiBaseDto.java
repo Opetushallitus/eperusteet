@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -25,4 +26,6 @@ public class OsaamismerkkiBaseDto {
     private String koodiUri;
     private List<OsaamismerkkiOsaamistavoiteDto> osaamistavoitteet = new ArrayList<>();
     private List<OsaamismerkkiArviointikriteeriDto> arviointikriteerit = new ArrayList<>();
+    private Date voimassaoloAlkaa;
+    private Date voimassaoloLoppuu;
 }

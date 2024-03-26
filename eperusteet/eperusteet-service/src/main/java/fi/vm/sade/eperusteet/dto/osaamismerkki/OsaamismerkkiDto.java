@@ -16,6 +16,4 @@ import java.util.Date;
 public class OsaamismerkkiDto extends OsaamismerkkiBaseDto {
     private Date muokattu;
     private String muokkaaja;
-    private Date voimassaoloAlkaa;
-    private Date voimassaoloLoppuu;
 }
