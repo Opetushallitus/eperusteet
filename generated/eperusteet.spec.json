@@ -1010,6 +1010,20 @@
         }
       }
     },
+    "/julkinen/tietoapalvelusta" : {
+      "get" : {
+        "tags" : [ "julkinen" ],
+        "operationId" : "getTietoaPalvelusta",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/TietoaPalvelustaDto"
+            }
+          }
+        }
+      }
+    },
     "/kayttajatieto" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
@@ -15044,12 +15058,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15084,12 +15098,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15124,12 +15138,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15164,12 +15178,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15204,12 +15218,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15244,12 +15258,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15284,12 +15298,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15324,12 +15338,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15364,12 +15378,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15404,12 +15418,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15444,12 +15458,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15484,12 +15498,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15524,12 +15538,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15564,12 +15578,12 @@
         "first" : {
           "type" : "boolean"
         },
-        "last" : {
-          "type" : "boolean"
-        },
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15855,6 +15869,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         }
       }
     },
@@ -16010,6 +16031,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -16185,6 +16213,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -16384,6 +16419,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -16623,6 +16665,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
@@ -17895,6 +17944,18 @@
         }
       }
     },
+    "TietoaPalvelustaDto" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        }
+      }
+    },
     "TilaUpdateStatus" : {
       "type" : "object",
       "properties" : {
@@ -17904,11 +17965,8 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
+        "vaihtoOk" : {
+          "type" : "boolean"
         },
         "huomautukset" : {
           "type" : "array",
@@ -17916,8 +17974,11 @@
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
+        "virheet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },

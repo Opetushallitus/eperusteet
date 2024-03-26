@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Muutosmaarays;
+import fi.vm.sade.eperusteet.domain.OpasTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -1095,6 +1096,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         if (current.getTyyppi() == PerusteTyyppi.OPAS) {
+            tarkistaTietoPalvelustaOpas(perusteDto);
+
             perusteRepository.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
             current.setKielet(updated.getKielet());
@@ -1114,6 +1117,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             current.setKoulutustyyppi(updated.getKoulutustyyppi());
             current.setOppaanPerusteet(updated.getOppaanPerusteet());
             current.setOppaanKoulutustyypit(updated.getOppaanKoulutustyypit());
+            current.setOpasTyyppi(updated.getOpasTyyppi());
+            current.setTietoapalvelustaKuvaus(updated.getTietoapalvelustaKuvaus());
             perusteRepository.save(current);
         } else {
             perusteRepository.lock(current);
@@ -1220,6 +1225,15 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         muokkausTietoService.addMuokkaustieto(perusteId, current, MuokkausTapahtuma.PAIVITYS);
         PerusteDto result = mapper.map(current, PerusteDto.class);
         return result;
+    }
+
+    private void tarkistaTietoPalvelustaOpas(PerusteDto perusteDto) {
+        if (OpasTyyppi.TIETOAPALVELUSTA.equals(perusteDto.getOpasTyyppi())) {
+            List<Peruste> tietoaPalvelustaOpas = perusteRepository.findByOpasTyyppi(OpasTyyppi.TIETOAPALVELUSTA);
+            if (tietoaPalvelustaOpas.size() == 1 && !tietoaPalvelustaOpas.get(0).getId().equals(perusteDto.getId())) {
+                throw new BusinessRuleViolationException("Tietoa palvelusta -opas on jo olemassa");
+            }
+        }
     }
 
     @Override

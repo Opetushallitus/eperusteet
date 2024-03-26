@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
+import fi.vm.sade.eperusteet.domain.OpasTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PoikkeamismaaraysTyyppi;
@@ -100,8 +101,9 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     private Set<PerusteAikatauluDto> perusteenAikataulut;
 
     private LokalisoituTekstiDto poikkeamismaaraysTarkennus;
-
     private PoikkeamismaaraysTyyppi poikkeamismaaraysTyyppi;
+    private OpasTyyppi opasTyyppi;
+    private LokalisoituTekstiDto tietoapalvelustaKuvaus;
 
     @Override
     public KoulutustyyppiToteutus getToteutus() {
