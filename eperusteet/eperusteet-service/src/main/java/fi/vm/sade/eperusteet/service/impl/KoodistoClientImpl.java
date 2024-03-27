@@ -288,9 +288,10 @@ public class KoodistoClientImpl implements KoodistoClient {
                     .expectedStatus(SC_OK, SC_CREATED)
                     .mapWith(text -> {
                         try {
-                            cacheManager.getCache("koodistot").evict(KoodistoUriArvo.OSAAMISMERKIT + false);
-                            cacheManager.getCache("koodistot").evict(KoodistoUriArvo.OSAAMISMERKIT + true);
-                            return objectMapper.readValue(text, KoodistoKoodiDto.class);
+                            KoodistoKoodiDto updatedKoodi = objectMapper.readValue(text, KoodistoKoodiDto.class);
+                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri() + false);
+                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri() + true);
+                            return updatedKoodi;
                         } catch (IOException e) {
                             throw new BusinessRuleViolationException("koodin-parsinta-epaonnistui");
                         }

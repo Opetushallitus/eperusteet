@@ -255,7 +255,8 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         }
         return !osaamismerkkiDto.getNimi().equals(osaamismerkkiDb.getNimi())
                 || (osaamismerkkiDto.getVoimassaoloAlkaa() != null && !osaamismerkkiDto.getVoimassaoloAlkaa().equals(osaamismerkkiDb.getVoimassaoloAlkaa()))
-                || (osaamismerkkiDto.getVoimassaoloLoppuu() != null && !osaamismerkkiDto.getVoimassaoloLoppuu().equals(osaamismerkkiDb.getVoimassaoloLoppuu()));
+                || (osaamismerkkiDto.getVoimassaoloLoppuu() != null && !osaamismerkkiDto.getVoimassaoloLoppuu().equals(osaamismerkkiDb.getVoimassaoloLoppuu()))
+                || (osaamismerkkiDb.getVoimassaoloLoppuu() != null && !osaamismerkkiDb.getVoimassaoloLoppuu().equals(osaamismerkkiDto.getVoimassaoloLoppuu()));
     }
 
     private void updateKoodistoKoodi(OsaamismerkkiDto osaamismerkkiDto) {
@@ -279,8 +280,8 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
         koodi.setKoodiUri(koodistoKoodi.getKoodiUri());
         koodi.setKoodiArvo(koodistoKoodi.getKoodiArvo());
         koodi.setMetadata(metadata);
-        koodi.setVoimassaAlkuPvm(DateUtils.addHours(osaamismerkkiDto.getVoimassaoloAlkaa(), 2));
-        koodi.setVoimassaLoppuPvm(osaamismerkkiDto.getVoimassaoloLoppuu() != null ? DateUtils.addHours(osaamismerkkiDto.getVoimassaoloLoppuu(), 2) : null);
+        koodi.setVoimassaAlkuPvm(DateUtils.addHours(osaamismerkkiDto.getVoimassaoloAlkaa(), 12));
+        koodi.setVoimassaLoppuPvm(osaamismerkkiDto.getVoimassaoloLoppuu() != null ? DateUtils.addHours(osaamismerkkiDto.getVoimassaoloLoppuu(), 12) : null);
 
         KoodistoKoodiDto updatedKoodi = koodistoClient.updateKoodi(koodi);
         if (updatedKoodi == null) {
