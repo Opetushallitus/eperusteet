@@ -35,8 +35,7 @@ import java.util.Map;
 
 @Profile("!test")
 @Configuration
-@ComponentScan(basePackages  = {"fi.vm.sade.eperusteet.v2.service", "fi.vm.sade.eperusteet.utils"},
-        excludeFilters = @ComponentScan.Filter(type = FilterType.ASPECTJ, pattern = "fi.vm.sade.eperusteet.utils.audit.*"))
+@ComponentScan(basePackages  = {"fi.vm.sade.eperusteet.utils"})
 @EnableAsync
 @EnableCaching
 @EnableTransactionManagement

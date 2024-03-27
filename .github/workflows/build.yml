@@ -71,6 +71,8 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd eperusteet/eperusteet-service        
           mvn clean verify -B
