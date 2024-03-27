@@ -22,7 +22,7 @@
         <apache.httpclient.version>4.5.13</apache.httpclient.version>
         <batik.version>1.13</batik.version>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <eperusteet.backend-utils.version>2.5</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>2.10</eperusteet.backend-utils.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
@@ -915,31 +915,27 @@
 
     <distributionManagement>
         <repository>
-            <id>oph-sade-artifactory</id>
-            <name>oph-sade-artifactory-releases</name>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Opetushallitus/eperusteet</url>
         </repository>
-        <snapshotRepository>
-            <id>oph-sade-artifactory</id>
-            <name>oph-sade-artifactory-snapshots</name>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
         <repository>
-            <id>oph-sade-artifactory-snapshots</id>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
             </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-        <repository>
-            <id>oph-sade-artifactory-releases</id>
-            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
+            <id>github</id>
+            <name>GitHub Packages eperusteet</name>
+            <url>https://maven.pkg.github.com/Opetushallitus/eperusteet</url>
         </repository>
     </repositories>
 </project>
