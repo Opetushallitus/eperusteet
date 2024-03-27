@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <version>2.0.0</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -22,7 +23,7 @@
         <apache.httpclient.version>4.5.13</apache.httpclient.version>
         <batik.version>1.13</batik.version>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <eperusteet.backend-utils.version>2.10</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>2.11</eperusteet.backend-utils.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
@@ -40,7 +41,7 @@
         <lombok.version>1.18.30</lombok.version>
         <org.apache.tomcat.version>9.0.86</org.apache.tomcat.version>
         <pdfbox.version>2.0.29</pdfbox.version>
-        <postgresql.version>42.5.1</postgresql.version>
+        <postgresql.version>42.5.5</postgresql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <spring.security.test.version>5.7.11</spring.security.test.version>
@@ -458,6 +459,11 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>1.2.13</version>
+        </dependency>
+        <dependency>
+            <groupId>fi.vm.sade</groupId>
+            <artifactId>auditlogger</artifactId>
+            <version>8.3.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>
@@ -936,6 +942,20 @@
             <id>github</id>
             <name>GitHub Packages eperusteet</name>
             <url>https://maven.pkg.github.com/Opetushallitus/eperusteet</url>
+        </repository>
+        <repository>
+            <id>oph-sade-artifactory-snapshots</id>
+            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>oph-sade-artifactory-releases</id>
+            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
         </repository>
     </repositories>
 </project>
