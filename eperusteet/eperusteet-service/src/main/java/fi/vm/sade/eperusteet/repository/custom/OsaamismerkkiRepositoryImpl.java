@@ -128,10 +128,16 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
             Predicate pr1 = cb.and(alkaa, loppuu);
 
             // Voimassaolon loppumista ei ole määritelty
-            Predicate pr2 = cb.and(cb.isNull(voimassaoloLoppuu),
-                    cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa)));
+            Predicate pr2 = cb.and(cb.isNull(voimassaoloLoppuu), cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa)));
 
-            pred = cb.and(pred, cb.or(pr1, pr2));
+            if (tq.isPoistunut()) {
+                // myös poistuneet
+                Predicate pr3 = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu)));
+                pred = cb.and(pred, cb.or(pr1, pr2, pr3));
+            }
+            else {
+                pred = cb.and(pred, cb.or(pr1, pr2));
+            }
         } else if (tq.isPoistunut()) {
             pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu)));
         }

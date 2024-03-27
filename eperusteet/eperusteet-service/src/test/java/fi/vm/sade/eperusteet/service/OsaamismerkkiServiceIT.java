@@ -139,6 +139,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
    private OsaamismerkkiDto createOsaamismerkki(OsaamismerkkiKategoriaDto kategoria, OsaamismerkkiTila tila) {
        OsaamismerkkiDto merkki = new OsaamismerkkiDto();
+       merkki.setId(123L);
        merkki.setNimi(LokalisoituTekstiDto.of("osaamismerkki"));
        merkki.setTila(tila);
        merkki.setKategoria(kategoria);
