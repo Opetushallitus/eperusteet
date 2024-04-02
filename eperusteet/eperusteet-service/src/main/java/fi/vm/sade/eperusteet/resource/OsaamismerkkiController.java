@@ -61,6 +61,7 @@ public class OsaamismerkkiController {
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "koodit", dataType = "long", paramType = "query", allowMultiple = true),
+            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
     })
     @RequestMapping(value = "/haku/julkiset", method = GET)
     public List<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
@@ -97,10 +98,13 @@ public class OsaamismerkkiController {
         return osaamismerkkiService.getKategoriat();
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
+    })
     @RequestMapping(value = "/kategoriat/julkiset", method = GET)
     @ResponseBody
-    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat() {
-        return osaamismerkkiService.getJulkisetKategoriat();
+    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat(@ApiIgnore OsaamismerkkiQuery query) {
+        return osaamismerkkiService.getJulkisetKategoriat(query);
     }
 
     @RequestMapping(value = "/kategoria/update", method = POST)

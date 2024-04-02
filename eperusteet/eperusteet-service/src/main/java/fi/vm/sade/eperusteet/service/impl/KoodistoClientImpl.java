@@ -1,18 +1,3 @@
-/*
- * Copyright (c) 2013 The Finnish Board of Education - Opetushallitus
- *
- * This program is free software: Licensed under the EUPL, Version 1.1 or - as
- * soon as they will be approved by the European Commission - subsequent versions
- * of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- * You may obtain a copy of the Licence at: http://ec.europa.eu/idabc/eupl
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * European Union Public Licence for more details.
- */
 package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoSuhteillaDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -74,10 +60,6 @@ import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
-/**
- *
- * @author nkala
- */
 @Slf4j
 @Service
 @Profile("default")
@@ -288,6 +270,41 @@ public class KoodistoClientImpl implements KoodistoClient {
                     .orElse(null);
         } catch (JsonProcessingException e) {
             throw new BusinessRuleViolationException("koodin-lisays-epaonnistui");
+        }
+    }
+
+    @Override
+    public KoodistoKoodiDto updateKoodi(KoodistoKoodiDto koodi) {
+        OphHttpClient client = restClientFactory.get(koodistoServiceUrl, true);
+
+        try {
+            String dataStr = objectMapper.writeValueAsString(koodi);
+            OphHttpRequest request = OphHttpRequest.Builder
+                    .put(koodistoServiceUrl + CODEELEMENT)
+                    .addHeader("Content-Type", "application/json;charset=UTF-8")
+                    .setEntity(new OphHttpEntity.Builder()
+                            .content(dataStr)
+                            .contentType(ContentType.APPLICATION_JSON)
+                            .build())
+                    .build();
+
+            return client.<KoodistoKoodiDto>execute(request)
+                    .handleErrorStatus(SC_UNAUTHORIZED, SC_FORBIDDEN, SC_METHOD_NOT_ALLOWED, SC_BAD_REQUEST, SC_INTERNAL_SERVER_ERROR)
+                    .with(res -> Optional.empty())
+                    .expectedStatus(SC_OK, SC_CREATED)
+                    .mapWith(text -> {
+                        try {
+                            KoodistoKoodiDto updatedKoodi = objectMapper.readValue(text, KoodistoKoodiDto.class);
+                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri() + false);
+                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri() + true);
+                            return updatedKoodi;
+                        } catch (IOException e) {
+                            throw new BusinessRuleViolationException("koodin-parsinta-epaonnistui");
+                        }
+                    })
+                    .orElse(null);
+        } catch (JsonProcessingException e) {
+            throw new BusinessRuleViolationException("koodin-päivitys-epaonnistui");
         }
     }
 
