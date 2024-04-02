@@ -32,7 +32,7 @@ public interface OsaamismerkkiService {
     OsaamismerkkiBaseDto getJulkinenOsaamismerkkiByKoodi(Long koodi);
 
     @PreAuthorize("permitAll()")
-    List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat();
+    List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat(OsaamismerkkiQuery query);
 
     @PreAuthorize("hasPermission(null, 'osaamismerkit', 'LUONTI')")
     OsaamismerkkiDto updateOsaamismerkki(OsaamismerkkiDto osaamismerkkiDto);

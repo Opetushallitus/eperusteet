@@ -98,10 +98,13 @@ public class OsaamismerkkiController {
         return osaamismerkkiService.getKategoriat();
     }
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
+    })
     @RequestMapping(value = "/kategoriat/julkiset", method = GET)
     @ResponseBody
-    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat() {
-        return osaamismerkkiService.getJulkisetKategoriat();
+    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat(@ApiIgnore OsaamismerkkiQuery query) {
+        return osaamismerkkiService.getJulkisetKategoriat(query);
     }
 
     @RequestMapping(value = "/kategoria/update", method = POST)

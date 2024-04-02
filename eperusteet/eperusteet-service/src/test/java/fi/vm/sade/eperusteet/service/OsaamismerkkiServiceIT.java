@@ -102,7 +102,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
         osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria1, OsaamismerkkiTila.JULKAISTU));
 
-        assertThat(osaamismerkkiService.getJulkisetKategoriat()).hasSize(1);
+        assertThat(osaamismerkkiService.getJulkisetKategoriat(new OsaamismerkkiQuery())).hasSize(1);
     }
 
     @Test()

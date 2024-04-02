@@ -163,9 +163,9 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     @Override
-    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat() {
+    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat(OsaamismerkkiQuery query) {
         List<OsaamismerkkiKategoria> kategoriat = osaamismerkkiKategoriaRepository.findAll();
-        List<Osaamismerkki> osaamismerkit = mapper.mapAsList(findJulkisetBy(new OsaamismerkkiQuery()), Osaamismerkki.class);
+        List<Osaamismerkki> osaamismerkit = mapper.mapAsList(findJulkisetBy(query), Osaamismerkki.class);
 
         List<OsaamismerkkiKategoria> julkisetKategoriat = kategoriat.stream()
                 .filter(kategoria -> osaamismerkit.stream()
