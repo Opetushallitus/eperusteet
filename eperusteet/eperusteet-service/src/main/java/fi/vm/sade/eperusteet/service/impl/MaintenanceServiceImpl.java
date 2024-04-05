@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
@@ -238,6 +239,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
             Date julkaisuaika = new Date();
             peruste.getGlobalVersion().setAikaleima(julkaisuaika);
+            peruste.asetaTila(PerusteTila.VALMIS);
+            peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             Set<Long> dokumentit = julkaisutService.generoiJulkaisuPdf(peruste);
