@@ -522,295 +522,6 @@
         }
       }
     },
-    "/api/external/osaamismerkit" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Hae kaikki julkaistut osaamismerkit",
-        "description" : "",
-        "operationId" : "getOsaamismerkit",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/OsaamismerkkiExternalDto"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/external/osaamismerkki/koodi/{uri}" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
-        "description" : "",
-        "operationId" : "getOsaamismerkkiByUri",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "uri",
-          "in" : "path",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/OsaamismerkkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
-        "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
-        "operationId" : "getPerusteWithKoodi",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "koodi",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/api/external/peruste/yto/**" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
-        "description" : "",
-        "operationId" : "getYtoPerusteDynamicQuery",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/api/external/peruste/{perusteId}" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen tietojen haku",
-        "description" : "",
-        "operationId" : "getPeruste",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/api/external/peruste/{perusteId}/**" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
-        "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
-        "operationId" : "getPerusteDynamicQuery",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/api/external/peruste/{perusteId}/osaamisalakuvaukset" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen osaamisalakuvauksien haku",
-        "description" : "",
-        "operationId" : "getJulkaistutOsaamisalaKuvaukset",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "additionalProperties" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/definitions/TekstiKappaleDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen osan haku",
-        "description" : "",
-        "operationId" : "getJulkaistuPerusteenOsa",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        }, {
-          "name" : "perusteenOsaId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteenOsaDto"
-            }
-          }
-        }
-      }
-    },
-    "/api/external/perusteet" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteiden haku",
-        "description" : "",
-        "operationId" : "getPerusteet",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "koulutustyyppi",
-          "in" : "query",
-          "required" : false,
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          },
-          "collectionFormat" : "multi"
-        }, {
-          "name" : "nimi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "kieli",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "tulevat",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "voimassa",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "siirtyma",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "poistuneet",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "koulutusvienti",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "tyyppi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "diaarinumero",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "koodi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "sivu",
-          "in" : "query",
-          "required" : false,
-          "type" : "integer",
-          "format" : "int32"
-        }, {
-          "name" : "sivukoko",
-          "in" : "query",
-          "required" : false,
-          "type" : "integer",
-          "format" : "int32"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PagePerusteenJulkaisuData"
-            }
-          }
-        }
-      }
-    },
     "/api/geneerinenarviointi" : {
       "get" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
@@ -970,48 +681,7 @@
         }
       }
     },
-<<<<<<< HEAD
-    "/julkinen/etusivu" : {
-      "get" : {
-        "tags" : [ "julkinen" ],
-        "operationId" : "getOpetussuunnitelmatJaPerusteet",
-        "parameters" : [ {
-          "name" : "nimi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "kieli",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "sivu",
-          "in" : "query",
-          "required" : false,
-          "type" : "integer",
-          "format" : "int32"
-        }, {
-          "name" : "sivukoko",
-          "in" : "query",
-          "required" : false,
-          "type" : "integer",
-          "format" : "int32"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PageJulkiEtusivuDto"
-            }
-          }
-        }
-      }
-    },
-    "/kayttajatieto" : {
-=======
     "/api/kayttajatieto" : {
->>>>>>> eba1ff24d (C:/Program Files/Git/api change)
       "get" : {
         "tags" : [ "Kayttajat" ],
         "operationId" : "getKirjautunutKayttajat",
@@ -11002,6 +10672,332 @@
           }
         }
       }
+    },
+    "/external/osaamismerkit" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Hae kaikki julkaistut osaamismerkit",
+        "description" : "",
+        "operationId" : "getOsaamismerkit",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiExternalDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/external/osaamismerkki/koodi/{uri}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
+        "description" : "",
+        "operationId" : "getOsaamismerkkiByUri",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "uri",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/koulutuskoodi/{koodi}/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
+        "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
+        "operationId" : "getPerusteWithKoodi",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "koodi",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/yto/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+        "description" : "",
+        "operationId" : "getYtoPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/{perusteId}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen tietojen haku",
+        "description" : "",
+        "operationId" : "getPeruste",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/{perusteId}/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
+        "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
+        "operationId" : "getPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen osaamisalakuvauksien haku",
+        "description" : "",
+        "operationId" : "getJulkaistutOsaamisalaKuvaukset",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/TekstiKappaleDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen osan haku",
+        "description" : "",
+        "operationId" : "getJulkaistuPerusteenOsa",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        }, {
+          "name" : "perusteenOsaId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteenOsaDto"
+            }
+          }
+        }
+      }
+    },
+    "/external/perusteet" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteiden haku",
+        "description" : "",
+        "operationId" : "getPerusteet",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "koulutustyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "kieli",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tulevat",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "voimassa",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "siirtyma",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "poistuneet",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "koulutusvienti",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "diaarinumero",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "koodi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sivu",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "sivukoko",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PagePerusteenJulkaisuData"
+            }
+          }
+        }
+      }
+    },
+    "/julkinen/etusivu" : {
+      "get" : {
+        "tags" : [ "julkinen" ],
+        "operationId" : "getOpetussuunnitelmatJaPerusteet",
+        "parameters" : [ {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "kieli",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sivu",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "sivukoko",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PageJulkiEtusivuDto"
+            }
+          }
+        }
+      }
     }
   },
   "definitions" : {
@@ -12710,22 +12706,42 @@
     },
     "Laaja" : {
       "type" : "object",
+      "discriminator" : "osanTyyppi",
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "perusteenOsa" : {
-          "$ref" : "#/definitions/Laaja"
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "lapset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Laaja"
-          }
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "_perusteenOsa" : {
-          "$ref" : "#/definitions/Reference"
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -14998,101 +15014,14 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> ea8aa0b2c (logout changes)
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
-=======
->>>>>>> ea8aa0b2c (logout changes)
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> b74a1a4c9 (rebase)
-=======
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-        "last" : {
-          "type" : "boolean"
-        },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-<<<<<<< HEAD
-=======
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
->>>>>>> 76f78fc10 (julkaisuit test fix)
-        "last" : {
-          "type" : "boolean"
->>>>>>> 42870a7cf (julkaisuit test fix)
-        },
-        "numberOfElements" : {
-=======
-        "number" : {
->>>>>>> 0ae1dd67f (rebase)
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
->>>>>>> f9584f27c (C:/Program Files/Git/api change)
-        },
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
-=======
-=======
->>>>>>> 0981733dd (rebase)
->>>>>>> 4a6870d25 (rebase)
-<<<<<<< HEAD
->>>>>>> ba0c99772 (rebase)
-=======
-=======
->>>>>>> 0d6771579 (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -15110,53 +15039,34 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
+        "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
         }
       }
     },
     "PageJulkiEtusivuDto" : {
       "type" : "object",
       "properties" : {
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "totalElements" : {
+          "type" : "integer",
+          "format" : "int64"
         },
         "size" : {
           "type" : "integer",
@@ -15176,73 +15086,20 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
->>>>>>> ab12b8ebc (EP-3491)
           "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
         },
         "last" : {
           "type" : "boolean"
-=======
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "last" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15256,17 +15113,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -15285,122 +15131,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-<<<<<<< HEAD
         "first" : {
           "type" : "boolean"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 7e90bad04 (rebase)
-<<<<<<< HEAD
-        }
-      }
-    },
-    "PageMaaraysDto" : {
-      "type" : "object",
-      "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
         },
-        "totalElements" : {
-          "type" : "integer",
-          "format" : "int64"
-=======
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
-=======
->>>>>>> e0f08728a (rebase)
->>>>>>> 7e90bad04 (rebase)
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-=======
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-<<<<<<< HEAD
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
->>>>>>> f0cc59cc7 (EP-3491)
-<<<<<<< HEAD
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-=======
->>>>>>> 76f78fc10 (julkaisuit test fix)
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> f6372c673 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
-=======
-=======
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
-=======
-        },
->>>>>>> 8d2be6eaf (interceptor fix)
-=======
->>>>>>> ea8aa0b2c (logout changes)
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15414,17 +15159,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -15443,103 +15177,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-=======
->>>>>>> 3166a2d20 (EP-3491)
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15553,17 +15205,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -15582,101 +15223,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15690,17 +15251,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -15719,101 +15269,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15827,17 +15297,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -15856,101 +15315,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -15964,17 +15343,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -15993,101 +15361,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16101,17 +15389,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -16130,101 +15407,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16238,17 +15435,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -16267,101 +15453,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16375,17 +15481,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -16404,101 +15499,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16512,17 +15527,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -16541,101 +15545,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16649,17 +15573,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -16678,101 +15591,21 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> 6435b9a9b (EP-3491)
-        },
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-        "empty" : {
-          "type" : "boolean"
->>>>>>> ad9eddcfe (specs)
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
         }
       }
     },
@@ -16786,17 +15619,6 @@
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> b50856135 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         },
         "size" : {
           "type" : "integer",
@@ -16815,72 +15637,19 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
-        "first" : {
-          "type" : "boolean"
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "first" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-        },
-=======
-<<<<<<< HEAD
-=======
-        },
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
         "numberOfElements" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "last" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-=======
-=======
-<<<<<<< HEAD
-        "last" : {
-          "type" : "boolean"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-=======
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b90256e29 (julkaisuit test fix)
-=======
-        "first" : {
-          "type" : "boolean"
-        },
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "empty" : {
           "type" : "boolean"
         }
@@ -16889,169 +15658,26 @@
     "Pageable" : {
       "type" : "object",
       "properties" : {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "pageSize" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "paged" : {
-          "type" : "boolean"
-<<<<<<< HEAD
->>>>>>> f0cc59cc7 (EP-3491)
-<<<<<<< HEAD
->>>>>>> 6435b9a9b (EP-3491)
-<<<<<<< HEAD
->>>>>>> c138519dc (EP-3491)
-<<<<<<< HEAD
->>>>>>> b50856135 (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
-=======
-=======
-        },
-        "unpaged" : {
-          "type" : "boolean"
-        },
-=======
->>>>>>> b74a1a4c9 (rebase)
-        "offset" : {
-=======
-        "pageSize" : {
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-          "type" : "integer",
-          "format" : "int32"
-        },
-<<<<<<< HEAD
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
->>>>>>> 76f78fc10 (julkaisuit test fix)
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> f6372c673 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
-=======
-=======
-=======
-=======
-        "paged" : {
-          "type" : "boolean"
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-        },
-        "unpaged" : {
-          "type" : "boolean"
-        },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-=======
->>>>>>> 0981733dd (rebase)
-=======
->>>>>>> ad9eddcfe (specs)
-=======
->>>>>>> 2034e6656 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         "offset" : {
           "type" : "integer",
           "format" : "int64"
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "paged" : {
-          "type" : "boolean"
->>>>>>> b74a1a4c9 (rebase)
-<<<<<<< HEAD
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> e0f08728a (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-=======
-=======
         "sort" : {
           "$ref" : "#/definitions/Sort"
-<<<<<<< HEAD
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> a0e5e5b3a (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> eba1ff24d (C:/Program Files/Git/api change)
-=======
-=======
-=======
-=======
-=======
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
->>>>>>> ad9eddcfe (specs)
-=======
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "unpaged" : {
-          "type" : "boolean"
         },
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "paged" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 0981733dd (rebase)
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-<<<<<<< HEAD
->>>>>>> ba0c99772 (rebase)
-=======
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-<<<<<<< HEAD
->>>>>>> 3064046f3 (specs)
-=======
-=======
->>>>>>> 2034e6656 (specs)
->>>>>>> db1959113 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
-=======
-        },
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
->>>>>>> ea8aa0b2c (logout changes)
+        },
+        "paged" : {
+          "type" : "boolean"
+        },
+        "unpaged" : {
+          "type" : "boolean"
         }
       }
     },
@@ -19094,17 +17720,36 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "perusteenOsa" : {
-          "$ref" : "#/definitions/Suppea"
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "lapset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Suppea"
-          }
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "_perusteenOsa" : {
-          "$ref" : "#/definitions/Reference"
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -19245,62 +17890,31 @@
       }
     },
     "TekstiKappaleDto" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "integer",
-          "format" : "int64"
-        },
-        "luotu" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "muokattu" : {
-          "type" : "string",
-          "format" : "date-time"
-        },
-        "muokkaaja" : {
-          "type" : "string"
-        },
-        "nimi" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "tila" : {
-          "type" : "string",
-          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
-        },
-        "tunniste" : {
-          "type" : "string",
-          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
-        },
-        "valmis" : {
-          "type" : "boolean"
-        },
-        "kaannettava" : {
-          "type" : "boolean"
-        },
-        "teksti" : {
-          "$ref" : "#/definitions/LokalisoituTekstiDto"
-        },
-        "osaamisala" : {
-          "$ref" : "#/definitions/KoodiDto"
-        },
-        "tutkintonimike" : {
-          "$ref" : "#/definitions/KoodiDto"
-        },
-        "koodit" : {
-          "type" : "array",
-          "items" : {
+      "allOf" : [ {
+        "$ref" : "#/definitions/Laaja"
+      }, {
+        "type" : "object",
+        "properties" : {
+          "teksti" : {
+            "$ref" : "#/definitions/LokalisoituTekstiDto"
+          },
+          "osaamisala" : {
             "$ref" : "#/definitions/KoodiDto"
+          },
+          "tutkintonimike" : {
+            "$ref" : "#/definitions/KoodiDto"
+          },
+          "koodit" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/KoodiDto"
+            }
+          },
+          "liite" : {
+            "type" : "boolean"
           }
-        },
-        "liite" : {
-          "type" : "boolean"
-        },
-        "osanTyyppi" : {
-          "type" : "string"
         }
-      }
+      } ]
     },
     "TekstiOsaDto" : {
       "type" : "object",
@@ -19428,279 +18042,120 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        "huomautukset" : {
-=======
-=======
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
->>>>>>> 7e90bad04 (rebase)
-=======
->>>>>>> eba1ff24d (C:/Program Files/Git/api change)
-=======
->>>>>>> ba0c99772 (rebase)
-=======
->>>>>>> 3064046f3 (specs)
-=======
->>>>>>> db1959113 (specs)
-<<<<<<< HEAD
-        "vaihtoOk" : {
-          "type" : "boolean"
-=======
-=======
->>>>>>> fa1ae6eba (julkaisuit test fix)
-=======
->>>>>>> e0f08728a (rebase)
-=======
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
-=======
->>>>>>> 4a6870d25 (rebase)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 42870a7cf (julkaisuit test fix)
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
         "vaihtoOk" : {
           "type" : "boolean"
         },
->>>>>>> 80a2eb5c8 (EP-3491)
-=======
->>>>>>> 0d6771579 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
-        "virheet" : {
+        "huomautukset" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
-        },
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 76f78fc10 (julkaisuit test fix)
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 2034e6656 (specs)
->>>>>>> db1959113 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
-        "huomautukset" : {
->>>>>>> f0cc59cc7 (EP-3491)
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-=======
->>>>>>> f9584f27c (C:/Program Files/Git/api change)
-        "virheet" : {
->>>>>>> 7e90bad04 (rebase)
-=======
-        "huomautukset" : {
->>>>>>> 3064046f3 (specs)
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-<<<<<<< HEAD
-=======
-        },
-        "vaihtoOk" : {
-          "type" : "boolean"
-<<<<<<< HEAD
         },
         "virheet" : {
           "type" : "array",
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> b50856135 (EP-3491)
-<<<<<<< HEAD
->>>>>>> ab12b8ebc (EP-3491)
-=======
-=======
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
-=======
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
->>>>>>> ba0c99772 (rebase)
-        },
-<<<<<<< HEAD
-=======
-        "vaihtoOk" : {
-          "type" : "boolean"
-<<<<<<< HEAD
-        },
->>>>>>> f6372c673 (julkaisuit test fix)
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-<<<<<<< HEAD
-        },
-<<<<<<< HEAD
-        "vaihtoOk" : {
-          "type" : "boolean"
-=======
-<<<<<<< HEAD
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-=======
-        "vaihtoOk" : {
-          "type" : "boolean"
-=======
-=======
-=======
-=======
->>>>>>> 76f78fc10 (julkaisuit test fix)
->>>>>>> 42870a7cf (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> b90256e29 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> f6372c673 (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> fa1ae6eba (julkaisuit test fix)
-<<<<<<< HEAD
->>>>>>> 08a388b8e (julkaisuit test fix)
-=======
-=======
-=======
-=======
-=======
->>>>>>> 0ae1dd67f (rebase)
-<<<<<<< HEAD
->>>>>>> b74a1a4c9 (rebase)
-<<<<<<< HEAD
->>>>>>> 4d019de25 (rebase)
-<<<<<<< HEAD
->>>>>>> e0f08728a (rebase)
-<<<<<<< HEAD
->>>>>>> 7e90bad04 (rebase)
-=======
-=======
-=======
-=======
-=======
->>>>>>> f9584f27c (C:/Program Files/Git/api change)
->>>>>>> 2bb95b234 (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> a0e5e5b3a (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> e479f2b6e (C:/Program Files/Git/api change)
-<<<<<<< HEAD
->>>>>>> eba1ff24d (C:/Program Files/Git/api change)
-=======
-=======
-=======
-=======
->>>>>>> 0981733dd (rebase)
->>>>>>> 6c52f40cd (rebase)
-<<<<<<< HEAD
->>>>>>> 4a6870d25 (rebase)
-<<<<<<< HEAD
->>>>>>> ba0c99772 (rebase)
-=======
-=======
-=======
->>>>>>> ad9eddcfe (specs)
->>>>>>> 0d6771579 (specs)
-<<<<<<< HEAD
->>>>>>> 3064046f3 (specs)
-=======
-=======
->>>>>>> 2034e6656 (specs)
->>>>>>> db1959113 (specs)
-=======
->>>>>>> 8d2be6eaf (interceptor fix)
         }
       }
     },
     "TutkinnonOsaDto" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/Laaja"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "tavoitteet" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "arviointi" : {
-            "$ref" : "#/definitions/ArviointiDto"
-          },
-          "ammattitaitovaatimuksetLista" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
-            }
-          },
-          "ammattitaitovaatimukset" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "ammattitaidonOsoittamistavat" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "kuvaus" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "koodi" : {
-            "$ref" : "#/definitions/KoodiDto"
-          },
-          "koodiUri" : {
-            "type" : "string"
-          },
-          "koodiArvo" : {
-            "type" : "string"
-          },
-          "osaAlueet" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/OsaAlueDto"
-            }
-          },
-          "vapaatTekstit" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/KevytTekstiKappaleDto"
-            }
-          },
-          "tyyppi" : {
-            "type" : "string",
-            "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
-          },
-          "valmaTelmaSisalto" : {
-            "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
-          },
-          "ammattitaitovaatimukset2019" : {
-            "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
-          },
-          "geneerinenArviointiasteikko" : {
-            "$ref" : "#/definitions/Reference"
-          },
-          "alkuperainenPeruste" : {
-            "$ref" : "#/definitions/PerusteKevytDto"
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "tavoitteet" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "arviointi" : {
+          "$ref" : "#/definitions/ArviointiDto"
+        },
+        "ammattitaitovaatimuksetLista" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AmmattitaitovaatimusKohdealueetDto"
           }
+        },
+        "ammattitaitovaatimukset" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "ammattitaidonOsoittamistavat" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "kuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "koodi" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "koodiUri" : {
+          "type" : "string"
+        },
+        "koodiArvo" : {
+          "type" : "string"
+        },
+        "osaAlueet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OsaAlueDto"
+          }
+        },
+        "vapaatTekstit" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/KevytTekstiKappaleDto"
+          }
+        },
+        "tyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TUTKE2", "REFORMI_TUTKE2" ]
+        },
+        "valmaTelmaSisalto" : {
+          "$ref" : "#/definitions/ValmaTelmaSisaltoDto"
+        },
+        "ammattitaitovaatimukset2019" : {
+          "$ref" : "#/definitions/Ammattitaitovaatimukset2019Dto"
+        },
+        "geneerinenArviointiasteikko" : {
+          "$ref" : "#/definitions/Reference"
+        },
+        "alkuperainenPeruste" : {
+          "$ref" : "#/definitions/PerusteKevytDto"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
-      } ]
+      }
     },
     "TutkinnonOsaKaikkiDto" : {
       "type" : "object",

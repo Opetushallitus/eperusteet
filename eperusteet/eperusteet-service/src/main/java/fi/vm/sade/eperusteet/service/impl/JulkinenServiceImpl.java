@@ -69,7 +69,7 @@ public class JulkinenServiceImpl implements JulkinenService {
         int endIdx = Math.min(startIdx + sivukoko, julkiEtusivuDtos.size());
         List<JulkiEtusivuDto> currentPage = endIdx < startIdx ? Collections.emptyList() : julkiEtusivuDtos.subList(startIdx, endIdx);
 
-        return new PageImpl<>(currentPage, new PageRequest(sivu, sivukoko), julkiEtusivuDtos.size());
+        return new PageImpl<>(currentPage, PageRequest.of(sivu, sivukoko), julkiEtusivuDtos.size());
     }
 
     @Override

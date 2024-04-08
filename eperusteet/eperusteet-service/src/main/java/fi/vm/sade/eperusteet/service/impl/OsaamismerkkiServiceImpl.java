@@ -246,7 +246,7 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
     }
 
     private boolean hasRelevantKoodiDataChanged(OsaamismerkkiDto osaamismerkkiDto) {
-        OsaamismerkkiDto osaamismerkkiDb = mapper.map(osaamismerkkiRepository.findOne(osaamismerkkiDto.getId()), OsaamismerkkiDto.class);
+        OsaamismerkkiDto osaamismerkkiDb = mapper.map(osaamismerkkiRepository.findById(osaamismerkkiDto.getId()).orElse(null), OsaamismerkkiDto.class);
         if (osaamismerkkiDb == null) {
             return false;
         }
