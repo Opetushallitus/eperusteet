@@ -21,6 +21,9 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 public interface JulkaisutService {
     @PreAuthorize("permitAll()")
+    List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id);
+
+    @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkaisut(long id);
 
     @PreAuthorize("permitAll()")
@@ -67,4 +70,7 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
+
+    @PreAuthorize("permitAll()")
+    List<PerusteenJulkaisuData> getKaikkiPerusteet();
 }

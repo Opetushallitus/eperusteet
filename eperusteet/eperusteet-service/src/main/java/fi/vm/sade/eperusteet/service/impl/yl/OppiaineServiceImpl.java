@@ -412,8 +412,14 @@ public class OppiaineServiceImpl implements OppiaineService {
                         ovk.getTavoitteet().stream().filter(tavoite -> !poistuneetTavoitteet.contains(tavoite.getId())),
                         ovk.getTavoitteet().stream().filter(tavoite -> poistuneetTavoitteet.contains(tavoite.getId()))
                         ).collect(Collectors.toList()));
+
         ovk = vuosiluokkakokonaisuusRepository.saveAndFlush(ovk);
         mapper.map(dto, ovk);
+
+        Set<Long> sisaltoalueetIdt = ovk.getSisaltoalueet().stream().map(KeskeinenSisaltoalue::getId).collect(Collectors.toSet());
+        ovk.setTavoitteet(ovk.getTavoitteet().stream().peek(tavoite -> tavoite.setSisaltoalueet(tavoite.getSisaltoalueet().stream()
+                .filter(sisaltoalue -> sisaltoalueetIdt.contains(sisaltoalue.getId()))
+                .collect(Collectors.toSet()))).collect(Collectors.toList()));
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
         ovk.getOppiaine().muokattu();
         oppiaineRepository.setRevisioKommentti("Muokattu oppiaineen vuosiluokkakokonaisuutta");

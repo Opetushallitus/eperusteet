@@ -132,8 +132,11 @@ public class MaaraysController {
     @InternalApi
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id}")
-    public void deleteMaarays(@PathVariable("id") final Long id) {
-        maaraysService.deleteMaarays(id);
+    public void deleteMaarays(
+            @PathVariable("id") final Long id,
+            @RequestParam(value = "perusteId", required = false) Long perusteId
+    ) {
+        maaraysService.deleteMaarays(id, perusteId);
     }
 
     @PostMapping(value = "/liite")

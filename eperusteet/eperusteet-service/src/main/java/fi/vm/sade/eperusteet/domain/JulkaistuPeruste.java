@@ -73,7 +73,9 @@ public class JulkaistuPeruste extends AbstractReferenceableEntity {
 
     @PrePersist
     private void prepersist() {
-        luotu = new Date();
+        if (luotu == null) {
+            luotu = new Date();
+        }
         if (luoja == null) {
             luoja = SecurityUtil.getAuthenticatedPrincipal().getName();
         }

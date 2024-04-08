@@ -12,6 +12,8 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 
 import io.swagger.annotations.ApiModelProperty;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,10 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private KoodiDto koodi;
     private String koodiUri;
     private String koodiArvo;
+    private BigDecimal laajuus;
+
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    private BigDecimal laajuusMaksimi;
 
     @ApiModelProperty("Yhteisen tutkinnon osan osa-alueet")
     private List<OsaAlueKaikkiDto> osaAlueet;

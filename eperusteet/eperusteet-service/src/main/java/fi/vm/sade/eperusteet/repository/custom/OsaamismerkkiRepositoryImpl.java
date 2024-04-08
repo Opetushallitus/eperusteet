@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki_;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import fi.vm.sade.eperusteet.repository.OsaamismerkkiRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
@@ -104,6 +105,13 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
             pred = cb.and(pred, root.get(Osaamismerkki_.tila).in(osaamismerkkiTilat));
         }
 
+        if (!ObjectUtils.isEmpty(tq.getKoodit())) {
+            Set<String> koodit = tq.getKoodit().stream()
+                    .map(koodi -> KoodistoUriArvo.OSAAMISMERKIT + "_" + koodi)
+                    .collect(Collectors.toSet());
+            pred = cb.and(pred, root.get(Osaamismerkki_.koodiUri).in(koodit));
+        }
+
         if (!ObjectUtils.isEmpty(tq.getKategoria())) {
             pred = cb.and(pred, cb.equal(root.get(Osaamismerkki_.kategoria), tq.getKategoria()));
         }
@@ -120,10 +128,16 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
             Predicate pr1 = cb.and(alkaa, loppuu);
 
             // Voimassaolon loppumista ei ole määritelty
-            Predicate pr2 = cb.and(cb.isNull(voimassaoloLoppuu),
-                    cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa)));
+            Predicate pr2 = cb.and(cb.isNull(voimassaoloLoppuu), cb.and(cb.isNotNull(voimassaoloAlkaa), cb.greaterThanOrEqualTo(currentDate, voimassaoloAlkaa)));
 
-            pred = cb.and(pred, cb.or(pr1, pr2));
+            if (tq.isPoistunut()) {
+                // myös poistuneet
+                Predicate pr3 = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu)));
+                pred = cb.and(pred, cb.or(pr1, pr2, pr3));
+            }
+            else {
+                pred = cb.and(pred, cb.or(pr1, pr2));
+            }
         } else if (tq.isPoistunut()) {
             pred = cb.and(pred, cb.and(cb.isNotNull(voimassaoloLoppuu), cb.greaterThan(currentDate, voimassaoloLoppuu)));
         }

@@ -273,6 +273,16 @@ public class ValidatorPeruste implements Validator {
                 tarkistaTekstipalanen("peruste-validointi-oppiaine-vlk-tavoite-tavoite-teksti",
                         tavoite.getTavoite(), vaaditutKielet, virheellisetKielet, false, !isOppimaara);
             }
+
+            Set<Long> sisaltoalueetIdt = oavlk.getSisaltoalueet().stream().map(KeskeinenSisaltoalue::getId).collect(Collectors.toSet());
+            Set<Long> tavoitteidenSisaltoalueetIdt = oavlk.getTavoitteet().stream()
+                    .map(tavoite -> tavoite.getSisaltoalueet().stream()
+                            .map(KeskeinenSisaltoalue::getId).collect(Collectors.toSet()))
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+            if (!sisaltoalueetIdt.containsAll(tavoitteidenSisaltoalueetIdt)) {
+                validointi.virhe("peruste-validointi-oppiaine-vlk-tavoite-sisaltoalueet", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId()));
+            }
         }
 
         virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId())));

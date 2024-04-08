@@ -232,7 +232,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     @Override
     @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
-    public void deleteMaarays(Long id) {
+    public void deleteMaarays(Long id, Long perusteId) {
         if (maaraysRepository.findOne(id) == null) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }

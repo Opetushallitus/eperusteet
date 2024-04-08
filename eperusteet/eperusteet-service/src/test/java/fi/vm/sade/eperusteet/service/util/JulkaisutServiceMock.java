@@ -20,6 +20,12 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("test")
 public class JulkaisutServiceMock implements JulkaisutService {
+
+    @Override
+    public List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id) {
+        return null;
+    }
+
     @Override
     public List<JulkaisuBaseDto> getJulkaisut(long id) {
         return null;
@@ -92,5 +98,10 @@ public class JulkaisutServiceMock implements JulkaisutService {
     @Override
     public void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
 
+    }
+
+    @Override
+    public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
+        return null;
     }
 }

@@ -15,8 +15,9 @@ public class OsaamismerkkiQuery {
     private String nimi;
     private Long kategoria;
     private Set<String> tila;
+    private Set<Long> koodit;
     private String kieli = "fi";
-    private boolean voimassa = false;
+    private boolean voimassa = true;
     private boolean tuleva = false;
     private boolean poistunut = false;
 }

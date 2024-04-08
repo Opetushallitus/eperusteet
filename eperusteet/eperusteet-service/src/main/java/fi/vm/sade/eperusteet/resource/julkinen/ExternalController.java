@@ -37,7 +37,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @RequestMapping(value = "/external", produces = "application/json;charset=UTF-8")
-@Api(value = "Julkinen")
+@Api(value = "External")
 @Description("Perusteiden julkinen rajapinta")
 public class ExternalController {
 

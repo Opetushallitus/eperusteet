@@ -19,7 +19,7 @@
         <spring.data.jpa.version>1.11.23.RELEASE</spring.data.jpa.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <logback.version>1.2.3</logback.version>
-        <postgresql.version>42.5.1</postgresql.version>
+        <postgresql.version>42.5.5</postgresql.version>
         <jackson.version>2.15.2</jackson.version>
         <jackson.databind.version>2.15.2</jackson.databind.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
@@ -361,7 +361,7 @@
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>opintopolku-cas-servlet-filter</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade</groupId>
@@ -779,6 +779,7 @@
                                         <location>${eperusteet.resources}.MaaraysController</location>
                                         <location>${eperusteet.resources}.MaintenanceController</location>
                                         <location>${eperusteet.resources}.OsaamismerkkiController</location>
+                                        <location>${eperusteet.resources}.JulkinenController</location>
 
                                         <location>${eperusteet.resources}.peruste.AmmattitaitovaatimuksetController</location>
                                         <location>${eperusteet.resources}.peruste.OsaAlueController</location>

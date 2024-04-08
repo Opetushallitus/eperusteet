@@ -33,6 +33,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
+import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -200,7 +201,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
     @Override
-    public List<JulkaisuBaseDto> getJulkaisut(long id) {
+    public List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id) {
         List<JulkaisuBaseDto> julkaisut = getJulkaistutPerusteet(id);
 
         JulkaisuPerusteTila julkaisuPerusteTila = julkaisuPerusteTilaRepository.findOne(id);
@@ -214,6 +215,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return taytaKayttajaTiedot(julkaisut);
+    }
+
+    @Override
+    public List<JulkaisuBaseDto> getJulkaisut(long id) {
+        return new ArrayList<>(getJulkaistutPerusteet(id));
     }
 
     @Override
@@ -293,8 +299,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
 
             // Aseta peruste julkaistuksi jos ei jo ole (peruste ei saa olla)
+            Date julkaisuaika = new Date();
             peruste.asetaTila(PerusteTila.VALMIS);
             peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
+            peruste.getGlobalVersion().setAikaleima(julkaisuaika);
             perusteRepository.save(peruste);
 
             kooditaValiaikaisetKoodit(peruste.getId());
@@ -307,7 +315,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
             julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
             julkaisu.setLuoja(username);
-            julkaisu.setLuotu(new Date());
+            julkaisu.setLuotu(julkaisuaika);
             julkaisu.setPeruste(peruste);
             julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
             julkaisu.setJulkinen(true);
@@ -364,7 +372,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         if (julkaisuBaseDto.getMuutosmaarays() != null) {
             if (peruste.getJulkaisut().isEmpty() && maarays != null) {
                 Long maaraysId = maarays.getId();
-                maaraysService.deleteMaarays(maarays.getId());
+                maaraysService.deleteMaarays(maarays.getId(), peruste.getId());
                 julkaisuBaseDto.getMuutosmaarays().setKorvattavatMaaraykset(
                         julkaisuBaseDto.getMuutosmaarays().getKorvattavatMaaraykset().stream()
                                 .filter(korvattava -> !korvattava.getId().equals(maaraysId)).collect(Collectors.toList())
@@ -566,6 +574,12 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
+    public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
+        return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), false, true, false, false).stream()
+                .map(this::convertToPerusteData).collect(Collectors.toList());
+    }
+
+    @Override
     @IgnorePerusteUpdateCheck
     public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
         JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(perusteId);
@@ -573,7 +587,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             return viimeisinJulkaisu.getLuotu();
         } else {
             Peruste peruste = perusteRepository.findOne(perusteId);
-            if (peruste != null && (peruste.getTila().equals(Tila.JULKAISTU) || peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN))) {
+            if (peruste != null && (peruste.getTila().equals(PerusteTila.VALMIS) || peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN))) {
                 return peruste.getGlobalVersion().getAikaleima();
             }
         }

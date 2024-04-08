@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
@@ -191,6 +192,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    @Async
     @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
     public void teeJulkaisu(long perusteId, String tiedote) {
@@ -233,9 +235,12 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         TransactionTemplate template = new TransactionTemplate(ptm);
         template.execute(status -> {
             Peruste peruste = perusteRepository.findOne(perusteId);
-            List<JulkaistuPeruste> julkaisut = julkaisutRepository.findAllByPeruste(peruste);
 
             log.info("Luodaan julkaisu perusteelle: " + peruste.getId());
+            Date julkaisuaika = new Date();
+            peruste.getGlobalVersion().setAikaleima(julkaisuaika);
+            peruste.asetaTila(PerusteTila.VALMIS);
+            peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             Set<Long> dokumentit = julkaisutService.generoiJulkaisuPdf(peruste);
@@ -243,14 +248,15 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             julkaisu.setRevision(julkaisutService.seuraavaVapaaJulkaisuNumero(perusteId));
             julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));
             julkaisu.setLuoja("maintenance");
-            julkaisu.setLuotu(new Date());
+            julkaisu.setLuotu(julkaisuaika);
             julkaisu.setPeruste(peruste);
             julkaisu.setJulkinen(true);
             julkaisu.setDokumentit(dokumentit);
 
             ObjectNode data = objectMapper.valueToTree(sisalto);
             julkaisu.setData(new JulkaistuPerusteData(data));
-            julkaisutRepository.save(julkaisu);
+            perusteRepository.saveAndFlush(peruste);
+            julkaisutRepository.saveAndFlush(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
             return true;
         });

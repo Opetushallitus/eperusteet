@@ -18,6 +18,7 @@ public class KoodistoKoodiDto {
     private String koodiUri;
     private String koodiArvo;
     private String versio;
+    private String version;
     private KoodistoMetadataDto[] metadata;
     private KoodistoDto koodisto;
     private Date voimassaAlkuPvm;

@@ -7,13 +7,13 @@
   },
   "basePath" : "https://virkailija.opintopolku.fi/eperusteet-service/api",
   "tags" : [ {
-    "name" : "Julkinen"
+    "name" : "External"
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
     "/external/osaamismerkit" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Hae kaikki julkaistut osaamismerkit",
         "description" : "",
         "operationId" : "getOsaamismerkit",
@@ -33,7 +33,7 @@
     },
     "/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Hae julkaistu osaamismerkki koodiurilla",
         "description" : "",
         "operationId" : "getOsaamismerkkiByUri",
@@ -56,7 +56,7 @@
     },
     "/external/peruste/koulutuskoodi/{koodi}/**" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
         "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
         "operationId" : "getPerusteWithKoodi",
@@ -81,7 +81,7 @@
     },
     "/external/peruste/yto/**" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
         "description" : "",
         "operationId" : "getYtoPerusteDynamicQuery",
@@ -98,7 +98,7 @@
     },
     "/external/peruste/{perusteId}" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Perusteen tietojen haku",
         "description" : "",
         "operationId" : "getPeruste",
@@ -123,7 +123,7 @@
     },
     "/external/peruste/{perusteId}/**" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
         "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
         "operationId" : "getPerusteDynamicQuery",
@@ -148,7 +148,7 @@
     },
     "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Perusteen osaamisalakuvauksien haku",
         "description" : "",
         "operationId" : "getJulkaistutOsaamisalaKuvaukset",
@@ -182,7 +182,7 @@
     },
     "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Perusteen osan haku",
         "description" : "",
         "operationId" : "getJulkaistuPerusteenOsa",
@@ -213,7 +213,7 @@
     },
     "/external/perusteet" : {
       "get" : {
-        "tags" : [ "Julkinen" ],
+        "tags" : [ "External" ],
         "summary" : "Perusteiden haku",
         "description" : "",
         "operationId" : "getPerusteet",
@@ -2620,13 +2620,6 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
-        },
         "size" : {
           "type" : "integer",
           "format" : "int32"
@@ -2646,6 +2639,13 @@
         },
         "first" : {
           "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
+          "type" : "boolean"
         }
       }
     },
@@ -2659,13 +2659,6 @@
         "totalPages" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "last" : {
-          "type" : "boolean"
         },
         "size" : {
           "type" : "integer",
@@ -2685,6 +2678,13 @@
           "$ref" : "#/definitions/Sort"
         },
         "first" : {
+          "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "last" : {
           "type" : "boolean"
         }
       }
@@ -3014,16 +3014,16 @@
           }
         },
         "voimassaoloAlkaa" : {
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string",
+          "format" : "date-time"
         },
         "voimassaoloLoppuu" : {
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string",
+          "format" : "date-time"
         },
         "siirtymaPaattyy" : {
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "string",
+          "format" : "date-time"
         },
         "paatospvm" : {
           "type" : "string",
@@ -3078,6 +3078,17 @@
         "luotu" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "tyyppi" : {
+          "type" : "string"
+        },
+        "kielet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "type" : "string",
+            "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
+          }
         },
         "tutkinnonosa" : {
           "$ref" : "#/definitions/TutkinnonOsaKaikkiDto"
@@ -3505,6 +3516,12 @@
         },
         "koodiArvo" : {
           "type" : "string"
+        },
+        "laajuus" : {
+          "type" : "number"
+        },
+        "laajuusMaksimi" : {
+          "type" : "number"
         },
         "osaAlueet" : {
           "type" : "array",

@@ -43,7 +43,9 @@ cas.service.kayttooikeus-service=https\://${host.virkailija}/kayttooikeus-servic
 cas.service.eperusteet-service=https\://${host.virkailija}/eperusteet-service
 cas.service.organisaatio-service=https\://${host.virkailija}/organisaatio-service
 fi.vm.sade.eperusteet.eperusteet.amosaa.service=https://${host.virkailija}/eperusteet-amosaa-service
+fi.vm.sade.eperusteet.eperusteet.amosaa.service.internal=http://eperusteet-amosaa.{{server_name}}.internal:8080/eperusteet-amosaa-service
 fi.vm.sade.eperusteet.eperusteet.ylops.service=https://${host.virkailija}/eperusteet-ylops-service
+fi.vm.sade.eperusteet.eperusteet.ylops.service.internal=http://eperusteet-ylops.{{server_name}}.internal:8080/eperusteet-ylops-service
 fi.vm.sade.eperusteet.eperusteet.pdf-service=https://${host.virkailija}/eperusteet-pdf-service
 cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
@@ -52,6 +54,7 @@ flyway.initOnMigrate=true
 koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodiService
 koodisto.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodistoService
 koodisto.service.url=https://${host.virkailija}/koodisto-service
+koodisto.service.internal.url=http://koodisto.{{server_name}}.internal:8080/koodisto-service
 jpa.schemaUpdate=validate
 jpa.showSql=false
 log4j.properties.file=${user.home.conf}/log4j.properties

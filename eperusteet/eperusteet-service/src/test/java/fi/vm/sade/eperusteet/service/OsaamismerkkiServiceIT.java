@@ -102,7 +102,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
         osaamismerkkiService.updateOsaamismerkki(createOsaamismerkki(kategoria1, OsaamismerkkiTila.JULKAISTU));
 
-        assertThat(osaamismerkkiService.getJulkisetKategoriat()).hasSize(1);
+        assertThat(osaamismerkkiService.getJulkisetKategoriat(new OsaamismerkkiQuery())).hasSize(1);
     }
 
     @Test()
@@ -139,6 +139,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
    private OsaamismerkkiDto createOsaamismerkki(OsaamismerkkiKategoriaDto kategoria, OsaamismerkkiTila tila) {
        OsaamismerkkiDto merkki = new OsaamismerkkiDto();
+       merkki.setId(123L);
        merkki.setNimi(LokalisoituTekstiDto.of("osaamismerkki"));
        merkki.setTila(tila);
        merkki.setKategoria(kategoria);
