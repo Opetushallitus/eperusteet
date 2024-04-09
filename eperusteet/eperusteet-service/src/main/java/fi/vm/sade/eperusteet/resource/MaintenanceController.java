@@ -50,6 +50,9 @@ public class MaintenanceController {
     @Autowired
     private PermissionManager permissionManager;
 
+    @Autowired
+    private AmosaaClient amosaaClient;
+
     @RequestMapping(value = "/cacheclear/{cache}", method = GET)
     public ResponseEntity clearCache(@PathVariable final String cache) {
         maintenanceService.clearCache(cache);
@@ -149,5 +152,12 @@ public class MaintenanceController {
     public ResponseEntity<String> maarayksetperusteille() {
         maintenanceService.teeMaarayksetPerusteille();
         return ResponseEntity.ok("Määräykset luotu");
+    }
+
+    @GetMapping(value = "/amosaa/koulutustoimija/paivitys")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<String> paivitaAmosaaKoulutustoimijat() {
+        amosaaClient.paivitaAmosaaKoulutustoimijat();
+        return ResponseEntity.ok("paivitys kaynnistetty");
     }
 }
