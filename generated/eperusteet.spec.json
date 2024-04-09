@@ -522,6 +522,295 @@
         }
       }
     },
+    "/api/external/osaamismerkit" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Hae kaikki julkaistut osaamismerkit",
+        "description" : "",
+        "operationId" : "getOsaamismerkit",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/OsaamismerkkiExternalDto"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/osaamismerkki/koodi/{uri}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
+        "description" : "",
+        "operationId" : "getOsaamismerkkiByUri",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "uri",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/OsaamismerkkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
+        "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
+        "operationId" : "getPerusteWithKoodi",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "koodi",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/yto/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+        "description" : "",
+        "operationId" : "getYtoPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/{perusteId}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen tietojen haku",
+        "description" : "",
+        "operationId" : "getPeruste",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/{perusteId}/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
+        "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
+        "operationId" : "getPerusteDynamicQuery",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteKaikkiDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/{perusteId}/osaamisalakuvaukset" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen osaamisalakuvauksien haku",
+        "description" : "",
+        "operationId" : "getJulkaistutOsaamisalaKuvaukset",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "object",
+                "additionalProperties" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/definitions/TekstiKappaleDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen osan haku",
+        "description" : "",
+        "operationId" : "getJulkaistuPerusteenOsa",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "pattern" : "\\d+",
+          "format" : "int64"
+        }, {
+          "name" : "perusteenOsaId",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PerusteenOsaDto"
+            }
+          }
+        }
+      }
+    },
+    "/api/external/perusteet" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteiden haku",
+        "description" : "",
+        "operationId" : "getPerusteet",
+        "produces" : [ "application/json;charset=UTF-8" ],
+        "parameters" : [ {
+          "name" : "koulutustyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          },
+          "collectionFormat" : "multi"
+        }, {
+          "name" : "nimi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "kieli",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tulevat",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "voimassa",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "siirtyma",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "poistuneet",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "koulutusvienti",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tyyppi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "diaarinumero",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "koodi",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sivu",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        }, {
+          "name" : "sivukoko",
+          "in" : "query",
+          "required" : false,
+          "type" : "integer",
+          "format" : "int32"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/PagePerusteenJulkaisuData"
+            }
+          }
+        }
+      }
+    },
     "/api/geneerinenarviointi" : {
       "get" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
@@ -10673,295 +10962,6 @@
         }
       }
     },
-    "/external/osaamismerkit" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Hae kaikki julkaistut osaamismerkit",
-        "description" : "",
-        "operationId" : "getOsaamismerkit",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/definitions/OsaamismerkkiExternalDto"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/external/osaamismerkki/koodi/{uri}" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Hae julkaistu osaamismerkki koodiurilla",
-        "description" : "",
-        "operationId" : "getOsaamismerkkiByUri",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "uri",
-          "in" : "path",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/OsaamismerkkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/koulutuskoodi/{koodi}/**" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
-        "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
-        "operationId" : "getPerusteWithKoodi",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "koodi",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/yto/**" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
-        "description" : "",
-        "operationId" : "getYtoPerusteDynamicQuery",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/{perusteId}" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen tietojen haku",
-        "description" : "",
-        "operationId" : "getPeruste",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/{perusteId}/**" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
-        "description" : "Url parametreiksi voi antaa peruste id:n lisäksi erilaisia perusteen rakenteen osia ja id-kenttien arvoja. Esim. /peruste/8505691/tutkinnonOsat/7283253/koodi/nimi/fi antaa perusteen (id: 8505691) tutkinnon osien tietueen (id: 7283253) koodi-tiedon nimen suomenkielisenä.",
-        "operationId" : "getPerusteDynamicQuery",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteKaikkiDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen osaamisalakuvauksien haku",
-        "description" : "",
-        "operationId" : "getJulkaistutOsaamisalaKuvaukset",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "object",
-                "additionalProperties" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/definitions/TekstiKappaleDto"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteen osan haku",
-        "description" : "",
-        "operationId" : "getJulkaistuPerusteenOsa",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "pattern" : "\\d+",
-          "format" : "int64"
-        }, {
-          "name" : "perusteenOsaId",
-          "in" : "path",
-          "required" : true,
-          "type" : "integer",
-          "format" : "int64"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PerusteenOsaDto"
-            }
-          }
-        }
-      }
-    },
-    "/external/perusteet" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteiden haku",
-        "description" : "",
-        "operationId" : "getPerusteet",
-        "produces" : [ "application/json;charset=UTF-8" ],
-        "parameters" : [ {
-          "name" : "koulutustyyppi",
-          "in" : "query",
-          "required" : false,
-          "type" : "array",
-          "items" : {
-            "type" : "string"
-          },
-          "collectionFormat" : "multi"
-        }, {
-          "name" : "nimi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "kieli",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "tulevat",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "voimassa",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "siirtyma",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "poistuneet",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "koulutusvienti",
-          "in" : "query",
-          "required" : false,
-          "type" : "boolean"
-        }, {
-          "name" : "tyyppi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "diaarinumero",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "koodi",
-          "in" : "query",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "sivu",
-          "in" : "query",
-          "required" : false,
-          "type" : "integer",
-          "format" : "int32"
-        }, {
-          "name" : "sivukoko",
-          "in" : "query",
-          "required" : false,
-          "type" : "integer",
-          "format" : "int32"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/PagePerusteenJulkaisuData"
-            }
-          }
-        }
-      }
-    },
     "/julkinen/etusivu" : {
       "get" : {
         "tags" : [ "julkinen" ],
@@ -15014,13 +15014,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15060,13 +15060,13 @@
     "PageJulkiEtusivuDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15106,13 +15106,13 @@
     "PageKoodistoKoodiDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15152,13 +15152,13 @@
     "PageMaaraysDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15198,13 +15198,13 @@
     "PageOsaamismerkkiDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15244,13 +15244,13 @@
     "PagePerusteBaseDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15290,13 +15290,13 @@
     "PagePerusteHakuDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15336,13 +15336,13 @@
     "PagePerusteHakuInternalDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15382,13 +15382,13 @@
     "PagePerusteInfoDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15428,13 +15428,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15474,13 +15474,13 @@
     "PagePerusteprojektiKevytDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15520,13 +15520,13 @@
     "PageTiedoteDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15566,13 +15566,13 @@
     "PageTutkinnonOsaDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15612,13 +15612,13 @@
     "PageTutkinnonOsaViiteKontekstiDto" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -15665,9 +15665,8 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "pageNumber" : {
-          "type" : "integer",
-          "format" : "int32"
+        "unpaged" : {
+          "type" : "boolean"
         },
         "pageSize" : {
           "type" : "integer",
@@ -15676,8 +15675,9 @@
         "paged" : {
           "type" : "boolean"
         },
-        "unpaged" : {
-          "type" : "boolean"
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -17890,31 +17890,62 @@
       }
     },
     "TekstiKappaleDto" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/Laaja"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "teksti" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "osaamisala" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "teksti" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "osaamisala" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "tutkintonimike" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "koodit" : {
+          "type" : "array",
+          "items" : {
             "$ref" : "#/definitions/KoodiDto"
-          },
-          "tutkintonimike" : {
-            "$ref" : "#/definitions/KoodiDto"
-          },
-          "koodit" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/KoodiDto"
-            }
-          },
-          "liite" : {
-            "type" : "boolean"
           }
+        },
+        "liite" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
-      } ]
+      }
     },
     "TekstiOsaDto" : {
       "type" : "object",
@@ -18042,8 +18073,11 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "vaihtoOk" : {
-          "type" : "boolean"
+        "virheet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         },
         "huomautukset" : {
           "type" : "array",
@@ -18051,11 +18085,8 @@
             "$ref" : "#/definitions/Virhe"
           }
         },
-        "virheet" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
+        "vaihtoOk" : {
+          "type" : "boolean"
         }
       }
     },
