@@ -169,4 +169,14 @@
         </resources>
     </cache>
 
+    <cache alias="julkinenEtusivu">
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+
+        <resources>
+            <heap unit="entries">1</heap>
+        </resources>
+    </cache>
+
 </config>
