@@ -13,5 +13,8 @@ public interface AmosaaClient {
     @PreAuthorize("hasPermission(null, 'arviointiasteikko', 'MUOKKAUS')")
     void updateArvioinnit();
 
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void paivitaAmosaaKoulutustoimijat();
+
     List<OpetussuunnitelmaEtusivuDto> getOpetussuunnitelmatEtusivu();
 }
