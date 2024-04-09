@@ -3,7 +3,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import io.swagger.annotations.Api;
@@ -33,7 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @InternalApi
 @RestController
-@RequestMapping(value = "/maintenance")
+@RequestMapping(value = "/api/maintenance")
 @Profile("!test")
 @Api("Maintenance")
 public class MaintenanceController {

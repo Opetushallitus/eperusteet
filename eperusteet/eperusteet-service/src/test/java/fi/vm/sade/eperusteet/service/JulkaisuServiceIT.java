@@ -20,16 +20,22 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractDockerIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.mime.MimeTypeException;
 import org.assertj.core.util.Maps;
 import org.json.JSONException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -56,8 +62,9 @@ import static org.junit.Assert.assertTrue;
  * Testataan docker-tietokantaa vasten, johon ajetaan migraatiot.
  */
 @DirtiesContext
-@ActiveProfiles(profiles = {"docker, default"})
+@ActiveProfiles(profiles = {"docker"})
 @Transactional
+@SpringBootTest
 public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     @Autowired
@@ -92,14 +99,11 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     @Before
     public void setUp() {
-        gc = new GregorianCalendar(2017, Calendar.JUNE, 4);
-        gc.set(2017, Calendar.JUNE, 3);
-
         projekti = createPeruste();
 
         peruste = perusteService.get(projekti.getPeruste().getIdLong());
         peruste.setKoulutukset(new HashSet<>());
-        peruste.setVoimassaoloAlkaa(gc.getTime());
+        peruste.setVoimassaoloAlkaa(new Date(1496437200000L));
         peruste.setNimi(TestUtils.lt("ap"));
         peruste.getNimi().getTekstit().put(Kieli.FI, "ap_fi");
         peruste.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
@@ -115,7 +119,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         assertThat(getJulkaisut(peruste)).hasSize(1);
         assertThat(perusteRepository.findOne(peruste.getId()).getGlobalVersion().getAikaleima()).isEqualTo(perusteRepository.findOne(peruste.getId()).getJulkaisut().get(0).getLuotu());
     }
-    
+
     @Test
     public void testJulkaiseUudelleen() throws ExecutionException, InterruptedException {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
@@ -149,7 +153,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
                 "",
                 "",
                 "peruste",
-                new PageRequest(0, 10));
+                PageRequest.of(0, 10));
 
         Resource resource = new ClassPathResource("material/julkaisu.json");
         ObjectNode julkaisuFile = objectMapper.readValue(resource.getFile(), ObjectNode.class);

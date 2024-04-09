@@ -488,7 +488,7 @@ public class ValidatorPeruste implements Validator {
         Validointi perusteValidointi = new Validointi(ValidointiKategoria.PERUSTE);
         validoinnit.add(perusteValidointi);
 
-        Perusteprojekti projekti = repository.findOne(id);
+        Perusteprojekti projekti = repository.findById(id).orElse(null);
 
         if (projekti == null) {
             throw new BusinessRuleViolationException("Projektia ei ole olemassa id:llä: " + id);

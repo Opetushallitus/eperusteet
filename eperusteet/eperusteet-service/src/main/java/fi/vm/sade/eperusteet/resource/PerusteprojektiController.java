@@ -17,7 +17,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.Validointi;
@@ -49,7 +49,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Slf4j
 @RestController
-@RequestMapping("/perusteprojektit")
+@RequestMapping("/api/perusteprojektit")
 @Api("Perusteprojektit")
 @InternalApi
 public class PerusteprojektiController {
@@ -69,7 +69,7 @@ public class PerusteprojektiController {
     @RequestMapping(value = "/perusteHaku", method = GET)
     @ResponseBody
     public Page<PerusteprojektiKevytDto> getAllPerusteprojektitKevyt(PerusteprojektiQueryDto pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
         return page;
     }

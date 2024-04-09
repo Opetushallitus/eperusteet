@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-@Profile("local")
+@Profile({"test"})
 @Service
 public class PalauteServiceLocalImpl extends AbstractPalauteServiceImpl {
 

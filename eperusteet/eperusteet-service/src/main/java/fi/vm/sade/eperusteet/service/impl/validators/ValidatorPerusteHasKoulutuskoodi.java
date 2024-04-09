@@ -28,7 +28,7 @@ public class ValidatorPerusteHasKoulutuskoodi implements Validator {
 
     @Override
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila tila) {
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
         Set<Koulutus> koulutukset = projekti.getPeruste().getKoulutukset();
         if (koulutukset == null || koulutukset.isEmpty()) {
             Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);

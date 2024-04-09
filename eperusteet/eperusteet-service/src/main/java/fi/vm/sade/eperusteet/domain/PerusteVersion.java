@@ -40,7 +40,7 @@ public class PerusteVersion {
     @Id
     @Column(name = "id", nullable = false, updatable = false, unique = true)
     @GeneratedValue(generator = "peruste_version_id_seq")
-    @SequenceGenerator(name = "peruste_version_id_seq", sequenceName = "peruste_version_id_seq")
+    @SequenceGenerator(name = "peruste_version_id_seq", sequenceName = "peruste_version_id_seq", allocationSize = 1)
     private Long id;
 
     // NOTE: do not annotate this as @RelatesToPeruste

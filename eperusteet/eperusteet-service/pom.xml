@@ -1,64 +1,106 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <version>2.0.0</version>
+
     <parent>
-        <groupId>fi.vm.sade.eperusteet</groupId>
-        <artifactId>eperusteet</artifactId>
-        <relativePath>../pom.xml</relativePath>
-        <version>1.0-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.17</version>
+        <relativePath/>
     </parent>
+
     <artifactId>eperusteet-service</artifactId>
-    <packaging>war</packaging>
     <name>eperusteet-service</name>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.version>4.3.11.Final</hibernate.version>
         <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
-        <spring.version>5.3.26</spring.version>
-        <spring.security.version>5.8.5</spring.security.version>
-        <spring.data.jpa.version>1.11.23.RELEASE</spring.data.jpa.version>
+        <spring.security.test.version>5.7.11</spring.security.test.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
-        <logback.version>1.2.3</logback.version>
         <postgresql.version>42.5.5</postgresql.version>
         <jackson.version>2.15.2</jackson.version>
-        <jackson.databind.version>2.15.2</jackson.databind.version>
+        <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        <batik.version>1.13</batik.version>
+        <buildhelper.skipAttach>true</buildhelper.skipAttach>
+        <eperusteet.backend-utils.version>2.11</eperusteet.backend-utils.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
-        <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <jsoup.version>1.9.2</jsoup.version>
-        <eperusteet.backend-utils.version>2.5</eperusteet.backend-utils.version>
-        <ehcache.version>2.6.11</ehcache.version>
-        <slf4j.version>1.7.36</slf4j.version>
-        <batik.version>1.17</batik.version>
-        <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
-        <surefire.version>2.22.2</surefire.version>
-        <failsafe.version>2.22.2</failsafe.version>
-        <pdfbox.version>2.0.29</pdfbox.version>
-        <fop.version>2.9</fop.version>
-        <flyway.version>5.2.4</flyway.version>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
-        <springfox.version>2.7.0</springfox.version>
-        <schema.file>${project.basedir}/target/schema.ddl</schema.file>
+        <failsafe.version>3.2.2</failsafe.version>
+        <flyway.version>5.2.4</flyway.version>
+        <fop.version>2.9</fop.version>
         <hibernate.export.type>CREATE</hibernate.export.type>
-        <apache.httpclient.version>4.5.13</apache.httpclient.version>
+        <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
+        <jackson.version>2.15.2</jackson.version>
+        <jsoup.version>1.9.2</jsoup.version>
+        <lombok.version>1.18.4</lombok.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <lombok.version>1.18.30</lombok.version>
+        <org.apache.tomcat.version>9.0.86</org.apache.tomcat.version>
+        <pdfbox.version>2.0.29</pdfbox.version>
+        <postgresql.version>42.5.5</postgresql.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <schema.file>${project.basedir}/target/schema.ddl</schema.file>
+        <spring.security.test.version>5.7.11</spring.security.test.version>
+        <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
+        <springfox.version>2.7.0</springfox.version>
+        <surefire.version>3.2.2</surefire.version>
+        <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
     </properties>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-framework-bom</artifactId>
-                <version>${spring.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>${org.apache.tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>${org.apache.tomcat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>${org.apache.tomcat.version}</version>
+        </dependency>
         <dependency>
             <groupId>one.util</groupId>
             <artifactId>streamex</artifactId>
@@ -102,61 +144,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.databind.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-hibernate4</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jdk8</artifactId>
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
@@ -166,39 +155,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-            <version>${spring.data.jpa.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-config</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-web</artifactId>
-            <version>${spring.security.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-cas</artifactId>
-            <version>${spring.security.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <version>${spring.security.version}</version>
+            <version>${spring.security.test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -209,38 +168,20 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1.1-jre</version>
+            <version>31.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>6.0.22.Final</version>
+            <artifactId>hibernate-jcache</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>xml-apis</groupId>
-                    <artifactId>xml-apis</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate.version}</version>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
-            <version>${hibernate.version}</version>
+            <version>5.6.14.Final</version>
         </dependency>
         <dependency>
             <groupId>javax.transaction</groupId>
@@ -270,14 +211,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>${hibernate.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>2.7.3</version>
+            <version>5.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -289,26 +225,6 @@
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jul-to-slf4j</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -364,16 +280,6 @@
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>fi.vm.sade</groupId>
-            <artifactId>auditlogger</artifactId>
-            <version>8.3.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-            <version>${ehcache.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
@@ -396,7 +302,7 @@
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-support-distributed-ehcache</artifactId>
-            <version>3.5.0</version>
+            <version>3.6.4</version>
             <exclusions>
                 <exclusion>
                     <groupId>net.sf.ehcache</groupId>
@@ -529,10 +435,43 @@
             <artifactId>postgresql</artifactId>
             <version>1.19.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>1.2.13</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.13</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.13</version>
+        </dependency>
+        <dependency>
+            <groupId>fi.vm.sade</groupId>
+            <artifactId>auditlogger</artifactId>
+            <version>8.3.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <!-- Maven rikkoo muuten ttf fontit -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -606,6 +545,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${failsafe.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <argLine>-Xmx2048m -XX:MaxPermSize=512m -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC</argLine>
                     <!--                    <parallel>classesAndMethods</parallel>-->
@@ -613,15 +560,12 @@
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
-                    <argLine>${failsafeArgLine}</argLine>
+                    <argLine>-Dlog4j2.level=OFF</argLine>
                     <systemPropertyVariables>
                         <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
                         <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>
                         <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
                     </systemPropertyVariables>
-                    <excludes>
-                        <exclude>**/service/test/*.java</exclude>
-                    </excludes>
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
@@ -634,14 +578,17 @@
                 <configuration>
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
-                    <argLine>${surefireArgLine}</argLine>
-                    <systemPropertyVariables>
-                        <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
-                        <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>
-                        <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
-                    </systemPropertyVariables>
+                    <argLine>-Dlog4j2.level=OFF</argLine>
+<!--                    <argLine>${surefireArgLine}</argLine>-->
+<!--                    <systemPropertyVariables>-->
+<!--                        <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>-->
+<!--                        <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>-->
+<!--                        <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>-->
+<!--                        <log4j.configuration>${project.basedir}/src/test/resources/log4j.properties</log4j.configuration>-->
+<!--                    </systemPropertyVariables>-->
                     <excludes>
                         <exclude>**/service/test/*.java</exclude>
+                        <exclude>**/*IT.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -757,7 +704,6 @@
                                         <scheme>http</scheme>
                                         <scheme>https</scheme>
                                     </schemes>
-                                    <basePath>/api</basePath>
                                     <locations>
                                         <location>${eperusteet.resources}.julkinen.*</location>
                                         <location>${eperusteet.resources}.AbstractLockController</location>
@@ -794,7 +740,6 @@
                                         <location>${eperusteet.resources}.KayttajanTietoController</location>
                                         <location>${eperusteet.resources}.peruste.TutkinnonRakenneController</location>
                                         <location>${eperusteet.resources}.peruste.PerusteAikatauluController</location>
-                                        <location>${eperusteet.resources}.LogoutController</location>
                                         <location>
                                             ${eperusteet.resources}.peruste.PerusopetuksenPerusteenSisaltoController
                                         </location>
@@ -973,4 +918,44 @@
             </properties>
         </profile>
     </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Opetushallitus/eperusteet</url>
+        </repository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <id>github</id>
+            <name>GitHub Packages eperusteet</name>
+            <url>https://maven.pkg.github.com/Opetushallitus/eperusteet</url>
+        </repository>
+        <repository>
+            <id>oph-sade-artifactory-snapshots</id>
+            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>oph-sade-artifactory-releases</id>
+            <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
+        </repository>
+    </repositories>
 </project>

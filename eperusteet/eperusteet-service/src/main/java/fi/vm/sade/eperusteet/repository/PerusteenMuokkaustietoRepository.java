@@ -19,7 +19,7 @@ public interface PerusteenMuokkaustietoRepository extends JpaRepository<Perustee
     List<PerusteenMuokkaustieto> findByPerusteIdAndLuotuIsBetweenAndTapahtumaIsInAndKohdeNotIn(Long opsId, Date edellisenLuontiaika, Date nykyisenLuontiaika, List<MuokkausTapahtuma> tapahtuma, List<NavigationType> typet);
 
     default List<PerusteenMuokkaustieto> findTop10ByPerusteIdAndLuotuBeforeOrderByLuotuDesc(Long opsId, Date viimeisinLuontiaika, int lukumaara) {
-        return findByPerusteIdAndLuotuBeforeOrderByLuotuDesc(opsId, viimeisinLuontiaika, new PageRequest(0, Math.min(lukumaara, 100)));
+        return findByPerusteIdAndLuotuBeforeOrderByLuotuDesc(opsId, viimeisinLuontiaika, PageRequest.of(0, Math.min(lukumaara, 100)));
     }
 
     List<PerusteenMuokkaustieto> findByKohdeId(Long kohdeId);

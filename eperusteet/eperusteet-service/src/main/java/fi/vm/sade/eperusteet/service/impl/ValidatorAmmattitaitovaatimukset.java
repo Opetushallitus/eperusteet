@@ -51,7 +51,7 @@ public class ValidatorAmmattitaitovaatimukset implements Validator {
     @Override
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila) {
         Validointi validointi = new Validointi(ValidointiKategoria.RAKENNE);
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
         Peruste peruste = projekti.getPeruste();
         peruste.getSuoritustavat().stream()
                 .map(Suoritustapa::getTutkinnonOsat)

@@ -17,7 +17,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
-@RequestMapping(value = "/ammattitaitovaatimukset")
+@RequestMapping(value = "/api/ammattitaitovaatimukset")
 @Api(value = "Ammattitaitovaatimukset")
 public class AmmattitaitovaatimuksetController {
 
@@ -32,7 +32,7 @@ public class AmmattitaitovaatimuksetController {
             @ApiImplicitParam(name = "uri", dataType = "string", paramType = "query")
     })
     public Page<PerusteBaseDto> getPerusteetByAmmattitaitovaatimus(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         Page<PerusteBaseDto> result = ammattitaitovaatimusService.findPerusteet(p, pquery);
         return result;
     }
@@ -46,7 +46,7 @@ public class AmmattitaitovaatimuksetController {
             @ApiImplicitParam(name = "kaikki", dataType = "boolean", paramType = "query"),
     })
     public Page<TutkinnonOsaViiteKontekstiDto> getTutkinnonOsatByAmmattitaitovaatimus(@ApiIgnore AmmattitaitovaatimusQueryDto pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return ammattitaitovaatimusService.findTutkinnonOsat(p, pquery);
     }
 

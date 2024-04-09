@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.yl.TpoOpetuksenSisaltoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
-@RequestMapping("/perusteet/{perusteId}/tpoopetus")
+@RequestMapping("/api/perusteet/{perusteId}/tpoopetus")
 @InternalApi
 public class TpoOpetuksenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(AIPEOpetuksenSisaltoController.class);

@@ -89,11 +89,6 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila) {
-
-    }
-
-    @Override
     public int seuraavaVapaaJulkaisuNumero(long perusteId) {
         return 0;
     }

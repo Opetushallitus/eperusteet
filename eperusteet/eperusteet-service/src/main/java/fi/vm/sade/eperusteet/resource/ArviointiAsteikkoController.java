@@ -34,7 +34,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  * @author jhyoty
  */
 @RestController
-@RequestMapping("/arviointiasteikot")
+@RequestMapping("/api/arviointiasteikot")
 @Api(value="Arviointiasteikot")
 public class ArviointiAsteikkoController {
 

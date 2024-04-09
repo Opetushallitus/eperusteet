@@ -20,7 +20,7 @@
     <cache:annotation-driven />
 
     <context:property-placeholder
-        location="classpath:eperusteet-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/eperusteet-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
+        location="classpath:eperusteet-service.properties"
         ignore-resource-not-found="true"
         properties-ref="defaultProps"/>
 
@@ -29,6 +29,7 @@
             <util:properties local-override="true">
                 <prop key="cas_key">eperusteet-service</prop>
                 <prop key="spring_security_default_access">permitAll</prop>
+                <prop key="web.url.cas">null</prop>
             </util:properties>
         </property>
     </bean>
@@ -76,7 +77,7 @@
                 <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect"/>
                 <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="false"/>
-                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
+                <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.internal.DefaultAuditStrategy"/>
                 <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
                 <entry key="javax.persistence.validation.factory" value-ref="validator"/>
                 <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />

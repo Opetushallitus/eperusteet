@@ -83,7 +83,9 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     private AIPEOppiaine oppiaine;
 
     @ManyToMany
-    @JoinTable
+    @JoinTable(name = "yl_aipe_kurssi_yl_opetuksen_tavoite",
+            joinColumns = @JoinColumn(name = "yl_aipe_kurssi_id"),
+            inverseJoinColumns = @JoinColumn(name = "tavoitteet_id"))
     private Set<OpetuksenTavoite> tavoitteet = new HashSet<>();
 
     public Set<OpetuksenTavoite> getTavoitteet() {

@@ -61,7 +61,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "   AND (:sisaltotyyppi = 'kaikki' OR sisaltotyyppi = :sisaltotyyppi)" +
             "  ) subquery " +
             "  WHERE subquery.rownumber = 1 " +
-            "  order by nimi->>:kieli asc, ?#{#pageable} " +
+            "   order by nimi->>:kieli asc " +
             ") t";
 
     @Query(nativeQuery = true,
