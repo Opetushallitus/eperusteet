@@ -3,15 +3,16 @@ package fi.vm.sade.eperusteet.repository;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {

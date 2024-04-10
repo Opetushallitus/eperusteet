@@ -17,30 +17,11 @@
         </encoder>
     </appender>
 
-    <appender name="AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.home}/logs/auditlog_eperusteet.log</file>
-        <append>true</append>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${user.home}/logs/auditlog_eperusteet.%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>20</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>20MB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%msg%n</pattern>
-        </encoder>
-    </appender>
-
     <logger name="fi.vm" level="INFO" additivity="false">
         <appender-ref ref="STDOUT-APP"/>
     </logger>
     <root level="INFO">
         <appender-ref ref="STDOUT-CONSOLE"/>
     </root>
-    <logger name="fi.vm.sade.eperusteet.service.audit.LoggerForAudit" level="INFO" additivity="false">
-        <appender-ref ref="AUDIT"/>
-    </logger>
 
 </configuration>
