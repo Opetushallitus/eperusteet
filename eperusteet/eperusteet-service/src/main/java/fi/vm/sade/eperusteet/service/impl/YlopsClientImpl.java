@@ -22,7 +22,7 @@ public class YlopsClientImpl implements YlopsClient {
     @Value("${fi.vm.sade.eperusteet.eperusteet.ylops.service.internal:${fi.vm.sade.eperusteet.eperusteet.ylops.service:''}}")
     private String ylopsServiceUrl_internal;
 
-    private final static String TILASTOT_URL="/api/opetussuunnitelmat/adminlist";
+    private final static String TILASTOT_URL="/api/opetussuunnitelmat/tilastot";
     private final static String KAIKKI_JULKAISTUT_OPETUSSUUNNITELMAT_URL ="/api//opetussuunnitelmat/julkiset/kaikki";
 
     @Autowired
