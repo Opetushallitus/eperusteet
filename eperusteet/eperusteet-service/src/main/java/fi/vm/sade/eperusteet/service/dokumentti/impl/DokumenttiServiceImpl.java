@@ -50,11 +50,12 @@ import javax.xml.transform.TransformerException;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
 @Service
-@Profile("default")
+@Profile("!test")
 public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Autowired
@@ -114,7 +115,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dokumentti.setSuoritustapakoodi(suoritustapakoodi);
         dokumentti.setGeneratorVersion(version);
 
-        Peruste peruste = perusteRepository.findOne(id);
+        Peruste peruste = perusteRepository.findById(id).orElse(null);
         if (peruste != null) {
             Dokumentti saved = dokumenttiRepository.save(dokumentti);
             return mapper.map(saved, DokumenttiDto.class);
@@ -206,7 +207,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             if (isPdfServiceUsed) {
                 externalPdfService.generatePdf(dto);
             } else {
-                Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId());
+                Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId()).orElse(null);
                 if (dokumentti == null) {
                     dokumentti = mapper.map(dto, Dokumentti.class);
                 }
@@ -229,7 +230,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public byte[] get(Long id) {
-        Dokumentti dokumentti = dokumenttiRepository.findById(id);
+        Dokumentti dokumentti = dokumenttiRepository.findById(id).orElse(null);
 
         if (dokumentti != null) {
             Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
@@ -252,7 +253,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional
     @IgnorePerusteUpdateCheck
     public Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion generatorVersion) {
-        Sort sort = new Sort(Sort.Direction.DESC, "valmistumisaika");
+        Sort sort = Sort.by(Sort.Direction.DESC, "valmistumisaika");
 
         Peruste peruste = perusteRepository.findOne(perusteId);
         if (peruste == null) {
@@ -292,7 +293,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public DokumenttiDto query(Long id) {
-        Dokumentti dokumentti = dokumenttiRepository.findById(id);
+        Dokumentti dokumentti = dokumenttiRepository.findById(id).orElse(null);
         DokumenttiDto dto = mapper.map(dokumentti, DokumenttiDto.class);
 
         if (dokumentti != null) {
@@ -384,20 +385,26 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional
     @IgnorePerusteUpdateCheck
     public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
-        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
-        dokumentti.setData(data);
-        dokumentti.setTila(DokumenttiTila.VALMIS);
-        dokumentti.setValmistumisaika(new Date());
-        dokumenttiRepository.save(dokumentti);
+        Optional<Dokumentti> optionalDokumentti = dokumenttiRepository.findById(dokumenttiId);
+        if (optionalDokumentti.isPresent()) {
+            Dokumentti dokumentti = optionalDokumentti.get();
+            dokumentti.setData(data);
+            dokumentti.setTila(DokumenttiTila.VALMIS);
+            dokumentti.setValmistumisaika(new Date());
+            dokumenttiRepository.save(dokumentti);
+        }
     }
 
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
     public void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId) {
-        Dokumentti dokumentti = dokumenttiRepository.findById(dokumenttiId);
-        dokumentti.setTila(tila);
-        dokumenttiRepository.save(dokumentti);
+        Optional<Dokumentti> optionalDokumentti = dokumenttiRepository.findById(dokumenttiId);
+        if (optionalDokumentti.isPresent()) {
+            Dokumentti dokumentti = optionalDokumentti.get();
+            dokumentti.setTila(tila);
+            dokumenttiRepository.save(dokumentti);
+        }
     }
 
 }

@@ -63,7 +63,7 @@ public class TermistoServiceImpl implements TermistoService {
     public TermiDto updateTermi(Long perusteId, TermiDto dto) {
         Peruste peruste = perusteet.findOne(perusteId);
         assertExists(peruste, "Perustetta ei ole olemassa");
-        Termi current = termisto.findOne(dto.getId());
+        Termi current = termisto.findById(dto.getId()).orElse(null);
         assertExists(current, "Päivitettävää tietoa ei ole olemassa");
         mapper.map(dto, current);
         termisto.save(current);
@@ -74,7 +74,7 @@ public class TermistoServiceImpl implements TermistoService {
 
     @Override
     public void deleteTermi(Long perusteId, Long id) {
-        Termi termi = termisto.findOne(id);
+        Termi termi = termisto.findById(id).orElse(null);
         termisto.delete(termi);
         muokkausTietoService.addMuokkaustieto(perusteId, new HistoriaTapahtumaAuditointitiedoilla(termi.getId(), termi.getTermi(), NavigationType.termi), MuokkausTapahtuma.POISTO);
 

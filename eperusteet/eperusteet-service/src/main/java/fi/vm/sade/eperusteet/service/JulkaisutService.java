@@ -62,9 +62,6 @@ public interface JulkaisutService {
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void nollaaJulkaisuTila(Long perusteId);
 
-    @PreAuthorize("isAuthenticated()")
-    void saveJulkaisuPerusteTila(JulkaisuPerusteTila julkaisuPerusteTila);
-
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     int seuraavaVapaaJulkaisuNumero(long perusteId);
 

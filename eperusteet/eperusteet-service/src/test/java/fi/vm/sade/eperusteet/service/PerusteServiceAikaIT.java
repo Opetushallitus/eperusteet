@@ -128,7 +128,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
 
     @Test
     public void testGetAll() {
-        Page<PerusteHakuDto> perusteet = perusteService.getAll(new PageRequest(0, 10), Kieli.FI.toString());
+        Page<PerusteHakuDto> perusteet = perusteService.getAll(PageRequest.of(0, 10), Kieli.FI.toString());
         assertEquals(7, perusteet.getTotalElements());
     }
 
@@ -177,15 +177,15 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         PerusteQuery pquery = new PerusteQuery();
         pquery.setKoulutustyyppi(Arrays.asList("koulutustyyppi_15"));
 
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
 
         pquery.setKieli(Collections.singleton("FI"));
-        perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
 
         pquery.setKieli(kielet.stream().map(k -> k.toString()).collect(Collectors.toSet()));
-        perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
 
         assertEquals(1, perusteet.getTotalElements());
     }
@@ -198,7 +198,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         pquery.setVoimassaolo(false);
         pquery.setSiirtyma(false);
         pquery.setPoistunut(false);
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }
 
@@ -210,7 +210,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         pquery.setVoimassaolo(true);
         pquery.setSiirtyma(false);
         pquery.setPoistunut(false);
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertEquals(5, perusteet.getTotalElements());
     }
 
@@ -222,7 +222,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         pquery.setVoimassaolo(false);
         pquery.setSiirtyma(true);
         pquery.setPoistunut(false);
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }
 
@@ -234,7 +234,7 @@ public class PerusteServiceAikaIT extends AbstractIntegrationTest {
         pquery.setVoimassaolo(false);
         pquery.setSiirtyma(false);
         pquery.setPoistunut(true);
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertEquals(1, perusteet.getTotalElements());
     }
 }

@@ -23,7 +23,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiOppaineMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiTarkasteleDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.OppaineKurssiTreeStructureDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
@@ -55,7 +55,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/perusteet/{perusteId}/lukiokoulutus")
+@RequestMapping("/api/perusteet/{perusteId}/lukiokoulutus")
 @InternalApi
 public class LukiokoulutuksenPerusteenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(LukiokoulutuksenPerusteenSisaltoController.class);

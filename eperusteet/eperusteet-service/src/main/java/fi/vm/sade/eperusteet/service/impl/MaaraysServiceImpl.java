@@ -87,8 +87,8 @@ public class MaaraysServiceImpl implements MaaraysService {
             query.setLuonnos(false);
         }
 
-        Pageable pageable = new PageRequest(query.getSivu(), query.getSivukoko(),
-                new Sort(query.getJarjestys(), query.getJarjestysTapa()));
+        Pageable pageable = PageRequest.of(query.getSivu(), query.getSivukoko(),
+                Sort.by(query.getJarjestys(), query.getJarjestysTapa()));
         return maaraysRepository.haeMaaraykset(
                 query.getNimi(),
                 query.getKieli(),
@@ -127,8 +127,8 @@ public class MaaraysServiceImpl implements MaaraysService {
     @Override
     @IgnorePerusteUpdateCheck
     public MaaraysDto getMaarays(Long id) {
-        Maarays maarays = maaraysRepository.findOne(id);
-        MaaraysDto maaraysDto = dtoMapper.map(maaraysRepository.findOne(id), MaaraysDto.class);
+        Maarays maarays = maaraysRepository.findById(id).orElseThrow();
+        MaaraysDto maaraysDto = dtoMapper.map(maaraysRepository.findById(id).orElse(null), MaaraysDto.class);
 
         if (SecurityUtil.isAuthenticated() && maarays.getMuokkaaja() != null) {
             maaraysDto.setMuokkaajaKayttaja(kayttajanTietoService.hae(maarays.getMuokkaaja()));
@@ -181,7 +181,7 @@ public class MaaraysServiceImpl implements MaaraysService {
     @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public MaaraysDto updateMaarays(MaaraysDto maaraysDto) {
-        if (maaraysRepository.findOne(maaraysDto.getId()) == null) {
+        if (maaraysRepository.findById(maaraysDto.getId()).orElse(null) == null) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }
 
@@ -221,8 +221,8 @@ public class MaaraysServiceImpl implements MaaraysService {
                 .map(MaaraysLiiteDto::getId)
                 .collect(Collectors.toList());
 
-        Maarays maarays = maaraysRepository.findOne(maaraysDto.getId());
-        maaraysLiiteRepository.delete(maarays.getLiitteet().values().stream()
+        Maarays maarays = maaraysRepository.findById(maaraysDto.getId()).orElseThrow();
+        maaraysLiiteRepository.deleteAll(maarays.getLiitteet().values().stream()
                 .map(MaaraysKieliLiitteet::getLiitteet)
                 .flatMap(Collection::stream)
                 .filter(liite -> !uudetLiitteet.contains(liite.getId()))
@@ -233,17 +233,17 @@ public class MaaraysServiceImpl implements MaaraysService {
     @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public void deleteMaarays(Long id, Long perusteId) {
-        if (maaraysRepository.findOne(id) == null) {
+        if (maaraysRepository.findById(id).orElse(null) == null) {
             throw new BusinessRuleViolationException("maaraysta-ei-loydy");
         }
 
-        Maarays maarays = maaraysRepository.findOne(id);
-        maaraysLiiteRepository.delete(maarays.getLiitteet().values().stream()
+        Maarays maarays = maaraysRepository.findById(id).orElseThrow();
+        maaraysLiiteRepository.deleteAll(maarays.getLiitteet().values().stream()
                 .map(MaaraysKieliLiitteet::getLiitteet)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList()));
 
-        maaraysRepository.delete(id);
+        maaraysRepository.deleteById(id);
     }
 
     @Override
@@ -281,13 +281,13 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Override
     public MaaraysLiiteDto getLiite(UUID uuid) {
-        return dtoMapper.map(maaraysLiiteRepository.findOne(uuid), MaaraysLiiteDto.class);
+        return dtoMapper.map(maaraysLiiteRepository.findById(uuid).orElse(null), MaaraysLiiteDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     public void exportLiite(UUID id, OutputStream os) throws SQLException, IOException {
-        MaaraysLiite liite = maaraysLiiteRepository.findOne(id);
+        MaaraysLiite liite = maaraysLiiteRepository.findById(id).orElseThrow();
         try (InputStream is = liite.getData().getBinaryStream()) {
             IOUtils.copy(is, os);
         }

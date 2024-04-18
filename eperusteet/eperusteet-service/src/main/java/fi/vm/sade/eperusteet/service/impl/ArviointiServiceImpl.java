@@ -29,7 +29,7 @@ public class ArviointiServiceImpl implements ArviointiService{
 
     @Override
     public ArviointiDto findById(Long id) {
-        return dtoMapper.map(arviointiRepository.findOne(id), ArviointiDto.class);
+        return dtoMapper.map(arviointiRepository.findById(id).orElse(null), ArviointiDto.class);
     }
 
     @Override

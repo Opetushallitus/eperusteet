@@ -74,19 +74,31 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
     @Getter
     @Setter
     @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name="yl_opetuksen_tavoite_yl_keskeinen_sisaltoalue",
+            joinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "sisaltoalueet_id"))
     private Set<KeskeinenSisaltoalue> sisaltoalueet = new HashSet<>();
 
     @Getter
     @Setter
     @ManyToMany
+    @JoinTable(name="yl_opetuksen_tavoite_yl_laajaalainen_osaaminen",
+            joinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "laajattavoitteet_id"))
     private Set<LaajaalainenOsaaminen> laajattavoitteet = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name="yl_opetuksen_tavoite_yl_tavoitteen_arviointi",
+            joinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "arvioinninkohteet_id"))
     private Set<TavoitteenArviointi> arvioinninkohteet = new HashSet<>();
 
     @Getter
     @Setter
     @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name="yl_opetuksen_tavoite_yl_kohdealue",
+            joinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id"),
+            inverseJoinColumns = @JoinColumn(name = "kohdealueet_id"))
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     @Getter

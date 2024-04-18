@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.repository.version;
 
 import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Propagation;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 @NoRepositoryBean
 public interface JpaWithVersioningRepository<T, ID extends Serializable> extends JpaRepository<T, ID> {
@@ -63,4 +65,8 @@ public interface JpaWithVersioningRepository<T, ID extends Serializable> extends
      */
     int getLatestRevisionId();
 
+    default T findOne(ID id) {
+        return findById(id).orElse(null);
+    }
+    
 }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RakenneRepository extends JpaWithVersioningRepository<RakenneModuuli, Long> {
-    @Query("SELECT s.rakenne.id FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
-    public Long getRakenneIdWithPerusteAndSuoritustapa(Long perusteId, Suoritustapakoodi suoritustapakoodi);
+    @Query("SELECT distinct s.rakenne.id FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
+    Long getRakenneIdWithPerusteAndSuoritustapa(Long perusteId, Suoritustapakoodi suoritustapakoodi);
 }

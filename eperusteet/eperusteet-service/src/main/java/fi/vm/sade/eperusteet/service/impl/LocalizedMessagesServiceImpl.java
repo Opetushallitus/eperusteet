@@ -13,7 +13,7 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.stereotype.Service;
 
 @Service
-public final class LocalizedMessagesServiceImpl implements LocalizedMessagesService {
+public class LocalizedMessagesServiceImpl implements LocalizedMessagesService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LocalizedMessagesServiceImpl.class);
 

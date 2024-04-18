@@ -15,7 +15,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.*;
 import io.swagger.annotations.Api;
@@ -49,7 +49,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
-@RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Perusteet")
 public class PerusteController {
 
@@ -66,7 +66,7 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     public Page<PerusteInfoDto> getAllPerusteetInfo(PerusteQuery pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findByInfo(p, pquery);
     }
 
@@ -129,7 +129,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "osaamisalaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
     })
     public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findJulkinenBy(p, pquery);
     }
 
@@ -161,7 +161,7 @@ public class PerusteController {
             @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
     })
     public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
-        PageRequest p = new PageRequest(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
+        PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         return service.findByInternal(p, pquery);
     }
 

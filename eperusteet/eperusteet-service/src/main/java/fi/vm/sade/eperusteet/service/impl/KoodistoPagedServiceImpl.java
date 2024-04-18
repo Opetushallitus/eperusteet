@@ -44,6 +44,6 @@ public class KoodistoPagedServiceImpl implements KoodistoPagedService {
             list = koodistoList.subList(startItem, toIndex);
         }
 
-        return new PageImpl<KoodistoKoodiDto>(list, new PageRequest(koodistoPageDto.getSivu(), koodistoPageDto.getSivukoko()), koodistoList.size());
+        return new PageImpl<KoodistoKoodiDto>(list, PageRequest.of(koodistoPageDto.getSivu(), koodistoPageDto.getSivukoko()), koodistoList.size());
     }
 }

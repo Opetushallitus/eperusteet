@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/poistettusisalto", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/poistettusisalto", produces = "application/json;charset=UTF-8")
 @Api(value = "PoistettuSisalto")
 public class PoistettuSisaltoController {
 

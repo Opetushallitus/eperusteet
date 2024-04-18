@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.resource.AbstractLockController;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.yl.LukioAihekokonaisuudetLockContext;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
         LukioAihekokonaisuudetLockController.BASE + "/lukko",
 })
 public class LukioAihekokonaisuudetLockController extends AbstractLockController<LukioAihekokonaisuudetLockContext> {
-    public static final String BASE = "/perusteet/{perusteId}/lukiokoulutus/aihekokonaisuudet";
+    public static final String BASE = "/api/perusteet/{perusteId}/lukiokoulutus/aihekokonaisuudet";
 
     @Autowired
     @LockCtx(LukioAihekokonaisuudetLockContext.class)

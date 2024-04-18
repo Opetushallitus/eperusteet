@@ -26,7 +26,7 @@ public class TutkinnonOsaRepositoryImpl implements TutkinnonOsaRepositoryCustom 
         TypedQuery<Long> countQuery = getCountQuery(queryDto);
         TypedQuery<TutkinnonOsa> query = getQuery(queryDto);
         if (page != null) {
-            query.setFirstResult(page.getOffset());
+            query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
             query.setMaxResults(page.getPageSize());
         }
         return new PageImpl<>(

@@ -20,7 +20,7 @@ public class SuosikkiServiceImpl implements SuosikkiService {
 
     @Override
     public SuosikkiDto get(Long suosikkiId) {
-        return mapper.map(suosikki.findOne(suosikkiId), SuosikkiDto.class);
+        return mapper.map(suosikki.findById(suosikkiId).orElse(null), SuosikkiDto.class);
     }
 
 }

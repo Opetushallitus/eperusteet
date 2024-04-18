@@ -80,7 +80,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
     @Before
     public void setup() {
         PerusteprojektiDto projektiDto = testUtils.createPerusteprojekti();
-        projekti = perusteprojektiRepository.findOne(projektiDto.getId());
+        projekti = perusteprojektiRepository.findById(projektiDto.getId()).orElseThrow();
         peruste = projekti.getPeruste();
         suoritustapa = peruste.getSuoritustapa(Suoritustapakoodi.REFORMI);
         rakenne = suoritustapa.getRakenne();
@@ -393,7 +393,7 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         ppldto.setReforminMukainen(true);
         PerusteprojektiDto perusteprojektiDto = perusteprojektiService.save(ppldto);
 
-        Perusteprojekti pp = perusteprojektiRepository.findOne(perusteprojektiDto.getId());
+        Perusteprojekti pp = perusteprojektiRepository.findById(perusteprojektiDto.getId()).orElseThrow();
         Peruste peruste = pp.getPeruste();
 
         final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.REFORMI);

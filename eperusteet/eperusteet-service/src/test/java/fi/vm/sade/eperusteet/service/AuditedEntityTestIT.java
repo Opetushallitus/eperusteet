@@ -161,7 +161,8 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertEquals("Ammattitaitovaatimuskohdealue", ammattitaitovaatimuksenKohdealue.getOtsikko().get(Kieli.FI));
         assertEquals(1, ammattitaitovaatimuksenKohdealue.getVaatimuksenKohteet().size());
 
-        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getVersio(tutkinnonOsaDto.getId(), 3);
+        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getVersio(tutkinnonOsaDto.getId(), 12);
+
         assertNotNull(tutkinnonOsaDto);
         assertNotNull(tutkinnonOsaDto.getArviointi());
         assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot());
@@ -169,7 +170,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertEquals("lisätiedot, muokattu", tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
         LOG.debug(tutkinnonOsaDto.getArviointi().getLisatiedot().getTekstit().get(Kieli.FI));
 
-        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getVersio(tutkinnonOsaDto.getId(), 2);
+        tutkinnonOsaDto = (TutkinnonOsaDto) perusteenOsaService.getVersio(tutkinnonOsaDto.getId(), 8);
         assertNotNull(tutkinnonOsaDto);
         assertNotNull(tutkinnonOsaDto.getArviointi());
         assertNotNull(tutkinnonOsaDto.getArviointi().getLisatiedot());

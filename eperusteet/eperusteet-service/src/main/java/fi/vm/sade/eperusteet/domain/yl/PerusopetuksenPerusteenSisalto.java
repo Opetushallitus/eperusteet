@@ -34,7 +34,9 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    @JoinTable
+    @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_laajaalainen_osaaminen",
+            joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id"),
+            inverseJoinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id"))
     private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new HashSet<>();
 
     @Getter
@@ -46,7 +48,9 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     private Set<Oppiaine> oppiaineet = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable
+    @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_vlkokonaisuus",
+            joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id"),
+            inverseJoinColumns = @JoinColumn(name = "vuosiluokkakokonaisuudet_id"))
     private Set<VuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet = new HashSet<>();
 
     public void addLaajaalainenosaaminen(LaajaalainenOsaaminen osaaminen) {

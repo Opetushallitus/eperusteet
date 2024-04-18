@@ -1,13 +1,13 @@
 package fi.vm.sade.eperusteet.resource;
 
 import com.google.common.base.Throwables;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysKevytDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysLiiteDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysQueryDto;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.MaaraysService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -41,7 +41,7 @@ import java.util.UUID;
 @Slf4j
 @InternalApi
 @RestController
-@RequestMapping(value = "/maaraykset")
+@RequestMapping(value = "/api/maaraykset")
 @Api("Maaraykset")
 public class MaaraysController {
 

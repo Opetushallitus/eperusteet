@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -29,7 +30,9 @@ public class MaaraysKieliLiitteet {
     private Long id;
 
     @OneToMany
-    @JoinTable(name = "maarays_kieli_liite")
+    @JoinTable(name = "maarays_kieli_liite",
+            joinColumns = @JoinColumn(name = "maarays_kieli_liitteet_id"),
+            inverseJoinColumns = @JoinColumn(name = "liitteet_id"))
     private List<MaaraysLiite> liitteet = new ArrayList<>();
 
     public MaaraysKieliLiitteet copy() {

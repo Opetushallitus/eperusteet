@@ -37,21 +37,27 @@ public class OsaamiskokonaisuusOsaAlueTasoKuvaus extends AbstractAuditedReferenc
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_ed_keh_osaa_join")
+    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_ed_keh_osaa_join",
+            joinColumns = @JoinColumn(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_id"),
+            inverseJoinColumns = @JoinColumn(name = "edelleenKehittyvatOsaamiset_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> edelleenKehittyvatOsaamiset = new ArrayList<>();
 
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_osaamiset_join")
+    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_osaamiset_join",
+            joinColumns = @JoinColumn(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_id"),
+            inverseJoinColumns = @JoinColumn(name = "osaamiset_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> osaamiset = new ArrayList<>();
 
     @OrderColumn
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_edistynytkuvaus_join")
+    @JoinTable(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_edistynytkuvaus_join",
+            joinColumns = @JoinColumn(name = "osaamiskokonaisuus_osa_alue_tasokuvaus_id"),
+            inverseJoinColumns = @JoinColumn(name = "edistynytOsaaminenKuvaukset_id"))
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private List<TekstiPalanen> edistynytOsaaminenKuvaukset = new ArrayList<>();
 

@@ -60,7 +60,7 @@ public class PerusteprojektiTestUtils {
 
     public Peruste createPeruste() {
         PerusteprojektiDto projektiDto = createPerusteprojekti();
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiDto.getId());
+        Perusteprojekti projekti = perusteprojektiRepository.findById(projektiDto.getId()).orElseThrow();
         return projekti.getPeruste();
     }
     
@@ -180,7 +180,7 @@ public class PerusteprojektiTestUtils {
     }
 
     public void asetaProjektiTilaan(Long projektiId, ProjektiTila tila) {
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(projektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(projektiId).orElse(null);
         projekti.setTila(tila);
         if (tila.isOneOf(ProjektiTila.POISTETTU)) {
             projekti.getPeruste().asetaTila(PerusteTila.POISTETTU);

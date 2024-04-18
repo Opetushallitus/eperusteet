@@ -3,7 +3,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.KieliConverter;
 import fi.vm.sade.eperusteet.service.TiedoteService;
 import io.swagger.annotations.Api;
@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -28,8 +29,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
+/**
+ *
+ * @author mikkom
+ */
 @RestController
-@RequestMapping("/tiedotteet")
+@RequestMapping("/api/tiedotteet")
 @Api(value = "Tiedotteet", description = "Tiedotteiden hallinta")
 public class TiedoteController {
 
@@ -43,7 +48,7 @@ public class TiedoteController {
 
     @ApiOperation(value = "tiedotteiden haku")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
+            @ApiImplicitParam(name = "sivu", dataType = "integer", paramType = "query"),
             @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "tiedotteen kieli"),
             @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query", value = "hae nimellä"),
@@ -62,7 +67,7 @@ public class TiedoteController {
     public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery tquery) {
         return tiedoteService.findBy(tquery);
     }
-
+    
     @RequestMapping(method = GET)
     public List<TiedoteDto> getAllTiedotteet(
             @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,

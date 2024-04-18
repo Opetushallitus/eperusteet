@@ -14,6 +14,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -41,7 +42,9 @@ public class OsaamiskokonaisuusPaaAlue extends PerusteenOsa {
     private TekstiPalanen kuvaus;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name = "osaamiskokonaisuus_paa_alue_osa_alueet_join")
+    @JoinTable(name = "osaamiskokonaisuus_paa_alue_osa_alueet_join",
+            joinColumns = @JoinColumn(name = "osaamiskokonaisuus_paa_alue_id"),
+            inverseJoinColumns = @JoinColumn(name = "osaAlueet_id"))
     @OrderColumn
     private List<OsaamiskokonaisuusOsaAlue> osaAlueet = new ArrayList<>();
 

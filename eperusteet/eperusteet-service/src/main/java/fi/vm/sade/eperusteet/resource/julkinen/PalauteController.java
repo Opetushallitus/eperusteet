@@ -18,7 +18,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping("/palaute")
+@RequestMapping("/api/palaute")
 @Api(value = "Palautteet")
 public class PalauteController {
 

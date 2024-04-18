@@ -164,7 +164,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         transactionTemplate.execute(transactionStatus -> {
-                Perusteprojekti pp = repo.findOne(projektiDto.getId());
+                Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
                 assertTrue(status.isVaihtoOk());
                 assertThat(status.getValidoinnit()).isEmpty();
                 assertTrue(pp.getTila().equals(ProjektiTila.KOMMENTOINTI));
@@ -188,7 +188,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertTrue(status.isVaihtoOk());
             assertThat(status.getValidoinnit()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
@@ -214,7 +214,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertTrue(status.isVaihtoOk());
             assertThat(status.getValidoinnit()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VIIMEISTELY));
@@ -246,7 +246,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertFalse(status.isVaihtoOk());
             assertNotNull(status.getValidoinnit());
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
@@ -272,7 +272,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertFalse(status.isVaihtoOk());
             assertNotNull(status.getValidoinnit());
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
@@ -299,7 +299,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertTrue(status.isVaihtoOk());
             assertThat(status.getValidoinnit()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.LAADINTA));
@@ -327,7 +327,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertTrue(status.isVaihtoOk());
             assertThat(status.getValidoinnit()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
@@ -361,7 +361,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertTrue(status.isVaihtoOk());
             assertThat(status.getValidoinnit()).isEmpty();
             assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
@@ -397,7 +397,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertFalse(status.isVaihtoOk());
             assertNotNull(status.getValidoinnit());
             assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
@@ -428,7 +428,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertFalse(status.isVaihtoOk());
             assertNotNull(status.getValidoinnit());
             assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
@@ -463,7 +463,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertFalse(status.isVaihtoOk());
             assertNotNull(status.getValidoinnit());
             assertTrue(pp.getTila().equals(ProjektiTila.JULKAISTU));
@@ -492,7 +492,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         transactionTemplate = new TransactionTemplate(transactionManager);
         // the code in this method executes in a transactional context
         Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findOne(projektiDto.getId());
+            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
             assertFalse(status.isVaihtoOk());
             assertEquals(12, status.getValidoinnit().size());
             assertEquals(pp.getTila(), ProjektiTila.VIIMEISTELY);
@@ -536,7 +536,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
         ppldto.setNimi(TestUtils.uniikkiString());
         PerusteprojektiDto projektiDto = service.save(ppldto);
 
-        Perusteprojekti pp = repo.findOne(projektiDto.getId());
+        Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
         pp.setTila(tila);
         repo.save(pp);
 
@@ -563,7 +563,7 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     private void asetaPerusteenOsanTila(Long id, PerusteTila tila) {
-        PerusteenOsa osa = perusteenOsaRepo.findOne(id);
+        PerusteenOsa osa = perusteenOsaRepo.findById(id).orElse(null);
         osa.asetaTila(tila);
         perusteenOsaRepo.save(osa);
     }

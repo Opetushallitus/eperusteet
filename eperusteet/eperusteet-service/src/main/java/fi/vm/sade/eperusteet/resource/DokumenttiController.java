@@ -4,7 +4,7 @@ import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.pdf.PdfData;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.resource.config.InternalApi;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
@@ -25,7 +25,7 @@ import java.util.Base64;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/dokumentit")
+@RequestMapping("/api/dokumentit")
 @InternalApi
 @Api(value = "Dokumentit")
 public class DokumenttiController {

@@ -20,7 +20,7 @@ public interface PerusteprojektiPermissionRepository extends JpaRepository<Perus
     List<Pair<String, ProjektiTila>> findByPeruste(Long perusteId);
 
     @Query("SELECT DISTINCT NEW fi.vm.sade.eperusteet.service.util.Pair(pp.ryhmaOid, pp.tila) FROM Perusteprojekti pp WHERE pp.id = ?1")
-    List<Pair<String, ProjektiTila>> findById(Long perusteProjektiId);
+    List<Pair<String, ProjektiTila>> findByPairId(Long perusteProjektiId);
 
     @Query("SELECT DISTINCT pp FROM PerusteenosanProjekti pp WHERE pp.id = ?1")
     Set<PerusteenosanProjekti> findAllByPerusteenosa(Long perusteenOsaId);

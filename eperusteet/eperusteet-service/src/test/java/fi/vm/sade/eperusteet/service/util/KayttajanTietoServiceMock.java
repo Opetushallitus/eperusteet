@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("test")
+@Profile({"test", "docker"})
 public class KayttajanTietoServiceMock implements KayttajanTietoService {
 
     @Override

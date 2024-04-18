@@ -3,7 +3,7 @@ package fi.vm.sade.eperusteet.service.util;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import fi.vm.sade.eperusteet.resource.config.ReferenceNamingStrategy;
+import fi.vm.sade.eperusteet.config.ReferenceNamingStrategy;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Component;

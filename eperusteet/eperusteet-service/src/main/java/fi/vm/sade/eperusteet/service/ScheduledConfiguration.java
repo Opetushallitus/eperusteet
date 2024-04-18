@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
 import fi.vm.sade.eperusteet.service.exception.SkeduloituAjoAlreadyRunningException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,7 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Configuration
 @EnableScheduling
-@Profile("!test")
+@Profile("!test & !docker")
 public class ScheduledConfiguration implements SchedulingConfigurer {
     private static final Logger log = LoggerFactory.getLogger(ScheduledConfiguration.class);
     private static AtomicBoolean isUpdating = new AtomicBoolean(false);
@@ -39,6 +40,9 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
 
     @Autowired
     private JulkinenService julkinenService;
+
+    @Autowired
+    private OphSessionMappingStorage ophSessionMappingStorage;
 
     ScheduledConfiguration() {
         scheduler = new ThreadPoolTaskScheduler();
@@ -65,6 +69,10 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     public void cacheJulkinenEtusivu() {
         maintenanceService.clearCache("julkinenEtusivu");
         julkinenService.getJulkisivuDatat();
+    }
+    @Scheduled(cron = "0 0 * * * *")
+    public void cleanOphSession() {
+        ophSessionMappingStorage.clean();
     }
 
     @Scheduled(cron = "0 0 3 * * *")

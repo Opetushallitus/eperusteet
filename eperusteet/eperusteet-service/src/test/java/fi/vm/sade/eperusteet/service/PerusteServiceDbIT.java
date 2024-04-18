@@ -48,7 +48,7 @@ public class PerusteServiceDbIT extends AbstractDbIntegrationTest {
     @Test
     @Rollback
     public void testGet() {
-        Page<PerusteHakuDto> perusteet = perusteService.getAll(new PageRequest(0, 10), "fi");
+        Page<PerusteHakuDto> perusteet = perusteService.getAll(PageRequest.of(0, 10), "fi");
         assertEquals(perusteet.getTotalElements(), 1);
     }
 

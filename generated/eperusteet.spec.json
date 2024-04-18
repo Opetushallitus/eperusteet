@@ -4,7 +4,6 @@
     "version" : "v1",
     "title" : "ePerusteet api"
   },
-  "basePath" : "/api",
   "tags" : [ {
     "name" : "Aikataulut"
   }, {
@@ -27,8 +26,6 @@
     "name" : "Koodisto"
   }, {
     "name" : "Liitetiedostot"
-  }, {
-    "name" : "Logout"
   }, {
     "name" : "Lokalisointi"
   }, {
@@ -94,7 +91,7 @@
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
-    "/aikataulu/{perusteId}" : {
+    "/api/aikataulu/{perusteId}" : {
       "put" : {
         "tags" : [ "Aikataulut" ],
         "operationId" : "updatePerusteenAikataulut",
@@ -122,7 +119,7 @@
         }
       }
     },
-    "/ammattitaitovaatimukset/perusteet" : {
+    "/api/ammattitaitovaatimukset/perusteet" : {
       "get" : {
         "tags" : [ "Ammattitaitovaatimukset" ],
         "summary" : "Ammattitaitovaatimuksen sisältävien perusteiden haku",
@@ -156,7 +153,7 @@
         }
       }
     },
-    "/ammattitaitovaatimukset/tutkinnonosat" : {
+    "/api/ammattitaitovaatimukset/tutkinnonosat" : {
       "get" : {
         "tags" : [ "Ammattitaitovaatimukset" ],
         "summary" : "Ammattitaitovaatimuksen sisältävien perusteiden haku",
@@ -195,7 +192,7 @@
         }
       }
     },
-    "/arviointiasteikot" : {
+    "/api/arviointiasteikot" : {
       "get" : {
         "tags" : [ "Arviointiasteikot" ],
         "operationId" : "getAll",
@@ -238,7 +235,7 @@
         }
       }
     },
-    "/arviointiasteikot/{id}" : {
+    "/api/arviointiasteikot/{id}" : {
       "get" : {
         "tags" : [ "Arviointiasteikot" ],
         "operationId" : "get",
@@ -259,7 +256,7 @@
         }
       }
     },
-    "/dokumentit" : {
+    "/api/dokumentit" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "getLatestDokumentti",
@@ -331,7 +328,7 @@
         }
       }
     },
-    "/dokumentit/julkaistu" : {
+    "/api/dokumentit/julkaistu" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "getJulkaistuDokumentti",
@@ -363,7 +360,7 @@
         }
       }
     },
-    "/dokumentit/kvliite" : {
+    "/api/dokumentit/kvliite" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "getKVLiiteDokumenttiId",
@@ -395,7 +392,7 @@
         }
       }
     },
-    "/dokumentit/pdf/data/{dokumenttiId}" : {
+    "/api/dokumentit/pdf/data/{dokumenttiId}" : {
       "post" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "savePdfData",
@@ -423,7 +420,7 @@
         }
       }
     },
-    "/dokumentit/pdf/tila/{dokumenttiId}" : {
+    "/api/dokumentit/pdf/tila/{dokumenttiId}" : {
       "post" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "updateDokumenttiTila",
@@ -451,7 +448,7 @@
         }
       }
     },
-    "/dokumentit/peruste" : {
+    "/api/dokumentit/peruste" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "getDokumenttiId",
@@ -483,7 +480,7 @@
         }
       }
     },
-    "/dokumentit/{dokumenttiId}/tila" : {
+    "/api/dokumentit/{dokumenttiId}/tila" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "queryDokumenttiTila",
@@ -504,7 +501,7 @@
         }
       }
     },
-    "/dokumentit/{fileName}" : {
+    "/api/dokumentit/{fileName}" : {
       "get" : {
         "tags" : [ "Dokumentit" ],
         "operationId" : "getDokumentti",
@@ -525,7 +522,7 @@
         }
       }
     },
-    "/external/osaamismerkit" : {
+    "/api/external/osaamismerkit" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Hae kaikki julkaistut osaamismerkit",
@@ -545,7 +542,7 @@
         }
       }
     },
-    "/external/osaamismerkki/koodi/{uri}" : {
+    "/api/external/osaamismerkki/koodi/{uri}" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Hae julkaistu osaamismerkki koodiurilla",
@@ -568,7 +565,7 @@
         }
       }
     },
-    "/external/peruste/koulutuskoodi/{koodi}/**" : {
+    "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
@@ -593,7 +590,7 @@
         }
       }
     },
-    "/external/peruste/yto/**" : {
+    "/api/external/peruste/yto/**" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
@@ -610,7 +607,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}" : {
+    "/api/external/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen tietojen haku",
@@ -635,7 +632,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/**" : {
+    "/api/external/peruste/{perusteId}/**" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen tietojen haku tarkalla sisältörakenteella",
@@ -660,7 +657,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/osaamisalakuvaukset" : {
+    "/api/external/peruste/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen osaamisalakuvauksien haku",
@@ -694,7 +691,7 @@
         }
       }
     },
-    "/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
+    "/api/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteen osan haku",
@@ -725,7 +722,7 @@
         }
       }
     },
-    "/external/perusteet" : {
+    "/api/external/perusteet" : {
       "get" : {
         "tags" : [ "External" ],
         "summary" : "Perusteiden haku",
@@ -814,7 +811,7 @@
         }
       }
     },
-    "/geneerinenarviointi" : {
+    "/api/geneerinenarviointi" : {
       "get" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
         "operationId" : "getAllGeneerisetArviointiasteikot",
@@ -851,7 +848,7 @@
         }
       }
     },
-    "/geneerinenarviointi/julkaistu" : {
+    "/api/geneerinenarviointi/julkaistu" : {
       "get" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
         "operationId" : "getAllGeneerisetArviointiasteikotJulkaistu",
@@ -868,7 +865,7 @@
         }
       }
     },
-    "/geneerinenarviointi/{id}" : {
+    "/api/geneerinenarviointi/{id}" : {
       "get" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
         "operationId" : "getOneGeneerisetArviointiasteikko",
@@ -931,7 +928,7 @@
         }
       }
     },
-    "/geneerinenarviointi/{id}/kaikki" : {
+    "/api/geneerinenarviointi/{id}/kaikki" : {
       "get" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
         "operationId" : "getOneGeneerisetArviointiasteikkoKaikki",
@@ -952,7 +949,7 @@
         }
       }
     },
-    "/geneerinenarviointi/{id}/kopioi" : {
+    "/api/geneerinenarviointi/{id}/kopioi" : {
       "post" : {
         "tags" : [ "GeneerinenArviointiasteikko" ],
         "operationId" : "kopioiGeneerinenArviontiasteikko",
@@ -973,7 +970,7 @@
         }
       }
     },
-    "/julkinen/etusivu" : {
+    "/api/julkinen/etusivu" : {
       "get" : {
         "tags" : [ "julkinen" ],
         "operationId" : "getOpetussuunnitelmatJaPerusteet",
@@ -1010,7 +1007,7 @@
         }
       }
     },
-    "/kayttajatieto" : {
+    "/api/kayttajatieto" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
         "operationId" : "getKirjautunutKayttajat",
@@ -1024,7 +1021,7 @@
         }
       }
     },
-    "/kayttajatieto/{oid}" : {
+    "/api/kayttajatieto/{oid}" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
         "operationId" : "getKayttaja",
@@ -1045,7 +1042,7 @@
         }
       }
     },
-    "/kayttajatieto/{oid}/perusteprojektit" : {
+    "/api/kayttajatieto/{oid}/perusteprojektit" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
         "operationId" : "getKayttajanPerusteprojektit",
@@ -1069,7 +1066,7 @@
         }
       }
     },
-    "/kayttajatieto/{oid}/perusteprojektit/{projektiId}" : {
+    "/api/kayttajatieto/{oid}/perusteprojektit/{projektiId}" : {
       "get" : {
         "tags" : [ "Kayttajat" ],
         "operationId" : "getKayttajanPerusteprojekti",
@@ -1096,7 +1093,7 @@
         }
       }
     },
-    "/koodisto/relaatio/sisaltyy-alakoodit/{koodi}" : {
+    "/api/koodisto/relaatio/sisaltyy-alakoodit/{koodi}" : {
       "get" : {
         "tags" : [ "Koodisto" ],
         "operationId" : "alarelaatio",
@@ -1119,7 +1116,7 @@
         }
       }
     },
-    "/koodisto/relaatio/sisaltyy-ylakoodit/{koodi}" : {
+    "/api/koodisto/relaatio/sisaltyy-ylakoodit/{koodi}" : {
       "get" : {
         "tags" : [ "Koodisto" ],
         "operationId" : "ylarelaatio",
@@ -1142,7 +1139,7 @@
         }
       }
     },
-    "/koodisto/sivutettu/{koodisto}" : {
+    "/api/koodisto/sivutettu/{koodisto}" : {
       "get" : {
         "tags" : [ "Koodisto" ],
         "operationId" : "kaikkiSivutettuna",
@@ -1167,7 +1164,7 @@
         }
       }
     },
-    "/koodisto/{koodisto}" : {
+    "/api/koodisto/{koodisto}" : {
       "get" : {
         "tags" : [ "Koodisto" ],
         "operationId" : "kaikki",
@@ -1220,7 +1217,7 @@
         }
       }
     },
-    "/koodisto/{koodisto}/{koodi}" : {
+    "/api/koodisto/{koodisto}/{koodi}" : {
       "get" : {
         "tags" : [ "Koodisto" ],
         "operationId" : "yksi",
@@ -1245,7 +1242,7 @@
         }
       }
     },
-    "/koulutusalat" : {
+    "/api/koulutusalat" : {
       "get" : {
         "operationId" : "getAllKoulutusalat",
         "responses" : {
@@ -1261,27 +1258,7 @@
         }
       }
     },
-    "/logout" : {
-      "get" : {
-        "tags" : [ "Logout" ],
-        "operationId" : "logoutGet",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
-          }
-        }
-      },
-      "post" : {
-        "tags" : [ "Logout" ],
-        "operationId" : "logoutPOST",
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
-          }
-        }
-      }
-    },
-    "/lokalisointi/eperusteet-opintopolku" : {
+    "/api/lokalisointi/eperusteet-opintopolku" : {
       "get" : {
         "tags" : [ "Lokalisointi" ],
         "operationId" : "getAllKaannokset",
@@ -1304,7 +1281,7 @@
         }
       }
     },
-    "/lokalisointi/kaannokset" : {
+    "/api/lokalisointi/kaannokset" : {
       "get" : {
         "tags" : [ "Lokalisointi" ],
         "operationId" : "getEperusteKaannokset",
@@ -1341,7 +1318,7 @@
         }
       }
     },
-    "/lokalisointi/kaannokset/{palvelu}/{kieli}" : {
+    "/api/lokalisointi/kaannokset/{palvelu}/{kieli}" : {
       "get" : {
         "tags" : [ "Lokalisointi" ],
         "operationId" : "getPalveluKaannokset",
@@ -1369,7 +1346,7 @@
         }
       }
     },
-    "/maaraykset" : {
+    "/api/maaraykset" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaaraykset",
@@ -1476,7 +1453,7 @@
         }
       }
     },
-    "/maaraykset/asiasanat" : {
+    "/api/maaraykset/asiasanat" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getAsiasanat",
@@ -1496,7 +1473,7 @@
         }
       }
     },
-    "/maaraykset/koulutustyypit" : {
+    "/api/maaraykset/koulutustyypit" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaarayksienKoulutustyypit",
@@ -1513,7 +1490,7 @@
         }
       }
     },
-    "/maaraykset/liite" : {
+    "/api/maaraykset/liite" : {
       "post" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "uploadMaaraysLiite",
@@ -1535,7 +1512,7 @@
         }
       }
     },
-    "/maaraykset/liite/{fileName}" : {
+    "/api/maaraykset/liite/{fileName}" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaaraysLiite",
@@ -1557,7 +1534,7 @@
         }
       }
     },
-    "/maaraykset/nimet" : {
+    "/api/maaraykset/nimet" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaarayksetNimet",
@@ -1574,7 +1551,7 @@
         }
       }
     },
-    "/maaraykset/peruste/{perusteId}" : {
+    "/api/maaraykset/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaaraysPerusteella",
@@ -1595,7 +1572,7 @@
         }
       }
     },
-    "/maaraykset/peruste/{perusteId}/muutosmaaraykset" : {
+    "/api/maaraykset/peruste/{perusteId}/muutosmaaraykset" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getPerusteenMuutosmaaraykset",
@@ -1619,7 +1596,7 @@
         }
       }
     },
-    "/maaraykset/peruste/{perusteId}/muutosmaaraykset/julkaistut" : {
+    "/api/maaraykset/peruste/{perusteId}/muutosmaaraykset/julkaistut" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getPerusteenJulkaistutMuutosmaaraykset",
@@ -1643,7 +1620,7 @@
         }
       }
     },
-    "/maaraykset/{id}" : {
+    "/api/maaraykset/{id}" : {
       "get" : {
         "tags" : [ "Maaraykset" ],
         "operationId" : "getMaarays",
@@ -1712,7 +1689,7 @@
         }
       }
     },
-    "/maintenance/ammattitaitovaatimuskoodisto" : {
+    "/api/maintenance/ammattitaitovaatimuskoodisto" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "pushAllAmmattitaitovaatimuksetToKoodisto",
@@ -1723,7 +1700,24 @@
         }
       }
     },
-    "/maintenance/arvioinninammattitaitovaatimukset" : {
+    "/api/maintenance/amosaa/koulutustoimija/paivitys" : {
+      "get" : {
+        "tags" : [ "Maintenance" ],
+        "operationId" : "paivitaAmosaaKoulutustoimijat",
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "201" : {
+            "description" : ""
+          }
+        }
+      }
+    },
+    "/api/maintenance/arvioinninammattitaitovaatimukset" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "createArvioinninAmmattitaitovaatimukset",
@@ -1734,7 +1728,7 @@
         }
       }
     },
-    "/maintenance/cacheclear/{cache}" : {
+    "/api/maintenance/cacheclear/{cache}" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "clearCache",
@@ -1751,7 +1745,7 @@
         }
       }
     },
-    "/maintenance/export/{perusteId}" : {
+    "/api/maintenance/export/{perusteId}" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "viePeruste",
@@ -1773,7 +1767,7 @@
         }
       }
     },
-    "/maintenance/export/{perusteId}/json" : {
+    "/api/maintenance/export/{perusteId}/json" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "viePerusteJson",
@@ -1795,7 +1789,7 @@
         }
       }
     },
-    "/maintenance/import" : {
+    "/api/maintenance/import" : {
       "post" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "tuoPeruste",
@@ -1806,7 +1800,7 @@
         }
       }
     },
-    "/maintenance/julkaise/{perusteId}" : {
+    "/api/maintenance/julkaise/{perusteId}" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "teeMaintenanceJulkaisu",
@@ -1829,7 +1823,7 @@
         }
       }
     },
-    "/maintenance/julkaisut" : {
+    "/api/maintenance/julkaisut" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "teeJulkaisut",
@@ -1864,7 +1858,7 @@
         }
       }
     },
-    "/maintenance/lisaaAmmattitaitovaatimukset2019/{perusteId}" : {
+    "/api/maintenance/lisaaAmmattitaitovaatimukset2019/{perusteId}" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "lisaaAmmattitaitovaatimuksetPerusteelle",
@@ -1882,7 +1876,7 @@
         }
       }
     },
-    "/maintenance/maarayksetperusteille" : {
+    "/api/maintenance/maarayksetperusteille" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "maarayksetperusteille",
@@ -1899,7 +1893,7 @@
         }
       }
     },
-    "/maintenance/puuttuvatosaamisalakuvaukset" : {
+    "/api/maintenance/puuttuvatosaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "addMissingOsaamisalakuvaukset",
@@ -1910,7 +1904,7 @@
         }
       }
     },
-    "/maintenance/virheellisetAmmattitaitovaatimukset" : {
+    "/api/maintenance/virheellisetAmmattitaitovaatimukset" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "virheellisetAmmattitaitovaatimukset",
@@ -1927,7 +1921,7 @@
         }
       }
     },
-    "/maintenance/yllapito" : {
+    "/api/maintenance/yllapito" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "getYllapidot",
@@ -1944,7 +1938,7 @@
         }
       }
     },
-    "/maintenance/yllapito/update" : {
+    "/api/maintenance/yllapito/update" : {
       "post" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "updateYllapito",
@@ -1966,7 +1960,7 @@
         }
       }
     },
-    "/maintenance/yllapito/{key}" : {
+    "/api/maintenance/yllapito/{key}" : {
       "get" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "getYllapito",
@@ -1986,7 +1980,7 @@
         }
       }
     },
-    "/muokkaustieto/muutokset/{perusteId}/{revision}" : {
+    "/api/muokkaustieto/muutokset/{perusteId}/{revision}" : {
       "get" : {
         "tags" : [ "Muokkaustieto" ],
         "operationId" : "getPerusteenVersionMuokkaustiedot",
@@ -2016,7 +2010,7 @@
         }
       }
     },
-    "/muokkaustieto/{perusteId}" : {
+    "/api/muokkaustieto/{perusteId}" : {
       "get" : {
         "tags" : [ "Muokkaustieto" ],
         "operationId" : "getPerusteenMuokkausTiedotWithLuomisaika",
@@ -2052,7 +2046,7 @@
         }
       }
     },
-    "/muutmaaraykset" : {
+    "/api/muutmaaraykset" : {
       "get" : {
         "tags" : [ "MuutMaaraykset" ],
         "operationId" : "getMuutMaaraykset",
@@ -2089,7 +2083,7 @@
         }
       }
     },
-    "/muutmaaraykset/{id}" : {
+    "/api/muutmaaraykset/{id}" : {
       "post" : {
         "tags" : [ "MuutMaaraykset" ],
         "operationId" : "updateMuuMaarays",
@@ -2133,7 +2127,7 @@
         }
       }
     },
-    "/opintoalat" : {
+    "/api/opintoalat" : {
       "get" : {
         "operationId" : "getAllOpintoalat",
         "responses" : {
@@ -2149,7 +2143,7 @@
         }
       }
     },
-    "/oppaat" : {
+    "/api/oppaat" : {
       "get" : {
         "tags" : [ "Oppaat" ],
         "summary" : "oppaiden haku",
@@ -2244,7 +2238,7 @@
         }
       }
     },
-    "/oppaat/projektit" : {
+    "/api/oppaat/projektit" : {
       "get" : {
         "tags" : [ "Oppaat" ],
         "operationId" : "getAllOppaatKevyt",
@@ -2265,7 +2259,7 @@
         }
       }
     },
-    "/osaamismerkit/haku" : {
+    "/api/osaamismerkit/haku" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "summary" : "osaamismerkkien haku",
@@ -2344,7 +2338,7 @@
         }
       }
     },
-    "/osaamismerkit/haku/julkiset" : {
+    "/api/osaamismerkit/haku/julkiset" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "summary" : "julkisten osaamismerkkien haku",
@@ -2390,7 +2384,7 @@
         }
       }
     },
-    "/osaamismerkit/kategoria/delete/{id}" : {
+    "/api/osaamismerkit/kategoria/delete/{id}" : {
       "delete" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "deleteKategoria",
@@ -2408,7 +2402,7 @@
         }
       }
     },
-    "/osaamismerkit/kategoria/update" : {
+    "/api/osaamismerkit/kategoria/update" : {
       "post" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "updateKategoria",
@@ -2430,7 +2424,7 @@
         }
       }
     },
-    "/osaamismerkit/kategoriat" : {
+    "/api/osaamismerkit/kategoriat" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "getKategoriat",
@@ -2447,7 +2441,7 @@
         }
       }
     },
-    "/osaamismerkit/kategoriat/julkiset" : {
+    "/api/osaamismerkit/kategoriat/julkiset" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "getJulkisetKategoriat",
@@ -2470,7 +2464,7 @@
         }
       }
     },
-    "/osaamismerkit/osaamismerkki/delete/{id}" : {
+    "/api/osaamismerkit/osaamismerkki/delete/{id}" : {
       "delete" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "deleteOsaamismerkki",
@@ -2488,7 +2482,7 @@
         }
       }
     },
-    "/osaamismerkit/osaamismerkki/koodi/{koodi}" : {
+    "/api/osaamismerkit/osaamismerkki/koodi/{koodi}" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "getJulkinenOsaamismerkkiByKoodi",
@@ -2509,7 +2503,7 @@
         }
       }
     },
-    "/osaamismerkit/osaamismerkki/update" : {
+    "/api/osaamismerkit/osaamismerkki/update" : {
       "post" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "updateOsaamismerkki",
@@ -2531,7 +2525,7 @@
         }
       }
     },
-    "/osaamismerkit/osaamismerkki/{id}" : {
+    "/api/osaamismerkit/osaamismerkki/{id}" : {
       "get" : {
         "tags" : [ "Osaamismerkit" ],
         "operationId" : "getJulkinenOsaamismerkkiById",
@@ -2552,7 +2546,7 @@
         }
       }
     },
-    "/palaute" : {
+    "/api/palaute" : {
       "get" : {
         "tags" : [ "Palautteet" ],
         "operationId" : "palautteet",
@@ -2592,7 +2586,7 @@
         }
       }
     },
-    "/palaute/status" : {
+    "/api/palaute/status" : {
       "get" : {
         "tags" : [ "Palautteet" ],
         "operationId" : "palauteStatukset",
@@ -2615,7 +2609,7 @@
         }
       }
     },
-    "/palaute/update" : {
+    "/api/palaute/update" : {
       "post" : {
         "tags" : [ "Palautteet" ],
         "operationId" : "updatePalaute",
@@ -2637,7 +2631,7 @@
         }
       }
     },
-    "/perusteenosat" : {
+    "/api/perusteenosat" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsatAllWithName",
@@ -2660,7 +2654,7 @@
         }
       }
     },
-    "/perusteenosat/peruste/{perusteId}/viite/{viiteId}/" : {
+    "/api/perusteenosat/peruste/{perusteId}/viite/{viiteId}/" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsaViiteLapsilla",
@@ -2687,7 +2681,7 @@
         }
       }
     },
-    "/perusteenosat/tutkinnonosaviite/{viiteId}/lukko" : {
+    "/api/perusteenosat/tutkinnonosaviite/{viiteId}/lukko" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "checkLockByTutkinnonOsaViite",
@@ -2780,7 +2774,7 @@
         }
       }
     },
-    "/perusteenosat/viite/{id}/versio/{versioId}" : {
+    "/api/perusteenosat/viite/{id}/versio/{versioId}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsaVersioByViite",
@@ -2807,7 +2801,7 @@
         }
       }
     },
-    "/perusteenosat/viite/{id}/versiot" : {
+    "/api/perusteenosat/viite/{id}/versiot" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsaViiteVersiot",
@@ -2831,7 +2825,7 @@
         }
       }
     },
-    "/perusteenosat/viite/{viiteId}" : {
+    "/api/perusteenosat/viite/{viiteId}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsatByViite",
@@ -2852,7 +2846,7 @@
         }
       }
     },
-    "/perusteenosat/viite/{viiteId}/sisalto" : {
+    "/api/perusteenosat/viite/{viiteId}/sisalto" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsatByViiteSisalto",
@@ -2873,7 +2867,7 @@
         }
       }
     },
-    "/perusteenosat/{id}" : {
+    "/api/perusteenosat/{id}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsa",
@@ -2937,7 +2931,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/lukko" : {
+    "/api/perusteenosat/{id}/lukko" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "checkPerusteenOsaLock",
@@ -3030,7 +3024,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalue" : {
+    "/api/perusteenosat/{id}/osaalue" : {
       "post" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "addTutkinnonOsaOsaAlue",
@@ -3061,7 +3055,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalue/{osaAlueId}" : {
+    "/api/perusteenosat/{id}/osaalue/{osaAlueId}" : {
       "delete" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "removeOsaAlue",
@@ -3085,7 +3079,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalue/{osaAlueId}/osaamistavoite" : {
+    "/api/perusteenosat/{id}/osaalue/{osaAlueId}/osaamistavoite" : {
       "post" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "addOsaamistavoite",
@@ -3122,7 +3116,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}" : {
+    "/api/perusteenosat/{id}/osaalue/{osaAlueId}/osaamistavoite/{osaamistavoiteId}" : {
       "post" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "updateOsaamistavoite",
@@ -3190,7 +3184,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalue/{osaAlueId}/osaamistavoitteet" : {
+    "/api/perusteenosat/{id}/osaalue/{osaAlueId}/osaamistavoitteet" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getOsaamistavoitteet",
@@ -3220,7 +3214,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalueet" : {
+    "/api/perusteenosat/{id}/osaalueet" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getTutkinnonOsaOsaAlueet",
@@ -3244,7 +3238,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/osaalueet/versio/{versioId}" : {
+    "/api/perusteenosat/{id}/osaalueet/versio/{versioId}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getTutkinnonOsaOsaAlueetVersio",
@@ -3274,7 +3268,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/palauta/{versioId}" : {
+    "/api/perusteenosat/{id}/palauta/{versioId}" : {
       "post" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "revertPerusteenOsaToVersio",
@@ -3301,7 +3295,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/projektit" : {
+    "/api/perusteenosat/{id}/projektit" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getOwningProjektit",
@@ -3326,7 +3320,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/versio/{versioId}" : {
+    "/api/perusteenosat/{id}/versio/{versioId}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsaVersio",
@@ -3353,7 +3347,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/versiot" : {
+    "/api/perusteenosat/{id}/versiot" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsaVersiot",
@@ -3377,7 +3371,7 @@
         }
       }
     },
-    "/perusteenosat/{id}/viite/{viiteId}/peruste/{perusteId}" : {
+    "/api/perusteenosat/{id}/viite/{viiteId}/peruste/{perusteId}" : {
       "post" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "updatePerusteenOsaPerusteella",
@@ -3417,7 +3411,7 @@
         }
       }
     },
-    "/perusteenosat/{viiteId}/osaalue/{osaAlueId}" : {
+    "/api/perusteenosat/{viiteId}/osaalue/{osaAlueId}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getTutkinnonOsaOsaAlue",
@@ -3476,7 +3470,7 @@
         }
       }
     },
-    "/perusteet" : {
+    "/api/perusteet" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteiden sisäinen haku",
@@ -3656,7 +3650,7 @@
         }
       }
     },
-    "/perusteet/aikataululliset" : {
+    "/api/perusteet/aikataululliset" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Perusteet julkisilla aikatauluillla",
@@ -3695,7 +3689,7 @@
         }
       }
     },
-    "/perusteet/amosaaops" : {
+    "/api/perusteet/amosaaops" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Paikallisen puolen ammatillista laadintaa tukevat perusteet",
@@ -3715,7 +3709,7 @@
         }
       }
     },
-    "/perusteet/amosaapohja" : {
+    "/api/perusteet/amosaapohja" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Amosaa jaetun tutkinnon pohja",
@@ -3732,7 +3726,7 @@
         }
       }
     },
-    "/perusteet/diaari" : {
+    "/api/perusteet/diaari" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen yksilöintietojen haku diaarinumerolla",
@@ -3755,7 +3749,7 @@
         }
       }
     },
-    "/perusteet/info" : {
+    "/api/perusteet/info" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getAllPerusteetInfo",
@@ -3770,7 +3764,7 @@
         }
       }
     },
-    "/perusteet/internal" : {
+    "/api/perusteet/internal" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteiden sisäinen haku",
@@ -3942,7 +3936,7 @@
         }
       }
     },
-    "/perusteet/internal/julkaistut" : {
+    "/api/perusteet/internal/julkaistut" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getJulkaistutPerusteet",
@@ -3960,7 +3954,7 @@
         }
       }
     },
-    "/perusteet/internal/pohjat" : {
+    "/api/perusteet/internal/pohjat" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getPohjaperusteet",
@@ -3984,7 +3978,7 @@
         }
       }
     },
-    "/perusteet/julkaistutkoulutustyypit" : {
+    "/api/perusteet/julkaistutkoulutustyypit" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Julkaistut perustekoulutustyypit annetulla kielellä",
@@ -4011,7 +4005,7 @@
         }
       }
     },
-    "/perusteet/julkaistutkoulutustyyppimaarat" : {
+    "/api/perusteet/julkaistutkoulutustyyppimaarat" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Julkaistut perustekoulutustyypit annetulla kielellä",
@@ -4037,7 +4031,7 @@
         }
       }
     },
-    "/perusteet/julkaisut" : {
+    "/api/perusteet/julkaisut" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "summary" : "julkaistujen perusteiden haku",
@@ -4141,7 +4135,7 @@
         }
       }
     },
-    "/perusteet/kooste" : {
+    "/api/perusteet/kooste" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getPerusteKooste",
@@ -4159,7 +4153,7 @@
         }
       }
     },
-    "/perusteet/lukumaara" : {
+    "/api/perusteet/lukumaara" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Perusteiden koulutustyyppikohtaiset lukumäärät",
@@ -4189,7 +4183,7 @@
         }
       }
     },
-    "/perusteet/opaskoodikiinnitys/{koodiUri}" : {
+    "/api/perusteet/opaskoodikiinnitys/{koodiUri}" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "Oppaat joihin kiinnitetty koodiUri",
@@ -4215,7 +4209,7 @@
         }
       }
     },
-    "/perusteet/oppaiden" : {
+    "/api/perusteet/oppaiden" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getAllOppaidenPerusteet",
@@ -4233,7 +4227,7 @@
         }
       }
     },
-    "/perusteet/perusopetus" : {
+    "/api/perusteet/perusopetus" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getAllPerusopetus",
@@ -4251,7 +4245,7 @@
         }
       }
     },
-    "/perusteet/tekstikappale" : {
+    "/api/perusteet/tekstikappale" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getPerusteetWithTekstikappaleKoodi",
@@ -4275,7 +4269,7 @@
         }
       }
     },
-    "/perusteet/uusimmat" : {
+    "/api/perusteet/uusimmat" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getUusimmatPerusteet",
@@ -4299,7 +4293,7 @@
         }
       }
     },
-    "/perusteet/valittavatkielet" : {
+    "/api/perusteet/valittavatkielet" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getValittavatKielet",
@@ -4317,7 +4311,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}" : {
+    "/api/perusteet/{perusteId}" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen tietojen haku",
@@ -4365,7 +4359,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/laajaalaiset" : {
+    "/api/perusteet/{perusteId}/aipeopetus/laajaalaiset" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeOsaamiset",
@@ -4441,7 +4435,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/laajaalaiset/{laajaalainenId}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/laajaalaiset/{laajaalainenId}" : {
       "put" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "updateAipeOsaaminen",
@@ -4497,7 +4491,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/laajaalaiset/{laajalainenId}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/laajaalaiset/{laajalainenId}" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeOsaaminen",
@@ -4524,7 +4518,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getVaiheet",
@@ -4600,7 +4594,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getVaihe",
@@ -4687,7 +4681,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/kohdealueet" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/kohdealueet" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeKohdealueet",
@@ -4717,7 +4711,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeOppiaineet",
@@ -4811,7 +4805,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeOppiaine",
@@ -4916,7 +4910,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeKurssit",
@@ -5028,7 +5022,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/kurssit/{kurssiId}" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeKurssi",
@@ -5145,7 +5139,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/oppimaarat" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeOppimaarat",
@@ -5257,7 +5251,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/palauta/{rev}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/palauta/{rev}" : {
       "post" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "revertAipeOppiaine",
@@ -5296,7 +5290,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/versiot" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/oppiaineet/{oppiaineId}/versiot" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getAipeOppiaineVersio",
@@ -5332,7 +5326,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/palauta/{rev}" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/palauta/{rev}" : {
       "post" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "revertVaihe",
@@ -5365,7 +5359,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/versiot" : {
+    "/api/perusteet/{perusteId}/aipeopetus/vaiheet/{vaiheId}/versiot" : {
       "get" : {
         "tags" : [ "Aipeopetuksensisalto" ],
         "operationId" : "getVaiheVersio",
@@ -5395,7 +5389,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisu/liitteet/{fileName}" : {
+    "/api/perusteet/{perusteId}/julkaisu/liitteet/{fileName}" : {
       "get" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "getJulkaisuLiite",
@@ -5423,7 +5417,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisu/muutoksia" : {
+    "/api/perusteet/{perusteId}/julkaisu/muutoksia" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "julkaisemattomiaMuutoksia",
@@ -5445,7 +5439,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisu/update" : {
+    "/api/perusteet/{perusteId}/julkaisu/update" : {
       "post" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "updateJulkaisu",
@@ -5471,7 +5465,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisut" : {
+    "/api/perusteet/{perusteId}/julkaisut" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "getJulkaisut",
@@ -5496,7 +5490,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisut/julkinen" : {
+    "/api/perusteet/{perusteId}/julkaisut/julkinen" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "getJulkisetJulkaisut",
@@ -5521,7 +5515,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/julkaisut/kaikki" : {
+    "/api/perusteet/{perusteId}/julkaisut/kaikki" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "getKaikkiJulkaisut",
@@ -5546,7 +5540,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kaikki" : {
+    "/api/perusteet/{perusteId}/kaikki" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen kaikkien tietojen haku",
@@ -5581,7 +5575,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kaikki/tutkinnonosat" : {
+    "/api/perusteet/{perusteId}/kaikki/tutkinnonosat" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen tutkinnon osien haku julkaistusta datasta",
@@ -5613,7 +5607,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kaikki/tutkinnonosaviitteet" : {
+    "/api/perusteet/{perusteId}/kaikki/tutkinnonosaviitteet" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen tutkinnon osien viitteiden haku julkaistusta datasta",
@@ -5646,7 +5640,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/koodita" : {
+    "/api/perusteet/{perusteId}/koodita" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "kooditaPeruste",
@@ -5665,7 +5659,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kuvat" : {
+    "/api/perusteet/{perusteId}/kuvat" : {
       "get" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "getAllKuvat",
@@ -5730,7 +5724,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kuvat/{fileName}" : {
+    "/api/perusteet/{perusteId}/kuvat/{fileName}" : {
       "get" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "getKuva",
@@ -5758,7 +5752,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kuvat/{id}" : {
+    "/api/perusteet/{perusteId}/kuvat/{id}" : {
       "delete" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "delete",
@@ -5782,7 +5776,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/kvliite" : {
+    "/api/perusteet/{perusteId}/kvliite" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getKvLiite",
@@ -5825,7 +5819,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/liitteet" : {
+    "/api/perusteet/{perusteId}/liitteet" : {
       "get" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "getAllLiitteet",
@@ -5883,7 +5877,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/liitteet/b64" : {
+    "/api/perusteet/{perusteId}/liitteet/b64" : {
       "post" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "uploadLiiteBase64",
@@ -5919,7 +5913,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/liitteet/{fileName}" : {
+    "/api/perusteet/{perusteId}/liitteet/{fileName}" : {
       "get" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "getLiite",
@@ -5947,7 +5941,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lisatieto" : {
+    "/api/perusteet/{perusteId}/lisatieto" : {
       "post" : {
         "tags" : [ "Liitetiedostot" ],
         "operationId" : "paivitaLisatieto",
@@ -5975,7 +5969,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/laajaalaiset" : {
+    "/api/perusteet/{perusteId}/lops2019/laajaalaiset" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "getLaajaAlainenOsaaminenKokonaisuus",
@@ -6022,7 +6016,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "getOppiaineet",
@@ -6081,7 +6075,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/uusi" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/uusi" : {
       "post" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "addOppiaine",
@@ -6112,7 +6106,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/{id}" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/{id}" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "getOppiaine",
@@ -6193,7 +6187,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/{id}/palautamoduulit" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/{id}/palautamoduulit" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "palautaOppiaineenModuulit",
@@ -6217,7 +6211,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/moduulit/{moduuliId}" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/moduulit/{moduuliId}" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "getModuuli",
@@ -6316,7 +6310,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/versiot" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/versiot" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "getOppiaineenVersiot",
@@ -6346,7 +6340,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/versiot/{rev}" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/versiot/{rev}" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "getOppiaineenVersioData",
@@ -6379,7 +6373,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/versiot/{rev}/palauta" : {
+    "/api/perusteet/{perusteId}/lops2019/oppiaineet/{oppiaineId}/versiot/{rev}/palauta" : {
       "get" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "palautaOppiaineenSisalto",
@@ -6409,7 +6403,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/sisalto" : {
+    "/api/perusteet/{perusteId}/lops2019/sisalto" : {
       "post" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "addSisalto",
@@ -6440,7 +6434,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lops2019/sisalto/{id}" : {
+    "/api/perusteet/{perusteId}/lops2019/sisalto/{id}" : {
       "delete" : {
         "tags" : [ "Lops2019" ],
         "operationId" : "deleteSisalto",
@@ -6464,7 +6458,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/lukiokoulutus/julkinen/oppiainerakenne" : {
+    "/api/perusteet/{perusteId}/lukiokoulutus/julkinen/oppiainerakenne" : {
       "get" : {
         "tags" : [ "Lukioperusteen julkiset tiedot" ],
         "operationId" : "getOppiainePuuRakenne",
@@ -6485,7 +6479,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/meta" : {
+    "/api/perusteet/{perusteId}/meta" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen tietojen haku",
@@ -6509,7 +6503,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/navigaatio" : {
+    "/api/perusteet/{perusteId}/navigaatio" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getNavigation",
@@ -6536,7 +6530,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/navigaatio/public" : {
+    "/api/perusteet/{perusteId}/navigaatio/public" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getNavigationPublic",
@@ -6574,7 +6568,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/nollaajulkaisutila" : {
+    "/api/perusteet/{perusteId}/nollaajulkaisutila" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "nollaaJulkaisuTila",
@@ -6593,7 +6587,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/osaamisalakuvaukset" : {
+    "/api/perusteet/{perusteId}/osaamisalakuvaukset" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen osaamisalojen kuvaukset koulutustarjontaa varten",
@@ -6626,7 +6620,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/osaamisalat" : {
+    "/api/perusteet/{perusteId}/osaamisalat" : {
       "post" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "updateOsaamisalat",
@@ -6655,7 +6649,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset" : {
+    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOsaamiset",
@@ -6708,7 +6702,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}" : {
+    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOsaaminen",
@@ -6789,7 +6783,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot/" : {
+    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot/" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOsaaminenVersiot",
@@ -6819,7 +6813,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot/{versioId}" : {
+    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot/{versioId}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOsaaminenVersiolla",
@@ -6852,7 +6846,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko" : {
+    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko" : {
       "get" : {
         "tags" : [ "PerusopetusLaajaAlainenOsaaminenLukko" ],
         "operationId" : "checkLockPerusopetusLao",
@@ -6931,7 +6925,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getPerusopetusOppiaineet",
@@ -6984,7 +6978,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/jarjestys" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/jarjestys" : {
       "post" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "updateOppiaineJarjestys",
@@ -7012,7 +7006,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getPerusopetusOppiaine",
@@ -7093,7 +7087,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getKohdealueet",
@@ -7156,7 +7150,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet/update" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet/update" : {
       "post" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "updateKohdealueet",
@@ -7196,7 +7190,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet/{kohdealueId}" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/kohdealueet/{kohdealueId}" : {
       "delete" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "deleteOppiaineenKohdealue",
@@ -7226,7 +7220,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/oppimaarat" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/oppimaarat" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getPerusopetusOppimaarat",
@@ -7256,7 +7250,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/versiot/{revisio}" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/versiot/{revisio}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOppiaineRevisiolla",
@@ -7289,7 +7283,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/vuosiluokkakokonaisuudet" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{id}/vuosiluokkakokonaisuudet" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOppiaineenVuosiluokkaKokonaisuudet",
@@ -7354,7 +7348,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/lukko" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/lukko" : {
       "get" : {
         "tags" : [ "PerusopetusOppiaineLukko" ],
         "operationId" : "checkLockPerusopetusOppiaine",
@@ -7433,7 +7427,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{id}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getOppiaineenVuosiluokkakokonaisuus",
@@ -7532,7 +7526,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko" : {
+    "/api/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko" : {
       "get" : {
         "tags" : [ "PerusopetusOppiaineVlkLukko" ],
         "operationId" : "checkLockPerusopetusOppiaineVlk",
@@ -7629,7 +7623,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/sisalto" : {
+    "/api/perusteet/{perusteId}/perusopetus/sisalto" : {
       "post" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "addPerusopetusSisalto",
@@ -7660,7 +7654,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/sisalto/{id}" : {
+    "/api/perusteet/{perusteId}/perusopetus/sisalto/{id}" : {
       "post" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "updateSisaltoViite",
@@ -7713,7 +7707,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/sisalto/{id}/lapset" : {
+    "/api/perusteet/{perusteId}/perusopetus/sisalto/{id}/lapset" : {
       "post" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "addPerusopetuksenSisaltoLapsi",
@@ -7747,7 +7741,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/sisalto/{id}/muokattavakopio" : {
+    "/api/perusteet/{perusteId}/perusopetus/sisalto/{id}/muokattavakopio" : {
       "post" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "kloonaaPerusteenTekstiKappale",
@@ -7774,7 +7768,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet" : {
+    "/api/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getVuosiluokkaKokonaisuudet",
@@ -7827,7 +7821,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{id}" : {
+    "/api/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{id}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getVuosiluokkaKokonaisuus",
@@ -7908,7 +7902,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{id}/oppiaineet" : {
+    "/api/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{id}/oppiaineet" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
         "operationId" : "getVuosiluokkaKokonaisuudenOppiaineet",
@@ -7938,7 +7932,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko" : {
+    "/api/perusteet/{perusteId}/perusopetus/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko" : {
       "get" : {
         "tags" : [ "PerusopetusVuosiluokkaKokonaisuusLukko" ],
         "operationId" : "checkLockPerusopetusVlk",
@@ -8017,7 +8011,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/projektitila" : {
+    "/api/perusteet/{perusteId}/projektitila" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteprojektin tila",
@@ -8042,7 +8036,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getSuoritustapa",
@@ -8069,7 +8063,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getRakenne",
@@ -8133,7 +8127,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne/palauta/{versioId}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne/palauta/{versioId}" : {
       "post" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "revertRakenneVersio",
@@ -8166,7 +8160,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne/versio/{versioId}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne/versio/{versioId}" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getRakenneVersio",
@@ -8199,7 +8193,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne/versiot" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/rakenne/versiot" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getRakenneVersiot",
@@ -8228,7 +8222,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getPerusteenTutkinnonOsat",
@@ -8328,7 +8322,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/jarjesta" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/jarjesta" : {
       "post" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "sortPerusteenOsaViitteet",
@@ -8368,7 +8362,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/koodi/{koodiUri}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/koodi/{koodiUri}" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getTutkinnonOsaViiteByKoodi",
@@ -8397,7 +8391,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/tilat" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/tilat" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getTutkinnonOsienTilat",
@@ -8427,7 +8421,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/tuo" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/tuo" : {
       "put" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "attachTutkinnonOsat",
@@ -8461,7 +8455,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/versiot/{versio}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/versiot/{versio}" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getTutkinnonOsaVersiot",
@@ -8497,7 +8491,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}" : {
       "post" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "updateTutkinnonOsa",
@@ -8565,7 +8559,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}/muokattavakopio" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{osanId}/muokattavakopio" : {
       "post" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "kloonaaTutkinnonOsa",
@@ -8598,7 +8592,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{viiteId}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapakoodi}/tutkinnonosat/{viiteId}" : {
       "get" : {
         "tags" : [ "TutkinnonRakenne" ],
         "operationId" : "getTutkinnonOsaViite",
@@ -8628,7 +8622,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto" : {
       "get" : {
         "tags" : [ "Sisallot" ],
         "operationId" : "getSuoritustapaSisaltoUUSI",
@@ -8728,7 +8722,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{id}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{id}" : {
       "post" : {
         "tags" : [ "Sisallot" ],
         "operationId" : "updateSisaltoViiteWithPost",
@@ -8828,7 +8822,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{id}/muokattavakopio" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{id}/muokattavakopio" : {
       "post" : {
         "tags" : [ "Sisallot" ],
         "operationId" : "kloonaaTekstiKappale",
@@ -8861,7 +8855,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{parentId}/lapsi/viitteella" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{parentId}/lapsi/viitteella" : {
       "post" : {
         "tags" : [ "Sisallot" ],
         "operationId" : "addSisaltoUusiLapsiViitteella",
@@ -8903,7 +8897,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{parentId}/lapsi/{childId}" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{parentId}/lapsi/{childId}" : {
       "post" : {
         "tags" : [ "Sisallot" ],
         "operationId" : "addSisaltoUusiLapsi",
@@ -8944,7 +8938,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/lapsi" : {
+    "/api/perusteet/{perusteId}/suoritustavat/{suoritustapa}/sisalto/{perusteenosaViiteId}/lapsi" : {
       "post" : {
         "tags" : [ "Sisallot" ],
         "operationId" : "addSisaltoLapsi",
@@ -8976,7 +8970,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/termisto" : {
+    "/api/perusteet/{perusteId}/termisto" : {
       "get" : {
         "tags" : [ "Termit" ],
         "operationId" : "getAllTermit",
@@ -9029,7 +9023,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/termisto/{avain}" : {
+    "/api/perusteet/{perusteId}/termisto/{avain}" : {
       "get" : {
         "tags" : [ "Termit" ],
         "operationId" : "getTermi",
@@ -9055,7 +9049,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/termisto/{id}" : {
+    "/api/perusteet/{perusteId}/termisto/{id}" : {
       "post" : {
         "tags" : [ "Termit" ],
         "operationId" : "updateTermi",
@@ -9111,7 +9105,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/tutkinnonosat/ammattitaitovaatimukset" : {
+    "/api/perusteet/{perusteId}/tutkinnonosat/ammattitaitovaatimukset" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getAmmattitaitovaatimukset",
@@ -9136,7 +9130,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/tutkinnonosat/ammattitaitovaatimuskoodisto" : {
+    "/api/perusteet/{perusteId}/tutkinnonosat/ammattitaitovaatimuskoodisto" : {
       "post" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "pushAmmattitaitovaatimuksetToKoodisto",
@@ -9161,7 +9155,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/tutkintonimikekoodit" : {
+    "/api/perusteet/{perusteId}/tutkintonimikekoodit" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "getTutkintonimikekoodit",
@@ -9240,7 +9234,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}" : {
+    "/api/perusteet/{perusteId}/tutkintonimikekoodit/{tutkintonimikeKoodiId}" : {
       "delete" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "removeTutkintonimikekoodi",
@@ -9268,7 +9262,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/tutkintonimikkeet" : {
+    "/api/perusteet/{perusteId}/tutkintonimikkeet" : {
       "post" : {
         "tags" : [ "Perusteet" ],
         "operationId" : "updateTutkintonimikkeet",
@@ -9297,7 +9291,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/version" : {
+    "/api/perusteet/{perusteId}/version" : {
       "get" : {
         "tags" : [ "Perusteet" ],
         "summary" : "perusteen uusin versio",
@@ -9321,7 +9315,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/viimeisinjulkaisuaika" : {
+    "/api/perusteet/{perusteId}/viimeisinjulkaisuaika" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "viimeisinJulkaisuAika",
@@ -9344,7 +9338,7 @@
         }
       }
     },
-    "/perusteet/{perusteId}/viimeisinjulkaisutila" : {
+    "/api/perusteet/{perusteId}/viimeisinjulkaisutila" : {
       "get" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "viimeisinJulkaisuTila",
@@ -9367,7 +9361,7 @@
         }
       }
     },
-    "/perusteet/{projektiId}/aktivoi/{revision}" : {
+    "/api/perusteet/{projektiId}/aktivoi/{revision}" : {
       "post" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "aktivoiJulkaisu",
@@ -9392,7 +9386,7 @@
         }
       }
     },
-    "/perusteet/{projektiId}/julkaisu" : {
+    "/api/perusteet/{projektiId}/julkaisu" : {
       "post" : {
         "tags" : [ "Julkaisut" ],
         "operationId" : "teeJulkaisu",
@@ -9418,7 +9412,7 @@
         }
       }
     },
-    "/perusteprojektit" : {
+    "/api/perusteprojektit" : {
       "post" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "addPerusteprojekti",
@@ -9443,7 +9437,7 @@
         }
       }
     },
-    "/perusteprojektit/diaarinumero/uniikki/{diaarinumero}" : {
+    "/api/perusteprojektit/diaarinumero/uniikki/{diaarinumero}" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiByDiaarinumero",
@@ -9460,7 +9454,7 @@
         }
       }
     },
-    "/perusteprojektit/info" : {
+    "/api/perusteprojektit/info" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getAllPerusteprojektit",
@@ -9477,7 +9471,7 @@
         }
       }
     },
-    "/perusteprojektit/oikeudet" : {
+    "/api/perusteprojektit/oikeudet" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektienOikeudet",
@@ -9513,7 +9507,7 @@
         }
       }
     },
-    "/perusteprojektit/omat" : {
+    "/api/perusteprojektit/omat" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getOmatPerusteprojektit",
@@ -9530,7 +9524,7 @@
         }
       }
     },
-    "/perusteprojektit/omat/julkaistut" : {
+    "/api/perusteprojektit/omat/julkaistut" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getOmatJulkaistutPerusteprojektit",
@@ -9547,7 +9541,7 @@
         }
       }
     },
-    "/perusteprojektit/perusteHaku" : {
+    "/api/perusteprojektit/perusteHaku" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getAllPerusteprojektitKevyt",
@@ -9561,7 +9555,7 @@
         }
       }
     },
-    "/perusteprojektit/pohja" : {
+    "/api/perusteprojektit/pohja" : {
       "post" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "addPerusteprojektiPohja",
@@ -9586,7 +9580,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}" : {
+    "/api/perusteprojektit/{id}" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojekti",
@@ -9630,7 +9624,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/jasenet" : {
+    "/api/perusteprojektit/{id}/jasenet" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiJasenet",
@@ -9654,7 +9648,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/jasenet/tiedot" : {
+    "/api/perusteprojektit/{id}/jasenet/tiedot" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getJasenetTiedot",
@@ -9678,7 +9672,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/oikeudet" : {
+    "/api/perusteprojektit/{id}/oikeudet" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiOikeudet",
@@ -9707,7 +9701,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/oikeudet/{perusteenOsaId}" : {
+    "/api/perusteprojektit/{id}/oikeudet/{perusteenOsaId}" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "omistaaPerusteprojektiOsan",
@@ -9734,7 +9728,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/perusteenosat/{pid}/tyoryhmat" : {
+    "/api/perusteprojektit/{id}/perusteenosat/{pid}/tyoryhmat" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektinTyoryhma",
@@ -9802,7 +9796,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/perusteenosientyoryhmat" : {
+    "/api/perusteprojektit/{id}/perusteenosientyoryhmat" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerustenosienTyoryhmat",
@@ -9826,7 +9820,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/projekti/avaa" : {
+    "/api/perusteprojektit/{id}/projekti/avaa" : {
       "post" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "avaaPerusteProjekti",
@@ -9844,7 +9838,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/projekti/tila/{tila}" : {
+    "/api/perusteprojektit/{id}/projekti/tila/{tila}" : {
       "post" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "updateProjektiTilaOnly",
@@ -9867,7 +9861,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/tila/{tila}" : {
+    "/api/perusteprojektit/{id}/tila/{tila}" : {
       "post" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "updatePerusteprojektiTila",
@@ -9897,7 +9891,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/tilat" : {
+    "/api/perusteprojektit/{id}/tilat" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiTilat",
@@ -9923,7 +9917,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/tyoryhma" : {
+    "/api/perusteprojektit/{id}/tyoryhma" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiTyoryhmat",
@@ -9979,7 +9973,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/tyoryhma/{nimi}" : {
+    "/api/perusteprojektit/{id}/tyoryhma/{nimi}" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiTyoryhmaByNimi",
@@ -10069,7 +10063,7 @@
         }
       }
     },
-    "/perusteprojektit/{id}/validoi" : {
+    "/api/perusteprojektit/{id}/validoi" : {
       "get" : {
         "tags" : [ "Perusteprojektit" ],
         "operationId" : "getPerusteprojektiValidointi",
@@ -10093,7 +10087,7 @@
         }
       }
     },
-    "/poistettusisalto/peruste/{perusteId}" : {
+    "/api/poistettusisalto/peruste/{perusteId}" : {
       "get" : {
         "tags" : [ "PoistettuSisalto" ],
         "operationId" : "getPoistetutSisallot",
@@ -10118,7 +10112,7 @@
         }
       }
     },
-    "/poistettusisalto/peruste/{perusteId}/palauta/{palautettavaId}" : {
+    "/api/poistettusisalto/peruste/{perusteId}/palauta/{palautettavaId}" : {
       "post" : {
         "tags" : [ "PoistettuSisalto" ],
         "operationId" : "palauta",
@@ -10143,7 +10137,7 @@
         }
       }
     },
-    "/tiedotteet" : {
+    "/api/tiedotteet" : {
       "get" : {
         "tags" : [ "Tiedotteet" ],
         "operationId" : "getAllTiedotteet",
@@ -10198,7 +10192,7 @@
         }
       }
     },
-    "/tiedotteet/haku" : {
+    "/api/tiedotteet/haku" : {
       "get" : {
         "tags" : [ "Tiedotteet" ],
         "summary" : "tiedotteiden haku",
@@ -10208,8 +10202,7 @@
           "name" : "sivu",
           "in" : "query",
           "required" : false,
-          "type" : "integer",
-          "format" : "int64"
+          "type" : "integer"
         }, {
           "name" : "sivukoko",
           "in" : "query",
@@ -10320,7 +10313,7 @@
         }
       }
     },
-    "/tiedotteet/{id}" : {
+    "/api/tiedotteet/{id}" : {
       "get" : {
         "tags" : [ "Tiedotteet" ],
         "operationId" : "getTiedote",
@@ -10383,7 +10376,7 @@
         }
       }
     },
-    "/tilastot/amosaa" : {
+    "/api/tilastot/amosaa" : {
       "get" : {
         "tags" : [ "Tilastot" ],
         "operationId" : "getAmosaaTilastot",
@@ -10400,7 +10393,7 @@
         }
       }
     },
-    "/tilastot/ylops" : {
+    "/api/tilastot/ylops" : {
       "get" : {
         "tags" : [ "Tilastot" ],
         "operationId" : "getYlopsTilastot",
@@ -10414,7 +10407,7 @@
         }
       }
     },
-    "/tutkinnonosat" : {
+    "/api/tutkinnonosat" : {
       "get" : {
         "tags" : [ "Tutkinnonosat" ],
         "summary" : "hae tutkinnon osia",
@@ -10450,7 +10443,7 @@
         }
       }
     },
-    "/tutkinnonosat/all" : {
+    "/api/tutkinnonosat/all" : {
       "get" : {
         "tags" : [ "Tutkinnonosat" ],
         "summary" : "hae tutkinnon osia",
@@ -10500,7 +10493,7 @@
         }
       }
     },
-    "/tutkinnonosat/kaikki/{koodiUri}" : {
+    "/api/tutkinnonosat/kaikki/{koodiUri}" : {
       "get" : {
         "tags" : [ "TutkinnonosatPrivate" ],
         "operationId" : "getTutkinnonOsaKaikkiDtoByKoodi",
@@ -10517,7 +10510,7 @@
         }
       }
     },
-    "/tutkinnonosat/koodi/uniikit" : {
+    "/api/tutkinnonosat/koodi/uniikit" : {
       "get" : {
         "tags" : [ "TutkinnonosatPrivate" ],
         "operationId" : "getTutkinnonOsaByKoodit",
@@ -10538,7 +10531,7 @@
         }
       }
     },
-    "/tutkinnonosat/koodi/uniikki/{koodiUri}" : {
+    "/api/tutkinnonosat/koodi/uniikki/{koodiUri}" : {
       "get" : {
         "tags" : [ "TutkinnonosatPrivate" ],
         "operationId" : "getTutkinnonOsaByKoodi",
@@ -10555,7 +10548,7 @@
         }
       }
     },
-    "/tutkinnonosat/palauta/viite/{id}/versio/{versioId}" : {
+    "/api/tutkinnonosat/palauta/viite/{id}/versio/{versioId}" : {
       "post" : {
         "tags" : [ "TutkinnonosatPrivate" ],
         "operationId" : "revertToVersio",
@@ -10582,7 +10575,7 @@
         }
       }
     },
-    "/tutkinnonosat/viite/{id}/versio/{versioId}" : {
+    "/api/tutkinnonosat/viite/{id}/versio/{versioId}" : {
       "get" : {
         "tags" : [ "TutkinnonosatPrivate" ],
         "operationId" : "getViiteVersio",
@@ -10609,7 +10602,7 @@
         }
       }
     },
-    "/tutkinnonosat/viite/{id}/versiot" : {
+    "/api/tutkinnonosat/viite/{id}/versiot" : {
       "get" : {
         "tags" : [ "TutkinnonosatPrivate" ],
         "operationId" : "getViiteVersiot",
@@ -10633,7 +10626,7 @@
         }
       }
     },
-    "/tutkinnonosat/{tutkinnonOsaId}/viitteet" : {
+    "/api/tutkinnonosat/{tutkinnonOsaId}/viitteet" : {
       "get" : {
         "tags" : [ "Tutkinnonosat" ],
         "summary" : "hae tutkinnon osiin liittyvät viitteet",
@@ -10659,7 +10652,7 @@
         }
       }
     },
-    "/tutkinnonosat/{viiteId}/osaalueet" : {
+    "/api/tutkinnonosat/{viiteId}/osaalueet" : {
       "post" : {
         "tags" : [ "OsaAlueet" ],
         "operationId" : "addOsaAlueV2",
@@ -10687,7 +10680,7 @@
         }
       }
     },
-    "/tutkinnonosat/{viiteId}/osaalueet/peruste/{perusteId}" : {
+    "/api/tutkinnonosat/{viiteId}/osaalueet/peruste/{perusteId}" : {
       "post" : {
         "tags" : [ "OsaAlueet" ],
         "operationId" : "addOsaAluePerusteella",
@@ -10721,7 +10714,7 @@
         }
       }
     },
-    "/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}" : {
+    "/api/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}" : {
       "get" : {
         "tags" : [ "OsaAlueet" ],
         "operationId" : "getOsaAlueV2",
@@ -10802,7 +10795,7 @@
         }
       }
     },
-    "/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}/lukko" : {
+    "/api/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}/lukko" : {
       "get" : {
         "tags" : [ "OsaAlueet" ],
         "operationId" : "getOsaAlueLock",
@@ -10876,7 +10869,7 @@
         }
       }
     },
-    "/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}/peruste/{perusteId}" : {
+    "/api/tutkinnonosat/{viiteId}/osaalueet/{osaAlueId}/peruste/{perusteId}" : {
       "put" : {
         "tags" : [ "OsaAlueet" ],
         "operationId" : "updateOsaAluePerusteella",
@@ -10944,7 +10937,7 @@
         }
       }
     },
-    "/ulkopuoliset/organisaatioryhmat" : {
+    "/api/ulkopuoliset/organisaatioryhmat" : {
       "get" : {
         "tags" : [ "Ulkopuoliset" ],
         "operationId" : "getOrganisaatioRyhmat",
@@ -10958,7 +10951,7 @@
         }
       }
     },
-    "/ulkopuoliset/organisaatioryhmat/{oid}" : {
+    "/api/ulkopuoliset/organisaatioryhmat/{oid}" : {
       "get" : {
         "tags" : [ "Ulkopuoliset" ],
         "operationId" : "getOrganisaatioRyhmatByOid",
@@ -10978,7 +10971,7 @@
         }
       }
     },
-    "/ulkopuoliset/organisaatiovirkailijat/{oid}" : {
+    "/api/ulkopuoliset/organisaatiovirkailijat/{oid}" : {
       "get" : {
         "tags" : [ "Ulkopuoliset" ],
         "operationId" : "getOrganisaatioVirkailijat",
@@ -10998,7 +10991,7 @@
         }
       }
     },
-    "/ulkopuoliset/{koodisto}" : {
+    "/api/ulkopuoliset/{koodisto}" : {
       "get" : {
         "tags" : [ "Ulkopuoliset" ],
         "operationId" : "getKoodisto",
@@ -15072,6 +15065,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15111,6 +15110,12 @@
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -15152,6 +15157,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15191,6 +15202,12 @@
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -15232,6 +15249,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15271,6 +15294,12 @@
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -15312,6 +15341,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15351,6 +15386,12 @@
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -15392,6 +15433,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15431,6 +15478,12 @@
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -15472,6 +15525,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15511,6 +15570,12 @@
           "format" : "int32"
         },
         "last" : {
+          "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
           "type" : "boolean"
         }
       }
@@ -15552,6 +15617,12 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
         }
       }
     },
@@ -15592,6 +15663,38 @@
         },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
+        },
+        "empty" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "Pageable" : {
+      "type" : "object",
+      "properties" : {
+        "offset" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
+        },
+        "pageNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "unpaged" : {
+          "type" : "boolean"
+        },
+        "paged" : {
+          "type" : "boolean"
+        },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     },
@@ -17559,7 +17662,18 @@
       }
     },
     "Sort" : {
-      "type" : "object"
+      "type" : "object",
+      "properties" : {
+        "empty" : {
+          "type" : "boolean"
+        },
+        "unsorted" : {
+          "type" : "boolean"
+        },
+        "sorted" : {
+          "type" : "boolean"
+        }
+      }
     },
     "SortableDto" : {
       "type" : "object",
@@ -17623,17 +17737,36 @@
           "type" : "integer",
           "format" : "int64"
         },
-        "perusteenOsa" : {
-          "$ref" : "#/definitions/Suppea"
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "lapset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Suppea"
-          }
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
         },
-        "_perusteenOsa" : {
-          "$ref" : "#/definitions/Reference"
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
       }
     },
@@ -17774,31 +17907,62 @@
       }
     },
     "TekstiKappaleDto" : {
-      "allOf" : [ {
-        "$ref" : "#/definitions/Laaja"
-      }, {
-        "type" : "object",
-        "properties" : {
-          "teksti" : {
-            "$ref" : "#/definitions/LokalisoituTekstiDto"
-          },
-          "osaamisala" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "luotu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokattu" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "muokkaaja" : {
+          "type" : "string"
+        },
+        "nimi" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "tila" : {
+          "type" : "string",
+          "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
+        },
+        "tunniste" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "LAAJAALAINENOSAAMINEN", "RAKENNE" ]
+        },
+        "valmis" : {
+          "type" : "boolean"
+        },
+        "kaannettava" : {
+          "type" : "boolean"
+        },
+        "teksti" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
+        },
+        "osaamisala" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "tutkintonimike" : {
+          "$ref" : "#/definitions/KoodiDto"
+        },
+        "koodit" : {
+          "type" : "array",
+          "items" : {
             "$ref" : "#/definitions/KoodiDto"
-          },
-          "tutkintonimike" : {
-            "$ref" : "#/definitions/KoodiDto"
-          },
-          "koodit" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/definitions/KoodiDto"
-            }
-          },
-          "liite" : {
-            "type" : "boolean"
           }
+        },
+        "liite" : {
+          "type" : "boolean"
+        },
+        "osanTyyppi" : {
+          "type" : "string"
         }
-      } ]
+      }
     },
     "TekstiOsaDto" : {
       "type" : "object",
@@ -17926,12 +18090,6 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
-        "huomautukset" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Virhe"
-          }
-        },
         "virheet" : {
           "type" : "array",
           "items" : {
@@ -17940,6 +18098,12 @@
         },
         "vaihtoOk" : {
           "type" : "boolean"
+        },
+        "huomautukset" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Virhe"
+          }
         }
       }
     },

@@ -31,7 +31,7 @@ public class ProjektiValidatorImpl implements ProjektiValidator {
     @Override
     public List<Validointi> run(Long perusteprojektiId, ProjektiTila tila) {
         List<Validointi> validoinnit = new ArrayList<>();
-        Perusteprojekti projekti = perusteprojektiRepository.findOne(perusteprojektiId);
+        Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
         Peruste peruste = projekti.getPeruste();
         KoulutustyyppiToteutus toteutus = peruste.getToteutus();
         PerusteTyyppi tyyppi = peruste.getTyyppi();

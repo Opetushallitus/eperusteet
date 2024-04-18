@@ -34,7 +34,7 @@ public class TekstiPalanenConverter extends BidirectionalConverter<TekstiPalanen
             tekstipalanen on jo cachessa (luettu aikaisemmin) ja tietokantahaku vältetään.
             Huom! vihamielinen/virheellinen client voisi keksiä id:n aiheuttaen turhia tietokantahakuja.
             */
-            TekstiPalanen current = repository.findOne(source.getId());
+            TekstiPalanen current = repository.findById(source.getId()).orElse(null);
             if (current != null) {
                 TekstiPalanen tekstiPalanen = TekstiPalanen.of(source.getTekstit(), current.getTunniste());
                 if ( current.equals(tekstiPalanen) ) {

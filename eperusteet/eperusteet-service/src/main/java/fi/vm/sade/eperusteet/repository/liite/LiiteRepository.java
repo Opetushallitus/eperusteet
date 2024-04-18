@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface LiiteRepository extends JpaRepository<Liite, UUID>, LiiteRepositoryCustom {
-    Liite findById(UUID id);
 
     @Query("SELECT l FROM Peruste o JOIN o.liitteet l WHERE o.id = ?1")
     List<Liite> findByPerusteId(Long perusteId);

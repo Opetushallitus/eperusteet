@@ -31,7 +31,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
-@RequestMapping(value = "/perusteet", produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/perusteet", produces = "application/json;charset=UTF-8")
 @Api(value = "Julkaisut")
 @Description("Perusteiden julkaisut")
 public class JulkaisuController {

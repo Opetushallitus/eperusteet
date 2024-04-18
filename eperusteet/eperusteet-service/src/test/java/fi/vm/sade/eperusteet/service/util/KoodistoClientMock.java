@@ -25,7 +25,7 @@ import static fi.vm.sade.eperusteet.service.test.util.TestUtils.uniikkiString;
 
 @Slf4j
 @Service
-@Profile("test")
+@Profile({"test", "docker"})
 public class KoodistoClientMock implements KoodistoClient {
 
     @Autowired

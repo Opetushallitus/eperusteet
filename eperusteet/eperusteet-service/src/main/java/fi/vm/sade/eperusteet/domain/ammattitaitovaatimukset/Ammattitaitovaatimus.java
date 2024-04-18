@@ -33,10 +33,6 @@ public class Ammattitaitovaatimus implements Serializable{
     @Column(name = "koodi")
     private String ammattitaitovaatimusKoodi;
 
-    @Getter
-    @Setter
-    private Integer jarjestys;
-
     @RelatesToPeruste
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @Getter
@@ -50,7 +46,6 @@ public class Ammattitaitovaatimus implements Serializable{
     public Ammattitaitovaatimus(AmmattitaitovaatimuksenKohde owner, Ammattitaitovaatimus other) {
         this.selite = other.selite;
         this.ammattitaitovaatimusKoodi = other.ammattitaitovaatimusKoodi;
-        this.jarjestys = other.jarjestys;
         this.ammattitaitovaatimuksenkohde = owner;
     }
 }

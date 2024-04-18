@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.util.ObjectUtils;
 
@@ -21,17 +23,18 @@ import java.util.stream.Stream;
 
 @ToString
 @Data
+@NoArgsConstructor
 public class LokalisoituTekstiDto {
     private static final Map<Kieli,String> emptyMap = new EnumMap<>(Kieli.class);
 
     @Getter
-    private final Long id;
+    private Long id;
 
     @Getter
     private UUID tunniste;
 
     @Getter
-    private final Map<Kieli, String> tekstit;
+    private Map<Kieli, String> tekstit;
 
     public LokalisoituTekstiDto(Long id, Map<Kieli, String> values) {
         this(id, null, values);

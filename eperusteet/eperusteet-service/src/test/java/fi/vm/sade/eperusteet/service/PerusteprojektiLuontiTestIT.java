@@ -273,25 +273,25 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         ppTestUtils.julkaise(projekti2.getId());
 
         PerusteQuery pquery = new PerusteQuery();
-        Page<PerusteHakuDto> haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> haku = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(haku.getTotalElements()).isEqualTo(2);
 
         pquery.setNimi("x");
-        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        haku = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(haku.getTotalElements()).isEqualTo(1);
 
         pquery.setNimi("äää");
-        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        haku = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(haku.getTotalElements()).isEqualTo(1);
         assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto.getId());
 
         pquery.setNimi("ö");
-        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        haku = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(haku.getTotalElements()).isEqualTo(1);
         assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto2.getId());
 
         pquery.setNimi("å");
-        haku = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        haku = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(haku.getTotalElements()).isEqualTo(1);
         assertThat(haku.getContent().iterator().next().getId()).isEqualTo(perusteDto.getId());
     }
@@ -304,13 +304,13 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(perusteprojekti.getPeruste().getIdLong());
         PerusteQuery pquery = new PerusteQuery();
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
         ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.VIIMEISTELY);
-        perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
         ppTestUtils.asetaTila(perusteprojekti.getId(), ProjektiTila.VALMIS);
-        perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
     }
 
@@ -382,7 +382,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         perusteRepository.save(p1);
         p1.asetaTila(PerusteTila.VALMIS);
         PerusteQuery pquery = new PerusteQuery();
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
     }
 
@@ -404,7 +404,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         // Amosaa yhteiset eivät tule julkiseen hakuun
         PerusteQuery pquery = new PerusteQuery();
-        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
 
         PerusteKaikkiDto pohja = perusteService.getAmosaaYhteinenPohja();
@@ -417,7 +417,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             peruste.setVoimassaoloAlkaa(new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR) - 1, Calendar.MARCH, 12).getTime());
         });
 
-        perusteet = perusteService.findJulkinenBy(new PageRequest(0, 10), pquery);
+        perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
         PerusteKaikkiDto amosaaYhteinen = perusteService.getAmosaaYhteinenPohja();
         assertThat(amosaaYhteinen)
@@ -426,7 +426,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         // Kaikki tulevat sisäiseen hakuun
         pquery = new PerusteQuery();
-        Page<PerusteHakuInternalDto> internalperusteet = perusteService.findByInternal(new PageRequest(0, 10), pquery);
+        Page<PerusteHakuInternalDto> internalperusteet = perusteService.findByInternal(PageRequest.of(0, 10), pquery);
         assertThat(internalperusteet.getTotalElements())
                 .isEqualTo(2);
         assertThat(internalperusteet.getContent().stream())

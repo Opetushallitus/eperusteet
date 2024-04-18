@@ -16,6 +16,7 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -212,9 +213,9 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         Page<TiedoteDto> tiedotteet = tiedoteService.findBy(tq);
         Iterator<TiedoteDto> iterator = tiedotteet.iterator();
         TiedoteDto t1 = iterator.next();
-        assertEquals(30, (long) t1.getId());
+        assertEquals(t1.getOtsikko().get(Kieli.FI), LokalisoituTekstiDto.of("otsikko").get(Kieli.FI));
         TiedoteDto t2 = iterator.next();
-        assertEquals(31L, (long) t2.getId());
+        assertEquals(t2.getOtsikko().get(Kieli.FI), LokalisoituTekstiDto.of("otsikko2").get(Kieli.FI));
     }
 
     @Test

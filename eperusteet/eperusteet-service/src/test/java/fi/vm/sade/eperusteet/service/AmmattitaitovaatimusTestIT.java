@@ -90,8 +90,8 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
             pquery.setUri("ammattitaitovaatimukset_1000");
-            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(PageRequest.of(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(PageRequest.of(0, 10), pquery);
             assertThat(perusteet.getTotalElements()).isEqualTo(0);
             assertThat(tosat.getTotalElements()).isEqualTo(0);
         }
@@ -107,8 +107,8 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
             pquery.setKaikki(true);
             pquery.setUri("ammattitaitovaatimukset_1000");
-            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(PageRequest.of(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(PageRequest.of(0, 10), pquery);
             assertThat(tosat.getTotalElements()).isEqualTo(2);
             assertThat(perusteet.getContent())
                     .extracting(PerusteBaseDto::getId)
@@ -119,8 +119,8 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
             pquery.setKaikki(true);
             pquery.setUri("ammattitaitovaatimukset_2000");
-            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(PageRequest.of(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(PageRequest.of(0, 10), pquery);
             assertThat(tosat.getTotalElements()).isEqualTo(2);
             assertThat(perusteet.getContent())
                     .extracting(PerusteBaseDto::getId)
@@ -131,8 +131,8 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
             AmmattitaitovaatimusQueryDto pquery = new AmmattitaitovaatimusQueryDto();
             pquery.setKaikki(false);
             pquery.setUri("ammattitaitovaatimukset_1000");
-            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(new PageRequest(0, 10), pquery);
-            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            Page<PerusteBaseDto> perusteet = ammattitaitovaatimusService.findPerusteet(PageRequest.of(0, 10), pquery);
+            Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(PageRequest.of(0, 10), pquery);
             assertThat(tosat.getTotalElements()).isEqualTo(1);
             assertThat(perusteet.getContent())
                     .extracting(PerusteBaseDto::getId)
@@ -151,11 +151,11 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         pquery.setUri("ammattitaitovaatimukset_1000");
 
         Assertions.assertThatThrownBy(() -> {
-            ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+            ammattitaitovaatimusService.findTutkinnonOsat(PageRequest.of(0, 10), pquery);
         }).isInstanceOf(AccessDeniedException.class);
 
         loginAsUser("test");
-        Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(new PageRequest(0, 10), pquery);
+        Page<TutkinnonOsaViiteKontekstiDto> tosat = ammattitaitovaatimusService.findTutkinnonOsat(PageRequest.of(0, 10), pquery);
         assertThat(tosat.getTotalElements()).isEqualTo(0);
     }
 
