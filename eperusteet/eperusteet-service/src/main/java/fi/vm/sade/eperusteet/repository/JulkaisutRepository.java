@@ -199,4 +199,6 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
             "           AND p.siirtymaPaattyy > NOW()))")
     Set<Peruste> findAmosaaJulkaisut();
+
+    JulkaistuPeruste findOneByDokumentitIn(Set<Long> dokumentit);
 }

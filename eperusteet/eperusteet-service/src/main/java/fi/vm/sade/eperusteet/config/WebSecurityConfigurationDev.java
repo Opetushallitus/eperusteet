@@ -44,7 +44,7 @@ public class WebSecurityConfigurationDev {
                 .authorizeRequests()
                 .antMatchers("/buildversion.txt").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/palaute").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()

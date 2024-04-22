@@ -49,6 +49,12 @@ public class DokumenttiController {
     ) throws DokumenttiException {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
+        DokumenttiDto viimeisinJulkaistuDokumentti = service.getJulkaistuDokumentti(perusteId, Kieli.of(kieli), null);
+        if (viimeisinJulkaistuDokumentti != null && viimeisinJulkaistuDokumentti.getTila().equals(DokumenttiTila.EPAONNISTUI)) {
+            service.setStarted(viimeisinJulkaistuDokumentti);
+            service.generateWithDto(viimeisinJulkaistuDokumentti);
+        }
+
         final DokumenttiDto createDtoFor = service.createDtoFor(
                 perusteId,
                 Kieli.of(kieli),
@@ -60,6 +66,7 @@ public class DokumenttiController {
             service.generateWithDto(createDtoFor);
             status = HttpStatus.ACCEPTED;
         }
+
 
         return new ResponseEntity<>(createDtoFor, status);
     }
