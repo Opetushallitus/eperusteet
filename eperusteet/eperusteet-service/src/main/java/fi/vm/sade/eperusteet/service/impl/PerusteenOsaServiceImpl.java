@@ -43,10 +43,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- *
- * @author jhyoty
- */
 @Service
 public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 

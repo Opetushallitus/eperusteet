@@ -4,11 +4,9 @@ import fi.vm.sade.eperusteet.domain.PalauteStatus;
 import fi.vm.sade.eperusteet.dto.PalauteDto;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.util.Date;
-import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 

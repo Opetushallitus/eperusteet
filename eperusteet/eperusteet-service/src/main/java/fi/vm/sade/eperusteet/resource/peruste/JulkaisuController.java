@@ -4,7 +4,6 @@ import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
-import fi.vm.sade.eperusteet.dto.util.FieldComparisonFailureDto;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +13,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.tika.mime.MimeTypeException;
-import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
 import org.springframework.data.domain.Page;

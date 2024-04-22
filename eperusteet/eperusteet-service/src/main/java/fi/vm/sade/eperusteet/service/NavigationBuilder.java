@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service;
 
-
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;

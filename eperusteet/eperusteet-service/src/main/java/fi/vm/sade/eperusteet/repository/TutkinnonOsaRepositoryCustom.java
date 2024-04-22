@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.NoRepositoryBean;
 
-
 @NoRepositoryBean
 public interface TutkinnonOsaRepositoryCustom {
     Page<TutkinnonOsa> findBy(PageRequest page, TutkinnonOsaQueryDto pquery);

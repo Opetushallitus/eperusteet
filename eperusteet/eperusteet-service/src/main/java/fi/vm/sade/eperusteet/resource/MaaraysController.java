@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.resource;
 import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysKevytDto;
@@ -38,7 +37,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @InternalApi

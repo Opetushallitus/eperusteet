@@ -4,9 +4,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @EqualsAndHashCode(callSuper = true)

@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service;
 
-
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
@@ -44,7 +43,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +59,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-
 
 @Transactional
 @DirtiesContext
@@ -197,7 +194,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         // lukiolla 0
         assertThat(perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU,
                 PerusteTyyppi.NORMAALI, Arrays.asList(KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS.toString()), Suoritustapakoodi.LUKIOKOULUTUS)).hasSize(0);
-        
+
     }
 
     @Test

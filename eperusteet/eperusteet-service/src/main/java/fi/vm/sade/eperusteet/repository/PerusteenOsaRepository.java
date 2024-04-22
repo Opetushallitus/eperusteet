@@ -6,10 +6,6 @@ import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author jhyoty
- */
 @Repository
 public interface PerusteenOsaRepository extends JpaWithVersioningRepository<PerusteenOsa, Long> {
     @Query("SELECT p.tila from PerusteenOsa p WHERE p.id = ?1")

@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.domain.lops2019.laajaalainenosaaminen;
 
-
 import fi.vm.sade.eperusteet.domain.Copyable;
 import lombok.Getter;
 import lombok.Setter;

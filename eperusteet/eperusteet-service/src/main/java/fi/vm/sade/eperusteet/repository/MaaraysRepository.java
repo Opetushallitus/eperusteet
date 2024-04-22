@@ -1,14 +1,10 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
-import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasanatFetch;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
-import fi.vm.sade.eperusteet.dto.Voimassaolo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.Yllapito;
-import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

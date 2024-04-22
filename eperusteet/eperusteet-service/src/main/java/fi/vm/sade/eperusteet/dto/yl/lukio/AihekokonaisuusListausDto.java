@@ -1,13 +1,10 @@
 package fi.vm.sade.eperusteet.dto.yl.lukio;
 
-import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
 import fi.vm.sade.eperusteet.dto.util.Lokalisoitava;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,9 +12,6 @@ import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto.localizeLaterById;
 
-/**
- * Created by jsikio
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -29,10 +29,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-/**
- *
- * @author mikkom
- */
 @RestController
 @RequestMapping("/api/tiedotteet")
 @Api(value = "Tiedotteet", description = "Tiedotteiden hallinta")
@@ -67,7 +63,7 @@ public class TiedoteController {
     public Page<TiedoteDto> findTiedotteetBy(@ApiIgnore TiedoteQuery tquery) {
         return tiedoteService.findBy(tquery);
     }
-    
+
     @RequestMapping(method = GET)
     public List<TiedoteDto> getAllTiedotteet(
             @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
