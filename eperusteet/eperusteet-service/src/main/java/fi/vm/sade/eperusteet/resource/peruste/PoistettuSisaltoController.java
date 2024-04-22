@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.PoistettuSisaltoDto;
 import fi.vm.sade.eperusteet.service.PoistoService;
 import io.swagger.annotations.Api;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/api/poistettusisalto", produces = "application/json;charset=UTF-8")
 @Api(value = "PoistettuSisalto")
+@InternalApi
 public class PoistettuSisaltoController {
 
     @Autowired
