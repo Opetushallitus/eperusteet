@@ -35,6 +35,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/ui/").setViewName("forward:/ui/index.html");
         registry.addRedirectViewController("/ui", "/ui/");
+        registry.addRedirectViewController("/swagger", "/swagger/index.html");
     }
 
     @Override
