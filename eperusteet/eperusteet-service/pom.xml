@@ -45,7 +45,7 @@
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <spring.security.test.version>5.7.11</spring.security.test.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
-        <springfox.version>2.7.0</springfox.version>
+        <springfox.version>2.10.0</springfox.version>
         <surefire.version>3.2.2</surefire.version>
         <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
     </properties>
