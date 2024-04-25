@@ -152,8 +152,6 @@ public class WebSecurityConfiguration {
                 .authorizeRequests()
                     .antMatchers("/buildversion.txt").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                    .antMatchers("/swagger", "/swagger/**", "/v2/api-docs", "/v3/api-docs", "/swagger-resources/**", "/webjars/**").permitAll()
-                    .antMatchers(HttpMethod.GET, "/swagger").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/palaute").permitAll()
                     .antMatchers(HttpMethod.GET, "/").permitAll()
                     .anyRequest().authenticated()
