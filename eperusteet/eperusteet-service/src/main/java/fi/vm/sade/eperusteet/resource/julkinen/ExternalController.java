@@ -50,6 +50,8 @@ public class ExternalController {
     @Autowired
     private OsaamismerkkiService osaamismerkkiService;
 
+    private static final int DEFAULT_PATH_SKIP_VALUE = 5;
+
     @RequestMapping(value = "/peruste/{perusteId:\\d+}", method = GET)
     @ResponseBody
     @ApiOperation(value = "Perusteen tietojen haku")
@@ -113,7 +115,7 @@ public class ExternalController {
             response= PerusteKaikkiDto.class
     )
     public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
-        return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, 4));
+        return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
 
     @RequestMapping(value = "/peruste/yto/**", method = GET)
@@ -144,7 +146,7 @@ public class ExternalController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return getJulkaistuSisaltoObjectNodeWithQuery( amosaaPeruste.getContent().get(0).getId(), requestToQueries(req, 4));
+        return getJulkaistuSisaltoObjectNodeWithQuery( amosaaPeruste.getContent().get(0).getId(), requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
 
     @RequestMapping(value = "/peruste/koulutuskoodi/{koodi:\\d+}/**", method = GET)
@@ -182,7 +184,7 @@ public class ExternalController {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
 
-        return getJulkaistuSisaltoObjectNodeWithQuery(peruste.getContent().get(0).getId(), requestToQueries(req, 5));
+        return getJulkaistuSisaltoObjectNodeWithQuery(peruste.getContent().get(0).getId(), requestToQueries(req, DEFAULT_PATH_SKIP_VALUE + 1));
     }
 
     @RequestMapping(value = "/osaamismerkit", method = GET)
@@ -200,7 +202,7 @@ public class ExternalController {
     }
 
     private List<String> requestToQueries(HttpServletRequest req, int skipCount) {
-        String[] queries = req.getPathInfo().split("/");
+        String[] queries = req.getServletPath().split("/");
         return Arrays.stream(queries).skip(skipCount).collect(Collectors.toList());
     }
 
