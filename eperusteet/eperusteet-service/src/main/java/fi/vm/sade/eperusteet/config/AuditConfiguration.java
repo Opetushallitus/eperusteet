@@ -5,6 +5,7 @@ import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.eperusteet.service.audit.LoggerForAudit;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 public class AuditConfiguration {
