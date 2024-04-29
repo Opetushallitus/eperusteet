@@ -16,6 +16,8 @@
             <pattern>%d{ISO8601} %-5p [%t] %c: %m%nopex%n</pattern>
         </encoder>
     </appender>
+    <appender name="AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    </appender>
 
     <logger name="fi.vm" level="INFO" additivity="false">
         <appender-ref ref="STDOUT-APP"/>
@@ -23,5 +25,8 @@
     <root level="INFO">
         <appender-ref ref="STDOUT-CONSOLE"/>
     </root>
+    <logger name="fi.vm.sade.eperusteet.service.audit.LoggerForAudit" level="OFF" additivity="false">
+        <appender-ref ref="AUDIT"/>
+    </logger>
 
 </configuration>

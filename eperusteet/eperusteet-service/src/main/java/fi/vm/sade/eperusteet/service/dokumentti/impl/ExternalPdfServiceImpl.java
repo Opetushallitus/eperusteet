@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
 import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.config.InitJacksonConverter;
@@ -19,6 +20,7 @@ import fi.vm.sade.javautils.http.OphHttpRequest;
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -49,14 +51,18 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
     @Autowired
     private JulkaisutRepository julkaisutRepository;
 
+    @Lazy
+    @Autowired
+    private DokumenttiService dokumenttiService;
+
     private final ObjectMapper mapper = InitJacksonConverter.createMapper();
 
     @Override
     public void generatePdf(DokumenttiDto dto) throws JsonProcessingException {
 
         PerusteKaikkiDto sisalto = null;
-        JulkaistuPeruste julkaisu = julkaisutRepository.findOneByDokumentitIn(Collections.singleton(dto.getId()));
-        if (dto.getTila().equals(DokumenttiTila.EPAONNISTUI) && julkaisu != null) {
+        DokumenttiDto viimeisinJulkaistuDokumentti = dokumenttiService.getJulkaistuDokumentti(dto.getPerusteId(), dto.getKieli(), null);
+        if (viimeisinJulkaistuDokumentti.getId().equals(dto.getId())) {
             sisalto = perusteService.getJulkaistuSisalto(dto.getPerusteId());
         } else {
             sisalto = perusteService.getKaikkiSisalto(dto.getPerusteId());
