@@ -62,7 +62,7 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
 
         PerusteKaikkiDto sisalto = null;
         DokumenttiDto viimeisinJulkaistuDokumentti = dokumenttiService.getJulkaistuDokumentti(dto.getPerusteId(), dto.getKieli(), null);
-        if (viimeisinJulkaistuDokumentti.getId().equals(dto.getId())) {
+        if (viimeisinJulkaistuDokumentti != null && viimeisinJulkaistuDokumentti.getId().equals(dto.getId())) {
             sisalto = perusteService.getJulkaistuSisalto(dto.getPerusteId());
         } else {
             sisalto = perusteService.getKaikkiSisalto(dto.getPerusteId());
