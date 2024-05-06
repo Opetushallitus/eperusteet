@@ -76,7 +76,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
             AIPEOppiaineDto oppimaaraDto = TestUtils.createAIPEOppiaine();
             oppimaaraDto = sisalto.addOppimaara(perusteId, vaihe.getId(), oppiaineet.get(1).getId(), oppimaaraDto);
             assertNotNull(oppimaaraDto);
-            List<AIPEOppiaineSuppeaDto> oppimaarat = sisalto.getOppimaarat(perusteId, vaihe.getId(), oppiaineet.get(1).getId());
+            List<AIPEOppiaineSuppeaDto> oppimaarat = sisalto.getOppimaarat(perusteId, vaihe.getId(), oppiaineet.get(1).getId(), null);
             assertEquals(oppimaarat.size(), 1);
 
             AIPEKurssiDto omKurssi = TestUtils.createAIPEKurssi();
@@ -139,7 +139,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
         List<AIPEKurssiSuppeaDto> kurssit1 = sisalto.getKurssit(perusteId, vaiheId, oppiaineId1);
         Long kurssiId = kurssit1.get(0).getId();
-        AIPEKurssiDto kurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssiId);
+        AIPEKurssiDto kurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssiId, null);
         assertEquals(kurssi.getId(), kurssiId);
 
         assertTrue(kurssi.getNimi().isPresent());
@@ -160,7 +160,7 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
         { // Kurssin poisto
             sisalto.removeKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId());
             try {
-                AIPEKurssiDto poistettuKurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId());
+                AIPEKurssiDto poistettuKurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId1, kurssi.getId(), null);
                 fail("Kurssi ei pitäisi olla olemassa");
             } catch (NotExistsException ex) {
             } finally {

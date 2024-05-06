@@ -87,6 +87,17 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     @OrderBy("jarjestys, id")
     private List<AIPEOppiaine> oppiaineet = new ArrayList<>(0);
 
+    public List<OpetuksenKohdealue> getOpetuksenKohdealueet() {
+        return new ArrayList<>(opetuksenKohdealueet);
+    }
+
+    public void setOpetuksenKohdealueet(List<OpetuksenKohdealue> opetuksenKohdealueet) {
+        this.opetuksenKohdealueet.clear();
+        if (opetuksenKohdealueet != null) {
+            this.opetuksenKohdealueet.addAll(opetuksenKohdealueet);
+        }
+    }
+
     public void setTunniste(UUID tunniste) {
         if (this.tunniste == null) {
             this.tunniste = tunniste;
