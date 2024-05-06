@@ -179,6 +179,10 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
         return new ArrayList<>(tavoitteet);
     }
 
+    public List<KeskeinenSisaltoalue> getSisaltoalueet() {
+        return new ArrayList<>(sisaltoalueet);
+    }
+
     public void addOpetuksenTavoite(OpetuksenTavoite tavoite) {
         tavoitteet.add(tavoite);
     }

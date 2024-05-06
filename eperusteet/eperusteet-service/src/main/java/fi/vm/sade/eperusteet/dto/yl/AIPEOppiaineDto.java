@@ -32,6 +32,6 @@ public class AIPEOppiaineDto extends AIPEOppiaineSuppeaDto {
     private List<OpetuksenTavoiteDto> tavoitteet;
     private List<KeskeinenSisaltoalueDto> sisaltoalueet;
     private List<AIPEKurssiDto> kurssit;
-
+    private List<AIPEOppiaineSuppeaDto> oppimaarat;
 
 }

@@ -97,13 +97,19 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     private AIPEOppiaine getOppiaineImpl(Long perusteId, Long vaiheId, Long oppiaineId) {
+        return getOppiaineImpl(perusteId, vaiheId, oppiaineId, null);
+    }
+
+    private AIPEOppiaine getOppiaineImpl(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
         if (oppiaine == null) {
             throw new NotExistsException("oppiainetta-ei-olemassa");
         }
 
-        return oppiaine;
+        return rev != null
+                ? oppiaineRepository.findRevision(oppiaineId, rev)
+                : oppiaine;
     }
 
     private LaajaalainenOsaaminen getLaajaalainenImpl(Long perusteId, Long laajalainenId) {
@@ -116,17 +122,24 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     private AIPEKurssi getKurssiImpl(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
+        return getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId, null);
+    }
+
+    private AIPEKurssi getKurssiImpl(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, Integer rev) {
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         Optional<AIPEKurssi> kurssi = oppiaine.getKurssi(kurssiId);
-        if (!kurssi.isPresent()) {
+        if (kurssi.isEmpty()) {
             throw new NotExistsException("kurssia-ei-olemassa");
         }
-        return kurssi.get();
+
+        return rev != null
+                ? kurssiRepository.findRevision(kurssiId, rev)
+                : kurssi.get();
     }
 
     @Override
-    public List<AIPEOppiaineSuppeaDto> getOppimaarat(Long perusteId, Long vaiheId, Long oppiaineId) {
-        AIPEOppiaine parent = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+    public List<AIPEOppiaineSuppeaDto> getOppimaarat(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
+        AIPEOppiaine parent = getOppiaineImpl(perusteId, vaiheId, oppiaineId, rev);
         return mapper.mapAsList(parent.getOppimaarat(), AIPEOppiaineSuppeaDto.class);
     }
 
@@ -175,8 +188,8 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
-    public AIPEKurssiDto getKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
-        return mapper.map(getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId), AIPEKurssiDto.class);
+    public AIPEKurssiDto getKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, Integer rev) {
+        return mapper.map(getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId, rev), AIPEKurssiDto.class);
     }
 
     @Override
@@ -227,21 +240,23 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
+    public List<Revision> getKurssiRevisions(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId) {
+        getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId); // Jos ei oikeutta, heitetään poikkeus
+        return kurssiRepository.getRevisions(kurssiId);
+    }
+
+    @Override
+    public AIPEKurssiDto revertKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, Integer rev) {
+        AIPEKurssi kurssi = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId, rev);
+
+        AIPEKurssiDto dto = mapper.map(kurssi, AIPEKurssiDto.class);
+        return updateKurssi(perusteId, vaiheId, oppiaineId, kurssiId, dto);
+    }
+
+    @Override
     public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
-        AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
-        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
-
-        if (oppiaine == null) {
-            throw new NotExistsException("oppiainetta-ei-olemassa");
-        }
-
-        // On oikeus oppiaineeseen vaiheen ja perusteen kautta
-        oppiaine = rev != null
-                ? oppiaineRepository.findRevision(oppiaineId, rev)
-                : oppiaine;
-
-        AIPEOppiaineDto oppiaineDto = mapper.map(oppiaine, AIPEOppiaineDto.class);
-        return oppiaineDto;
+        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId, rev);
+        return  mapper.map(oppiaine, AIPEOppiaineDto.class);
     }
 
     @Override
@@ -326,6 +341,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     }
 
     @Override
+    @Transactional(readOnly = true)
     public AIPEVaiheDto getVaihe(Long perusteId, Long vaiheId, Integer rev) {
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, rev);
 

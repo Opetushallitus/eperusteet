@@ -1,0 +1,1 @@
+ALTER TABLE aipeoppiaine_aipeoppiaine_aud DROP CONSTRAINT fk_4cj5o22o1pjw4rle7einjaexv;
