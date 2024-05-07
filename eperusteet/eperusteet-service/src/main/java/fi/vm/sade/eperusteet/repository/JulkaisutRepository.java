@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.repository;
 
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -201,4 +202,6 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
     Set<Peruste> findAmosaaJulkaisut();
 
     JulkaistuPeruste findOneByDokumentitIn(Set<Long> dokumentit);
+
+    List<JulkaistuPeruste> findByMuutosmaarays(Maarays maarays);
 }

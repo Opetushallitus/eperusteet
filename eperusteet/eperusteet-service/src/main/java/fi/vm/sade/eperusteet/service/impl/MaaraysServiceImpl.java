@@ -13,6 +13,7 @@ import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysKieliLiitteetDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysLiiteDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysQueryDto;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysAsiasanaRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysLiiteRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
@@ -36,6 +37,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import java.io.ByteArrayInputStream;
@@ -70,6 +72,9 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Autowired
     private KayttajanTietoService kayttajanTietoService;
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     @Autowired
     private EntityManager em;
@@ -238,6 +243,11 @@ public class MaaraysServiceImpl implements MaaraysService {
         }
 
         Maarays maarays = maaraysRepository.findById(id).orElseThrow();
+
+        if (!ObjectUtils.isEmpty(julkaisutRepository.findByMuutosmaarays(maarays))) {
+            throw new BusinessRuleViolationException("julkaisun-muutosmaaraysta-ei-voi-poistaa");
+        }
+
         maaraysLiiteRepository.deleteAll(maarays.getLiitteet().values().stream()
                 .map(MaaraysKieliLiitteet::getLiitteet)
                 .flatMap(Collection::stream)
