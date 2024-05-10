@@ -11,43 +11,27 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
-import fi.vm.sade.eperusteet.dto.util.YllapitoAvaimet;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
-import fi.vm.sade.eperusteet.service.MaintenanceService;
-import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiNewBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
 import fi.vm.sade.eperusteet.service.dokumentti.ExternalPdfService;
-import fi.vm.sade.eperusteet.service.dokumentti.KVLiiteBuilderService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
-import fi.vm.sade.eperusteet.service.internal.PdfService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
-import fi.vm.sade.eperusteet.utils.dto.dokumentti.DokumenttiMetaDto;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.pdfbox.preflight.ValidationResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -69,32 +53,13 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     private PerusteRepository perusteRepository;
 
     @Autowired
-    private DokumenttiNewBuilderService newBuilder;
-
-    @Autowired
-    private PdfService pdfService;
-
-    @Autowired
-    private KVLiiteBuilderService kvLiiteBuilderService;
-
-    @Autowired
     private DokumenttiStateService dokumenttiStateService;
-
-    @Autowired
-    private LocalizedMessagesService messages;
-
-    @Autowired
-    private PlatformTransactionManager tm;
 
     @Autowired
     private JulkaisutRepository julkaisutRepository;
 
     @Autowired
     private ExternalPdfService externalPdfService;
-
-    @Lazy
-    @Autowired
-    private MaintenanceService maintenanceService;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -190,7 +155,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
                 return dokumenttiDto;
             }
         }
-
         return null;
     }
 
@@ -202,26 +166,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         dokumenttiStateService.save(dto);
 
         try {
-            boolean isPdfServiceUsed = Boolean.parseBoolean(maintenanceService.getYllapitoValue(YllapitoAvaimet.USE_PDF_SERVICE_EPERUSTEET));
-
-            if (isPdfServiceUsed) {
-                externalPdfService.generatePdf(dto);
-            } else {
-                Dokumentti dokumentti = dokumenttiRepository.findById(dto.getId()).orElse(null);
-                if (dokumentti == null) {
-                    dokumentti = mapper.map(dto, Dokumentti.class);
-                }
-                dokumentti.setData(generateFor(dto));
-                dokumentti.setTila(DokumenttiTila.VALMIS);
-                dokumentti.setValmistumisaika(new Date());
-                dokumenttiRepository.save(dokumentti);
-            }
+            externalPdfService.generatePdf(dto);
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);
             dto.setValmistumisaika(new Date());
             dokumenttiStateService.save(dto);
-
             throw new DokumenttiException(ex.getMessage(), ex);
         }
     }
@@ -314,73 +264,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
         return dto;
     }
 
-    @Deprecated
-    private byte[] generateFor(DokumenttiDto dto)
-            throws IOException,TransformerException, ParserConfigurationException, SAXException {
-
-        Peruste peruste = perusteRepository.findOne(dto.getPerusteId());
-        Kieli kieli = dto.getKieli();
-        Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);
-        byte[] toReturn = null;
-        ValidationResult result;
-        GeneratorVersion version = dto.getGeneratorVersion();
-
-        DokumenttiMetaDto meta = DokumenttiMetaDto.builder()
-                .title(DokumenttiUtils.getTextString(dokumentti.getKieli(), peruste.getNimi()))
-                .build();
-
-        log.info("Luodaan dokumenttia (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
-                + kieli + ", " + version + ") perusteelle.");
-        switch (version) {
-            case VANHA:
-                throw new BusinessRuleViolationException("vanha-generointi-poistettu-kaytosta");
-            case UUSI:
-                Document doc = newBuilder.generateXML(peruste, dokumentti);
-
-                meta.setSubject(messages.translate("docgen.meta.subject.peruste", kieli));
-                toReturn = pdfService.xhtml2pdf(doc, meta);
-
-                /*
-                // Validoidaan dokumnetti
-                result = DokumenttiUtils.validatePdf(toReturn);
-                if (result.isValid()) {
-                    log.debug("Dokumentti (" + dto.getPerusteId() + ", "
-                            + dto.getSuoritustapakoodi() + ", " + kieli + ") on PDF/A-1b mukainen.");
-                } else {
-                    log.debug("Dokumentti (" + dto.getPerusteId() + ", " + dto.getSuoritustapakoodi() + ", "
-                            + kieli + ") ei ole PDF/A-1b mukainen. Dokumentti sisältää virheen/virheet:");
-                    result.getErrorsList().forEach(error -> log
-                            .debug("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
-                }
-                */
-
-                break;
-            case KVLIITE:
-                doc = kvLiiteBuilderService.generateXML(peruste, kieli);
-
-                meta.setSubject(messages.translate("docgen.meta.subject.kvliite", kieli));
-                toReturn = pdfService.xhtml2pdf(doc, version, meta);
-
-                /*
-                // Validoi kvliite
-                result = DokumenttiUtils.validatePdf(toReturn);
-                if (result.isValid()) {
-                    log.debug("Dokumentti (" + dto.getPerusteId() + ", " + kieli + ") on PDF/A-1b mukainen.");
-                } else {
-                    log.debug("Dokumentti (" + dto.getId() + ", " + kieli
-                            + ") ei ole PDF/A-1b mukainen. Dokumentti sisältää virheen/virheet:");
-                    result.getErrorsList().forEach(error -> log
-                            .debug("  - " + error.getDetails() + " (" + error.getErrorCode() + ")"));
-                }
-                */
-
-                break;
-            default:
-                break;
-        }
-        return toReturn;
-    }
-
     @Override
     @Transactional
     @IgnorePerusteUpdateCheck
@@ -406,5 +289,4 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             dokumenttiRepository.save(dokumentti);
         }
     }
-
 }
