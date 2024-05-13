@@ -371,13 +371,13 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public boolean hasRequiredKielet() {
+    public boolean hasRequiredKielet(boolean kaikkiKielet) {
+        Set<Kieli> requiredKielet = new HashSet<>(kaikkiKielet ? Arrays.asList(Kieli.FI, Kieli.SV, Kieli.EN) : Arrays.asList(Kieli.FI, Kieli.SV));
+
         if (getNimi() == null || getNimi().getTeksti() == null) {
             return false;
         }
-
-        Set<Kieli> pakollisetKielet = new HashSet<>(Arrays.asList(Kieli.FI, Kieli.SV));
-        for (Kieli kieli : pakollisetKielet) {
+        for (Kieli kieli : requiredKielet) {
             String osa = getNimi().getTeksti().get(kieli);
             if (osa == null || osa.isEmpty()) {
                 return false;

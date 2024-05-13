@@ -49,7 +49,6 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.MaaraysService;
-import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.TutkintonimikeKoodiService;
 import fi.vm.sade.eperusteet.service.Validator;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -94,9 +93,6 @@ public class ValidatorPeruste implements Validator {
 
     @Autowired
     private PerusteprojektiRepository repository;
-
-    @Autowired
-    private PerusteService perusteService;
 
     @Autowired
     private TutkintonimikeKoodiService tutkintonimikeKoodiService;
@@ -628,14 +624,19 @@ public class ValidatorPeruste implements Validator {
                     // Tarkistetaan koodittomien tutkinnon osien nimet
                     List<TutkinnonOsaViite> koodittomatTutkinnonOsat = koodittomatTutkinnonosat(suoritustapa);
                     if (!koodittomatTutkinnonOsat.isEmpty()) {
-                        List<NavigableLokalisoituTekstiDto> nimet = new ArrayList<>();
+                        List<NavigableLokalisoituTekstiDto> virheelliset = new ArrayList<>();
+                        List<NavigableLokalisoituTekstiDto> huomautukset = new ArrayList<>();
+
                         for (TutkinnonOsaViite viite : koodittomatTutkinnonOsat) {
-                            if (!viite.getTutkinnonOsa().hasRequiredKielet()) {
-                                nimet.add(new NavigableLokalisoituTekstiDto(viite));
+                            if (!viite.getTutkinnonOsa().hasRequiredKielet(false)) {
+                                virheelliset.add(new NavigableLokalisoituTekstiDto(viite));
+                            }
+                            else if (!viite.getTutkinnonOsa().hasRequiredKielet(true)) {
+                                huomautukset.add(new NavigableLokalisoituTekstiDto(viite));
                             }
                         }
-
-                        nimet.forEach(puuttuva -> perusteValidointi.virhe("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi", puuttuva.getNavigationNode()));
+                        virheelliset.forEach(puuttuva -> perusteValidointi.virhe("koodistoon-lisattavan-tutkinnon-osan-nimi-tulee-olla-kaannettyna-suomeksi-ja-ruotsiksi", puuttuva.getNavigationNode()));
+                        huomautukset.forEach(puuttuva -> perusteValidointi.huomautukset("koodistoon-lisattavan-tutkinnon-osan-nimea-ei-ole-kaannetty-kaikille-kielille", puuttuva.getNavigationNode()));
                     }
 
                     // Tarkista tutke2-osien osa-alueiden koodit
