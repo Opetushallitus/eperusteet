@@ -29,6 +29,8 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
+import fi.vm.sade.eperusteet.dto.yl.TavoitteenArviointiDto;
 import fi.vm.sade.eperusteet.dto.yl.TekstiOsaDto;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -412,6 +414,11 @@ public abstract class TestUtils {
         AIPEOppiaineDto oppiaine = new AIPEOppiaineDto();
         oppiaine.setNimi(olt(uniikkiString()));
         oppiaine.setTehtava(oto(uniikkiString(), uniikkiString()));
+        oppiaine.setTavoitteet(List.of(OpetuksenTavoiteDto.builder()
+                        .arvioinninkohteet(Set.of(TavoitteenArviointiDto.builder()
+                                        .arvosana(Optional.of(8))
+                                .build()))
+                .build()));
         return oppiaine;
     }
 
