@@ -18,11 +18,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @DirtiesContext
@@ -176,6 +179,27 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testOppiainePaivitys() {
+        List<AIPEVaiheSuppeaDto> vaiheet = sisalto.getVaiheet(perusteId);
+        List<AIPEOppiaineSuppeaDto> oppiaineet = sisalto.getOppiaineet(peruste.getId(), vaiheet.get(0).getId());
+
+        AIPEOppiaineDto oppiaine = sisalto.getOppiaine(peruste.getId(), vaiheet.get(0).getId(), oppiaineet.get(0).getId(), null);
+        assertThat(oppiaine.getTavoitteet()).hasSize(1);
+        assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet()).hasSize(1);
+        assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvosana().get()).isEqualTo(8);
+
+        oppiaine.getTavoitteet().get(0).getArvioinninkohteet().add(TavoitteenArviointiDto.builder().arvosana(Optional.of(4)).build());
+        oppiaine = sisalto.updateOppiaine(perusteId, vaiheet.get(0).getId(), oppiaine.getId(), oppiaine);
+        assertThat(oppiaine.getTavoitteet()).hasSize(1);
+        assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet()).hasSize(2);
+
+        oppiaine = sisalto.getOppiaine(peruste.getId(), vaiheet.get(0).getId(), oppiaineet.get(0).getId(), null);
+        assertThat(oppiaine.getTavoitteet()).hasSize(1);
+        assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet()).hasSize(2);
+
+    }
+
+    @Test
     public void testLaajaalaisetOsaamiset() {
         List<LaajaalainenOsaaminen> laajaalaiset = peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset();
         laajaalaiset.add(mapper.map(TestUtils.createLaajaalainen(), LaajaalainenOsaaminen.class));
@@ -188,10 +212,6 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
     public void testTavoitteet() {
         AIPEVaihe vaihe = peruste.getAipeOpetuksenPerusteenSisalto().getVaiheet().get(0);
         AIPEOppiaine oa = vaihe.getOppiaineet().get(0);
-        List<OpetuksenTavoite> tavoitteet = oa.getTavoitteet();
-        assertTrue(tavoitteet.isEmpty());
-
-        OpetuksenTavoite tavoite = new OpetuksenTavoite();
-//        tavoite.set
+        assertThat(oa.getTavoitteet()).hasSize(1);
     }
 }
