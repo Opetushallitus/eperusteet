@@ -774,7 +774,9 @@
                                         <scheme>http</scheme>
                                         <scheme>https</scheme>
                                     </schemes>
-                                    <basePath>https://virkailija.opintopolku.fi/eperusteet-service</basePath>
+
+                                    <host>https://virkailija.opintopolku.fi</host>
+                                    <basePath>/eperusteet-service</basePath>
                                     <locations>
                                         <location>${eperusteet.resources}.julkinen.ExternalController</location>
                                     </locations>
