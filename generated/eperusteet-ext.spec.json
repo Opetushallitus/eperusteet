@@ -5,7 +5,7 @@
     "version" : "1",
     "title" : "ePerusteet api"
   },
-  "host" : "https://virkailija.opintopolku.fi",
+  "host" : "virkailija.opintopolku.fi",
   "basePath" : "/eperusteet-service",
   "tags" : [ {
     "name" : "External"
@@ -2641,11 +2641,11 @@
         "first" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -2687,11 +2687,11 @@
         "first" : {
           "type" : "boolean"
         },
-        "pageable" : {
-          "$ref" : "#/definitions/Pageable"
-        },
         "last" : {
           "type" : "boolean"
+        },
+        "pageable" : {
+          "$ref" : "#/definitions/Pageable"
         },
         "numberOfElements" : {
           "type" : "integer",
@@ -2712,19 +2712,19 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "unpaged" : {
+        "paged" : {
           "type" : "boolean"
         },
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
         },
-        "paged" : {
-          "type" : "boolean"
-        },
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "unpaged" : {
+          "type" : "boolean"
         }
       }
     },
@@ -3233,10 +3233,10 @@
         "empty" : {
           "type" : "boolean"
         },
-        "unsorted" : {
+        "sorted" : {
           "type" : "boolean"
         },
-        "sorted" : {
+        "unsorted" : {
           "type" : "boolean"
         }
       }
