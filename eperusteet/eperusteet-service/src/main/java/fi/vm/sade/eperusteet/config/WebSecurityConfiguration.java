@@ -36,12 +36,16 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Arrays;
 
 @Profile({"!dev & !test"})
 @Configuration
@@ -149,6 +153,8 @@ public class WebSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .authorizeRequests()
                     .antMatchers("/buildversion.txt").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/**").permitAll()
@@ -177,4 +183,18 @@ public class WebSecurityConfiguration {
         authenticationManagerBuilder.authenticationProvider(casAuthenticationProvider());
         return authenticationManagerBuilder.build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://opetushallitus.github.io")); // Replace with your allowed origins
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/external/**", configuration);
+        return source;
+    }
+
 }
