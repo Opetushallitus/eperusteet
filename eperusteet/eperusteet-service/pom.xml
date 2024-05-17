@@ -771,7 +771,6 @@
                                 <apiSource>
                                     <springmvc>true</springmvc>
                                     <schemes>
-                                        <scheme>http</scheme>
                                         <scheme>https</scheme>
                                     </schemes>
 
