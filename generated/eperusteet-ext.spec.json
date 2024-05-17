@@ -5,7 +5,8 @@
     "version" : "1",
     "title" : "ePerusteet api"
   },
-  "basePath" : "https://virkailija.opintopolku.fi/eperusteet-service",
+  "host" : "https://virkailija.opintopolku.fi",
+  "basePath" : "/eperusteet-service",
   "tags" : [ {
     "name" : "External"
   } ],
@@ -2612,13 +2613,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2658,13 +2659,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2711,19 +2712,19 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "paged" : {
+        "unpaged" : {
           "type" : "boolean"
         },
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
         },
+        "paged" : {
+          "type" : "boolean"
+        },
         "pageSize" : {
           "type" : "integer",
           "format" : "int32"
-        },
-        "unpaged" : {
-          "type" : "boolean"
         }
       }
     },
@@ -3400,6 +3401,13 @@
         "arvosana" : {
           "type" : "integer",
           "format" : "int32"
+        },
+        "opetuksenTavoitteet" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/Reference"
+          }
         }
       }
     },
