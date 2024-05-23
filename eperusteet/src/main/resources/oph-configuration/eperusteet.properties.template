@@ -6,15 +6,13 @@
 #
 
 # Aseta vähintään nämä ympäristökohtaiset arvot
-activemq.brokerurl={{activemq_brokerurl}}
-activemq.jmxurl={{activemq_jmxurl}}
 auth.mode={{auth_mode}}
 env.loglevel={{env_loglevel}}
 host.cas={{host_cas}}
 host.ilb={{host_ilb}}
 host.alb={{host_alb}}
 host.virkailija={{host_virkailija}}
-server.name={{ansible_hostname}}
+server.name={{server_name}}
 fi.vm.sade.eperusteet.oph_username={{eperusteet_app_username}}
 fi.vm.sade.eperusteet.oph_password={{eperusteet_app_password}}
 
