@@ -580,7 +580,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
-        return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), false, true, false, false).stream()
+        return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), true, true, false, false).stream()
                 .map(this::convertToPerusteData).collect(Collectors.toList());
     }
 
