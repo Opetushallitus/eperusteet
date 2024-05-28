@@ -9,6 +9,7 @@ permalink: /changelog
 
   Päivämäärä | Muutokset
   ---------- | ------------ 
+  17.05.2024 | OPS-työkalu API - lisätty yksittäisen opetussuunnitelman haun rajapintaan sisältörakenteen tarkka haku
   26.02.2024 | OPS-työkalu API - Lisätty opetussuunnitelman perusteen haku -rajapinta
   26.02.2024 | OPS-työkalu API - Lisätty koulutustyypit-hakuehto opetussuunnitelmen hakuun 
   19.01.2024 | ePerusteet API - lisätty perusteen haku koulutuskoodilla: /external/peruste/koulutuskoodi/{koodi}
@@ -20,6 +21,6 @@ permalink: /changelog
   13.09.2023 | Korjattu dokumentaatioon rajapinnoista palautuva model
   22.06.2023 | Rajapintojen nimet muutettu sisältöä vastaavammaksi.
   22.06.2023 | Rajapintojen base-path -osoitteet korjattu.
-  27.02.2023 | ePerusteet API - lisätty yksittäisen perusteen haun rajapintaan sisältörakenteen tarkan haun
+  27.02.2023 | ePerusteet API - lisätty yksittäisen perusteen haun rajapintaan sisältörakenteen tarkka haku
   03.10.2022 | ePerusteet API - lisätty osaamisalakuvauksien ja yksittäisen perusteen osan haku
   07.04.2022 | External rajapinnat luotu
