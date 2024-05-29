@@ -116,6 +116,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -319,6 +320,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             kooditaValiaikaisetKoodit(peruste.getId());
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
+            sisalto.setViimeisinJulkaisuAika(Optional.of(julkaisuaika));
             ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
             Set<Long> dokumentit = generoiJulkaisuPdf(peruste);
@@ -454,13 +456,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         return julkaisutRepository.countByPerusteId(perusteId) > 0
                 &&!muokkaustiedot.isEmpty()
                 && muokkaustiedot.stream().noneMatch(muokkaustieto -> muokkaustieto.getTapahtuma().equals(MuokkausTapahtuma.JULKAISU));
-    }
-
-    private String generoiOpetussuunnitelmaKaikkiDtotoString(PerusteKaikkiDto perusteKaikkiDto) throws IOException {
-        perusteKaikkiDto.setViimeisinJulkaisuAika(null);
-        perusteKaikkiDto.setTila(null);
-
-        return objectMapper.writeValueAsString(perusteKaikkiDto);
     }
 
     @Override
