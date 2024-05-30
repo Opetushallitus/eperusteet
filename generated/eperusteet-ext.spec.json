@@ -2613,13 +2613,13 @@
     "Page" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2635,21 +2635,21 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -2659,13 +2659,13 @@
     "PagePerusteenJulkaisuData" : {
       "type" : "object",
       "properties" : {
-        "totalPages" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "totalElements" : {
           "type" : "integer",
           "format" : "int64"
+        },
+        "totalPages" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "size" : {
           "type" : "integer",
@@ -2681,21 +2681,21 @@
           "type" : "integer",
           "format" : "int32"
         },
-        "sort" : {
-          "$ref" : "#/definitions/Sort"
-        },
-        "numberOfElements" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
         "first" : {
           "type" : "boolean"
+        },
+        "sort" : {
+          "$ref" : "#/definitions/Sort"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
         },
         "last" : {
           "type" : "boolean"
+        },
+        "numberOfElements" : {
+          "type" : "integer",
+          "format" : "int32"
         },
         "empty" : {
           "type" : "boolean"
@@ -2712,10 +2712,10 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "paged" : {
+        "unpaged" : {
           "type" : "boolean"
         },
-        "unpaged" : {
+        "paged" : {
           "type" : "boolean"
         },
         "pageSize" : {
@@ -2934,6 +2934,13 @@
         "poikkeamismaaraysTyyppi" : {
           "type" : "string",
           "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
+        },
+        "opasTyyppi" : {
+          "type" : "string",
+          "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
+        },
+        "tietoapalvelustaKuvaus" : {
+          "$ref" : "#/definitions/LokalisoituTekstiDto"
         },
         "suoritustavat" : {
           "type" : "array",
