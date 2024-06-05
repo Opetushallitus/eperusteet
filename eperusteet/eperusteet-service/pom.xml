@@ -668,6 +668,15 @@
                                 <format>XML</format>
                                 <format>HTML</format>
                             </formats>
+                            <excludes>
+                                <exclude>**/config/**/*</exclude>
+                                <exclude>**/domain/**/*</exclude>
+                                <exclude>**/dto/**/*</exclude>
+                                <exclude>**/repository/**/*</exclude>
+                                <exclude>**/hibernate/**/*</exclude>
+                                <exclude>db/migration/**/*</exclude>
+                                <exclude>**/EperusteetApplication.class</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>
