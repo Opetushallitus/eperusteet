@@ -28,6 +28,9 @@ public interface JulkaisutService {
     List<JulkaisuBaseDto> getJulkaisut(long id);
 
     @PreAuthorize("permitAll()")
+    Integer getViimeisinRevisio(long id);
+
+    @PreAuthorize("permitAll()")
     List<JulkaisuBaseDto> getJulkisetJulkaisut(long id);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
