@@ -222,11 +222,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    public Integer getViimeisinRevisio(long id) {
-        return getJulkaisut(id).stream().map(JulkaisuBaseDto::getRevision).max(Integer::compareTo).orElse(0);
-    }
-
-    @Override
     public List<JulkaisuBaseDto> getJulkisetJulkaisut(long id) {
         return getJulkaistutPerusteet(id).stream()
                 .filter(JulkaisuBaseDto::getJulkinen)

@@ -149,6 +149,7 @@ public class DokumenttiServiceImpl implements DokumenttiService {
             if (dokumentti != null) {
                 DokumenttiDto dokumenttiDto = mapper.map(dokumentti, DokumenttiDto.class);
                 dokumenttiDto.setJulkaisuDokumentti(true);
+                dokumenttiDto.setJulkaisuRevision(julkaisu.getRevision());
                 return dokumenttiDto;
             }
         }
