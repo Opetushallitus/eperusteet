@@ -50,12 +50,6 @@ public class JulkaisuController {
         return julkaisutService.getJulkaisut(id);
     }
 
-    @RequestMapping(method = GET, value = "/{perusteId}/viimeisinrevisio")
-    public Integer getViimeisinRevisio(
-            @PathVariable("perusteId") final long id) {
-        return julkaisutService.getViimeisinRevisio(id);
-    }
-
     @RequestMapping(method = GET, value = "/{perusteId}/julkaisut/julkinen")
     public List<JulkaisuBaseDto> getJulkisetJulkaisut(
             @PathVariable("perusteId") final long id) {
