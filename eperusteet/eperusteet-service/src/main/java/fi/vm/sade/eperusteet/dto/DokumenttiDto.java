@@ -24,4 +24,5 @@ public class DokumenttiDto {
     private Suoritustapakoodi suoritustapakoodi;
     private GeneratorVersion generatorVersion;
     private Boolean julkaisuDokumentti = false;
+    private int julkaisuRevision;
 }
