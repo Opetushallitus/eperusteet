@@ -33,11 +33,6 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public Integer getViimeisinRevisio(long id) {
-        return 0;
-    }
-
-    @Override
     public List<JulkaisuBaseDto> getJulkisetJulkaisut(long id) {
         return null;
     }
