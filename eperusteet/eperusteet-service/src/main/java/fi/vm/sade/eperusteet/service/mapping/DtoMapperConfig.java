@@ -794,9 +794,13 @@ public class DtoMapperConfig {
                         super.mapAtoB(source, target, context);
 
                         if (SecurityUtil.isAuthenticated()) {
-                            KayttajanTietoDto kayttaja = kayttajat.hae(source.getMuokkaaja());
-                            if (kayttaja != null) {
-                                target.setMuokkaaja(kayttaja.getKutsumanimi() + " " + kayttaja.getSukunimi());
+                            try {
+                                KayttajanTietoDto kayttaja = kayttajat.hae(source.getMuokkaaja());
+                                if (kayttaja != null) {
+                                    target.setMuokkaaja(kayttaja.getKutsumanimi() + " " + kayttaja.getSukunimi());
+                                }
+                            } catch(Exception e) {
+                                logger.error("Käyttäjän tietojen haku epäonnistui", e);
                             }
                         }
                     }

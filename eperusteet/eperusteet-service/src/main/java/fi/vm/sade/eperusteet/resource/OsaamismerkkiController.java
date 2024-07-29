@@ -62,6 +62,7 @@ public class OsaamismerkkiController {
             @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
             @ApiImplicitParam(name = "koodit", dataType = "long", paramType = "query", allowMultiple = true),
             @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query")
     })
     @RequestMapping(value = "/haku/julkiset", method = GET)
     public List<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
@@ -100,6 +101,7 @@ public class OsaamismerkkiController {
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
+            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query")
     })
     @RequestMapping(value = "/kategoriat/julkiset", method = GET)
     @ResponseBody

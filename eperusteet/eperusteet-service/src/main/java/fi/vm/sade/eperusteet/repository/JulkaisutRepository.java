@@ -148,7 +148,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
 
     @Query(nativeQuery = true,
-            value = "SELECT data.koulutustyyppi, COUNT(*) " +
+            value = "SELECT data.koulutustyyppi, COUNT(*) as lukumaara " +
                     "FROM julkaistu_peruste_data_store data " +
                     "WHERE data.koulutustyyppi IS NOT NULL " +
                     "AND (data.\"voimassaoloAlkaa\" IS NULL OR CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
