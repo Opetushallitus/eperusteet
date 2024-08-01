@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.PerusteVersion;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -87,6 +88,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
+import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
@@ -118,6 +120,7 @@ import fi.vm.sade.eperusteet.repository.OppiaineRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.RakenneRepository;
 import fi.vm.sade.eperusteet.repository.SuoritustapaRepository;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepository;
@@ -342,6 +345,9 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Autowired
     private KoodistoClient koodistoClient;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
 
     private final ObjectMapper ieMapper = InitJacksonConverter.createImportExportMapper();
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
@@ -2582,6 +2588,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     pohjaLiite = pohjaLiite.getPohja();
                 }
                 kvliiteDto.setPeriytynyt(true);
+                Perusteprojekti projekti = perusteprojektiRepository.findById(pohjaLiite.getPeruste().getPerusteprojekti().getId()).orElse(null);
+                kvliiteDto.setPohjaProjekti(mapper.map(projekti, PerusteprojektiInfoDto.class));
             }
 
             pohjaLiiteDto = mapper.map(pohjaLiite, KVLiiteDto.class);
