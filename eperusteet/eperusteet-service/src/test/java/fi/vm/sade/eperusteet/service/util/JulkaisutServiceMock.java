@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 
@@ -53,7 +54,7 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public Set<Long> generoiJulkaisuPdf(Peruste peruste) {
+    public Set<Long> generoiJulkaisuPdf(PerusteKaikkiDto peruste) {
         return null;
     }
 

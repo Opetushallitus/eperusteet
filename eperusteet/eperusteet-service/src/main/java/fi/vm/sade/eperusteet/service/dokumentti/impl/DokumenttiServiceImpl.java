@@ -11,6 +11,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -162,11 +163,18 @@ public class DokumenttiServiceImpl implements DokumenttiService {
     @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
     @IgnorePerusteUpdateCheck
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
+        generateWithDto(dto, null);
+    }
+
+    @Override
+    @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
+    @IgnorePerusteUpdateCheck
+    public void generateWithDto(DokumenttiDto dto, PerusteKaikkiDto perusteDto) throws DokumenttiException {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
 
         try {
-            externalPdfService.generatePdf(dto);
+            externalPdfService.generatePdf(dto, perusteDto);
         } catch (Exception ex) {
             dto.setTila(DokumenttiTila.EPAONNISTUI);
             dto.setVirhekoodi(DokumenttiVirhe.TUNTEMATON);

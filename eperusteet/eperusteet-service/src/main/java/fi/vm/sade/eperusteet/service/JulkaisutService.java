@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ public interface JulkaisutService {
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
     CompletableFuture<Void> teeJulkaisuAsync(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
 
-    @PreAuthorize("hasPermission(#peruste.id, 'peruste', 'LUKU') or hasPermission(null, 'pohja', 'LUONTI')")
-    Set<Long> generoiJulkaisuPdf(@P("peruste") Peruste peruste);
+    @PreAuthorize("hasPermission(#perusteDto.id, 'peruste', 'LUKU') or hasPermission(null, 'pohja', 'LUONTI')")
+    Set<Long> generoiJulkaisuPdf(PerusteKaikkiDto perusteDto);
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO')")
     JulkaisuBaseDto aktivoiJulkaisu(@P("projektiId") long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException, IOException;
