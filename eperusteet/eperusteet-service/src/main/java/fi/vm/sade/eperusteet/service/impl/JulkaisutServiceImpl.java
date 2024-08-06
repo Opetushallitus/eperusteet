@@ -44,6 +44,7 @@ import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuLiiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -323,7 +324,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             sisalto.setViimeisinJulkaisuAika(Optional.of(julkaisuaika));
             ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
-            Set<Long> dokumentit = generoiJulkaisuPdf(peruste);
+            Set<Long> dokumentit = generoiJulkaisuPdf(sisalto);
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
@@ -410,15 +411,15 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     @IgnorePerusteUpdateCheck
-    public Set<Long> generoiJulkaisuPdf(Peruste peruste) {
+    public Set<Long> generoiJulkaisuPdf(PerusteKaikkiDto perusteDto) {
 
-        if ((!peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) || OpasTyyppi.TIETOAPALVELUSTA.equals(peruste.getOpasTyyppi())) {
+        if ((!perusteDto.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !perusteDto.getTyyppi().equals(PerusteTyyppi.OPAS)) || OpasTyyppi.TIETOAPALVELUSTA.equals(perusteDto.getOpasTyyppi())) {
             return Collections.emptySet();
         }
 
-        Set<Suoritustapakoodi> suoritustavat = peruste.getSuoritustavat().stream().map(Suoritustapa::getSuoritustapakoodi).collect(toSet());
+        Set<Suoritustapakoodi> suoritustavat = perusteDto.getSuoritustavat().stream().map(SuoritustapaLaajaDto::getSuoritustapakoodi).collect(toSet());
         if (suoritustavat.isEmpty()) {
-            if (peruste.getTyyppi().equals(PerusteTyyppi.OPAS)) {
+            if (perusteDto.getTyyppi().equals(PerusteTyyppi.OPAS)) {
                 suoritustavat.add(Suoritustapakoodi.OPAS);
             } else {
                 suoritustavat.add(Suoritustapakoodi.REFORMI);
@@ -426,17 +427,17 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return suoritustavat.stream()
-                .map(suoritustapa -> peruste.getKielet().stream()
+                .map(suoritustapa -> perusteDto.getKielet().stream()
                         .map(kieli -> {
                             try {
                                 DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                        peruste.getId(),
+                                        perusteDto.getId(),
                                         kieli,
                                         suoritustapa,
                                         GeneratorVersion.UUSI
                                 );
                                 dokumenttiService.setStarted(createDtoFor);
-                                dokumenttiService.generateWithDto(createDtoFor);
+                                dokumenttiService.generateWithDto(createDtoFor, perusteDto);
                                 return createDtoFor.getId();
                             } catch (DokumenttiException e) {
                                 log.error(e.getLocalizedMessage(), e);

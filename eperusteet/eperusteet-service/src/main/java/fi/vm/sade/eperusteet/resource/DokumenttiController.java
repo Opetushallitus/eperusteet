@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import io.swagger.annotations.Api;
@@ -38,6 +39,9 @@ public class DokumenttiController {
     @Autowired
     DokumenttiService service;
 
+    @Autowired
+    PerusteService perusteService;
+
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation("luo dokumentti")
@@ -52,7 +56,7 @@ public class DokumenttiController {
         DokumenttiDto viimeisinJulkaistuDokumentti = service.getJulkaistuDokumentti(perusteId, Kieli.of(kieli), null);
         if (viimeisinJulkaistuDokumentti != null && viimeisinJulkaistuDokumentti.getTila().equals(DokumenttiTila.EPAONNISTUI)) {
             service.setStarted(viimeisinJulkaistuDokumentti);
-            service.generateWithDto(viimeisinJulkaistuDokumentti);
+            service.generateWithDto(viimeisinJulkaistuDokumentti, perusteService.getJulkaistuSisalto(perusteId));
         }
 
         final DokumenttiDto createDtoFor = service.createDtoFor(

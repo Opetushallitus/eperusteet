@@ -243,7 +243,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
 
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
-            Set<Long> dokumentit = julkaisutService.generoiJulkaisuPdf(peruste);
+            Set<Long> dokumentit = julkaisutService.generoiJulkaisuPdf(sisalto);
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(julkaisutService.seuraavaVapaaJulkaisuNumero(perusteId));
             julkaisu.setTiedote(TekstiPalanen.of(Kieli.FI, tiedote));

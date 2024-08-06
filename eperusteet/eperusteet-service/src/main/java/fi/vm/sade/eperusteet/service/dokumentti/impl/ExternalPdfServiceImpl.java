@@ -50,17 +50,12 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
     private final ObjectMapper mapper = InitJacksonConverter.createMapper();
 
     @Override
-    public void generatePdf(DokumenttiDto dto) throws JsonProcessingException {
-
-        PerusteKaikkiDto sisalto = null;
-        DokumenttiDto viimeisinJulkaistuDokumentti = dokumenttiService.getJulkaistuDokumentti(dto.getPerusteId(), dto.getKieli(), null);
-        if (viimeisinJulkaistuDokumentti != null && viimeisinJulkaistuDokumentti.getId().equals(dto.getId())) {
-            sisalto = perusteService.getJulkaistuSisalto(dto.getPerusteId());
-        } else {
-            sisalto = perusteService.getKaikkiSisalto(dto.getPerusteId());
+    public void generatePdf(DokumenttiDto dto, PerusteKaikkiDto perusteDto) throws JsonProcessingException {
+        if (perusteDto == null) {
+            perusteDto = perusteService.getKaikkiSisalto(dto.getPerusteId());
         }
 
-        String json = mapper.writeValueAsString(sisalto);
+        String json = mapper.writeValueAsString(perusteDto);
         OphHttpClient client = restClientFactory.get(pdfServiceUrl, true);
         String url = pdfServiceUrl + "/api/pdf/generate/eperusteet/" + dto.getId() + "/" + dto.getKieli().name();
 
@@ -86,5 +81,10 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
         if (!ObjectUtils.isEmpty(result)) {
             throw new RuntimeException("Virhe pdf-palvelun kutsussa");
         }
+    }
+
+    @Override
+    public void generatePdf(DokumenttiDto dto) throws JsonProcessingException {
+        generatePdf(dto, null);
     }
 }

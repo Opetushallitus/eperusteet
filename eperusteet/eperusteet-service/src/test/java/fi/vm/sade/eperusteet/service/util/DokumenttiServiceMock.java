@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import org.springframework.context.annotation.Profile;
@@ -20,6 +21,11 @@ public class DokumenttiServiceMock implements DokumenttiService {
 
     @Override
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
+
+    }
+
+    @Override
+    public void generateWithDto(DokumenttiDto dto, PerusteKaikkiDto perusteDto) throws DokumenttiException {
 
     }
 
