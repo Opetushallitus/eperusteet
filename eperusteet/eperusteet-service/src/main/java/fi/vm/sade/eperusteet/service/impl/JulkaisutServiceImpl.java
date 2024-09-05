@@ -420,27 +420,38 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
         }
 
-        return suoritustavat.stream()
+        Set<Long> documentIds = suoritustavat.stream()
                 .map(suoritustapa -> perusteDto.getKielet().stream()
                         .map(kieli -> {
                             try {
-                                Long documentId = generateDocument(perusteDto, kieli, suoritustapa, GeneratorVersion.UUSI);
-
-                                if (KoulutustyyppiToteutus.AMMATILLINEN.equals(perusteDto.getToteutus())) {
-                                    generateDocument(perusteDto, kieli, suoritustapa, GeneratorVersion.KVLIITE);
-                                }
-
-                                return documentId;
+                                return generateDocument(perusteDto, kieli, suoritustapa, GeneratorVersion.UUSI);
                             } catch (DokumenttiException e) {
                                 log.error(e.getLocalizedMessage(), e);
                             }
-
                             return null;
                         })
                         .collect(toSet()))
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+
+        generoiJulkaisunKvLiitteet(perusteDto);
+        return documentIds;
+    }
+
+    private void generoiJulkaisunKvLiitteet(PerusteKaikkiDto perusteDto) {
+        if (KoulutustyyppiToteutus.AMMATILLINEN.equals(perusteDto.getToteutus())) {
+            Set<Kieli> kielet = perusteDto.getKielet();
+            kielet.add(Kieli.EN);
+
+            kielet.forEach(kieli -> {
+                try {
+                    generateDocument(perusteDto, kieli, Suoritustapakoodi.REFORMI, GeneratorVersion.KVLIITE);
+                } catch (DokumenttiException e) {
+                    log.error(e.getLocalizedMessage(), e);
+                }
+            });
+        }
     }
 
     @Override
