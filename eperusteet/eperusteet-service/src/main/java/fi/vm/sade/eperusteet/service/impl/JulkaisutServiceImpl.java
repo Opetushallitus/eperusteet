@@ -441,9 +441,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     private void generoiJulkaisunKvLiitteet(PerusteKaikkiDto perusteDto) {
         if (KoulutustyyppiToteutus.AMMATILLINEN.equals(perusteDto.getToteutus())) {
-            Set<Kieli> kielet = perusteDto.getKielet();
-            kielet.add(Kieli.EN);
-
+            List<Kieli> kielet = new ArrayList<>(Arrays.asList(Kieli.FI, Kieli.SV, Kieli.EN));
             kielet.forEach(kieli -> {
                 try {
                     generateDocument(perusteDto, kieli, Suoritustapakoodi.REFORMI, GeneratorVersion.KVLIITE);
