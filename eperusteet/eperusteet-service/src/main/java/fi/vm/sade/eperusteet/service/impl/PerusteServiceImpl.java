@@ -1778,7 +1778,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             TutkinnonOsaViite viite = tutkinnonOsaViiteRepository.findOne(osaId);
             if (suoritustapa.getTutkinnonOsat().contains(viite)) {
                 if (tutkinnonOsaViiteRepository.isInUse(viite)) {
-                    throw new BusinessRuleViolationException("Tutkinnonosa on käytössä");
+                    throw new BusinessRuleViolationException("tutkinnon-osa-liitetty-rakenteeseen");
                 }
                 suoritustapa.getTutkinnonOsat().remove(viite);
                 muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.POISTO);

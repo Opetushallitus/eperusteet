@@ -35,7 +35,6 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
-import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -76,7 +75,6 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Pair;
 import fi.vm.sade.eperusteet.service.util.Validointi;
-import fi.vm.sade.eperusteet.utils.domain.utils.Tila;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.mime.MimeTypeException;
 import org.joda.time.DateTime;
@@ -94,11 +92,7 @@ import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -426,29 +420,36 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             }
         }
 
-        return suoritustavat.stream()
+        Set<Long> documentIds = suoritustavat.stream()
                 .map(suoritustapa -> perusteDto.getKielet().stream()
                         .map(kieli -> {
                             try {
-                                DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
-                                        perusteDto.getId(),
-                                        kieli,
-                                        suoritustapa,
-                                        GeneratorVersion.UUSI
-                                );
-                                dokumenttiService.setStarted(createDtoFor);
-                                dokumenttiService.generateWithDto(createDtoFor, perusteDto);
-                                return createDtoFor.getId();
+                                return generateDocument(perusteDto, kieli, suoritustapa, GeneratorVersion.UUSI);
                             } catch (DokumenttiException e) {
                                 log.error(e.getLocalizedMessage(), e);
                             }
-
                             return null;
                         })
                         .collect(toSet()))
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
+
+        generoiJulkaisunKvLiitteet(perusteDto);
+        return documentIds;
+    }
+
+    private void generoiJulkaisunKvLiitteet(PerusteKaikkiDto perusteDto) {
+        if (KoulutustyyppiToteutus.AMMATILLINEN.equals(perusteDto.getToteutus())) {
+            List<Kieli> kielet = new ArrayList<>(Arrays.asList(Kieli.FI, Kieli.SV, Kieli.EN));
+            kielet.forEach(kieli -> {
+                try {
+                    generateDocument(perusteDto, kieli, Suoritustapakoodi.REFORMI, GeneratorVersion.KVLIITE);
+                } catch (DokumenttiException e) {
+                    log.error(e.getLocalizedMessage(), e);
+                }
+            });
+        }
     }
 
     @Override
@@ -705,6 +706,18 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("julkaisun-tallennus-epaonnistui");
         }
+    }
+
+    private Long generateDocument(PerusteKaikkiDto perusteDto, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) throws DokumenttiException {
+        DokumenttiDto createDtoFor = dokumenttiService.createDtoFor(
+                perusteDto.getId(),
+                kieli,
+                suoritustapakoodi,
+                version
+        );
+        dokumenttiService.setStarted(createDtoFor);
+        dokumenttiService.generateWithDto(createDtoFor, perusteDto);
+        return createDtoFor.getId();
     }
 
     private List<JulkaisuLiite> addLiitteet(JulkaistuPeruste julkaisu,
