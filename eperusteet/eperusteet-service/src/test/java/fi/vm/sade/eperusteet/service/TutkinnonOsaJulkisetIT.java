@@ -17,7 +17,7 @@ import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
-import org.jsoup.safety.Whitelist;
+import org.jsoup.safety.Safelist;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,8 +247,8 @@ public class TutkinnonOsaJulkisetIT extends AbstractPerusteprojektiTest {
         LokalisoituTekstiDto teksti = tutkinnonOsaKaikkiDto.getAmmattitaitovaatimukset();
         String suomi = teksti.getTekstit().get(Kieli.FI);
         String ruotsi = teksti.getTekstit().get(Kieli.SV);
-        Jsoup.isValid(suomi, Whitelist.relaxed());
-        Jsoup.isValid(ruotsi, Whitelist.relaxed());
+        Jsoup.isValid(suomi, Safelist.relaxed());
+        Jsoup.isValid(ruotsi, Safelist.relaxed());
         assertThat(suomi).isEqualTo("<dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueetonSuomi</dd></dl><b>kohdealueSuomi</b><dl><dt><i>kohdeSuomi</i></dt><dd style=\"display: list-item;\">kohdealueellinenSuomi</dd></dl>");
         assertThat(ruotsi).isEqualTo("<dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueetonRuotsi</dd></dl><b>kohdealueRuotsi</b><dl><dt><i>kohdeRuotsi</i></dt><dd style=\"display: list-item;\">kohdealueellinenRuotsi</dd></dl>");
 
