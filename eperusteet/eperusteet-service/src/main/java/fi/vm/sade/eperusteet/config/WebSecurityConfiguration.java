@@ -152,7 +152,6 @@ public class WebSecurityConfiguration {
                 .authorizeRequests()
                     .antMatchers("/buildversion.txt").permitAll()
                     .antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                    .antMatchers(HttpMethod.POST, "/api/palaute").permitAll()
                     .antMatchers(HttpMethod.GET, "/").permitAll()
                     .anyRequest().authenticated()
                 .and()
