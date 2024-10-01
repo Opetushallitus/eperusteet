@@ -63,11 +63,6 @@ user.home.conf=${user.home}/oph-configuration
 user.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/userService
 web.url.cas=https\://${host.cas}/cas
 
-#SQS palautejono
-sqs.palaute_queue_url={{palaute_queue_url}}
-sqs.aws_region={{aws_region}}
-palaute-service.url=https://${host.virkailija}/palaute
-
 host_postgresql_eperusteet={{host_postgresql_eperusteet}}
 host_postgresql_eperusteet_port={{host_postgresql_eperusteet_port}}
 host_postgresql_eperusteet_user={{postgres_app_user}}
