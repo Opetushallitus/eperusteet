@@ -1811,7 +1811,7 @@
       }
     },
     "/api/maintenance/julkaise/{perusteId}" : {
-      "get" : {
+      "post" : {
         "tags" : [ "Maintenance" ],
         "operationId" : "teeMaintenanceJulkaisu",
         "parameters" : [ {
@@ -14977,14 +14977,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15023,14 +15023,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15069,14 +15069,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15115,14 +15115,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15161,14 +15161,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15207,14 +15207,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15253,14 +15253,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15299,14 +15299,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15345,14 +15345,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15391,14 +15391,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15437,14 +15437,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15483,14 +15483,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15529,14 +15529,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15575,14 +15575,14 @@
           "type" : "integer",
           "format" : "int32"
         },
+        "first" : {
+          "type" : "boolean"
+        },
         "last" : {
           "type" : "boolean"
         },
         "pageable" : {
           "$ref" : "#/definitions/Pageable"
-        },
-        "first" : {
-          "type" : "boolean"
         },
         "empty" : {
           "type" : "boolean"
@@ -15599,18 +15599,18 @@
         "sort" : {
           "$ref" : "#/definitions/Sort"
         },
-        "pageSize" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "paged" : {
-          "type" : "boolean"
-        },
         "pageNumber" : {
           "type" : "integer",
           "format" : "int32"
         },
+        "pageSize" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
         "unpaged" : {
+          "type" : "boolean"
+        },
+        "paged" : {
           "type" : "boolean"
         }
       }
@@ -17590,10 +17590,10 @@
         "empty" : {
           "type" : "boolean"
         },
-        "sorted" : {
+        "unsorted" : {
           "type" : "boolean"
         },
-        "unsorted" : {
+        "sorted" : {
           "type" : "boolean"
         }
       }
@@ -18013,6 +18013,9 @@
             "$ref" : "#/definitions/Validointi"
           }
         },
+        "vaihtoOk" : {
+          "type" : "boolean"
+        },
         "huomautukset" : {
           "type" : "array",
           "items" : {
@@ -18024,9 +18027,6 @@
           "items" : {
             "$ref" : "#/definitions/Virhe"
           }
-        },
-        "vaihtoOk" : {
-          "type" : "boolean"
         }
       }
     },
