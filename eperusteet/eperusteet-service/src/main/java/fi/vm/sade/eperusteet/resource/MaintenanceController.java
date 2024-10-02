@@ -86,7 +86,7 @@ public class MaintenanceController {
         return ResponseEntity.ok("julkaisut käynnistetty");
     }
 
-    @RequestMapping(value = "/julkaise/{perusteId}", method = GET)
+    @RequestMapping(value = "/julkaise/{perusteId}", method = POST)
     public void teeMaintenanceJulkaisu(@PathVariable final Long perusteId, @RequestParam(value = "tiedote", defaultValue = "Ylläpidon suorittama julkaisu") String tiedote) {
         maintenanceService.teeJulkaisu(perusteId, tiedote);
     }
