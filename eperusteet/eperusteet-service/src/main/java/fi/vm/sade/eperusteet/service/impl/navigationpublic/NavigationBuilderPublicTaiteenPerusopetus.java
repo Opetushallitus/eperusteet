@@ -54,12 +54,11 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
             if (viite.isPresent() && viite.get().getPerusteenOsa() instanceof TaiteenalaDto) {
                 TaiteenalaDto taiteenaladto = (TaiteenalaDto) viite.get().getPerusteenOsa();
 
-                navigationNodeDto.addAll(taiteenaladto.getOsaavainMap().keySet().stream().map(alaosa -> {
-                    KevytTekstiKappaleDto tekstikappale = taiteenaladto.getOsaavainMap().get(alaosa);
-                    if (tekstikappale != null) {
+                navigationNodeDto.addAll(taiteenaladto.getTaiteenOsat().stream().map(alaosa -> {
+                    if (alaosa.getNimi() != null) {
                         return NavigationNodeDto.of(NavigationType.taiteenosa,
-                                tekstikappale.getNimi())
-                                .meta("alaosa", alaosa)
+                                        alaosa.getNimi())
+                                .meta("alaosa", alaosa.getTaiteenOsa())
                                 .meta("viiteId", navigationNodeDto.getId());
                     } else {
                         return null;

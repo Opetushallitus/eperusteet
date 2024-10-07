@@ -117,6 +117,7 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
     void updateOsaamisalat(@P("perusteId") Long perusteId, Set<KoodiDto> osaamisalat);
+
     @Transactional(readOnly = true)
     PerusteKaikkiDto getKaikkiSisalto(final Long id);
 

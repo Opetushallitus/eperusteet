@@ -43,6 +43,7 @@ import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
+import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Taiteenala;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
@@ -108,7 +109,10 @@ import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineKevytDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
@@ -156,6 +160,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @Configuration
@@ -416,6 +421,20 @@ public class DtoMapperConfig {
         factory.classMap(RakenneOsaDto.class, RakenneOsa.class)
                 .use(AbstractRakenneOsaDto.class, AbstractRakenneOsa.class)
                 .byDefault()
+                .customize(new CustomMapper<RakenneOsaDto, RakenneOsa>() {
+                    @Override
+                    public void mapBtoA(RakenneOsa source, RakenneOsaDto target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                        Optional<Koodi> nimiKoodi = Optional.ofNullable(source).map(RakenneOsa::getTutkinnonOsaViite).map(TutkinnonOsaViite::getTutkinnonOsa).map(TutkinnonOsa::getKoodi);
+                        if (nimiKoodi.isPresent()) {
+                            KoodiDto koodiDto = new KoodiDto();
+                            koodiDto.setUri(nimiKoodi.get().getUri());
+                            koodiDto.setKoodisto(nimiKoodi.get().getKoodisto());
+                            koodistoClient.addNimiAndArvo(koodiDto);
+                            target.setNimi(koodiDto.getNimi());
+                        }
+                    }
+                })
                 .register();
 
         factory.classMap(TutkinnonOsaViiteDto.class, TutkinnonOsaViite.class)
@@ -862,6 +881,28 @@ public class DtoMapperConfig {
 
                     @Override
                     public void mapBtoA(JulkiEtusivuDto source, OpetussuunnitelmaEtusivuDto target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                    }
+                })
+                .register();
+
+        factory.classMap(OppiaineLaajaDto.class, OppiaineKevytDto.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(OppiaineenVuosiluokkaKokonaisuus.class, OppiaineenVuosiluokkaKokonaisuusDto.class)
+                .byDefault()
+                .customize(new CustomMapper<OppiaineenVuosiluokkaKokonaisuus, OppiaineenVuosiluokkaKokonaisuusDto>() {
+                    @Override
+                    public void mapAtoB(OppiaineenVuosiluokkaKokonaisuus source, OppiaineenVuosiluokkaKokonaisuusDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (source.getVuosiluokkaKokonaisuus() != null) {
+                            target.setVuosiluokat(source.getVuosiluokkaKokonaisuus().getVuosiluokat());
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(OppiaineenVuosiluokkaKokonaisuusDto source, OppiaineenVuosiluokkaKokonaisuus target, MappingContext context) {
                         super.mapBtoA(source, target, context);
                     }
                 })

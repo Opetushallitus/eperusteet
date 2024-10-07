@@ -540,11 +540,6 @@
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
-                    <systemPropertyVariables>
-                        <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
-                        <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>
-                        <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
-                    </systemPropertyVariables>
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
