@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.dto.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class RakenneOsaDto extends AbstractRakenneOsaDto {
     private String erikoisuus;
     private Reference tutkinnonOsaViite;
+    private LokalisoituTekstiDto nimi;
 
     @Override
     public String validationIdentifier() {
