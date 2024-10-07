@@ -25,7 +25,7 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Optional<Reference> oppiaine;
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;
-    private Optional<LokalisoituTekstiDto> nimi;
+    protected Optional<LokalisoituTekstiDto> nimi;
     private Optional<Long> jnro;
     private Date muokattu;
 

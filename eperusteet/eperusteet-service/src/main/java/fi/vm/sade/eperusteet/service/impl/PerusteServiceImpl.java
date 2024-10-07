@@ -106,10 +106,15 @@ import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineKevytDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokoulutuksenYleisetTavoitteetDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.KVLiiteRepository;
@@ -199,6 +204,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -953,20 +959,21 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             return null;
         }
 
-        PerusteKaikkiDto perusteDto = null;
-
         if (!hasPermission && Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
             throw new AccessDeniedException("ei-riittavia-oikeuksia");
         }
 
-        perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
+        final PerusteKaikkiDto perusteDto = mapper.map(peruste, PerusteKaikkiDto.class);
 
         if (peruste.getAipeOpetuksenPerusteenSisalto() != null && peruste.getAipeOpetuksenPerusteenSisalto().getLaajaalaisetosaamiset() != null) {
             perusteDto.getAipeOpetuksenPerusteenSisalto()
                     .setVaiheet(peruste.getAipeOpetuksenPerusteenSisalto().getVaiheet().stream()
                     .map(vaihe -> {
                         AIPEVaiheDto dto = mapper.map(vaihe, AIPEVaiheDto.class);
-                        dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class));
+                        dto.setOppiaineet(mapper.mapAsList(vaihe.getOppiaineet(), AIPEOppiaineLaajaDto.class)
+                                .stream()
+                                .peek(oppiaine -> oppiaine.setVaihe(mapper.map(vaihe, AIPEVaiheSuppeaDto.class)))
+                                .collect(Collectors.toList()));
                         dto.setOpetuksenKohdealueet(mapper.mapAsList(vaihe.getOpetuksenKohdealueet(), OpetuksenKohdealueDto.class));
                         return dto;
                     })
@@ -978,6 +985,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (peruste.getTpoOpetuksenSisalto() != null) {
             perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
+            perusteDto.getTpoOpetuksenSisalto().getSisalto().getLapset()
+                    .forEach(this::taiteenalaViiteSetterRecursive);
         }
 
         if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
@@ -986,6 +995,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         if (peruste.getLops2019Sisalto() != null) {
             getLops2019KaikkiRakenne(perusteDto, peruste);
+        }
+
+        if (perusteDto.getPerusopetuksenPerusteenSisalto() != null) {
+            perusteDto.getPerusopetuksenPerusteenSisalto().getOppiaineet().forEach(oppiaine -> {
+                oppiaine.getVuosiluokkakokonaisuudet().forEach(oppiaineenVlk -> {
+                    oppiaineenVlk.setOppiaine(mapper.map(oppiaine, OppiaineKevytDto.class));
+                });
+            });
         }
 
         Revision rev = perusteRepository.getLatestRevisionId(id);
@@ -1007,6 +1024,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 }
             }
             perusteDto.setTutkinnonOsat(mapper.mapAsList(tutkinnonOsat, TutkinnonOsaKaikkiDto.class));
+            perusteDto.getTutkinnonOsat().forEach(tutkinnonOsa -> {
+                tutkinnonOsa.setTutkinnonosaViiteId(perusteDto.getSuoritustavat().stream().map(SuoritustapaLaajaDto::getTutkinnonOsat).flatMap(Collection::stream)
+                        .filter(tutkinnonOsaViite -> tutkinnonOsaViite.getTutkinnonOsa().getIdLong().equals(tutkinnonOsa.getId()))
+                        .map(TutkinnonOsaViiteSuppeaDto::getId)
+                        .findFirst().orElse(null));
+            });
         }
 
         if (peruste.getTuvasisalto() != null) {
@@ -1022,6 +1045,16 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
 
         return perusteDto;
+    }
+
+    private void taiteenalaViiteSetterRecursive(PerusteenOsaViiteDto.Laaja viite) {
+        if (viite.getPerusteenOsa() instanceof TaiteenalaDto) {
+            ((TaiteenalaDto)viite.getPerusteenOsa()).setViiteId(viite.getId());
+        }
+
+        if (!CollectionUtils.isEmpty(viite.getLapset())) {
+            viite.getLapset().forEach(this::taiteenalaViiteSetterRecursive);
+        }
     }
 
     private void getLops2019KaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {

@@ -1,5 +1,7 @@
 package fi.vm.sade.eperusteet.dto.lops2019.laajaalainenosaaminen;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Lops2019LaajaAlainenOsaaminenDto {
     private Long id;
     private LokalisoituTekstiDto nimi;
@@ -21,5 +24,9 @@ public class Lops2019LaajaAlainenOsaaminenDto {
         }
 
         return nimi;
+    }
+
+    public PerusteRakenneOsa getPerusteenOsa() {
+        return new PerusteRakenneOsa("lukio_laajaalainen_osaaminen", getNimi());
     }
 }

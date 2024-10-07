@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -7,6 +8,7 @@ import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoKaikkiDto;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.ammattitaitovaatimukset.AmmattitaitovaatimusKohdealueetDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -28,6 +30,7 @@ import org.springframework.util.StringUtils;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private final String osanTyyppi = "tutkinnonosa";
 
@@ -37,6 +40,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     private String koodiUri;
     private String koodiArvo;
     private BigDecimal laajuus;
+    private Long tutkinnonosaViiteId;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private BigDecimal laajuusMaksimi;
@@ -171,5 +175,9 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
         } else {
             return super.getNimi();
         }
+    }
+
+    public PerusteRakenneOsa getPerusteenOsa() {
+        return new PerusteRakenneOsa("tutkinnonosa", getNimi());
     }
 }

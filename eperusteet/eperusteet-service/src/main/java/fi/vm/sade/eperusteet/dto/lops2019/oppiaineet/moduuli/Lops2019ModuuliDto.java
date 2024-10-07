@@ -1,7 +1,9 @@
 package fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,6 +17,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Lops2019ModuuliDto extends Lops2019ModuuliBaseDto {
     private LokalisoituTekstiDto kuvaus;
     private BigDecimal laajuus;
@@ -24,4 +27,8 @@ public class Lops2019ModuuliDto extends Lops2019ModuuliBaseDto {
     private List<Lops2019ModuuliSisaltoDto> sisallot;
 
     private Reference oppiaine;
+
+    public PerusteRakenneOsa getPerusteenOsa() {
+        return new PerusteRakenneOsa("lukio_moduuli", getNimi());
+    }
 }
