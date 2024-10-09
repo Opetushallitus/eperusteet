@@ -5,6 +5,7 @@ import java.text.Normalizer;
 import java.util.*;
 import javax.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.Immutable;
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Immutable
+@NoArgsConstructor
 @Table(name = "tekstipalanen")
 public class TekstiPalanen implements Serializable {
 
@@ -29,9 +31,6 @@ public class TekstiPalanen implements Serializable {
     @Getter
     @Column(updatable = false)
     private UUID tunniste;
-
-    protected TekstiPalanen() {
-    }
 
     private TekstiPalanen(Set<LokalisoituTeksti> tekstit, UUID tunniste) {
         this.teksti = tekstit;
