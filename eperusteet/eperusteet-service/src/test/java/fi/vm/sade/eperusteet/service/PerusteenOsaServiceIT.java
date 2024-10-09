@@ -12,6 +12,7 @@ import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
 import fi.vm.sade.eperusteet.domain.digi.DigitaalinenOsaaminenTaso;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlueTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -29,7 +30,10 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.AmmattitaitovaatimustenKohdealue2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueLaajaDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Osaamistavoite2020Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
@@ -58,6 +62,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -69,6 +74,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -218,7 +224,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         PerusteprojektiDto pp1 = ppTestUtils.createPerusteprojekti(ppl -> {
         });
         PerusteDto perusteDto1 = ppTestUtils.initPeruste(pp1.getPeruste().getIdLong());
-        TutkinnonOsaViiteDto viiteDto = luoTutkinnonOsaOsaAlueella(perusteDto1.getId(), Suoritustapakoodi.REFORMI);
+        TutkinnonOsaViiteDto viiteDto = luoTutkinnonOsaOsaAlueella(perusteDto1.getId(), Suoritustapakoodi.REFORMI,  osaalue -> osaalue);
         viiteDto = perusteService.getTutkinnonOsaViite(perusteDto1.getId(),  Suoritustapakoodi.REFORMI, viiteDto.getId());
 
         TutkinnonOsaViiteDto copyViite = perusteService.getTutkinnonOsaViite(perusteDto1.getId(),  Suoritustapakoodi.REFORMI, viiteDto.getId());
@@ -230,6 +236,52 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
         assertThatThrownBy(() -> perusteService.updateTutkinnonOsa(perusteDto2.getId(), Suoritustapakoodi.REFORMI, viiteDto2)).hasMessage("tutkinnon-osan-muokkaus-ei-sallittu");
         assertThatThrownBy(() -> osaAlueService.updateOsaAlue(perusteDto2.getId(), viiteDto2.getId(), viiteDto2.getTutkinnonOsaDto().getOsaAlueet().get(0).getId(), new OsaAlueLaajaDto())).hasMessage("osa-alueen-muokkaus-ei-sallittu");
+    }
+
+    @Test
+    public void test_tutkinnonOsanOsaalue_lisaa() {
+        TestTransaction.end();
+        TestTransaction.start();
+        TestTransaction.flagForCommit();
+
+        PerusteprojektiDto pp1 = ppTestUtils.createPerusteprojekti(ppl -> {
+        });
+        PerusteDto perusteDto1 = ppTestUtils.initPeruste(pp1.getPeruste().getIdLong());
+        TutkinnonOsaViiteDto viiteDto = luoTutkinnonOsaOsaAlueella(perusteDto1.getId(), Suoritustapakoodi.REFORMI, osaalue -> {
+            osaalue.setPakollisetOsaamistavoitteet(Osaamistavoite2020Dto.builder()
+                            .tavoitteet(Ammattitaitovaatimukset2019Dto.builder()
+                                    .kohde(LokalisoituTekstiDto.of("kohde"))
+                                    .kohdealueet(List.of(AmmattitaitovaatimustenKohdealue2019Dto.builder()
+                                                    .kuvaus(LokalisoituTekstiDto.of("kuvaus"))
+                                            .build()))
+                                    .vaatimukset(List.of())
+                                    .build())
+                    .build());
+            return osaalue;
+        });
+        TestTransaction.end();
+        TestTransaction.start();
+
+        viiteDto = perusteService.getTutkinnonOsaViite(perusteDto1.getId(), Suoritustapakoodi.REFORMI, viiteDto.getId());
+        OsaAlueLaajaDto osaAlueLaajaDto = osaAlueService.getOsaAlue(viiteDto.getId(), viiteDto.getTutkinnonOsaDto().getOsaAlueet().get(0).getId());
+        assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet()).isNotNull();
+        assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet()).isNotNull();
+        assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohde().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("kohde").getTekstit());
+        assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohdealueet()).hasSize(1);
+        assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohdealueet().get(0).getKuvaus().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("kuvaus").getTekstit());
+        TestTransaction.end();
+
+        TestTransaction.start();
+        TestTransaction.flagForCommit();
+        osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohde().setTekstit(LokalisoituTekstiDto.of("kohde2").getTekstit());
+        osaAlueService.lockOsaAlue(viiteDto.getId(), osaAlueLaajaDto.getId());
+        osaAlueService.updateOsaAlue(perusteDto1.getId(), viiteDto.getId(), osaAlueLaajaDto.getId(), osaAlueLaajaDto);
+        TestTransaction.end();
+
+        TestTransaction.start();
+        osaAlueLaajaDto = osaAlueService.getOsaAlue(viiteDto.getId(), viiteDto.getTutkinnonOsaDto().getOsaAlueet().get(0).getId());
+        assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohde().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("kohde2").getTekstit());
+        TestTransaction.end();
     }
 
     @Test
@@ -651,7 +703,8 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     private TutkinnonOsaViiteDto luoTutkinnonOsaOsaAlueella(
             Long id,
-            Suoritustapakoodi suoritustapakoodi
+            Suoritustapakoodi suoritustapakoodi,
+            Function<OsaAlueLaajaDto, OsaAlueLaajaDto> osaAlueDatas
     ) {
         TutkinnonOsaViiteDto dto = new TutkinnonOsaViiteDto(
                 BigDecimal.ONE, 1, TestUtils.lt(TestUtils.uniikkiString()), TutkinnonOsaTyyppi.REFORMI_TUTKE2);
@@ -665,6 +718,8 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
         OsaAlueLaajaDto osaalue = new OsaAlueLaajaDto();
         osaalue.setTyyppi(OsaAlueTyyppi.OSAALUE2020);
+        osaAlueDatas.apply(osaalue);
+
         osaAlueService.addOsaAlue(id, lisatty.getId(), osaalue);
         return lisatty;
     }

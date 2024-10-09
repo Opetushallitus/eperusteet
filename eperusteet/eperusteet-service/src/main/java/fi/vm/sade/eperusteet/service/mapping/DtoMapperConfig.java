@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.service.mapping;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.KVLiite;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.OsaamistasonKriteeri;
@@ -27,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimukset2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Ammattitaitovaatimus2019;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
@@ -42,10 +42,6 @@ import fi.vm.sade.eperusteet.domain.vst.KotoLaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
 import fi.vm.sade.eperusteet.domain.vst.Opintokokonaisuus;
 import fi.vm.sade.eperusteet.domain.vst.Tavoitesisaltoalue;
-import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
-import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
-import fi.vm.sade.eperusteet.domain.yl.KeskeinenSisaltoalue;
-import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Taiteenala;
@@ -89,6 +85,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimukset2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKokonaanDto;
@@ -109,12 +106,7 @@ import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
-import fi.vm.sade.eperusteet.dto.yl.KeskeinenSisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
@@ -133,13 +125,6 @@ import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import fi.vm.sade.eperusteet.service.util.TemporaryKoodiGenerator;
-
-import java.sql.Blob;
-import java.sql.SQLException;
-import java.time.Instant;
-import java.util.Base64;
-import java.util.Collections;
-
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -165,6 +150,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClientException;
+
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.Collections;
 
 @Slf4j
 @Configuration
@@ -471,6 +462,10 @@ public class DtoMapperConfig {
         factory.classMap(OsaAlue.class, OsaAlueLaajaDto.class)
                 .byDefault()
                 .field("geneerinenArviointiasteikko", "arviointi")
+                .register();
+
+        factory.classMap(Ammattitaitovaatimukset2019Dto.class, Ammattitaitovaatimukset2019.class)
+                .byDefault()
                 .register();
 
         factory.classMap(OsaAlue.class, OsaAlueKokonaanDto.class)

@@ -5,9 +5,11 @@ import java.util.List;
 import fi.vm.sade.eperusteet.dto.Arviointi2020Dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class OsaAlueLaajaDto extends OsaAlueDto {

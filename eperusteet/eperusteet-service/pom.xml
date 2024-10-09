@@ -537,7 +537,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <argLine>-Dlog4j2.level=OFF -Xmx2048m -XX:+CMSClassUnloadingEnabled -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-it.exec</argLine>
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
@@ -562,7 +561,6 @@
                         <exclude>**/service/test/*.java</exclude>
                         <exclude>**/*IT.java</exclude>
                     </excludes>
-                    <argLine>-Dlog4j2.level=OFF -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-ut.exec</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -864,6 +862,54 @@
                         </executions>
                         <configuration>
                             <hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>it</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <argLine>-Dlog4j2.level=OFF -Xmx2048m -XX:+CMSClassUnloadingEnabled -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-it.exec</argLine>
+                            <forkCount>3</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <reportFormat>plain</reportFormat>
+                            <systemPropertyVariables>
+                                <eperusteet.ittestdb.user>${eperusteet.ittestdb.user}</eperusteet.ittestdb.user>
+                                <eperusteet.ittestdb.password>${eperusteet.ittestdb.password}</eperusteet.ittestdb.password>
+                                <eperusteet.ittestdb.jdbcurl>${eperusteet.ittestdb.jdbcurl}</eperusteet.ittestdb.jdbcurl>
+                            </systemPropertyVariables>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.version}</version>
+                        <configuration>
+                            <forkCount>3</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <excludes>
+                                <exclude>**/service/test/*.java</exclude>
+                                <exclude>**/*IT.java</exclude>
+                            </excludes>
+                            <argLine>-Dlog4j2.level=OFF -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-ut.exec</argLine>
                         </configuration>
                     </plugin>
                 </plugins>
