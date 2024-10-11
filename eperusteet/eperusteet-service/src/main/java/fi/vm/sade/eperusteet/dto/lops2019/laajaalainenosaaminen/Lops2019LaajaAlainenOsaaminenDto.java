@@ -14,4 +14,12 @@ public class Lops2019LaajaAlainenOsaaminenDto {
     private LokalisoituTekstiDto nimi;
     private KoodiDto koodi;
     private LokalisoituTekstiDto kuvaus;
+
+    public LokalisoituTekstiDto getNimi() {
+        if (koodi != null ) {
+            return koodi.getNimi();
+        }
+
+        return nimi;
+    }
 }

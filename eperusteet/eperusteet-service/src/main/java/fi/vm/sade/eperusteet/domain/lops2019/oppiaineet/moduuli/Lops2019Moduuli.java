@@ -51,7 +51,6 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
 
     @Getter
     @Setter
-    @NotNull
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

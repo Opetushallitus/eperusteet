@@ -18,4 +18,12 @@ public class Lops2019ModuuliBaseDto implements ReferenceableDto {
     private Boolean pakollinen;
     private KoodiDto koodi;
     private BigDecimal laajuus;
+
+    public LokalisoituTekstiDto getNimi() {
+        if (koodi != null ) {
+            return koodi.getNimi();
+        }
+
+        return nimi;
+    }
 }
