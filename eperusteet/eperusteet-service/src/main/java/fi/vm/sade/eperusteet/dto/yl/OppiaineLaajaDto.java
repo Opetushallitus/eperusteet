@@ -1,7 +1,9 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +17,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OppiaineLaajaDto extends OppiaineBaseDto {
     private Optional<TekstiOsaDto> tehtava;
     private List<KevytTekstiKappaleDto> vapaatTekstit;
@@ -24,4 +27,8 @@ public class OppiaineLaajaDto extends OppiaineBaseDto {
     private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
     private String koodiUri;
     private String koodiArvo;
+
+    public PerusteRakenneOsa getPerusteenOsa() {
+        return new PerusteRakenneOsa("perusopetus_oppiaine", nimi.get());
+    }
 }
