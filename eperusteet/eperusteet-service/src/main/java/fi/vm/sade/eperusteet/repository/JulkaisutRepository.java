@@ -137,6 +137,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "              )" +
                     "       )" +
                     "   AND sisaltotyyppi = 'peruste' " +
+                    "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
                     ") t"
     )
     List<String> findAllJulkaistutPerusteetByVoimassaolo(
@@ -144,7 +145,9 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("tulevat") boolean tulevat,
             @Param("voimassa") boolean voimassa,
             @Param("siirtymat") boolean siirtymat,
-            @Param("poistuneet") boolean poistuneet);
+            @Param("poistuneet") boolean poistuneet,
+            @Param("koulutusvienti") boolean koulutusvienti
+        );
 
 
     @Query(nativeQuery = true,
