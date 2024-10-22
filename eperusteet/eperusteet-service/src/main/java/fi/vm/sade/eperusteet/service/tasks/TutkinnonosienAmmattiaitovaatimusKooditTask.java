@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.tasks;
 
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.SkeduloituajoService;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

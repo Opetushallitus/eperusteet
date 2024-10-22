@@ -102,6 +102,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
@@ -183,6 +184,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -555,6 +557,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         return mapper.mapAsList(perusteRepository.findAllByJulkaisutOppaatKiinnitettyKoodilla(koodiUri), PerusteDto.class);
     }
 
+    @Override
+    public List<PerusteInfoDto> getKorvattavatPerusteet(Long perusteId) {
+        Peruste peruste = perusteRepository.findById(perusteId).orElseThrow();
+        return mapper.mapAsList(perusteRepository.findAllByDiaarinumerot(peruste.getKorvattavatDiaarinumerot()), PerusteInfoDto.class);
+    }
+
     // Julkinen haku
     @Override
     @Transactional(readOnly = true)
@@ -797,14 +805,14 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, boolean esikatselu) {
-        return getJulkaistuSisalto(id, null, esikatselu);
+        return self.getJulkaistuSisalto(id, null, esikatselu);
     }
 
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
-        return getJulkaistuSisalto(id, null, false);
+        return self.getJulkaistuSisalto(id, null, false);
     }
 
     @Override
@@ -853,6 +861,11 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional(readOnly = true)
     @IgnorePerusteUpdateCheck
+    @Cacheable(
+            value= CacheArvot.PERUSTE_JULKAISU,
+            condition = "#useCurrentData == false && #julkaisuRevisio == null",
+            key = "#id"
+    )
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean useCurrentData) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
@@ -2817,6 +2830,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @Cacheable(
+            value= CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI,
+            condition = "#esikatselu == false && #julkaisuRevisio == null",
+            key = "#perusteId + #kieli"
+    )
+    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = BusinessRuleViolationException.class)
     public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
                 .buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);

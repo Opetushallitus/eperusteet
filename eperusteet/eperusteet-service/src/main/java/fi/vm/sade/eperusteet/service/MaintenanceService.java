@@ -2,6 +2,8 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import java.util.List;
+
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface MaintenanceService {
@@ -28,4 +30,13 @@ public interface MaintenanceService {
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
     void teeMaarayksetPerusteille();
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void cacheJulkisetPerusteNavigoinnit();
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void cacheJulkaistutPerusteet();
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void clearPerusteCaches(Long perusteId);
 }
