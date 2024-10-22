@@ -324,4 +324,7 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     List<PerusteDto> getOpasKiinnitettyKoodi(String koodiUri);
+
+    @PreAuthorize("permitAll()")
+    List<PerusteInfoDto> getKorvattavatPerusteet(Long perusteId);
 }

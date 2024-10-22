@@ -1,14 +1,21 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.SimpleKey;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.cache.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Profile("!test")
 @Service
@@ -19,12 +26,26 @@ public class JulkaistuPerusteDataStoreRepositoryImpl implements JulkaistuPeruste
     private EntityManager entityManager;
 
     @Autowired
-    private PerusteRepository perusteRepository;
+    private MaintenanceService maintenanceService;
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Override
     public void syncPeruste(Long perusteId) {
         deleteFromJulkaisu(perusteId);
         createJulkaisu(perusteId);
+        maintenanceService.clearPerusteCaches(perusteId);
+    }
+
+    @Override
+    public List<Long> findPerusteIds() {
+        String sql = "SELECT DISTINCT perusteid FROM julkaistu_peruste_data_store";
+        return (List<Long>) entityManager.createNativeQuery(sql)
+                .getResultList()
+                .stream()
+                .map(o -> Long.parseLong(o.toString()))
+                .collect(Collectors.toList());
     }
 
     private void deleteFromJulkaisu(Long perusteId) {

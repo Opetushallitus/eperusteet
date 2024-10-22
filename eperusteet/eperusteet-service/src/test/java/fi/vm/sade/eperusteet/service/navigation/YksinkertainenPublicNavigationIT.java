@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
@@ -43,6 +44,10 @@ public class YksinkertainenPublicNavigationIT extends AbstractIntegrationTest {
 
     @Before
     public void setup() {
+        TestTransaction.end();
+        TestTransaction.start();
+        TestTransaction.flagForCommit();
+
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setEsikatseltavissa(true);
             ppl.setKoulutustyyppi(KoulutusTyyppi.ESIOPETUS.toString());
@@ -58,10 +63,13 @@ public class YksinkertainenPublicNavigationIT extends AbstractIntegrationTest {
         PerusteenOsaViiteDto.Matala tekstiKappale2 = perusteService.addSisaltoUUSI(peruste.getId(), Suoritustapakoodi.REFORMI, new PerusteenOsaViiteDto.Matala(new TekstiKappaleDto()));
 
         PerusteenOsaViiteDto.Matala tekstiKappale3 = perusteService.addSisaltoUUSI(peruste.getId(), Suoritustapakoodi.REFORMI, new PerusteenOsaViiteDto.Matala(new TekstiKappaleDto()));
+
+        TestTransaction.end();
     }
 
     @Test
     public void testPerusopetusnavigation() {
+        TestTransaction.start();
         NavigationNodeDto navigationNodeDto = perusteService.buildNavigationPublic(perusteId, "fi", true, 0);
         assertThat(navigationNodeDto).isNotNull();
         assertThat(navigationNodeDto.getChildren()).hasSize(3);
@@ -72,6 +80,7 @@ public class YksinkertainenPublicNavigationIT extends AbstractIntegrationTest {
                 .filter(node -> node.getMeta().containsKey("numerointi"))
                 .map(node -> node.getMeta().get("numerointi").toString())
                 .collect(Collectors.toList())).contains("1", "2", "3", "1.1", "1.1.1", "1.2");
+        TestTransaction.end();
     }
 
 }
