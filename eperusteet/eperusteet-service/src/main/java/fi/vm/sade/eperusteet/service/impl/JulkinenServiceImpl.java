@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.julkinen.AmosaaKoulutustoimijaDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.TietoaPalvelustaDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -82,7 +83,7 @@ public class JulkinenServiceImpl implements JulkinenService {
     }
 
     @Override
-    @Cacheable("julkinenEtusivu")
+    @Cacheable(CacheArvot.JULKINEN_ETUSIVU)
     public List<JulkiEtusivuDto> getJulkisivuDatat() {
         return Stream.of(getPerusteet(), getAmosaaOpetussuunnitelmat(), getYlopsOpetussuunnitelmat())
                 .flatMap(List::stream)

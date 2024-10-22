@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.domain.SkeduloituAjoStatus;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.repository.SkeduloituajoRepository;
 import fi.vm.sade.eperusteet.service.exception.SkeduloituAjoAlreadyRunningException;
-import fi.vm.sade.eperusteet.service.impl.TutkinnonosienAmmattiaitovaatimusKooditTask;
+import fi.vm.sade.eperusteet.service.tasks.TutkinnonosienAmmattiaitovaatimusKooditTask;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
 import org.assertj.core.api.Assertions;
