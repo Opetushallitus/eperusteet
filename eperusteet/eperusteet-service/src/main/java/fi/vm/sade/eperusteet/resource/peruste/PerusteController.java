@@ -370,7 +370,7 @@ public class PerusteController {
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "rev", required = false) final Integer rev,
             @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
-        return handleGet(id, 3600, () -> service.getJulkaistuSisalto(id, rev, useCurrentData));
+        return new ResponseEntity<>(service.getJulkaistuSisalto(id, rev, useCurrentData), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{perusteId}/kaikki/tutkinnonosat", method = GET)
@@ -471,6 +471,13 @@ public class PerusteController {
     @ApiOperation(value = "Oppaat joihin kiinnitetty koodiUri")
     public List<PerusteDto> getOpasKiinnitettyKoodi(@PathVariable("koodiUri") final String koodiUri) {
         return service.getOpasKiinnitettyKoodi(koodiUri);
+    }
+
+    @RequestMapping(value = "/peruste/korvattavatperusteet/{perusteId}", method = GET)
+    @ResponseBody
+    @ApiOperation(value = "Perusteet jotka peruste korvaa")
+    public List<PerusteInfoDto> getKorvattavatPerusteet(@PathVariable("perusteId") final long perusteId) {
+        return service.getKorvattavatPerusteet(perusteId);
     }
 
 }

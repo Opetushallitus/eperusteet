@@ -1,4 +1,4 @@
-package fi.vm.sade.eperusteet.service.impl;
+package fi.vm.sade.eperusteet.service.tasks;
 
 import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.YlopsClient;
@@ -18,7 +18,7 @@ public class YlopsTilastotTask extends AbstractScheduledTask {
 
     @Override
     public int getPriority() {
-        return 500;
+        return 550;
     }
 
     @Override

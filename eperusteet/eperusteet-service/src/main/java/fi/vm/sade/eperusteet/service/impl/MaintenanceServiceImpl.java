@@ -30,6 +30,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
@@ -281,6 +282,43 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                 return true;
             });
         });
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void cacheJulkisetPerusteNavigoinnit() {
+        julkaistuPerusteDataStoreRepository.findPerusteIds()
+                .forEach(perusteId -> perusteRepository.findOne(perusteId).getKielet()
+                        .forEach(kieli -> {
+                            try {
+                                perusteService.buildNavigationPublic(perusteId, kieli.toString(), false, null);
+                            } catch(Exception e) {
+                                log.error("Error caching navigation for peruste {}", perusteId, e);
+                            }
+                        }));
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void cacheJulkaistutPerusteet() {
+        julkaistuPerusteDataStoreRepository.findPerusteIds()
+                .forEach(perusteId -> {
+                    try {
+                        perusteService.getJulkaistuSisalto(perusteId);
+                    } catch(Exception e) {
+                        log.error("Error caching julkaistu sisalto for peruste {}", perusteId, e);
+                    }
+                });
+    }
+
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void clearPerusteCaches(Long perusteId) {
+        perusteRepository.findOne(perusteId).getKielet().forEach(kieli -> {
+            cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI ).evictIfPresent(perusteId + kieli.toString());
+        });
+
+        cacheManager.getCache(CacheArvot.PERUSTE_JULKAISU ).evictIfPresent(perusteId);
     }
 
     private Maarays perusteMaarays(Peruste peruste) {
