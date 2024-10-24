@@ -29,7 +29,7 @@
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
         <failsafe.version>3.2.2</failsafe.version>
         <flyway.version>9.22.3</flyway.version>
-        <fop.version>2.9</fop.version>
+        <fop.version>2.10</fop.version>
         <hibernate.export.type>CREATE</hibernate.export.type>
         <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
         <jsoup.version>1.15.3</jsoup.version>
