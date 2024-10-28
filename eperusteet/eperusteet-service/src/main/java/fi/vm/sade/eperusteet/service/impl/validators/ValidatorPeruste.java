@@ -18,6 +18,8 @@ import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiiteTyyppi;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -734,6 +736,7 @@ public class ValidatorPeruste implements Validator {
                 validoinnit.add(tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste()));
 
                 validoinnit.add(tarkistaMaarays(projekti.getPeruste()));
+                validoinnit.add(tarkistaMuutosmaaraykset(projekti.getPeruste()));
             }
 
             if (tila == ProjektiTila.JULKAISTU) {
@@ -751,6 +754,23 @@ public class ValidatorPeruste implements Validator {
         }
 
         return validoinnit;
+    }
+
+    private Validointi tarkistaMuutosmaaraykset(Peruste peruste) {
+        Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);
+
+        maaraysService.getPerusteenMuutosmaaraykset(peruste.getId()).forEach(muutosmaarays -> {
+            peruste.getKielet().forEach(kieli -> {
+                if (muutosmaarays.getLiitteet().get(kieli) == null
+                        || muutosmaarays.getLiitteet().get(kieli).getLiitteet().isEmpty()
+                        || muutosmaarays.getLiitteet().get(kieli).getLiitteet()
+                        .stream().filter(liite -> liite.getTyyppi().equals(MaaraysLiiteTyyppi.MAARAYSDOKUMENTTI)).collect(Collectors.toList()).isEmpty()) {
+                    validointi.huomautukset("peruste-validointi-muutosmaarays-dokumentti-kieli-puute", NavigationNodeDto.of(NavigationType.tiedot));
+                }
+            });
+        });
+
+        return validointi;
     }
 
     private Validointi tarkistaMaarays(Peruste peruste) {
