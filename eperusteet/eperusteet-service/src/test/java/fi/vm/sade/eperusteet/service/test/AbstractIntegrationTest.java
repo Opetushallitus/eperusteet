@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -44,6 +45,18 @@ public class AbstractIntegrationTest {
 
     public void invalidateAuthentication() {
         SecurityContextHolder.clearContext();
+    }
+
+    public void startNewTransaction() {
+        if (TestTransaction.isActive()) {
+            TestTransaction.end();
+        }
+        TestTransaction.start();
+        TestTransaction.flagForCommit();
+    }
+
+    public void endTransaction() {
+        TestTransaction.end();
     }
 
 }

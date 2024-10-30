@@ -23,6 +23,7 @@ import fi.vm.sade.eperusteet.service.KommenttiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
+import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
@@ -100,6 +101,9 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
     @Autowired
     private PerusteenMuokkaustietoService muokkausTietoService;
+
+    @Autowired
+    private PerusteenOsaViiteService perusteenOsaViiteService;
 
     @Override
     @Transactional(readOnly = true)
@@ -235,6 +239,17 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto.Laaja> T update(Long perusteId, Long viiteId, UpdateDto<T> perusteenOsaDto) {
+
+        if (perusteenOsaDto.getDto().getClass().equals(TekstiKappaleDto.class)) {
+            PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(perusteenOsaDto.getDto().getId());
+            if (perusteenOsaViiteRepository.findAllByPerusteenOsa(perusteenOsa).size() > 1) {
+                PerusteenOsaViiteDto.Laaja viite = perusteenOsaViiteService.kloonaaTekstiKappale(perusteId, viiteId);
+                lockManager.unlock(perusteenOsaDto.getDto().getId());
+                lockManager.lock(viite.getPerusteenOsa().getId());
+                perusteenOsaDto.getDto().setId(viite.getPerusteenOsa().getId());
+            }
+        }
+
         T updated = update(perusteenOsaDto.getDto());
         perusteenOsaRepo.setRevisioKommentti(perusteenOsaDto.getMetadataOrEmpty().getKommentti());
         muokkausTietoService.addMuokkaustieto(perusteId, perusteenOsaViiteRepository.findOne(viiteId), MuokkausTapahtuma.PAIVITYS);

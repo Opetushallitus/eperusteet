@@ -389,14 +389,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         @RequestBody final fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Suppea pov) {
         viittet.reorderSubTree(perusteId, id, pov);
     }
-
-    @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
-    public PerusteenOsaViiteDto.Laaja kloonaaPerusteenTekstiKappale(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("id") final Long id) {
-        return viittet.kloonaaTekstiKappale(perusteId, id);
-    }
-
+    
     private <T> ResponseEntity<T> handleGet(Long perusteId, Supplier<T> response) {
         return CacheableResponse.create(perusteet.getPerusteVersion(perusteId), 1, response);
     }
