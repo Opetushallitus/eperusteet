@@ -309,13 +309,6 @@ public class LukiokoulutuksenPerusteenSisaltoController {
         viittet.reorderSubTree(perusteId, id, pov);
     }
 
-    @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
-    public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
-            @PathVariable("perusteId") final Long perusteId,
-            @PathVariable("id") final Long id) {
-        return viittet.kloonaaTekstiKappale(perusteId, id);
-    }
-
     @RequestMapping(value = "/aihekokonaisuudet", method = GET)
     public ResponseEntity<List<AihekokonaisuusListausDto>> getAihekokonaisuudet(
             @PathVariable("perusteId") final Long perusteId) {

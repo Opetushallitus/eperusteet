@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
@@ -40,6 +41,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlaisenOsaamisenAlueDto;
@@ -49,6 +51,7 @@ import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoiteAlueDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
+import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -112,6 +115,9 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteenOsaViiteService perusteenOsaViiteService;
+
+    @Autowired
+    private PerusteenOsaViiteRepository perusteenOsaViiteRepository;
 
     @Before
     public void setUp() {
@@ -630,6 +636,44 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getTaso()).isEqualTo(DigitaalinenOsaaminenTaso.ESIOPETUS);
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getOsaamiset().get(0).get(Kieli.FI)).isEqualTo("tasokuvausE");
         assertThat(osaamiskokonaisuusPaaAlueDto.getOsaAlueet().get(0).getTasokuvaukset().get(1).getEdistynytOsaaminenKuvaukset().get(0).get(Kieli.FI)).isEqualTo("edistynytkuvausE");
+    }
+
+    @Test
+    public void testSamaTekstikappaleUseammassaPerusteessaKopiointiTallennettaessa() {
+        PerusteprojektiDto projekti1 = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.VARHAISKASVATUS.toString());
+            ppl.setTyyppi(PerusteTyyppi.NORMAALI);
+        });
+
+        PerusteenOsaViiteDto.Matala perusteenOsaViiteDto1 = perusteService.addSisaltoUUSI(
+                projekti1.getPeruste().getIdLong(),
+                null,
+                new PerusteenOsaViiteDto.Matala(new TekstiKappaleDto()));
+        PerusteenOsaViite viite1 = perusteenOsaViiteRepository.findOne(perusteenOsaViiteDto1.getId());
+
+
+        PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.VARHAISKASVATUS.toString());
+            ppl.setTyyppi(PerusteTyyppi.NORMAALI);
+        });
+
+        PerusteenOsaViiteDto.Matala perusteenOsaViiteDto2 = perusteService.addSisaltoUUSI(
+                projekti2.getPeruste().getIdLong(),
+                null,
+                new PerusteenOsaViiteDto.Matala(new TekstiKappaleDto()));
+
+        PerusteenOsaViite viite2 = perusteenOsaViiteRepository.findOne(perusteenOsaViiteDto2.getId());
+        viite2.setPerusteenOsa(viite1.getPerusteenOsa());
+        perusteenOsaViiteRepository.save(viite2);
+
+        perusteenOsaViiteDto2 =  perusteenOsaViiteService.getSisalto(projekti2.getPeruste().getIdLong(), viite2.getId(), PerusteenOsaViiteDto.Matala.class);
+        assertThat(perusteenOsaViiteDto1.getPerusteenOsa().getId()).isEqualTo(perusteenOsaViiteDto2.getPerusteenOsa().getId());
+
+        perusteenOsaService.update(projekti2.getPeruste().getIdLong(), perusteenOsaViiteDto2.getId(), new UpdateDto<>(perusteenOsaViiteDto2.getPerusteenOsa()));
+
+        perusteenOsaViiteDto2 =  perusteenOsaViiteService.getSisalto(projekti2.getPeruste().getIdLong(), viite2.getId(), PerusteenOsaViiteDto.Matala.class);
+        assertThat(perusteenOsaViiteDto1.getPerusteenOsa().getId()).isNotEqualTo(perusteenOsaViiteDto2.getPerusteenOsa().getId());
+
     }
 
     private void assertTavoitesisaltoalueData(TavoitesisaltoalueDto tavoitesisaltoalueDto) {

@@ -142,12 +142,4 @@ public class PerusteenSisaltoController {
         viiteService.reorderSubTree(perusteId, id, pov);
     }
 
-    @RequestMapping(value = "/sisalto/{id}/muokattavakopio", method = POST)
-    public PerusteenOsaViiteDto.Laaja kloonaaTekstiKappale(
-        @PathVariable("perusteId") final Long perusteId,
-        @PathVariable("suoritustapa") final Suoritustapakoodi suoritustapakoodi,
-        @PathVariable("id") final Long id) {
-       return viiteService.kloonaaTekstiKappale(perusteId, id);
-    }
-
 }

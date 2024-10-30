@@ -75,7 +75,6 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
             uusi.asetaTila(PerusteTila.LUONNOS);
             pov.setPerusteenOsa(perusteenOsaRepository.save(uusi));
         }
-        muokkausTietoService.addMuokkaustieto(perusteId, pov, MuokkausTapahtuma.KOPIOINTI);
         return mapper.map(pov, fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto.Laaja.class);
     }
 
