@@ -43,7 +43,6 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
             "       )" +
             "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
-            "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
             "   AND tyyppi = :tyyppi " +
             "   AND (:diaarinumero like '' OR LOWER(diaarinumero) LIKE LOWER(:diaarinumero)) " +
             "   AND (:koodi like '' OR exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodi))) " +
@@ -80,7 +79,6 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("voimassa") boolean voimassa,
             @Param("siirtymat") boolean siirtymat,
             @Param("poistuneet") boolean poistuneet,
-            @Param("koulutusvienti") boolean koulutusvienti,
             @Param("tyyppi") String tyyppi,
             @Param("diaarinumero") String diaarinumero,
             @Param("koodi") String koodi,
@@ -137,7 +135,6 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "              )" +
                     "       )" +
                     "   AND sisaltotyyppi = 'peruste' " +
-                    "   AND :koulutusvienti = CAST(koulutusvienti as boolean) " +
                     ") t"
     )
     List<String> findAllJulkaistutPerusteetByVoimassaolo(
@@ -145,8 +142,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("tulevat") boolean tulevat,
             @Param("voimassa") boolean voimassa,
             @Param("siirtymat") boolean siirtymat,
-            @Param("poistuneet") boolean poistuneet,
-            @Param("koulutusvienti") boolean koulutusvienti
+            @Param("poistuneet") boolean poistuneet
         );
 
 

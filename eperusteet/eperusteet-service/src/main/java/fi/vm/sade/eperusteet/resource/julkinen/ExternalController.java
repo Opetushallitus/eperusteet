@@ -77,14 +77,13 @@ public class ExternalController {
             @RequestParam(value = "voimassa", defaultValue = "true", required = false) final boolean voimassa,
             @RequestParam(value = "siirtyma", defaultValue = "true", required = false) final boolean siirtyma,
             @RequestParam(value = "poistuneet", defaultValue = "false", required = false) final boolean poistuneet,
-            @RequestParam(value = "koulutusvienti", defaultValue = "false", required = false) final boolean koulutusvienti,
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
             @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
             @RequestParam(value = "koodi", defaultValue = "", required = false) final String koodi,
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
-                koulutustyyppi, nimi, "", kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, koulutusvienti, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
+                koulutustyyppi, nimi, "", kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
                 sivu, sivukoko));
     }
 
@@ -137,7 +136,6 @@ public class ExternalController {
                 false,
                 false,
                 false,
-                false,
                 "",
                 "",
                 JulkaisuSisaltoTyyppi.PERUSTE,
@@ -169,7 +167,6 @@ public class ExternalController {
                 PerusteTyyppi.NORMAALI.toString(),
                 false,
                 true,
-                false,
                 false,
                 false,
                 "",

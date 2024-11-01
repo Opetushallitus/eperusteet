@@ -496,7 +496,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     public Page<PerusteenJulkaisuData> getJulkisetJulkaisut(List<String> koulutustyyppi, String nimi, String nimiTaiKoodi, String kieli, String tyyppi, boolean tulevat,
-                                                            boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
+                                                            boolean voimassa, boolean siirtyma, boolean poistuneet, String diaarinumero,
                                                             String koodi, JulkaisuSisaltoTyyppi sisaltotyyppi,
                                                             Integer sivu, Integer sivukoko) {
         Pageable pageable = PageRequest.of(sivu, sivukoko);
@@ -517,7 +517,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 voimassa,
                 siirtyma,
                 poistuneet,
-                koulutusvienti,
                 tyyppi,
                 diaarinumero,
                 koodi,
@@ -577,7 +576,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
-        return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), true, true, false, false, true).stream()
+        return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), true, true, false, false).stream()
                 .map(this::convertToPerusteData).collect(Collectors.toList());
     }
 
