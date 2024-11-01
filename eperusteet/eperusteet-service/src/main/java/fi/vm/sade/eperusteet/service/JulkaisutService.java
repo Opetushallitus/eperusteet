@@ -48,7 +48,7 @@ public interface JulkaisutService {
     @PreAuthorize("permitAll()")
     Page<PerusteenJulkaisuData> getJulkisetJulkaisut(
             List<String> koulutustyyppi, String nimi, String nimiTaiKoodi, String kieli, String tyyppi, boolean tulevat,
-            boolean voimassa, boolean siirtyma, boolean poistuneet, boolean koulutusvienti, String diaarinumero,
+            boolean voimassa, boolean siirtyma, boolean poistuneet, String diaarinumero,
             String koodi, JulkaisuSisaltoTyyppi julkaisuSisaltoTyyppi, Integer sivu, Integer sivukoko);
 
     @PreAuthorize("permitAll()")

@@ -147,7 +147,6 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
                 true,
                 true,
                 false,
-                false,
                 "normaali",
                 "",
                 "",
