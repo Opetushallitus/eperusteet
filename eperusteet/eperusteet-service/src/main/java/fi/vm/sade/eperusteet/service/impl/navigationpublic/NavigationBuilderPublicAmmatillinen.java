@@ -12,6 +12,8 @@ import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteService;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +63,7 @@ public class NavigationBuilderPublicAmmatillinen implements NavigationBuilderPub
                 KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma() ? NavigationType.koulutuksenosat : NavigationType.tutkinnonosat,
                 null,
                 peruste.getId())
-                .addAll(peruste.getTutkinnonOsat().stream()
+                .addAll(Optional.ofNullable(peruste.getTutkinnonOsat()).orElse(List.of()).stream()
                         .map(tosa -> buildTutkinnonOsa(
                                 peruste.getSuoritustavat().stream()
                                         .flatMap(st -> st.getTutkinnonOsat().stream())

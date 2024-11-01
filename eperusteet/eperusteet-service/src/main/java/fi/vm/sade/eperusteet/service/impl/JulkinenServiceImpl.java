@@ -15,6 +15,7 @@ import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.JulkinenService;
 import fi.vm.sade.eperusteet.service.YlopsClient;
+import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -84,6 +85,7 @@ public class JulkinenServiceImpl implements JulkinenService {
 
     @Override
     @Cacheable(CacheArvot.JULKINEN_ETUSIVU)
+    @IgnorePerusteUpdateCheck
     public List<JulkiEtusivuDto> getJulkisivuDatat() {
         return Stream.of(getPerusteet(), getAmosaaOpetussuunnitelmat(), getYlopsOpetussuunnitelmat())
                 .flatMap(List::stream)

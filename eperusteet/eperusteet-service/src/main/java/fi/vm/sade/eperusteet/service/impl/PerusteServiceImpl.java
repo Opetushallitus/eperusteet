@@ -2830,12 +2830,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
+    @IgnorePerusteUpdateCheck
     @Cacheable(
             value= CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI,
             condition = "#esikatselu == false && #julkaisuRevisio == null",
             key = "#perusteId + #kieli"
     )
-    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = BusinessRuleViolationException.class)
     public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
                 .buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
