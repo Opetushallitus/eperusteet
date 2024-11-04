@@ -310,6 +310,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             Date julkaisuaika = new Date();
             peruste.asetaTila(PerusteTila.VALMIS);
             peruste.getPerusteprojekti().setTila(ProjektiTila.JULKAISTU);
+            peruste.getPerusteprojekti().setEsikatseltavissa(false);
             peruste.getGlobalVersion().setAikaleima(julkaisuaika);
             perusteRepository.save(peruste);
 

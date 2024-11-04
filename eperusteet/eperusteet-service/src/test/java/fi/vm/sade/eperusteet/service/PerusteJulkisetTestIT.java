@@ -16,6 +16,7 @@ import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -127,6 +128,7 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
     public void testPerusteKaikkiTPO() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
             ppl.setKoulutustyyppi(KoulutusTyyppi.TPO.toString());
+            ppl.setEsikatseltavissa(true);
         });
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
@@ -148,12 +150,9 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
 
         assertThatThrownBy(() -> {
             perusteService.getJulkaistuSisalto(perusteDto.getId(), false);
-        }).isInstanceOf(BusinessRuleViolationException.class)
-                .hasMessageContaining("perustetta-ei-loydy");
+        }).isInstanceOf(NotExistsException.class);
 
-        ppTestUtils.julkaise(pp.getId());
-
-        PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId(), false);
+        PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId(), true);
         assertThat(tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset()).hasSize(1);
         assertThat((TaiteenalaDto) tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset().get(0).getPerusteenOsa())
                 .extracting(
