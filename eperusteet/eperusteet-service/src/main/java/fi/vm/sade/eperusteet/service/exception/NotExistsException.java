@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class NotExistsException extends ServiceException {
 
     public NotExistsException() {
-        super("Ei löytynyt");
+        super("ei-loytynyt");
     }
 
     public NotExistsException(String message) {

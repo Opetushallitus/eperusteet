@@ -180,6 +180,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
@@ -188,6 +189,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.persistence.EntityManager;
@@ -870,39 +872,36 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
-            throw new NotExistsException("");
+            throw new NotExistsException();
         }
 
-        JulkaistuPeruste julkaisu = null;
+        JulkaistuPeruste julkaisu;
+        PerusteKaikkiDto perusteKaikkiDto = null;
+
+        if (peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN) || (useCurrentData && peruste.getPerusteprojekti().isEsikatseltavissa())) {
+            perusteKaikkiDto = getKaikkiSisalto(id);
+        }
+
         if (!useCurrentData) {
             if (julkaisuRevisio != null) {
                 julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
-
-                if (julkaisu == null) {
-                    throw new BusinessRuleViolationException("perustetta-ei-loydy");
-                }
-
             } else {
                 julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
             }
-        }
 
-        PerusteKaikkiDto perusteKaikkiDto = null;
-        if (julkaisu != null) {
-            ObjectNode data = julkaisu.getData().getData();
-            try {
-                perusteKaikkiDto =  taytaSisaltohaunVaatimatDatat(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
-            } catch (JsonProcessingException e) {
-                log.error(Throwables.getStackTraceAsString(e));
-                throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+            if (julkaisu != null) {
+                ObjectNode data = julkaisu.getData().getData();
+                try {
+                    perusteKaikkiDto =  taytaSisaltohaunVaatimatDatat(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
+                } catch (JsonProcessingException e) {
+                    log.error(Throwables.getStackTraceAsString(e));
+                    throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+                }
             }
         }
-        else if (!peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN)
-                && !peruste.getPerusteprojekti().isEsikatseltavissa()
-                && !Objects.equals(peruste.getPerusteprojekti().getTila(), ProjektiTila.JULKAISTU)) {
-            throw new BusinessRuleViolationException("perustetta-ei-loydy");
-        } else {
-            perusteKaikkiDto = getKaikkiSisalto(id);
+
+        if (perusteKaikkiDto == null) {
+            throw new NotExistsException();
         }
 
         return taytaSisaltohaunVaatimatDatat(perusteKaikkiDto);
