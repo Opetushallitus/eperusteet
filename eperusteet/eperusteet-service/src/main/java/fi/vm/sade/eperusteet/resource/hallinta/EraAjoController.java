@@ -23,7 +23,7 @@ public class EraAjoController {
 
     @RequestMapping(value = "/{nimi}/execute", method = RequestMethod.GET)
     public void executeTask(@PathVariable String nimi) {
-        tasks.get(nimi).execute();
+        tasks.get(nimi).executeAsync();
     }
 
 }

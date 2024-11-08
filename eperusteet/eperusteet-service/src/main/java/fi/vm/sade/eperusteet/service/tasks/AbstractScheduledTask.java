@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.exception.SkeduloituAjoAlreadyRunningException;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 
 public abstract class AbstractScheduledTask implements ScheduledTask {
 
@@ -38,5 +39,12 @@ public abstract class AbstractScheduledTask implements ScheduledTask {
             skeduloituajoService.paivitaAjoStatus(skeduloituajo, SkeduloituAjoStatus.AJOVIRHE);
             throw e;
         }
+    }
+
+    @Async
+    @IgnorePerusteUpdateCheck
+    @Override
+    public void executeAsync() {
+        execute();
     }
 }

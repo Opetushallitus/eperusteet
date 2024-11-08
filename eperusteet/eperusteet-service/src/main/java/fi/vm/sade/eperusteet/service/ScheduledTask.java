@@ -5,4 +5,5 @@ public interface ScheduledTask {
     int getPriority();
     String getName();
     void execute();
+    void executeAsync();
 }
