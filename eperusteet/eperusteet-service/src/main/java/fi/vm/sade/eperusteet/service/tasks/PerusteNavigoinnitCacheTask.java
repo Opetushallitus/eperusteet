@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class PerusteJulkaisutCacheTask extends AbstractScheduledTask {
+public class PerusteNavigoinnitCacheTask extends AbstractScheduledTask {
 
     @Lazy
     @Autowired
@@ -25,12 +25,12 @@ public class PerusteJulkaisutCacheTask extends AbstractScheduledTask {
 
     @Override
     public int getPriority() {
-        return 100;
+        return 90;
     }
 
     @Override
     public void executeTask(Date viimeisinajoaika) {
-        maintenanceService.clearCache(CacheArvot.PERUSTE_JULKAISU);
-        maintenanceService.cacheJulkaistutPerusteet();
+        maintenanceService.clearCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI);
+        maintenanceService.cacheJulkisetPerusteNavigoinnit();
     }
 }

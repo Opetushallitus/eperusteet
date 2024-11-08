@@ -16,7 +16,7 @@ public class JulkaistuPerusteDataStoreRepositoryMock implements JulkaistuPeruste
     }
 
     @Override
-    public List<Long> findPerusteIds() {
+    public List<Long> findPerusteIdsByKoulutustyypit(List<String> koulutustyypit) {
         return List.of();
     }
 }

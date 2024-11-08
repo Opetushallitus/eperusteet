@@ -28,16 +28,14 @@ public class TutkinnonosienAmmattiaitovaatimusKooditTask extends AbstractSchedul
 
     @Override
     public int getPriority() {
-        return 4000;
+        return 50;
     }
 
     @Override
     public void executeTask(Date viimeisinajoaika) {
-
         koodistoClient.addKoodistoRelaatio(KoodistoUriArvo.TUTKINTONIMIKKEET, KoodistoUriArvo.TUTKINNONOSAT, KoodiRelaatioTyyppi.SISALTYY);
         koodistoClient.addKoodistoRelaatio(KoodistoUriArvo.KOULUTUS, KoodistoUriArvo.TUTKINNONOSAT, KoodiRelaatioTyyppi.SISALTYY);
         koodistoClient.addKoodistoRelaatio(KoodistoUriArvo.TUTKINNONOSAT, KoodistoUriArvo.AMMATTITAITOVAATIMUKSET, KoodiRelaatioTyyppi.SISALTYY);
         ammattitaitovaatimusService.lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(viimeisinajoaika);
-
     }
 }

@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -39,9 +40,11 @@ public class JulkaistuPerusteDataStoreRepositoryImpl implements JulkaistuPeruste
     }
 
     @Override
-    public List<Long> findPerusteIds() {
-        String sql = "SELECT DISTINCT perusteid FROM julkaistu_peruste_data_store";
+    public List<Long> findPerusteIdsByKoulutustyypit(List<String> koulutustyypit) {
+        String sql = "SELECT DISTINCT perusteid FROM julkaistu_peruste_data_store WHERE koulutustyyppi IN (:koulutustyypit)";
+
         return (List<Long>) entityManager.createNativeQuery(sql)
+                .setParameter("koulutustyypit", koulutustyypit)
                 .getResultList()
                 .stream()
                 .map(o -> Long.parseLong(o.toString()))
