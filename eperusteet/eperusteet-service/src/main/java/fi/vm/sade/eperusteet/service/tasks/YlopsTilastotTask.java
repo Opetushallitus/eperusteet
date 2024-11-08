@@ -18,7 +18,7 @@ public class YlopsTilastotTask extends AbstractScheduledTask {
 
     @Override
     public int getPriority() {
-        return 550;
+        return 60;
     }
 
     @Override

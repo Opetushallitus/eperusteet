@@ -21,7 +21,7 @@ public class JulkinenEtusivuHakuCacheTask extends AbstractScheduledTask {
 
     @Override
     public int getPriority() {
-        return 100;
+        return 80;
     }
 
     @Override

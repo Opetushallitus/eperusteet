@@ -20,7 +20,7 @@ public class AmosaaTilastotTask extends AbstractScheduledTask {
 
     @Override
     public int getPriority() {
-        return 500;
+        return 70;
     }
 
     @Override

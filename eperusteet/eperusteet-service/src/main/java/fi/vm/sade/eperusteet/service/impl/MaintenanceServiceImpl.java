@@ -44,6 +44,7 @@ import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -54,9 +55,9 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
@@ -287,7 +288,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     @IgnorePerusteUpdateCheck
     public void cacheJulkisetPerusteNavigoinnit() {
-        julkaistuPerusteDataStoreRepository.findPerusteIds()
+        List<String> koulutustyypit = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
+        koulutustyypit.removeAll(List.of(KoulutusTyyppi.VALMA.toString(), KoulutusTyyppi.TELMA.toString()));
+        koulutustyypit.removeAll(KoulutusTyyppi.ammatilliset());
+        julkaistuPerusteDataStoreRepository.findPerusteIdsByKoulutustyypit(koulutustyypit)
                 .forEach(perusteId -> perusteRepository.findOne(perusteId).getKielet()
                         .forEach(kieli -> {
                             try {
@@ -301,7 +305,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     @IgnorePerusteUpdateCheck
     public void cacheJulkaistutPerusteet() {
-        julkaistuPerusteDataStoreRepository.findPerusteIds()
+        List<String> koulutustyypit = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
+        koulutustyypit.removeAll(List.of(KoulutusTyyppi.VALMA.toString(), KoulutusTyyppi.TELMA.toString()));
+        koulutustyypit.removeAll(KoulutusTyyppi.ammatilliset());
+        julkaistuPerusteDataStoreRepository.findPerusteIdsByKoulutustyypit(koulutustyypit)
                 .forEach(perusteId -> {
                     try {
                         perusteService.getJulkaistuSisalto(perusteId);

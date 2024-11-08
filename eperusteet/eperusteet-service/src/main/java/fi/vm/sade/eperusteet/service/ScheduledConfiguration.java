@@ -55,9 +55,7 @@ public class ScheduledConfiguration implements SchedulingConfigurer {
     public void sortTasks() {
         // Järjestetään tehtävät prioriteetin mukaan
         tasks = tasks.stream()
-                .sorted(Comparator.comparing(ScheduledTask::getPriority)
-                        .thenComparing(ScheduledTask::getName)
-                        .reversed())
+                .sorted(Comparator.comparing(ScheduledTask::getPriority).reversed())
                 .collect(Collectors.toList());
     }
 
