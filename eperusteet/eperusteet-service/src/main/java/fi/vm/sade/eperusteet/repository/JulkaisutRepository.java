@@ -105,6 +105,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "              )" +
                     "       )" +
                     "   AND sisaltotyyppi = 'peruste' " +
+                    "   AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen') " +
                     ") t"
     )
     List<String> findAllJulkaistutPerusteetByKoodi(
@@ -135,6 +136,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "              )" +
                     "       )" +
                     "   AND sisaltotyyppi = 'peruste' " +
+                    "   AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen')" +
                     ") t"
     )
     List<String> findAllJulkaistutPerusteetByVoimassaolo(
@@ -154,6 +156,8 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     "AND ((data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki) " +
                     "   OR (data.\"siirtymaPaattyy\" IS NOT NULL AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
                     "AND LOWER(CAST(kielet as text)) LIKE LOWER(CONCAT('%', :kieli,'%')) " +
+                    "AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen') " +
+                    "AND sisaltotyyppi = 'peruste' " +
                     "GROUP BY data.koulutustyyppi")
     List<KoulutustyyppiLukumaara> findJulkaistutKoulutustyyppiLukumaaratByKieli(
             @Param("kieli") String kieli,
