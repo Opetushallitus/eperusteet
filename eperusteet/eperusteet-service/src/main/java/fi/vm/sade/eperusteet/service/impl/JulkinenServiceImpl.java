@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.OpasTyyppi;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.AmosaaKoulutustoimijaDto;
+import fi.vm.sade.eperusteet.dto.julkinen.JotpaTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuTyyppi;
 import fi.vm.sade.eperusteet.dto.julkinen.TietoaPalvelustaDto;
@@ -105,7 +106,16 @@ public class JulkinenServiceImpl implements JulkinenService {
         return julkaisutService.getKaikkiPerusteet().stream()
                 .map(peruste -> {
             JulkiEtusivuDto dto = mapper.map(peruste, JulkiEtusivuDto.class);
-            dto.setEtusivuTyyppi(PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.OPAS) ? JulkiEtusivuTyyppi.OPAS : JulkiEtusivuTyyppi.PERUSTE);
+            dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.PERUSTE);
+
+            if (PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.OPAS)) {
+                dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.OPAS);
+            }
+
+            if (PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
+                dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.DIGITAALINEN_OSAAMINEN);
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }
@@ -117,6 +127,11 @@ public class JulkinenServiceImpl implements JulkinenService {
             if (opetussuunnitelma.getKoulutustyyppi() != null) {
                 dto.setEtusivuTyyppi(opetussuunnitelma.getKoulutustyyppi().isAmmatillinen() ? JulkiEtusivuTyyppi.TOTEUTUSSUUNNITELMA : JulkiEtusivuTyyppi.OPETUSSUUNNITELMA);
             }
+
+            if (JotpaTyyppi.MUU.equals(dto.getJotpatyyppi())) {
+                dto.setKoulutustyyppi(KoulutusTyyppi.MUU_KOULUTUS.toString());
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }

@@ -4,5 +4,6 @@ public enum JulkiEtusivuTyyppi {
     PERUSTE,
     OPETUSSUUNNITELMA,
     TOTEUTUSSUUNNITELMA,
-    OPAS
+    OPAS,
+    DIGITAALINEN_OSAAMINEN
 }
