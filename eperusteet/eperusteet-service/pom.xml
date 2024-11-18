@@ -539,9 +539,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <argLine>
-                        --add-opens=java.base/java.lang=ALL-UNNAMED
-                    </argLine>
+                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED</argLine>
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
@@ -561,9 +559,7 @@
                         <exclude>**/service/test/*.java</exclude>
                         <exclude>**/*IT.java</exclude>
                     </excludes>
-                    <argLine>
-                        --add-opens=java.base/java.lang=ALL-UNNAMED
-                    </argLine>
+                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -887,7 +883,12 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <argLine>-Dlog4j2.level=OFF -Xmx2048m -XX:+CMSClassUnloadingEnabled -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-it.exec</argLine>
+                            <argLine>
+                                -Dlog4j2.level=OFF
+                                -Xmx2048m
+                                -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-it.exec
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                            </argLine>
                             <forkCount>3</forkCount>
                             <reuseForks>true</reuseForks>
                             <reportFormat>plain</reportFormat>
@@ -912,7 +913,11 @@
                                 <exclude>**/service/test/*.java</exclude>
                                 <exclude>**/*IT.java</exclude>
                             </excludes>
-                            <argLine>-Dlog4j2.level=OFF -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-ut.exec</argLine>
+                            <argLine>
+                                -Dlog4j2.level=OFF
+                                -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-ut.exec
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
