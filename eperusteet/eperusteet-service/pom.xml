@@ -33,11 +33,10 @@
         <hibernate.export.type>CREATE</hibernate.export.type>
         <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
         <jsoup.version>1.15.3</jsoup.version>
-        <lombok.version>1.18.4</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <lombok.version>1.18.30</lombok.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
         <org.apache.tomcat.version>9.0.90</org.apache.tomcat.version>
         <pdfbox.version>2.0.29</pdfbox.version>
         <postgresql.version>42.5.5</postgresql.version>
@@ -297,7 +296,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.9.19</version>
+            <version>1.9.22.1</version>
         </dependency>
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
@@ -474,7 +473,10 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <jvmArguments>-Dfile.encoding=UTF8</jvmArguments>
+                    <jvmArguments>
+                        -Dfile.encoding=UTF8
+                        --add-opens=java.base/java.lang=ALL-UNNAMED
+                    </jvmArguments>
                 </configuration>
             </plugin>
             <!-- Maven rikkoo muuten ttf fontit -->
@@ -537,6 +539,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED</argLine>
                     <forkCount>3</forkCount>
                     <reuseForks>true</reuseForks>
                     <reportFormat>plain</reportFormat>
@@ -556,6 +559,7 @@
                         <exclude>**/service/test/*.java</exclude>
                         <exclude>**/*IT.java</exclude>
                     </excludes>
+                    <argLine>--add-opens=java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -879,7 +883,12 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <argLine>-Dlog4j2.level=OFF -Xmx2048m -XX:+CMSClassUnloadingEnabled -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-it.exec</argLine>
+                            <argLine>
+                                -Dlog4j2.level=OFF
+                                -Xmx2048m
+                                -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-it.exec
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                            </argLine>
                             <forkCount>3</forkCount>
                             <reuseForks>true</reuseForks>
                             <reportFormat>plain</reportFormat>
@@ -904,7 +913,11 @@
                                 <exclude>**/service/test/*.java</exclude>
                                 <exclude>**/*IT.java</exclude>
                             </excludes>
-                            <argLine>-Dlog4j2.level=OFF -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-ut.exec</argLine>
+                            <argLine>
+                                -Dlog4j2.level=OFF
+                                -javaagent:${settings.localRepository}/org/jacoco/org.jacoco.agent/${jacoco.version}/org.jacoco.agent-${jacoco.version}-runtime.jar=destfile=${project.build.directory}/jacoco-ut.exec
+                                --add-opens=java.base/java.lang=ALL-UNNAMED
+                            </argLine>
                         </configuration>
                     </plugin>
                 </plugins>
