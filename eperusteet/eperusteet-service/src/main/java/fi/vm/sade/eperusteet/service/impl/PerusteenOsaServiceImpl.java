@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.ammattitaitovaatimukset.AmmattitaitovaatimuksenKohdealue;
+import fi.vm.sade.eperusteet.domain.permissions.PerusteenosanProjekti;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
@@ -242,7 +243,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         if (perusteenOsaDto.getDto().getClass().equals(TekstiKappaleDto.class)) {
             PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(perusteenOsaDto.getDto().getId());
-            if (perusteenOsaViiteRepository.findAllByPerusteenOsa(perusteenOsa).size() > 1) {
+
+            Set<PerusteenosanProjekti> perusteenosanProjektit = perusteprojektiPermissionRepository.findAllByPerusteenosa(perusteenOsa.getId());
+            Peruste peruste = perusteet.findOne(perusteId);
+            boolean tekstikappaleKopioitava = perusteenosanProjektit.stream()
+                    .filter(pop -> !pop.getPerusteProjektiId().equals(peruste.getPerusteprojekti().getId()))
+                    .anyMatch(projekti -> !projekti.getTila().equals(ProjektiTila.POISTETTU));
+
+            if (tekstikappaleKopioitava) {
                 PerusteenOsaViiteDto.Laaja viite = perusteenOsaViiteService.kloonaaTekstiKappale(perusteId, viiteId);
                 lockManager.unlock(perusteenOsaDto.getDto().getId());
                 lockManager.lock(viite.getPerusteenOsa().getId());

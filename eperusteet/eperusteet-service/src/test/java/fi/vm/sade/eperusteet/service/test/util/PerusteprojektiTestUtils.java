@@ -83,6 +83,11 @@ public class PerusteprojektiTestUtils {
         withPerusteprojekti.accept(result);
         PerusteprojektiDto pp = perusteprojektiService.save(result);
         em.flush();
+
+        Peruste peruste = perusteRepository.findOne(pp.getPeruste().getIdLong());
+        peruste.setPerusteprojekti(perusteprojektiRepository.findById(pp.getId()).get());
+        perusteRepository.saveAndFlush(peruste);
+
         return pp;
     }
 
