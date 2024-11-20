@@ -1,5 +1,0 @@
-{
-  compact: false,
-  "presets": [],
-  "plugins": ["angularjs-annotate"]
-}
