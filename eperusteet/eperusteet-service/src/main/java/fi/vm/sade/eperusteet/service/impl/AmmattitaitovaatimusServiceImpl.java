@@ -349,6 +349,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .map(TutkinnonOsaViite::getTutkinnonOsa)
                 .filter(tutkinnonosa -> tutkinnonosa.getKoodi() != null && tutkinnonosa.getKoodi().getUri() != null)
                 .map(TutkinnonOsa::getOsaAlueet)
+                .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toMap(t -> t.getKoodi().getUri(), t -> t.getKaikkiKoodit().stream()
                         .map(Koodi::getUri)

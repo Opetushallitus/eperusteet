@@ -8,8 +8,8 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -26,14 +26,14 @@ public class KeskeinenSisaltoalue extends AbstractReferenceableEntity {
     @Getter
     private UUID tunniste = UUID.randomUUID();
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen nimi;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -45,8 +45,8 @@ public class KeskeinenSisaltoalue extends AbstractReferenceableEntity {
     @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_opetuksen_tavoite_yl_keskeinen_sisaltoalue",
-            joinColumns = @JoinColumn(name = "sisaltoalueet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "sisaltoalueet_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", nullable = false))
     private Set<OpetuksenTavoite> opetuksenTavoitteet = new HashSet<>();
 
     public KeskeinenSisaltoalue kloonaa() {

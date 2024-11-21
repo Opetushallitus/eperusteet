@@ -15,6 +15,7 @@ import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
+import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Muutosmaarays;
@@ -141,6 +142,8 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
+import fi.vm.sade.eperusteet.service.LockCtx;
+import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
@@ -151,6 +154,7 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.TermistoService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
+import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
 import fi.vm.sade.eperusteet.service.VapaasivistystyoSisaltoService;
 import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
 import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
@@ -192,11 +196,11 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
@@ -319,8 +323,8 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoService lukiokoulutuksenPerusteenSisaltoService;
 
-    @Autowired
-    private Validator validator;
+//    @Autowired
+//    private Validator validator;
 
     @Autowired
     private KoodistoClient koodistoService;
@@ -1111,12 +1115,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi) {
-        Peruste p = perusteRepository.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
-        return mapper.map(p, PerusteDto.class);
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public PerusteDto getByIdAndSuoritustapa(final Long id, Suoritustapakoodi suoritustapakoodi) {
+//        Peruste p = perusteRepository.findPerusteByIdAndSuoritustapakoodi(id, suoritustapakoodi);
+//        return mapper.map(p, PerusteDto.class);
+//    }
 
     @Override
     @Transactional(readOnly = true)
@@ -1165,7 +1169,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         if (current.getTyyppi() == PerusteTyyppi.OPAS) {
             tarkistaTietoPalvelustaOpas(perusteDto);
 
-            perusteRepository.lock(current);
+//            perusteRepository.lock(current);
             Peruste updated = mapper.map(perusteDto, Peruste.class);
             current.setKielet(updated.getKielet());
             current.setKuvaus(updated.getKuvaus());
@@ -1255,37 +1259,35 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                 throw new BusinessRuleViolationException("Toteutustyyppiä ei voi vaihtaa");
             }
 
-            if (current.getTila() == PerusteTila.VALMIS) {
-                current = updateValmisPeruste(current, updated);
-            }
-            else {
-                // FIXME: refactor
-                current.setDiaarinumero(updated.getDiaarinumero());
-                current.setKielet(updated.getKielet());
-                current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
-                current.setKoulutukset(updated.getKoulutukset());
-                current.setKuvaus(updated.getKuvaus());
-                current.setMaarayskirje(updated.getMaarayskirje());
-                current.setMuutosmaaraykset(updated.getMuutosmaaraykset());
-                current.setNimi(updated.getNimi());
-                current.setOsaamisalat(updated.getOsaamisalat());
-                current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
-                current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
-                current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
-                current.setPaatospvm(updated.getPaatospvm());
-                current.setKoulutusvienti(updated.isKoulutusvienti());
-                current.setKoulutustyyppi(updated.getKoulutustyyppi());
-                current.setPoikkeamismaaraysTyyppi(updated.getPoikkeamismaaraysTyyppi());
-                current.setPoikkeamismaaraysTarkennus(updated.getPoikkeamismaaraysTarkennus());
+            current.setKielet(updated.getKielet());
+            current.setKorvattavatDiaarinumerot(updated.getKorvattavatDiaarinumerot());
+            current.setKoulutukset(updated.getKoulutukset());
+            current.setKuvaus(updated.getKuvaus());
+            current.setMaarayskirje(updated.getMaarayskirje());
+            current.setMuutosmaaraykset(updated.getMuutosmaaraykset());
+            current.setNimi(updated.getNimi());
+            current.setSiirtymaPaattyy(updated.getSiirtymaPaattyy());
+            current.setVoimassaoloAlkaa(updated.getVoimassaoloAlkaa());
+            current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
+            current.setPaatospvm(updated.getPaatospvm());
+            current.setKoulutusvienti(updated.isKoulutusvienti());
+            current.setKoulutustyyppi(updated.getKoulutustyyppi());
+            current.setPoikkeamismaaraysTyyppi(updated.getPoikkeamismaaraysTyyppi());
+            current.setPoikkeamismaaraysTarkennus(updated.getPoikkeamismaaraysTarkennus());
 
-                if (updated.getVstSisalto() != null) {
-                    current.setSisalto(updated.getVstSisalto());
+            if (updated.getVstSisalto() != null) {
+                current.setSisalto(updated.getVstSisalto());
+            }
+
+            if (current.getTila() != PerusteTila.VALMIS) {
+                current.setDiaarinumero(updated.getDiaarinumero());
+                current.setOsaamisalat(updated.getOsaamisalat());
+
+                if (permissionManager.isUserAdmin()) {
+                    current.setTyyppi(updated.getTyyppi());
                 }
             }
 
-            if (permissionManager.isUserAdmin()) {
-                current.setTyyppi(updated.getTyyppi());
-            }
         }
 
         perusteRepository.save(current);
@@ -1367,19 +1369,19 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         current.setVoimassaoloLoppuu(updated.getVoimassaoloLoppuu());
 
         Set<ConstraintViolation<Peruste>> violations = new HashSet<>();
-        switch (current.getTyyppi()) {
-            case OPAS:
-                violations = validator.validate(current, Peruste.ValmisOpas.class);
-                break;
-            case POHJA:
-                violations = validator.validate(current, Peruste.ValmisPohja.class);
-                break;
-            case NORMAALI:
-                violations = validator.validate(current, Peruste.Valmis.class);
-                break;
-            default:
-                break;
-        }
+//        switch (current.getTyyppi()) {
+//            case OPAS:
+//                violations = validator.validate(current, Peruste.ValmisOpas.class);
+//                break;
+//            case POHJA:
+//                violations = validator.validate(current, Peruste.ValmisPohja.class);
+//                break;
+//            case NORMAALI:
+//                violations = validator.validate(current, Peruste.Valmis.class);
+//                break;
+//            default:
+//                break;
+//        }
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
@@ -1588,7 +1590,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     @Override
     @Transactional
     public RakenneModuuliDto updateTutkinnonRakenne(Long perusteId, Suoritustapakoodi suoritustapakoodi, RakenneModuuliDto rakenne) {
-
         // EP-1487 päätason muodostumiselle ei sallita kokoa
         if (rakenne.getMuodostumisSaanto() != null && rakenne.getMuodostumisSaanto().getKoko() != null) {
             rakenne.getMuodostumisSaanto().setKoko(null);
@@ -1858,7 +1859,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
         //workaround jolla estetään versiointiongelmat yhtäaikaisten muokkausten tapauksessa.
-        suoritustapaRepository.lock(suoritustapa);
+        suoritustapaRepository.lock(suoritustapa, false);
 
         TutkinnonOsaViite viite = mapper.map(osa, TutkinnonOsaViite.class);
 
@@ -2355,7 +2356,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
         for (Suoritustapa suoritustapa : suoritustavat) {
             suoritustapa.getPerusteet().add(peruste);
         }
-        perusteRepository.save(peruste);
+        perusteRepository.saveAndFlush(peruste);
         lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
     }

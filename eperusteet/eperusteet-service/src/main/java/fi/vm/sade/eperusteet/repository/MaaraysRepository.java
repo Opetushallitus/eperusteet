@@ -27,7 +27,7 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
             "WHERE 1 = 1 " +
             "AND teksti.kieli = :kieli " +
             "AND KEY(ast) = :kieli " +
-            "AND (COALESCE(:koulutustyypit, null) is null OR kt in (:koulutustyypit)) " +
+            "AND (:koulutustyypit IS NULL OR kt in (:koulutustyypit)) " +
             "AND (:tyyppi is null OR m.tyyppi = :tyyppi) " +
             "AND (:nimi is null OR LOWER(teksti.teksti) LIKE LOWER(CONCAT('%',:nimi,'%')) OR LOWER(asiasana) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
             "AND (:tila is null OR m.tila = :tila) " +

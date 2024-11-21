@@ -503,7 +503,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         Pageable pageable = PageRequest.of(sivu, sivukoko);
         Long currentMillis = DateTime.now().getMillis();
         if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN.toString())) {
-            koulutustyyppi = List.of("");
+            koulutustyyppi = List.of();
         } else if (CollectionUtils.isEmpty((koulutustyyppi))) {
             koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         }

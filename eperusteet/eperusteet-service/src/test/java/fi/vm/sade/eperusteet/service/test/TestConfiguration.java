@@ -31,6 +31,7 @@ public class TestConfiguration {
         return new TestPermissionEvaluator();
     }
 
+    @Profile("!docker")
     @Bean
     public OphClientHelper ophClientHelper() {
         return Mockito.mock(OphClientHelper.class);

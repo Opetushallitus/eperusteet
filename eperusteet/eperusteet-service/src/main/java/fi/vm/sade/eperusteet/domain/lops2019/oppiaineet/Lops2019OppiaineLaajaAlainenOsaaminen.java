@@ -8,7 +8,7 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.Objects;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -25,7 +25,7 @@ public class Lops2019OppiaineLaajaAlainenOsaaminen implements Copyable<Lops2019O
     private Long id;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 

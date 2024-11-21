@@ -26,7 +26,7 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 
 import java.util.*;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

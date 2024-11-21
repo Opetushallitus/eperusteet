@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
@@ -231,7 +231,7 @@ public class PerusteprojektiTestUtils {
         kvLiiteDto.setTyotehtavatJoissaVoiToimia(TestUtils.uniikkiLokalisoituTekstiDto(kielet));
 
         ArviointiAsteikko arviointiAsteikko = new ArviointiAsteikko();
-        arviointiAsteikko.setId(1L);
+//        arviointiAsteikko.setId(1L);
         arviointiAsteikko = arviointiAsteikkoRepository.save(arviointiAsteikko);
         kvLiiteDto.setArvosanaAsteikko(new Reference(arviointiAsteikko.getId()));
 

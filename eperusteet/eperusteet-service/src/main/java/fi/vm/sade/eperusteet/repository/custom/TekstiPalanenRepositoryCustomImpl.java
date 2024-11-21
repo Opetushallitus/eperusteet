@@ -1,24 +1,26 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
 import com.google.common.collect.Lists;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiHakuDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
-import org.hibernate.Query;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
-import org.hibernate.type.EnumType;
-import org.hibernate.type.LongType;
-import org.hibernate.type.StringType;
-import org.hibernate.type.Type;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
+@Deprecated // addScalar ei toimi helposti hibernate 6 kanssa: repo käytössä vain vanhan lukion kanssa = voidaan tuhota(?)
 @Repository
 public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositoryCustom {
     @PersistenceContext
@@ -48,31 +50,32 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
             params.put("ids_"+i, ids);
             ++i;
         }
-        Query q =session.createSQLQuery("SELECT " +
+        Query q =session.createNativeQuery("SELECT " +
                 "   t.tekstipalanen_id as id, " +
                 "   t.kieli as kieli, " +
                 "   t.teksti as teksti " +
                 " FROM tekstipalanen_teksti t " +
                 " WHERE (" + or + ") ORDER BY t.tekstipalanen_id, t.kieli")
-                .addScalar("id", LongType.INSTANCE)
-                .addScalar("kieli", enumType(session, Kieli.class))
-                .addScalar("teksti", StringType.INSTANCE)
+                .addScalar("id", StandardBasicTypes.LONG)
+//                .addScalar("kieli", enumType(session, Kieli.class))
+                .addScalar("kieli", StandardBasicTypes.STRING)
+                .addScalar("teksti", StandardBasicTypes.STRING)
                 .setResultTransformer(new AliasToBeanResultTransformer(LokalisoituTekstiHakuDto.class));
         for (Map.Entry<String,List<Long>> p : params.entrySet()) {
-            q.setParameterList(p.getKey(), p.getValue());
+            q.setParameter(p.getKey(), p.getValue());
         }
         return list(q);
     }
 
     @SuppressWarnings("unchecked")
     protected<T> List<T> list(Query q) {
-        return q.list();
+        return q.getResultList();
     }
 
-    protected<E extends Enum<E>> Type enumType(Session session, Class<E> e) {
-        Properties params = new Properties();
-        params.put("enumClass", e.getCanonicalName());
-        params.put("type", "12");/*type 12 instructs to use the String representation of enum value*/
-        return session.getTypeHelper().custom(EnumType.class, params);
-    }
+//    protected<E extends Enum<E>> Type enumType(Session session, Class<E> e) {
+//        Properties params = new Properties();
+//        params.put("enumClass", e.getCanonicalName());
+//        params.put("type", "12");/*type 12 instructs to use the String representation of enum value*/
+//        return session.getSessionFactory().getTypeHelper().custom(UserType.class, params);
+//    }
 }

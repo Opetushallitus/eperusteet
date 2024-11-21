@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +45,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import static fi.vm.sade.eperusteet.service.mapping.KayttajanTietoParser.parsiKayttaja;
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @Service
 @Profile("!test & !docker")

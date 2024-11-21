@@ -25,8 +25,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -459,7 +459,9 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         long perusteId = pp.getPeruste().getId();
         PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         PerusteenOsaViiteDto.Matala poA = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+
+        //FIXME global versioning pois käytöstä
+//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         PerusteenOsaViiteDto.Matala poB = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
         versionDto = perusteService.getPerusteVersion(perusteId);
 

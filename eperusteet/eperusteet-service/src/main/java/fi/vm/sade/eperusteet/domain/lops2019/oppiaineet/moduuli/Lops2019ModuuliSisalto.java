@@ -9,7 +9,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +29,7 @@ public class Lops2019ModuuliSisalto implements Copyable<Lops2019ModuuliSisalto> 
     private Long id;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kohde;
 

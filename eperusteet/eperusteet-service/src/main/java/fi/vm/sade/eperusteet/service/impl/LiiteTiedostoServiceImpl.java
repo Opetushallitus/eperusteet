@@ -13,7 +13,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.imageio.ImageIO;
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

@@ -10,8 +10,8 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;

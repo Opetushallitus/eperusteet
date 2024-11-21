@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -46,7 +46,7 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
 
     @Getter
     @Setter
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
 
@@ -55,11 +55,11 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     private Integer jarjestys;
 
     @Getter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotAudited
     @JoinTable(name = "aipeoppiaine_aipekurssi",
-            joinColumns = { @JoinColumn(name = "kurssi_id", insertable = false, updatable = false)},
-            inverseJoinColumns = { @JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
+            joinColumns = { @JoinColumn(name = "kurssi_id")},
+            inverseJoinColumns = { @JoinColumn(name = "oppiaine_id")})
     private AIPEOppiaine oppiaine;
 
     @ManyToMany

@@ -2,11 +2,22 @@ package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.NotAudited;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -42,7 +53,7 @@ public class Koulutus implements Serializable, Mergeable<Koulutus>{
     private Long id;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Deprecated // Haetaan tarvittaessa koodistopalvelusta

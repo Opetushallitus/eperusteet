@@ -134,8 +134,8 @@ import java.util.stream.Stream;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.LAADINTA;
 import static fi.vm.sade.eperusteet.resource.peruste.LiitetiedostoController.DOCUMENT_TYPES;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 
 @Slf4j
 @Service

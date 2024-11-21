@@ -32,7 +32,7 @@ public interface TutkinnonOsaViiteRepository extends JpaWithVersioningRepository
     String findByPerusteAndNimiWhere = "WHERE (:perusteId = 0l or p.id = :perusteId) " +
             "AND (:nimi IS NULL or LOWER(teksti.teksti) LIKE LOWER(CONCAT('%',:nimi,'%')))" +
             "AND teksti.kieli = :kieli " +
-            "AND (:vanhentuneet = true OR (:vanhentuneet = false AND (p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW())))";
+            "AND (:vanhentuneet = true OR (:vanhentuneet = false AND (p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP )))";
 
     @Query(value = "SELECT v " +
             "FROM Peruste p " +

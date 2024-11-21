@@ -1,10 +1,10 @@
 package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import com.google.common.base.Objects;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;

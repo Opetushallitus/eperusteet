@@ -1,6 +1,6 @@
 package fi.vm.sade.eperusteet.domain;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.*;
 

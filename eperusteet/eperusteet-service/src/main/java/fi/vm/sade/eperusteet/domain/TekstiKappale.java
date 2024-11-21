@@ -14,8 +14,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -31,13 +31,13 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
      @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
      private TekstiPalanen teksti;
 
-     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
      @Getter
      @Setter
      @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi osaamisala;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

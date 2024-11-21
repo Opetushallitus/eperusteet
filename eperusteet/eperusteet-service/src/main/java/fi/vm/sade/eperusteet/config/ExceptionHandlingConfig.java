@@ -20,9 +20,11 @@ import org.springframework.core.NestedCheckedException;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -38,12 +40,12 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.PersistenceException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
+import jakarta.persistence.PersistenceException;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.ValidationException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -71,8 +73,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status,
-                                                                  WebRequest request) {
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         if (ex.getRootCause() != null && ex.getRootCause() instanceof UnrecognizedPropertyException) {
             return handleExceptionInternal((UnrecognizedPropertyException) ex.getRootCause(), null, headers, status, request);
         } else {
@@ -123,7 +124,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         final Map<String, Object> map = new HashMap<>();
         boolean suppresstrace = false;
 

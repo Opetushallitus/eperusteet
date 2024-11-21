@@ -56,7 +56,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
