@@ -20,18 +20,18 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
     @Setter
     @NotNull
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @ValidKoodisto(koodisto = KoodistoUriArvo.MODUULIKOODISTOLOPS2021)
     private Koodi koodi;
 
@@ -103,8 +103,8 @@ public class Lops2019Moduuli extends AbstractAuditedReferenceableEntity
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_lops2019_oppiaine_moduuli",
-            joinColumns = {@JoinColumn(name = "moduuli_id", insertable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
+            joinColumns = {@JoinColumn(name = "moduuli_id")},
+            inverseJoinColumns = {@JoinColumn(name = "oppiaine_id")})
     private Lops2019Oppiaine oppiaine; // Moduuli viittaus oppiaineeseen/oppimäärään
 
     public void asetaOppiaine(Lops2019Oppiaine oa) {

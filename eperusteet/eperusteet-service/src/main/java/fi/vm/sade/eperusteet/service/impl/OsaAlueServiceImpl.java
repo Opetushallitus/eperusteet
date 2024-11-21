@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -127,8 +127,7 @@ public class OsaAlueServiceImpl implements OsaAlueService {
         oa.mergeState(uusi);
         updateGeneerinen(oa, osaAlue);
         oa = osaAlueRepository.save(oa);
-        OsaAlueLaajaDto osaAlueDto = mapper.map(oa, OsaAlueLaajaDto.class);
-        return osaAlueDto;
+        return mapper.map(oa, OsaAlueLaajaDto.class);
     }
 
     @Override

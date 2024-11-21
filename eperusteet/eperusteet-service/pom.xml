@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.3.5</version>
         <relativePath/>
     </parent>
 
@@ -15,15 +15,14 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
-        <spring.security.test.version>5.7.11</spring.security.test.version>
+        <spring.security.test.version>6.4.1</spring.security.test.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
-        <postgresql.version>42.5.5</postgresql.version>
+        <postgresql.version>42.7.4</postgresql.version>
         <jackson.version>2.15.4</jackson.version>
         <apache.httpclient.version>4.5.13</apache.httpclient.version>
         <batik.version>1.13</batik.version>
         <buildhelper.skipAttach>true</buildhelper.skipAttach>
-        <eperusteet.backend-utils.version>2.11</eperusteet.backend-utils.version>
+        <eperusteet.backend-utils.version>2.13-SNAPSHOT</eperusteet.backend-utils.version>
         <eperusteet.devdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.devdb.user}</eperusteet.devdb.jdbcurl>
         <eperusteet.ittestdb.jdbcurl>jdbc:postgresql://localhost:5432/${eperusteet.ittestdb.user}</eperusteet.ittestdb.jdbcurl>
         <eperusteet.resources>fi.vm.sade.eperusteet.resource</eperusteet.resources>
@@ -31,7 +30,7 @@
         <flyway.version>9.22.3</flyway.version>
         <fop.version>2.9</fop.version>
         <hibernate.export.type>CREATE</hibernate.export.type>
-        <hibernate.jpamodel.version>5.3.6.Final</hibernate.jpamodel.version>
+        <hibernate.version>6.6.2.Final</hibernate.version>
         <jsoup.version>1.15.3</jsoup.version>
         <lombok.version>1.18.34</lombok.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
@@ -42,7 +41,6 @@
         <postgresql.version>42.5.5</postgresql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
-        <spring.security.test.version>5.7.11</spring.security.test.version>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
         <springfox.version>2.7.0</springfox.version>
         <surefire.version>3.2.2</surefire.version>
@@ -78,33 +76,65 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.plugin</groupId>
+                    <artifactId>spring-plugin-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.plugin</groupId>
+                    <artifactId>spring-plugin-metadata</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-core</artifactId>
-            <version>${org.apache.tomcat.version}</version>
+            <groupId>org.springframework.plugin</groupId>
+            <artifactId>spring-plugin-core</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-el</artifactId>
-            <version>${org.apache.tomcat.version}</version>
+            <groupId>org.springframework.plugin</groupId>
+            <artifactId>spring-plugin-metadata</artifactId>
+            <version>3.0.0</version>
         </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat.embed</groupId>-->
+<!--            <artifactId>tomcat-embed-core</artifactId>-->
+<!--            <version>${org.apache.tomcat.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat.embed</groupId>-->
+<!--            <artifactId>tomcat-embed-el</artifactId>-->
+<!--            <version>${org.apache.tomcat.version}</version>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat.embed</groupId>-->
+<!--            <artifactId>tomcat-embed-websocket</artifactId>-->
+<!--            <version>${org.apache.tomcat.version}</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>org.apache.tomcat.embed</groupId>
-            <artifactId>tomcat-embed-websocket</artifactId>
-            <version>${org.apache.tomcat.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.12.0</version>
         </dependency>
+
         <dependency>
             <groupId>one.util</groupId>
             <artifactId>streamex</artifactId>
@@ -144,7 +174,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.14.0</version>
+            <version>3.26.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -157,12 +187,12 @@
             <artifactId>jackson-dataformat-toml</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax.servlet</groupId>-->
+<!--            <artifactId>javax.servlet-api</artifactId>-->
+<!--            <version>3.1.0</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
@@ -180,32 +210,49 @@
             <version>31.1-jre</version>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jcache</artifactId>
+<!--            <version>${hibernate.version}</version>-->
         </dependency>
         <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
+            <classifier>jakarta</classifier>
         </dependency>
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-envers</artifactId>
-            <version>5.6.14.Final</version>
+<!--            <version>${hibernate.version}</version>-->
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.vladmihalcea</groupId>-->
+<!--            <artifactId>hibernate-types-60</artifactId>-->
+<!--            <version>2.21.1</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>io.hypersistence</groupId>
+            <artifactId>hypersistence-utils-hibernate-63</artifactId>
+            <version>3.9.0</version>
         </dependency>
         <dependency>
-            <groupId>javax.transaction</groupId>
-            <artifactId>jta</artifactId>
-            <version>1.1</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.activation</groupId>
-            <artifactId>jakarta.activation-api</artifactId>
-            <version>1.2.2</version>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <version>2.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.sun.activation</groupId>
             <artifactId>jakarta.activation</artifactId>
             <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
@@ -229,12 +276,12 @@
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
         </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>commons-dbcp</groupId>-->
+<!--            <artifactId>commons-dbcp</artifactId>-->
+<!--            <version>1.4</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -243,7 +290,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.192</version>
+            <version>2.3.232</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -271,22 +318,22 @@
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>opintopolku-user-details-service</artifactId>
-            <version>0.4.0-SNAPSHOT</version>
+            <version>0.5.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-properties</artifactId>
-            <version>0.1.0-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-http</artifactId>
-            <version>0.6.1-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>opintopolku-cas-servlet-filter</artifactId>
-            <version>0.2.0-SNAPSHOT</version>
+            <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -318,12 +365,12 @@
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>fop</artifactId>
             <version>${fop.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-            </exclusions>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <artifactId>servlet-api</artifactId>-->
+<!--                    <groupId>javax.servlet</groupId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
@@ -355,25 +402,25 @@
             <artifactId>tika-core</artifactId>
             <version>2.7.0</version>
         </dependency>
-        <dependency>
-            <groupId>fi.ratamaa</groupId>
-            <artifactId>dtoconverter</artifactId>
-            <version>2.0.3-RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.hibernate.javax.persistence</groupId>
-                    <artifactId>hibernate-jpa-2.0-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.validation</groupId>
-                    <artifactId>validation-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javassist</groupId>
-                    <artifactId>javassist</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>fi.ratamaa</groupId>-->
+<!--            <artifactId>dtoconverter</artifactId>-->
+<!--            <version>2.0.3-RELEASE</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.hibernate.javax.persistence</groupId>-->
+<!--                    <artifactId>hibernate-jpa-2.0-api</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>javax.validation</groupId>-->
+<!--                    <artifactId>validation-api</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>javassist</groupId>-->
+<!--                    <artifactId>javassist</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>fi.vm.sade.eperusteet</groupId>
             <artifactId>eperusteet-backend-utils</artifactId>
@@ -409,26 +456,47 @@
             <artifactId>commons-text</artifactId>
             <version>1.10.0</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax.xml.bind</groupId>-->
+<!--            <artifactId>jaxb-api</artifactId>-->
+<!--            <version>2.3.1</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>2.3.1</version>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
+        </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>javax.annotation</groupId>-->
+<!--            <artifactId>javax.annotation-api</artifactId>-->
+<!--            <version>1.3.2</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <version>1.3.2</version>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>2.1.3</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.el</groupId>
+            <artifactId>jakarta.el-api</artifactId>
+            <version>6.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.20.3</version>
+            <version>1.20.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.20.3</version>
+            <version>1.20.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -442,19 +510,24 @@
             <version>2.2</version>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-access</artifactId>
-            <version>1.2.13</version>
+            <groupId>ch.qos.logback.access</groupId>
+            <artifactId>common</artifactId>
+            <version>2.0.3</version>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.13</version>
+            <groupId>ch.qos.logback.access</groupId>
+            <artifactId>logback-access-tomcat</artifactId>
+            <version>2.0.4</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.13</version>
+            <version>1.5.12</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.12</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade</groupId>
@@ -466,6 +539,12 @@
             <artifactId>jacoco-maven-plugin</artifactId>
             <version>${jacoco.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -500,15 +579,15 @@
                     <parameters>true</parameters>
                     <annotationProcessorPaths>
                         <path>
-                            <groupId>org.hibernate</groupId>
+                            <groupId>org.hibernate.orm</groupId>
                             <artifactId>hibernate-jpamodelgen</artifactId>
-                            <version>${hibernate.jpamodel.version}</version>
+                            <version>${hibernate.version}</version>
                         </path>
-                        <path>
-                            <groupId>javax.xml.bind</groupId>
-                            <artifactId>jaxb-api</artifactId>
-                            <version>2.3.0</version>
-                        </path>
+<!--                        <path>-->
+<!--                            <groupId>javax.xml.bind</groupId>-->
+<!--                            <artifactId>jaxb-api</artifactId>-->
+<!--                            <version>2.3.0</version>-->
+<!--                        </path>-->
                         <path>
                             <groupId>javax.annotation</groupId>
                             <artifactId>javax.annotation-api</artifactId>
@@ -683,7 +762,7 @@
                         <type>${hibernate.export.type}</type>
                         <target>SCRIPT</target>
                         <driverClassName>org.postgresql.Driver</driverClassName>
-                        <hibernateDialect>fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>
+<!--                        <hibernateDialect>fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect</hibernateDialect>-->
                         <url/>
                         <username/>
                         <password/>
@@ -703,11 +782,11 @@
                             <artifactId>eperusteet-backend-utils</artifactId>
                             <version>2.4-SNAPSHOT</version>
                         </dependency>
-                        <dependency>
-                            <groupId>javax.xml.bind</groupId>
-                            <artifactId>jaxb-api</artifactId>
-                            <version>2.3.1</version>
-                        </dependency>
+<!--                        <dependency>-->
+<!--                            <groupId>javax.xml.bind</groupId>-->
+<!--                            <artifactId>jaxb-api</artifactId>-->
+<!--                            <version>2.3.1</version>-->
+<!--                        </dependency>-->
                     </dependencies>
                 </plugin>
             </plugins>
@@ -860,7 +939,7 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>
+<!--                            <hibernateMapping>${project.basedir}/src/test/config/hibernate-typedefs.xml</hibernateMapping>-->
                         </configuration>
                     </plugin>
                 </plugins>
@@ -936,7 +1015,22 @@
     <repositories>
         <repository>
             <releases>
+                <enabled>false</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
                 <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </snapshots>
+            <id>github-eperusteet-backend-utils</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Opetushallitus/eperusteet-backend-utils</url>
+        </repository>
+        <repository>
+            <releases>
+                <enabled>false</enabled>
                 <updatePolicy>always</updatePolicy>
                 <checksumPolicy>warn</checksumPolicy>
             </releases>
@@ -946,8 +1040,8 @@
                 <checksumPolicy>warn</checksumPolicy>
             </snapshots>
             <id>github</id>
-            <name>GitHub Packages eperusteet</name>
-            <url>https://maven.pkg.github.com/Opetushallitus/eperusteet</url>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/Opetushallitus/java-utils</url>
         </repository>
         <repository>
             <id>oph-sade-artifactory-snapshots</id>

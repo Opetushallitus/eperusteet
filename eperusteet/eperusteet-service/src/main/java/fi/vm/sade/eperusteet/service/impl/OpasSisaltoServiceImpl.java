@@ -32,6 +32,6 @@ public class OpasSisaltoServiceImpl implements OpasSisaltoService {
             return oppaanKiinnitettyKoodi;
         }).collect(Collectors.toList()));
 
-        return mapper.map(opasSisaltoRepository.save(opasSisalto), OpasSisaltoKevytDto.class);
+        return mapper.map(opasSisaltoRepository.saveAndFlush(opasSisalto), OpasSisaltoKevytDto.class);
     }
 }

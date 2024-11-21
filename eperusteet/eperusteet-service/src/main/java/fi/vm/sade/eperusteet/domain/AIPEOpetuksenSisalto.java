@@ -6,8 +6,8 @@ import fi.vm.sade.eperusteet.domain.yl.AbstractOppiaineOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import java.util.*;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -34,8 +34,8 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto imple
     @OneToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     @Getter
     @JoinTable(name = "yl_aipe_opetuksensisalto_yl_laajaalainen_osaaminen",
-            joinColumns = @JoinColumn(name = "yl_aipe_opetuksensisalto_id", insertable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id", insertable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "yl_aipe_opetuksensisalto_id"),
+            inverseJoinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id"))
     @OrderBy("jarjestys, id")
     private List<LaajaalainenOsaaminen> laajaalaisetosaamiset = new ArrayList<>();
 

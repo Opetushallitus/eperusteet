@@ -14,7 +14,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,14 +38,14 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @ValidKoodisto(koodisto = KoodistoUriArvo.OPPIAINEETJAOPPIMAARATLOPS2021)
     private Koodi koodi;
 
@@ -53,7 +53,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @Setter
     @JoinColumn(name = "pakolliset_moduulit_kuvaus_id")
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen pakollisetModuulitKuvaus;
 
@@ -61,7 +61,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @Setter
     @JoinColumn(name = "valinnaiset_moduulit_kuvaus_id")
     @ValidHtml(whitelist = ValidHtml.WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen valinnaisetModuulitKuvaus;
 
@@ -120,8 +120,8 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_lops2019_oppiaine_oppimaara",
-            joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
+            joinColumns = {@JoinColumn(name = "oppimaara_id")},
+            inverseJoinColumns = {@JoinColumn(name = "oppiaine_id")})
     private Lops2019Oppiaine oppiaine; // Oppimäärän viittaus oppiaineeseen
 
     public void asetaOppiaine(Lops2019Oppiaine oppiaine) {

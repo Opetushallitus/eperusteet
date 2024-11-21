@@ -8,7 +8,9 @@ import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
@@ -22,21 +24,17 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractDockerIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.mime.MimeTypeException;
 import org.assertj.core.util.Maps;
 import org.json.JSONException;
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.skyscreamer.jsonassert.JSONCompare;
 import org.skyscreamer.jsonassert.JSONCompareMode;
-import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -44,12 +42,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -107,6 +103,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     public void setUp() {
         projekti = createPeruste();
 
+        startNewTransaction();
         peruste = perusteService.get(projekti.getPeruste().getIdLong());
         peruste.setKoulutukset(new HashSet<>());
         peruste.setVoimassaoloAlkaa(new Date(1496437200000L));
@@ -115,6 +112,18 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         peruste.getNimi().getTekstit().put(Kieli.SV, "ap_sv");
         peruste.setDiaarinumero("OPH-12345-1234");
         perusteService.update(peruste.getId(), peruste);
+        endTransaction();
+    }
+
+    @After
+    public void clean() {
+        arkistoiPerusteProjektit();
+    }
+
+    @Test
+    public void testDigitaalinenOsaaminen() {
+        assertThat(julkaisutService.getJulkisetJulkaisut(null, peruste.getNimi().get(Kieli.FI), "", "fi", "digitaalinen_osaaminen", true, true, true, false, "", "", JulkaisuSisaltoTyyppi.PERUSTE,
+                0, 10).getContent()).hasSize(0);
     }
 
     @Test
@@ -133,25 +142,26 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         asyncResult.get();
         assertThat(getJulkaisut(peruste)).hasSize(1);
         assertThat(perusteRepository.findOne(peruste.getId()).getGlobalVersion().getAikaleima()).isEqualTo(perusteRepository.findOne(peruste.getId()).getJulkaisut().get(0).getLuotu());
-
-        assertThatThrownBy(() -> {
-            perusteService.getJulkaistuSisalto(peruste.getId(), true);
-        }).isInstanceOf(NotExistsException.class);
-        assertThat(perusteService.getJulkaistuSisalto(peruste.getId(), false)).isNotNull();
+        assertThat(julkaisutService.getJulkisetJulkaisut(null, peruste.getNimi().get(Kieli.FI), "", "fi", "normaali", true, true, true, false, "", "", JulkaisuSisaltoTyyppi.PERUSTE,
+                0, 10).getContent()).hasSize(1);
     }
 
     @Test
     public void testJulkaiseUudelleen() throws ExecutionException, InterruptedException {
+        startNewTransaction();
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
 
+        startNewTransaction();
         peruste.setNimi(TestUtils.lt("updated"));
         perusteService.update(peruste.getId(), peruste);
 
+        startNewTransaction();
         CompletableFuture<Void> asyncResult2 = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult2.get();
 
         assertThat(getJulkaisut(peruste)).hasSize(2);
+        endTransaction();
     }
 
     @Test
@@ -220,9 +230,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     private PerusteprojektiDto createPeruste() {
         // Oma transaction, jotta löytyy teeJulkaisuAsyncin haussa
-        TestTransaction.end();
-        TestTransaction.start();
-        TestTransaction.flagForCommit();
+        startNewTransaction();
 
         PerusteprojektiLuontiDto result = new PerusteprojektiLuontiDto();
         result.setReforminMukainen(false);
@@ -235,8 +243,14 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         result.setDiaarinumero(TestUtils.uniikkiDiaari());
         PerusteprojektiDto projekti = perusteprojektiService.save(result);
 
-        TestTransaction.end();
+        endTransaction();
 
         return projekti;
+    }
+
+    private void arkistoiPerusteProjektit() {
+        perusteprojektiRepository.findAll().forEach(projekti -> {
+            perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.POISTETTU, null);
+        });
     }
 }

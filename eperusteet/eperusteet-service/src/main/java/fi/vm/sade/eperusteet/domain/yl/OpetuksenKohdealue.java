@@ -10,8 +10,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name="yl_kohdealue")
 public class OpetuksenKohdealue extends AbstractReferenceableEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
@@ -28,7 +28,7 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @NotNull(message = "Tavoitealueella täytyy olla nimi")
     private TekstiPalanen nimi;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
@@ -40,8 +40,8 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_oppiaine_yl_kohdealue",
-            joinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false))
     private Set<Oppiaine> oppiaineet;
 
     @Getter
@@ -49,8 +49,8 @@ public class OpetuksenKohdealue extends AbstractReferenceableEntity {
     @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_opetuksen_tavoite_yl_kohdealue",
-            joinColumns = @JoinColumn(name = "kohdealueet_id", updatable = false, nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", updatable = false, nullable = false))
+            joinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", nullable = false))
     private Set<OpetuksenTavoite> opetuksenTavoitteet;
 
     public OpetuksenKohdealue kloonaa() {

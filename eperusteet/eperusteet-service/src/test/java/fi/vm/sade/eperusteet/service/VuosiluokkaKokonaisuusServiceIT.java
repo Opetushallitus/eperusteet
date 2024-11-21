@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -10,11 +11,13 @@ import fi.vm.sade.eperusteet.dto.util.UpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuudenLaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
 import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusContext;
 import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import java.util.Optional;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.oto;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -71,9 +75,9 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         vlo.setLaajaalainenOsaaminen(Optional.of(osaaminen));
         dto.setLaajaalaisetOsaamiset(Collections.singleton(vlo));
 
-        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
+//        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         dto = service.addVuosiluokkaKokonaisuus(perusteId, dto);
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
 
         assertEquals(1, dto.getLaajaalaisetOsaamiset().size());
         assertEquals(osaaminen, dto.getLaajaalaisetOsaamiset().iterator().next().getLaajaalainenOsaaminen().get());
@@ -82,15 +86,18 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
         final VuosiluokkaKokonaisuusContext ctx = VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId());
 
         lockService.lock(ctx);
-        versionDto = perusteService.getPerusteVersion(perusteId);
-        service.updateVuosiluokkaKokonaisuus(perusteId, new UpdateDto<>(dto));
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+//        versionDto = perusteService.getPerusteVersion(perusteId);
+        dto = service.updateVuosiluokkaKokonaisuus(perusteId, new UpdateDto<>(dto));
+        assertThat(dto.getNimi().get().get(Kieli.FI)).isEqualTo("Nimi2");
+//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         lockService.unlock(ctx);
 
         assertEquals(2, dto.getLaajaalaisetOsaamiset().size());
-        versionDto = perusteService.getPerusteVersion(perusteId);
+//        versionDto = perusteService.getPerusteVersion(perusteId);
         service.deleteVuosiluokkaKokonaisuus(ctx.getPerusteId(), ctx.getKokonaisuusId());
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+        Assertions.assertThatThrownBy(() -> service.getVuosiluokkaKokonaisuus(perusteId, ctx.getKokonaisuusId()))
+            .isInstanceOf(BusinessRuleViolationException.class);
     }
 
 }

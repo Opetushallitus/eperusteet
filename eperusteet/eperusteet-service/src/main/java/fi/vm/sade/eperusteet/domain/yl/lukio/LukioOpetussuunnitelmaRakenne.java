@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -45,8 +45,8 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     @Audited
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
-            joinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "rakenne_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false))
     private Set<Oppiaine> oppiaineet = new HashSet<>(0);
 
     @Getter

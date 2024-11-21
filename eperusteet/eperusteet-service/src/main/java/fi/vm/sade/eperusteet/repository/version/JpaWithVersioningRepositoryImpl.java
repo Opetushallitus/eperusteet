@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.LockModeType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
@@ -90,10 +90,9 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     @Override
     public T lock(T entity, boolean refresh) {
         if (refresh) {
-            entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
-        } else {
-            entityManager.lock(entity, LockModeType.PESSIMISTIC_WRITE);
+            entityManager.refresh(entity);
         }
+        entityManager.lock(entity, LockModeType.PESSIMISTIC_WRITE);
         return entity;
     }
 

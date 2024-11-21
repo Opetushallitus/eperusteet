@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.service.util.Pair;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 
-import javax.servlet.http.Part;
+import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Set;

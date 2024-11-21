@@ -50,9 +50,9 @@
 
     <tx:annotation-driven order="100"/>
     <aop:aspectj-autoproxy  />
-    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
+<!--    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>-->
 
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+<!--    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>-->
 
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">
@@ -65,7 +65,7 @@
     </bean>
 
     <bean id="dataSource"
-          class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+          class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:test"/>
     </bean>
@@ -75,22 +75,23 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
         <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
+<!--        <property name="entityManagerInterface" value="jakarta.persistence.EntityManager"/>-->
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="create"/>
-                <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
-                <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomH2Dialect"/>
-                <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+                <entry key="jakarta.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
                 <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
-                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
-                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />
+<!--                <entry key="jakarta.persistence.validation.factory" value-ref="validator"/>-->
+<!--                <entry key="hibernate.session_factory.interceptor" value-ref="hibernateInterceptor" />-->
+                <entry key="hibernate.id.db_structure_naming_strategy" value="legacy"/>
             </map>
         </property>
         <property name="mappingResources">
             <list>
-                <value>typedefs-h2.xml</value>
+<!--                <value>typedefs-h2.xml</value>-->
                 <value>orm-h2.xml</value>
             </list>
         </property>
@@ -99,6 +100,8 @@
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
 

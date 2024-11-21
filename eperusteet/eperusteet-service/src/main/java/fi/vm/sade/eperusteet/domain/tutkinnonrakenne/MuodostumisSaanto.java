@@ -2,10 +2,10 @@ package fi.vm.sade.eperusteet.domain.tutkinnonrakenne;
 
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
