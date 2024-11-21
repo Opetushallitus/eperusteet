@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 
 @Component
-@Aspect
+//@Aspect
 public class MarkPerusteUpdatedAspect {
     @Autowired
     private PerusteUpdateStore perusteUpdateStore;

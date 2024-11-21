@@ -3,7 +3,7 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.*;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;

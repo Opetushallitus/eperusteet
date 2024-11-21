@@ -15,10 +15,10 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -65,7 +65,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Getter
     private UUID tunniste = UUID.randomUUID();
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
@@ -160,8 +160,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "yl_oppiaine_yl_kohdealue",
-            joinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "yl_oppiaine_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "kohdealueet_id", nullable = false))
     private Set<OpetuksenKohdealue> kohdealueet = new HashSet<>();
 
     @Getter
@@ -174,8 +174,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Audited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
-            inverseJoinColumns = @JoinColumn(name = "rakenne_id", nullable = false, updatable = false),
-            joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+            inverseJoinColumns = @JoinColumn(name = "rakenne_id", nullable = false),
+            joinColumns = @JoinColumn(name = "oppiaine_id", nullable = false))
     private Set<LukioOpetussuunnitelmaRakenne> lukioRakenteet = new HashSet<>(0);
 
     @RelatesToPeruste
@@ -183,8 +183,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Getter
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_oppiaine",
-            joinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false))
     private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisaltos;
 
     @Getter

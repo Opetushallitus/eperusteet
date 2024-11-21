@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @Transactional
-@DirtiesContext
+@DirtiesContext(methodMode = DirtiesContext.MethodMode.BEFORE_METHOD)
 public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
     @Autowired
@@ -105,7 +105,7 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
         assertThat(osaamismerkkiService.getJulkisetKategoriat(new OsaamismerkkiQuery())).hasSize(1);
     }
 
-    @Test()
+    @Test
     public void deleteKategoria() throws HttpMediaTypeNotSupportedException, MimeTypeException {
         OsaamismerkkiKategoriaDto kategoria = osaamismerkkiService.updateKategoria(createKategoria("kategoria_name"));
         assertThat(osaamismerkkiService.getKategoriat()).hasSize(1);
@@ -139,7 +139,6 @@ public class OsaamismerkkiServiceIT extends AbstractIntegrationTest {
 
    private OsaamismerkkiDto createOsaamismerkki(OsaamismerkkiKategoriaDto kategoria, OsaamismerkkiTila tila) {
        OsaamismerkkiDto merkki = new OsaamismerkkiDto();
-       merkki.setId(123L);
        merkki.setNimi(LokalisoituTekstiDto.of("osaamismerkki"));
        merkki.setTila(tila);
        merkki.setKategoria(kategoria);

@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -39,7 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -271,13 +272,12 @@ public class MaaraysServiceImpl implements MaaraysService {
                 }
                 pis.unread(buf);
 
-                Session session = em.unwrap(Session.class);
                 MaaraysLiite liite = new MaaraysLiite(
                         UUID.randomUUID(),
                         dtoMapper.map(maaraysLiiteUploadDto.getNimi(), TekstiPalanen.class),
                         maaraysLiiteUploadDto.getTiedostonimi(),
                         maaraysLiiteUploadDto.getTyyppi(),
-                        Hibernate.getLobCreator(session).createBlob(pis, decoder.length));
+                        BlobProxy.generateProxy(IOUtils.toByteArray(is)));
                 em.persist(liite);
                 em.flush();
 
