@@ -18,7 +18,7 @@ public class CacheHeaderInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, Object handler) throws Exception {
         if (handler instanceof HandlerMethod) {
             final HandlerMethod handlerMethod = (HandlerMethod) handler;
             if (!returnsResponseEntity(handlerMethod)) {
@@ -35,18 +35,6 @@ public class CacheHeaderInterceptor implements HandlerInterceptor {
             }
         }
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws
-        Exception {
-        //Posthandlessa ei voi enää muokata vastausta
-        //@see CacheHeadersAspect
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws
-        Exception {
     }
 
     private static boolean returnsResponseEntity(HandlerMethod handlerMethod) {

@@ -2,10 +2,10 @@ package fi.vm.sade.eperusteet.repository.custom;
 
 import java.time.Duration;
 import java.util.*;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 
 import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
@@ -108,18 +108,8 @@ public class OphSessionMappingStorageImpl implements OphSessionMappingStorage {
     }
 
     @Override
-    public javax.servlet.http.HttpSessionContext getSessionContext() {
-      return new EmptyHttpSessionContext();
-    }
-
-    @Override
     public Object getAttribute(String name) {
       return session.getAttribute(name);
-    }
-
-    @Override
-    public Object getValue(String name) {
-      return getAttribute(name);
     }
 
     @Override
@@ -128,29 +118,13 @@ public class OphSessionMappingStorageImpl implements OphSessionMappingStorage {
     }
 
     @Override
-    public String[] getValueNames() {
-      Set<String> attributeNames = session.getAttributeNames();
-      return attributeNames.toArray(new String[attributeNames.size()]);
-    }
-
-    @Override
     public void setAttribute(String name, Object value) {
       session.setAttribute(name, value);
     }
 
     @Override
-    public void putValue(String name, Object value) {
-      setAttribute(name, value);
-    }
-
-    @Override
     public void removeAttribute(String name) {
       session.removeAttribute(name);
-    }
-
-    @Override
-    public void removeValue(String name) {
-      removeAttribute(name);
     }
 
     @Override
@@ -164,17 +138,4 @@ public class OphSessionMappingStorageImpl implements OphSessionMappingStorage {
     }
   }
 
-  @SuppressWarnings("deprecation")
-  private static class EmptyHttpSessionContext implements javax.servlet.http.HttpSessionContext {
-
-    @Override
-    public HttpSession getSession(String sessionId) {
-      return null;
-    }
-
-    @Override
-    public Enumeration<String> getIds() {
-      return Collections.emptyEnumeration();
-    }
-  }
 }
