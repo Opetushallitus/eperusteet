@@ -459,16 +459,11 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         long perusteId = pp.getPeruste().getId();
         PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         PerusteenOsaViiteDto.Matala poA = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
-
-        //FIXME global versioning pois käytöstä
-//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         PerusteenOsaViiteDto.Matala poB = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
-        versionDto = perusteService.getPerusteVersion(perusteId);
 
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poA.getId(), nimet);
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poB.getId(), nimet);
         List<PerusteenOsaTyoryhmaDto> st = service.getSisallonTyoryhmat(pp.getId());
-        assertEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         Assert.assertEquals(3, st.size());
     }
 

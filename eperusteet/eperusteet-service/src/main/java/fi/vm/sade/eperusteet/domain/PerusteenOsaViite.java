@@ -154,7 +154,7 @@ public class PerusteenOsaViite implements
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private DigitaalisenOsaamisenPerusteenSisalto digitaalinenOsaaminenSisalto;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
     private PerusteenOsa perusteenOsa;

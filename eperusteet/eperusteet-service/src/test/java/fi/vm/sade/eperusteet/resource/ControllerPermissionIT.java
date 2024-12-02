@@ -39,9 +39,8 @@ public class ControllerPermissionIT {
     }
 
     @Test
-    @Ignore
     public void getPerusteinfo_GET() throws Exception {
-        String uri = "/api/perusteet";
+        String uri = "/api/perusteet/julkaisut";
         mvc.perform(MockMvcRequestBuilders.get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk());

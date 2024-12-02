@@ -41,6 +41,7 @@ public class WebSecurityConfigurationDev {
                         .requestMatchers("/buildversion.txt").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/dokumentit/pdf/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .logout(logout -> {

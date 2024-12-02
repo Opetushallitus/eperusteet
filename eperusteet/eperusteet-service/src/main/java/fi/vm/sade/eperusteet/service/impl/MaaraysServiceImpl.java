@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.repository.MaaraysLiiteRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.MaaraysService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -114,13 +114,11 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public MaaraysDto getPerusteenMaarays(Long perusteId) {
         return dtoMapper.map(maaraysRepository.findFirstByPerusteIdAndLiittyyTyyppiOrderByLuotuAsc(perusteId, MaaraysLiittyyTyyppi.EI_LIITY), MaaraysDto.class);
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public List<MaaraysDto> getPerusteenMuutosmaaraykset(Long perusteId) {
         return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppiIn(perusteId, Arrays.asList(MaaraysLiittyyTyyppi.MUUTTAA, MaaraysLiittyyTyyppi.KORVAA)), MaaraysDto.class);
     }
@@ -131,7 +129,6 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public MaaraysDto getMaarays(Long id) {
         Maarays maarays = maaraysRepository.findById(id).orElseThrow();
         MaaraysDto maaraysDto = dtoMapper.map(maaraysRepository.findById(id).orElse(null), MaaraysDto.class);
@@ -148,7 +145,6 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public List<MaaraysDto> getPerusteenJulkaistutMuutosmaaraykset(Long perusteId) {
         return dtoMapper.mapAsList(maaraysRepository.findByPerusteIdAndLiittyyTyyppiInAndTila(perusteId, Arrays.asList(MaaraysLiittyyTyyppi.MUUTTAA, MaaraysLiittyyTyyppi.KORVAA), MaaraysTila.JULKAISTU), MaaraysDto.class);
     }
@@ -172,7 +168,6 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public MaaraysDto addMaarays(MaaraysDto maaraysDto) {
         addLiitteet(maaraysDto);
@@ -184,7 +179,6 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public MaaraysDto updateMaarays(MaaraysDto maaraysDto) {
         if (maaraysRepository.findById(maaraysDto.getId()).orElse(null) == null) {
@@ -236,7 +230,6 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @CacheEvict(value="maarayskokoelma_asiasanat", allEntries = true)
     public void deleteMaarays(Long id, Long perusteId) {
         if (maaraysRepository.findById(id).orElse(null) == null) {
@@ -258,7 +251,6 @@ public class MaaraysServiceImpl implements MaaraysService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public UUID uploadFile(MaaraysLiiteDto maaraysLiiteUploadDto) {
         try {
             byte[] decoder = Base64.getDecoder().decode(maaraysLiiteUploadDto.getFileB64());

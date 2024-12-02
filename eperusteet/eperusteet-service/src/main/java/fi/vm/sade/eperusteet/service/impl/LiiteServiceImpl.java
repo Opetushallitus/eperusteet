@@ -10,7 +10,7 @@ import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.LiiteService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -48,7 +48,6 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public void export(Long perusteId, UUID id, OutputStream os) {
         Liite liite = liitteet.findById(id).orElse(null);
         if (liite == null) {
@@ -86,7 +85,6 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public LiiteDto get(Long perusteId, UUID id) {
         Peruste peruste = perusteet.findOne(perusteId);
         Liite liite = liitteet.findById(id).orElse(null);
@@ -100,14 +98,12 @@ public class LiiteServiceImpl implements LiiteService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public LiiteDto get(UUID id) {
         Liite liite = liitteet.findById(id).orElse(null);
         return mapper.map(liite, LiiteDto.class);
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public UUID addJulkaisuLiite(Long julkaisuId, LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
         Liite liite = liitteet.add(tyyppi, mime, nimi, length, is);
@@ -115,7 +111,6 @@ public class LiiteServiceImpl implements LiiteService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public UUID addOsaamismerkkiLiite(LiiteTyyppi tyyppi, String mime, String nimi, long length, InputStream is) {
         Liite liite = liitteet.add(tyyppi, mime, nimi, length, is);

@@ -78,7 +78,7 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.ProjektiValidator;
 import fi.vm.sade.eperusteet.service.TiedoteService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -602,7 +602,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public List<Validointi> validoiProjekti(Long id, ProjektiTila tila) {
         return projektiValidator.run(id, tila);
@@ -610,7 +609,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public TilaUpdateStatus updateTila(Long id, ProjektiTila tila, TiedoteDto tiedoteDto) {
 
@@ -702,7 +700,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public void updateProjektiTila(Long id, ProjektiTila tila) {
         Perusteprojekti projekti = repository.findById(id).orElse(null);
@@ -714,7 +711,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public void avaaPerusteProjekti(Long id) {
         Perusteprojekti projekti = repository.findById(id).orElse(null);
@@ -953,7 +949,6 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional(propagation = Propagation.NEVER)
     public void lataaMaarayskirjeetTask() {
 

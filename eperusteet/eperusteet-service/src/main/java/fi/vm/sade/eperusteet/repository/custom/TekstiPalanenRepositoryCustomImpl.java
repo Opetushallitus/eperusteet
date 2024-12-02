@@ -57,7 +57,6 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
                 " FROM tekstipalanen_teksti t " +
                 " WHERE (" + or + ") ORDER BY t.tekstipalanen_id, t.kieli")
                 .addScalar("id", StandardBasicTypes.LONG)
-//                .addScalar("kieli", enumType(session, Kieli.class))
                 .addScalar("kieli", StandardBasicTypes.STRING)
                 .addScalar("teksti", StandardBasicTypes.STRING)
                 .setResultTransformer(new AliasToBeanResultTransformer(LokalisoituTekstiHakuDto.class));

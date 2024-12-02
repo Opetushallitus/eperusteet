@@ -169,7 +169,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         versionDto = perusteService.getPerusteVersion(perusteId);
         vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), new UpdateDto<>(vkDto));
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
+        assertEquals(vkDto.getTavoitteet().get(0).getTavoite().get().get(Kieli.FI), "Tässäpä jokin kiva tavoite");
 
         List<TavoitteenArviointiDto> arvioinnit = new ArrayList<>(vkDto.getTavoitteet().get(0).getArvioinninkohteet()).stream()
                 .sorted(Comparator.comparing(arviointi -> arviointi.getArvosana().get()))
