@@ -102,12 +102,9 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback
-    @Ignore //FIXME globalversioningin aikeleimat tuhottava
     public void testRemoveSisaltoOK() {
-        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         service.removeSisalto(perusteId, lapsenlapsiId);
         em.flush();
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));

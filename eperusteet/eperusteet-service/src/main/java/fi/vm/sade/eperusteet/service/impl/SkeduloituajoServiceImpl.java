@@ -4,7 +4,7 @@ import fi.vm.sade.eperusteet.domain.SkeduloituAjo;
 import fi.vm.sade.eperusteet.domain.SkeduloituAjoStatus;
 import fi.vm.sade.eperusteet.repository.SkeduloituajoRepository;
 import fi.vm.sade.eperusteet.service.SkeduloituajoService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class SkeduloituajoServiceImpl implements SkeduloituajoService {
     @Autowired
     private SkeduloituajoRepository skeduloituajoRepository;
 
-    @IgnorePerusteUpdateCheck
+    
     @Override
     public SkeduloituAjo haeTaiLisaaAjo(String nimi) {
         SkeduloituAjo skeduloituajo = skeduloituajoRepository.findByNimi(nimi);
@@ -29,7 +29,7 @@ public class SkeduloituajoServiceImpl implements SkeduloituajoService {
         return skeduloituajo;
     }
 
-    @IgnorePerusteUpdateCheck
+    
     @Override
     public SkeduloituAjo lisaaUusiAjo(String nimi) {
         return skeduloituajoRepository.save(SkeduloituAjo.builder()
@@ -38,7 +38,7 @@ public class SkeduloituajoServiceImpl implements SkeduloituajoService {
                 .build());
     }
 
-    @IgnorePerusteUpdateCheck
+    
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public SkeduloituAjo paivitaAjoStatus(SkeduloituAjo skeduloituAjo, SkeduloituAjoStatus status) {
@@ -47,7 +47,7 @@ public class SkeduloituajoServiceImpl implements SkeduloituajoService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @IgnorePerusteUpdateCheck
+    
     @Override
     public SkeduloituAjo pysaytaAjo(SkeduloituAjo skeduloituAjo) {
         skeduloituAjo.setStatus(SkeduloituAjoStatus.PYSAYTETTY);
@@ -56,7 +56,7 @@ public class SkeduloituajoServiceImpl implements SkeduloituajoService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @IgnorePerusteUpdateCheck
+    
     @Override
     public SkeduloituAjo kaynnistaAjo(SkeduloituAjo skeduloituAjo) {
         skeduloituAjo.setStatus(SkeduloituAjoStatus.AJOSSA);

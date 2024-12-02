@@ -6,7 +6,7 @@ import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.repository.ArviointiAsteikkoRepository;
 import fi.vm.sade.eperusteet.repository.OsaamistasoRepository;
 import fi.vm.sade.eperusteet.service.ArviointiAsteikkoService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -40,7 +40,6 @@ public class ArviointiAsteikkoServiceImpl implements ArviointiAsteikkoService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
     public ArviointiAsteikkoDto get(Long id) {
         return mapper.map(repository.findById(id).orElse(null), ArviointiAsteikkoDto.class);

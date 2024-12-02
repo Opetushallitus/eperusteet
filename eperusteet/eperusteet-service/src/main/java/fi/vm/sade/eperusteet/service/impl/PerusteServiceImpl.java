@@ -156,8 +156,8 @@ import fi.vm.sade.eperusteet.service.TermistoService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
 import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
 import fi.vm.sade.eperusteet.service.VapaasivistystyoSisaltoService;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
@@ -239,7 +239,7 @@ import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 @Slf4j
 @Service
 @Transactional
-public class PerusteServiceImpl implements PerusteService, ApplicationListener<PerusteUpdatedEvent> {
+public class PerusteServiceImpl implements PerusteService{
 
     @Autowired
     private PerusteDispatcher dispatcher;
@@ -743,7 +743,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
     public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getOsaamisalaKuvaukset(final Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
@@ -767,7 +766,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional(readOnly = true)
     public Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> getJulkaistutOsaamisalaKuvaukset(final Long perusteId) {
         PerusteKaikkiDto peruste = getJulkaistuSisalto(perusteId);
@@ -809,21 +807,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, boolean esikatselu) {
         return self.getJulkaistuSisalto(id, null, esikatselu);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id) {
         return self.getJulkaistuSisalto(id, null, false);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
@@ -841,7 +836,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
@@ -866,7 +860,7 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
+
     @Cacheable(
             value= CacheArvot.PERUSTE_JULKAISU,
             condition = "#useCurrentData == false && #julkaisuRevisio == null",
@@ -930,7 +924,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public List<TutkinnonOsaKaikkiDto> getJulkaistutTutkinnonOsat(Long perusteId, boolean useCurrentData) {
         PerusteKaikkiDto peruste;
         if (useCurrentData) {
@@ -948,7 +941,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public Set<TutkinnonOsaViiteSuppeaDto> getJulkaistutTutkinnonOsaViitteet(Long perusteId, boolean useCurrentData) {
         PerusteKaikkiDto peruste;
         if (useCurrentData) {
@@ -969,7 +961,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public PerusteenOsaDto getJulkaistuPerusteenOsa(Long perusteId, Long perusteenOsaId) {
         PerusteKaikkiDto peruste = getJulkaistuSisalto(perusteId);
         if (peruste == null) {
@@ -988,7 +979,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public PerusteKaikkiDto getKaikkiSisalto(final Long id) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
         boolean hasPermission = permissionManager.hasPerustePermission(SecurityContextHolder.getContext().getAuthentication(), id, PermissionManager.Permission.LUKU);
@@ -1141,21 +1131,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             throw new NotExistsException("Perusteen sisältörakennetta ei ole olemassa");
         }
         return mapper.map(sisalto, view);
-    }
-
-    @Override
-    @IgnorePerusteUpdateCheck
-    @Transactional
-    public void onApplicationEvent(PerusteUpdatedEvent event) {
-        Peruste peruste = perusteRepository.findOne(event.getPerusteId());
-        if (peruste == null) {
-            return;
-        }
-        Date muokattu = new Date();
-        if (peruste.getGlobalVersion() == null) {
-            peruste.setGlobalVersion(new PerusteVersion(peruste));
-        }
-        peruste.getGlobalVersion().setAikaleima(muokattu);
     }
 
     @Override
@@ -1526,7 +1501,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public List<TutkinnonOsaViiteDto> getTutkinnonOsat(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
         Peruste peruste = perusteRepository.findOne(perusteid);
         Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
@@ -1650,7 +1624,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
             (new RakenneModuuli()).mergeState(moduuli);
             suoritustapa.setRakenne(rakenneRepository.save(moduuli));
-            onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
         }
 
         RakenneModuuliDto updated = mapper.map(moduuli, RakenneModuuliDto.class);
@@ -1943,7 +1916,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
         TutkinnonOsaViiteDto dto = tutkinnonOsaViiteService.update(osa, true);
         muokkausTietoService.addMuokkaustieto(id, viite, MuokkausTapahtuma.PAIVITYS);
-        onApplicationEvent(PerusteUpdatedEvent.of(this, id));
         return dto;
     }
 
@@ -2030,14 +2002,12 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public List<TutkintonimikeKoodiDto> getTutkintonimikeKoodit(Long perusteId) {
         return doGetTutkintonimikeKoodit(perusteId);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public TutkintonimikeKoodiDto getTutkintonimikeKoodi(@P("perusteId") Long perusteId, String tutkintonimikeKoodiUri) {
         return getTutkintonimikeKoodit(perusteId).stream()
                 .filter(tutkintonimikeKoodi -> tutkintonimikeKoodi.getTutkintonimikeUri().equals(tutkintonimikeKoodiUri))
@@ -2047,7 +2017,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public List<TutkintonimikeKoodiDto> doGetTutkintonimikeKoodit(Long perusteId) {
         List<TutkintonimikeKoodi> koodit = tutkintonimikeKoodiRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(koodit, TutkintonimikeKoodiDto.class);
@@ -2611,7 +2580,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public KVLiiteJulkinenDto getJulkinenKVLiite(long perusteId) {
         Peruste peruste = perusteRepository.getOne(perusteId);
         PerusteDto perusteDto = mapper.map(peruste, PerusteDto.class);
@@ -2709,7 +2677,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public List<KVLiiteTasoDto> haeTasot(Long perusteId, Peruste peruste) {
 
         if (ObjectUtils.isEmpty(peruste.getKoulutukset())) {
@@ -2830,7 +2797,6 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Cacheable(
             value= CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI,
             condition = "#esikatselu == false && #julkaisuRevisio == null",

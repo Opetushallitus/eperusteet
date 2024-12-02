@@ -40,7 +40,7 @@ import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -172,7 +172,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     @Async
-    @IgnorePerusteUpdateCheck
+    
     @Transactional(propagation = Propagation.NEVER)
     public void teeJulkaisut(boolean julkaiseKaikki, String tyyppi, String koulutustyyppi, String tiedote) {
         List<Long> perusteet = perusteRepository.findJulkaistutPerusteet(PerusteTyyppi.of(tyyppi), koulutustyyppi).stream()
@@ -195,7 +195,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     @Async
-    @IgnorePerusteUpdateCheck
+    
     @Transactional(propagation = Propagation.NEVER)
     public void teeJulkaisu(long perusteId, String tiedote) {
 
@@ -215,7 +215,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     @Cacheable("yllapitovalues")
-    @IgnorePerusteUpdateCheck
     public String getYllapitoValue(String key) {
         Yllapito yllapito = yllapitoRepository.findByKey(key);
         return yllapito != null ? yllapito.getValue() : null;
@@ -265,7 +264,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void clearCache(String cache) {
         Objects.requireNonNull(cacheManager.getCache(cache)).clear();
     }
@@ -286,7 +284,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void cacheJulkisetPerusteNavigoinnit() {
         List<String> koulutustyypit = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         koulutustyypit.removeAll(List.of(KoulutusTyyppi.VALMA.toString(), KoulutusTyyppi.TELMA.toString()));
@@ -303,7 +300,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void cacheJulkaistutPerusteet() {
         List<String> koulutustyypit = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         koulutustyypit.removeAll(List.of(KoulutusTyyppi.VALMA.toString(), KoulutusTyyppi.TELMA.toString()));
@@ -319,7 +315,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void clearPerusteCaches(Long perusteId) {
         perusteRepository.findOne(perusteId).getKielet().forEach(kieli -> {
             cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI ).evictIfPresent(perusteId + kieli.toString());
