@@ -15,7 +15,7 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -145,7 +145,6 @@ public class VuosiluokkaKokonaisuusServiceImpl implements VuosiluokkaKokonaisuus
         mapper.map(dto, vk);
         kokonaisuusRepository.setRevisioKommentti(updateDto.getMetadataOrEmpty().getKommentti());
         kokonaisuusRepository.save(vk);
-        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
         muokkausTietoService.addMuokkaustieto(perusteId, vk, MuokkausTapahtuma.PAIVITYS);
         return mapper.map(vk, VuosiluokkaKokonaisuusDto.class);
     }

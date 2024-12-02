@@ -68,7 +68,7 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -238,7 +238,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public CompletableFuture<Void> teeJulkaisu(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findById(projektiId).orElse(null);
 
@@ -280,7 +279,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Async("julkaisuTaskExecutor")
     public CompletableFuture<Void> teeJulkaisuAsync(long projektiId, JulkaisuBaseDto julkaisuBaseDto) {
         log.debug("teeJulkaisu: {}", projektiId);
@@ -427,7 +425,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public Set<Long> generoiJulkaisuPdf(PerusteKaikkiDto perusteDto) {
 
         if ((!perusteDto.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !perusteDto.getTyyppi().equals(PerusteTyyppi.OPAS)) || OpasTyyppi.TIETOAPALVELUSTA.equals(perusteDto.getOpasTyyppi())) {
@@ -484,7 +481,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public JulkaisuBaseDto aktivoiJulkaisu(long projektiId, int revision) throws HttpMediaTypeNotSupportedException, MimeTypeException {
         Perusteprojekti perusteprojekti = perusteprojektiRepository.findById(projektiId).orElse(null);
 
@@ -598,14 +594,12 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public List<PerusteenJulkaisuData> getKaikkiPerusteet() {
         return julkaisutRepository.findAllJulkaistutPerusteetByVoimassaolo(DateTime.now().getMillis(), true, true, false, false).stream()
                 .map(this::convertToPerusteData).collect(Collectors.toList());
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
         JulkaistuPeruste viimeisinJulkaisu = julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(perusteId);
         if (viimeisinJulkaisu != null) {
@@ -682,7 +676,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void nollaaJulkaisuTila(Long perusteId) {
         JulkaisuPerusteTila julkaisuPerusteTila = getOrCreateTila(perusteId);
         julkaisuPerusteTila.setJulkaisutila(JulkaisuTila.JULKAISEMATON);
@@ -702,7 +695,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public int seuraavaVapaaJulkaisuNumero(long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         List<JulkaistuPeruste> vanhatJulkaisut = julkaisutRepository.findAllByPeruste(peruste);
@@ -710,7 +702,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     @Transactional
     public void updateJulkaisu(Long perusteId, JulkaisuBaseDto julkaisuBaseDto) {
         try {
