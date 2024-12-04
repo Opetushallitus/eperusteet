@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
@@ -17,11 +18,10 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.Validointi;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,7 +50,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Slf4j
 @RestController
 @RequestMapping("/api/perusteprojektit")
-@Api("Perusteprojektit")
+@Tag(name = "Perusteprojektit")
 @InternalApi
 public class PerusteprojektiController {
 

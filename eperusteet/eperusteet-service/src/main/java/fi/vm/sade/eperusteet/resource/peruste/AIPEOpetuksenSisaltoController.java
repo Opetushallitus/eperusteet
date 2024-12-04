@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiBaseDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
@@ -12,10 +13,8 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-import io.swagger.annotations.Api;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -34,7 +35,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/api/perusteet/{perusteId}/aipeopetus")
-@Api(value = "Aipeopetuksensisalto")
+@Tag(name = "Aipeopetuksensisalto")
 @InternalApi
 public class AIPEOpetuksenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(AIPEOpetuksenSisaltoController.class);

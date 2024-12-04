@@ -6,7 +6,9 @@ import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.mime.MimeTypeException;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/api/perusteet/{perusteId}")
-@Api("Liitetiedostot")
+@Tag(name = "Liitetiedostot")
 public class LiitetiedostoController {
 
     @Autowired

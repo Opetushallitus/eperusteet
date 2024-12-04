@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.resource.AbstractLockController;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @InternalApi
 @RequestMapping(value = "/api/perusteet/{perusteId}/suoritustavat/{koodi}/rakenne/lukko")
-@Api("TutkinnonRakenneLock")
+@Tag(name = "TutkinnonRakenneLock")
 public class TutkinnonRakenneLockController extends AbstractLockController<TutkinnonRakenneLockContext> {
     @Autowired
     @LockCtx(TutkinnonRakenneLockContext.class)
