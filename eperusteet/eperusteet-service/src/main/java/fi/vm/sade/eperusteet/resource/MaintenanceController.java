@@ -1,12 +1,15 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.ParsitutAmmattitaitovaatimukset;
 import fi.vm.sade.eperusteet.dto.YllapitoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.config.InternalApi;
-import fi.vm.sade.eperusteet.service.*;
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
+import fi.vm.sade.eperusteet.service.AmosaaClient;
+import fi.vm.sade.eperusteet.service.MaintenanceService;
+import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -35,7 +38,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @RequestMapping(value = "/api/maintenance")
 @Profile("!test")
-@Api("Maintenance")
+@Tag(name = "Maintenance")
 public class MaintenanceController {
 
     @Autowired

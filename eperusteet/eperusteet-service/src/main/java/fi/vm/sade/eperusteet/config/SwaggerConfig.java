@@ -1,26 +1,11 @@
 package fi.vm.sade.eperusteet.config;
 
-import com.fasterxml.classmate.GenericType;
-import com.fasterxml.classmate.TypeResolver;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Predicate;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.ResponseEntity;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.schema.AlternateTypeRules;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-
-import static com.google.common.base.Predicates.not;
 
 @Configuration
 //@EnableSwagger2
@@ -55,4 +40,14 @@ public class SwaggerConfig {
 //                "http://ec.europa.eu/idabc/eupl",
 //                new ArrayList<>());
 //    }
+
+    @Bean
+    public OpenAPI springShopOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("ePerusteet rajapinta")
+                        .description("Spring MVC API based on the swagger 3.0 specification")
+                        .version("v3.0.0")
+                        .license(new License().name("EUPL 1.1").url("http://ec.europa.eu/idabc/eupl")));
+    }
 }
