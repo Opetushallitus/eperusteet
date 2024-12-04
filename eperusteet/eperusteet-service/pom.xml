@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.5</version>
+        <version>3.4.0</version>
         <relativePath/>
     </parent>
 
@@ -42,7 +42,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <schema.file>${project.basedir}/target/schema.ddl</schema.file>
         <spring.session.jdbc.version>2.4.3</spring.session.jdbc.version>
-        <springfox.version>2.7.0</springfox.version>
+<!--        <springfox.version>2.7.0</springfox.version>-->
+        <springdoc.version>2.7.0</springdoc.version>
         <surefire.version>3.2.2</surefire.version>
         <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
         <jacoco.version>0.8.12</jacoco.version>
@@ -89,20 +90,25 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.plugin</groupId>
-                    <artifactId>spring-plugin-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.plugin</groupId>
-                    <artifactId>spring-plugin-metadata</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.springfox</groupId>-->
+<!--            <artifactId>springfox-swagger2</artifactId>-->
+<!--            <version>${springfox.version}</version>-->
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.plugin</groupId>-->
+<!--                    <artifactId>spring-plugin-core</artifactId>-->
+<!--                </exclusion>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.springframework.plugin</groupId>-->
+<!--                    <artifactId>spring-plugin-metadata</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.plugin</groupId>
             <artifactId>spring-plugin-core</artifactId>
@@ -548,6 +554,12 @@
             <artifactId>expressly</artifactId>
             <version>5.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+
 
     </dependencies>
     <build>

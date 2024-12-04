@@ -1,12 +1,12 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.resource.AbstractLockService;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenContext;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @InternalApi
-@Api(value = "PerusopetusLaajaAlainenOsaaminenLukko")
+@Tag(name = "PerusopetusLaajaAlainenOsaaminenLukko")
 @RequestMapping("/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{osaaminenId}/lukko")
 public class LaajaalainenOsaaminenLockController extends AbstractLockService<LaajaalainenOsaaminenContext> {
     @Autowired
