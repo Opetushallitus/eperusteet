@@ -40,6 +40,7 @@ public class WebSecurityConfigurationDev {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/buildversion.txt").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api-docs").permitAll()
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/dokumentit/pdf/**").permitAll()
                         .anyRequest().authenticated())
