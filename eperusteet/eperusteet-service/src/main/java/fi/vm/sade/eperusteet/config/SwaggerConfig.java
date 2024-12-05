@@ -48,6 +48,6 @@ public class SwaggerConfig {
                         .title("ePerusteet rajapinta")
                         .description("Spring MVC API based on the swagger 3.0 specification")
                         .version("v3.0.0")
-                        .license(new License().name("EUPL 1.1").url("http://ec.europa.eu/idabc/eupl")));
+                        .license(new License().name("EUPL 1.1").url("https://interoperable-europe.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl")));
     }
 }

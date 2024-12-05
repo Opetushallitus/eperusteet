@@ -21,6 +21,8 @@ import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.Validointi;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,7 +71,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/perusteHaku", method = GET)
     @ResponseBody
-    public Page<PerusteprojektiKevytDto> getAllPerusteprojektitKevyt(PerusteprojektiQueryDto pquery) {
+    public Page<PerusteprojektiKevytDto> getAllPerusteprojektitKevyt(@Parameter(hidden = true) PerusteprojektiQueryDto pquery) {
         PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
         return page;

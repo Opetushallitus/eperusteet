@@ -19,7 +19,7 @@ sync_localisations:
 # Generoi openapi-kuvauksen
 gen_openapi:
 	@cd eperusteet/eperusteet-service/ \
-		&& mvn clean compile -P generate-openapi \
+		&& mvn verify -DskipTests -Pspringdoc -Dspring-boot.run.profiles=default,dev \
 		&& cp target/openapi/eperusteet.spec.json ../../generated
 		
 # Generoi julkinen openapikuvaus		
