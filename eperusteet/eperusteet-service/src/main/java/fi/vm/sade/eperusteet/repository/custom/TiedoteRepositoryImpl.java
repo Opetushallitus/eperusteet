@@ -1,21 +1,39 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
-import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti;
+import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.Peruste_;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti_;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
+import fi.vm.sade.eperusteet.domain.Tiedote;
+import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
+import fi.vm.sade.eperusteet.domain.Tiedote_;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.SetJoin;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +51,6 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
         TypedQuery<Tuple> query = getQuery(page, tquery);
         query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
         query.setMaxResults(page.getPageSize());
-
-        log.debug(query.unwrap(Query.class).getQueryString());
 
         List<Tiedote> result = query.getResultList().stream()
                 .map(t -> t.get(0, Tiedote.class))

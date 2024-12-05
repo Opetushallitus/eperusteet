@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -27,7 +27,7 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @Setter
     @Getter
     @Audited(targetAuditMode = NOT_AUDITED)
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private Koodi koodi;
 
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
