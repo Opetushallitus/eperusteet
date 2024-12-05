@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@InternalApi
-@RequestMapping(value = {
-        LukiokurssiLockController.BASE + "/lukko",
-})
+//@RestController
+//@InternalApi
+//@RequestMapping(value = {
+//        LukiokurssiLockController.BASE + "/lukko",
+//})
 public class LukiokurssiLockController extends AbstractLockController<KurssiLockContext> {
     public static final String BASE = "/api/perusteet/{perusteId}/lukiokoulutus/kurssit/{kurssiId}";
 

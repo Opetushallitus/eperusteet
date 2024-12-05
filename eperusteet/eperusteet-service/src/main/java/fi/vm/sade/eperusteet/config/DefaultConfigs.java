@@ -10,6 +10,7 @@ import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +33,9 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import javax.sql.DataSource;
+import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Profile("!test")
@@ -99,12 +102,22 @@ public class DefaultConfigs {
 //        return new HibernateInterceptor();
 //    }
 
+//    @Bean
+//    public ResourceBundleMessageSource messageSource() {
+//        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+//        messageSource.setDefaultEncoding("UTF-8");
+//        messageSource.setBasename("messages");
+//        return messageSource;
+//    }
+
     @Bean
-    public ResourceBundleMessageSource messageSource() {
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setBasename("messages");
-        return messageSource;
+    public MessageSource messageSource() {
+        return new ResourceBundleMessageSource() {
+            @Override
+            protected MessageFormat resolveCode(String code, Locale locale) {
+                return null; // Disable message resolution
+            }
+        };
     }
 
     @Bean

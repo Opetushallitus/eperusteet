@@ -86,7 +86,7 @@ public class OpasController {
     @Parameters({
             @Parameter(name = "sivukoko", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
     })
-    public Page<PerusteprojektiKevytDto> getAllOppaatKevyt(PerusteprojektiQueryDto pquery) {
+    public Page<PerusteprojektiKevytDto> getAllOppaatKevyt(@Parameter(hidden = true) PerusteprojektiQueryDto pquery) {
         pquery.setTyyppi(Arrays.asList(PerusteTyyppi.OPAS));
         PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         Page<PerusteprojektiKevytDto> page = service.findProjektiBy(p, pquery);
