@@ -137,10 +137,9 @@ public class PerusteprojektiController {
     @ResponseBody
     public TilaUpdateStatus updatePerusteprojektiTila(
             @PathVariable("id") final long id,
-            @PathVariable("tila") final String tila,
-            @RequestBody TiedoteDto tiedoteDto
+            @PathVariable("tila") final String tila
     ) {
-        return service.updateTila(id, ProjektiTila.of(tila), tiedoteDto);
+        return service.updateTila(id, ProjektiTila.of(tila), null);
     }
 
     @RequestMapping(value = "/{id}/projekti/tila/{tila}", method = POST)

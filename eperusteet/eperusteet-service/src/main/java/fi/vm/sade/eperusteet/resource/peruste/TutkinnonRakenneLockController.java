@@ -40,14 +40,14 @@ public class TutkinnonRakenneLockController extends AbstractLockService<Tutkinno
 
 
     @RequestMapping(method = GET)
-    public ResponseEntity<LukkoDto> checkLockPerusopetusOppiaine(
+    public ResponseEntity<LukkoDto> checkLockTutkinnonRakenne(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("koodi") final String koodi) {
         return super.checkLock(TutkinnonRakenneLockContext.of(perusteId, Suoritustapakoodi.of(koodi)));
     }
 
     @RequestMapping(method = POST)
-    public ResponseEntity<LukkoDto> lockPerusopetusOppiaine(
+    public ResponseEntity<LukkoDto> lockTutkinnonRakenne(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("koodi") final String koodi,
             @RequestHeader(value = "If-Match", required = false) String eTag) {
@@ -56,7 +56,7 @@ public class TutkinnonRakenneLockController extends AbstractLockService<Tutkinno
 
     @RequestMapping(method = DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unlockPerusopetusOppiaine(
+    public void unlockTutkinnonRakenne(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("koodi") final String koodi) {
         super.unlock(TutkinnonRakenneLockContext.of(perusteId, Suoritustapakoodi.of(koodi)));

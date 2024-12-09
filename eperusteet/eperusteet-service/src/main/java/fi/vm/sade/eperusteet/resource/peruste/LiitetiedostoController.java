@@ -139,7 +139,7 @@ public class LiitetiedostoController {
             //HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-        getLiite(perusteId, fileName, etag, "image", /*request,*/ response);
+        getLiite(perusteId, fileName, etag,  response);
     }
 
     @RequestMapping(value = "/liitteet/{fileName}", method = RequestMethod.GET)
@@ -148,8 +148,6 @@ public class LiitetiedostoController {
             @PathVariable("perusteId") Long perusteId,
             @PathVariable("fileName") String fileName,
             @RequestHeader(value = "If-None-Match", required = false) String etag,
-            String topLevelMediaType,
-            //HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));
