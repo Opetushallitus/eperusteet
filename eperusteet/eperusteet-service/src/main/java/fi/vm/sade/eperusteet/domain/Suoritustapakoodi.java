@@ -1,6 +1,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import fi.vm.sade.eperusteet.dto.util.JsonSerializableEnum;
 
 public enum Suoritustapakoodi {
 
@@ -37,5 +39,10 @@ public enum Suoritustapakoodi {
             }
         }
         throw new IllegalArgumentException(koodi + " ei ole kelvollinen suoritustapakoodi");
+    }
+
+    @JsonValue
+    public String value() {
+        return name();
     }
 }

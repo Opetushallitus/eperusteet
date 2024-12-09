@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoPageDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.KoodistoPagedService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,8 +49,7 @@ public class KoodistoController {
     public ResponseEntity<Page<KoodistoKoodiDto>> kaikkiSivutettuna(
             @PathVariable("koodisto") final String koodisto,
             @RequestParam(value = "haku", required = false)  final String haku,
-            KoodistoPageDto koodistoPageDto) {
-
+            @Schema(hidden = true) KoodistoPageDto koodistoPageDto) {
         return new ResponseEntity<>(koodistoPagedService.getAllPaged(koodisto, haku, koodistoPageDto), HttpStatus.OK);
     }
 

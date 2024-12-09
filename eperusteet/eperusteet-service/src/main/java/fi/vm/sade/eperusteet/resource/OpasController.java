@@ -70,9 +70,9 @@ public class OpasController {
             @Parameter(name = "sivu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
             @Parameter(name = "sivukoko", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
             @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
-            @Parameter(name = "kieli", schema = @Schema(implementation = String.class, defaultValue = "fi"), in = ParameterIn.QUERY, description = "oppaan nimen kieli"),
+            @Parameter(name = "kieli", schema = @Schema(implementation = String.class, defaultValue = "fi"), array = @ArraySchema(schema = @Schema(type = "string")), in = ParameterIn.QUERY, description = "oppaan nimen kieli"),
             @Parameter(name = "muokattu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY, description = "muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC)"),
-            @Parameter(name = "koulutustyyppi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, array=@ArraySchema(schema = @Schema()), description = "koulutustyyppi (koodistokoodi)"),
+            @Parameter(name = "koulutustyyppi", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "koulutustyyppi (koodistokoodi)"),
             @Parameter(name = "tuleva", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös tulevat perusteet"),
             @Parameter(name = "voimassaolo", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös voimassaolevat perusteet"),
     })

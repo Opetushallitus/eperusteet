@@ -28,12 +28,12 @@ public class ReferenceableEntityConverter extends BidirectionalConverter<Referen
         if (destinationType.getRawType().isAnnotationPresent(Inheritance.class)) {
             // Perintähierarkioiden tapauksessa getReference() aiheuttaa ongelmia mappauksen kanssa
             // (viitteen luokka on perintähierarkian isäluokka eikä "oikea" luokka)
-            ReferenceableEntity e = em.find(destinationType.getRawType(), Long.valueOf(source.getId()));
+            ReferenceableEntity e = em.find(destinationType.getRawType(), Long.valueOf(source.toString()));
             if (e == null) {
                 throw new IllegalArgumentException("Virheellinen viite " + source);
             }
         }
-        return em.getReference(destinationType.getRawType(), Long.valueOf(source.getId()));
+        return em.getReference(destinationType.getRawType(), Long.valueOf(source.toString()));
     }
 
     @Override
