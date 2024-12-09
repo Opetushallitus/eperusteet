@@ -3,18 +3,18 @@ package fi.vm.sade.eperusteet.domain;
 import java.io.Serializable;
 import java.util.*;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderColumn;
+import jakarta.persistence.Table;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
@@ -60,8 +60,8 @@ public class OsaamistasonKriteeri implements Serializable {
     @RelatesToPeruste
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "arvioinninkohde_osaamistasonkriteeri",
-        joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id", updatable = false, nullable = false),
-        inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id", nullable = false, updatable = false))
+        joinColumns = @JoinColumn(name = "osaamistasonkriteerit_id", nullable = false),
+        inverseJoinColumns = @JoinColumn(name = "arvioinninkohde_id", nullable = false))
     private Set<ArvioinninKohde> arvioinninKohteet = new HashSet<>();
 
     public OsaamistasonKriteeri() {

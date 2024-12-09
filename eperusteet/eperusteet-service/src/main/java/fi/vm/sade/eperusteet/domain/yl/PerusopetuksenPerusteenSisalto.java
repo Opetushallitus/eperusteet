@@ -9,8 +9,8 @@ import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,8 +43,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @OneToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 25)
     @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_oppiaine",
-            inverseJoinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false, updatable = false),
-            joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
+            inverseJoinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false),
+            joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false))
     private Set<Oppiaine> oppiaineet = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)

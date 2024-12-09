@@ -1,13 +1,10 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenMuutostietoDto;
-import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
 import fi.vm.sade.eperusteet.config.InternalApi;
+import fi.vm.sade.eperusteet.dto.MuokkaustietoKayttajallaDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteenMuutostietoDto;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
-import io.swagger.annotations.Api;
-import java.util.Date;
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/muokkaustieto")
 @InternalApi
-@Api("Muokkaustieto")
+@Tag(name = "Muokkaustieto")
 public class PerusteenMuokkaustietoController {
 
     @Autowired

@@ -26,8 +26,8 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Assert;
@@ -109,7 +109,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Perusteprojekti pp = new Perusteprojekti();
         pp.setNimi("projekti");
         pp.setDiaarinumero(new Diaarinumero("OPH-12345-1234"));
-        pp = perusteprojektiRepository.save(pp);
 
         Peruste p = TestUtils.teePeruste();
         p.setPerusteprojekti(pp);
@@ -123,6 +122,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         s.getPerusteet().add(p);
         p.setKoulutukset(Sets.newHashSet(koulutus));
 
+        pp.setPeruste(p);
+        perusteprojektiRepository.save(pp);
         peruste = repo.save(p);
 
         p = TestUtils.teePeruste();
@@ -143,6 +144,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         repo.save(p);
 
         manager.commit(transaction);
+
         lockService.lock(TutkinnonRakenneLockContext.of(peruste.getId(), Suoritustapakoodi.OPS));
     }
 
@@ -241,6 +243,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         RakenneModuuliDto updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, rakenne);
 
         lockService.lock(ctx);
+
         updatedTutkinnonRakenne = perusteService.updateTutkinnonRakenne(peruste.getId(), Suoritustapakoodi.OPS, updatedTutkinnonRakenne);
         assertEquals(new Reference(v1.getId()), ((RakenneOsaDto) updatedTutkinnonRakenne.getOsat().get(0)).getTutkinnonOsaViite());
 
@@ -252,9 +255,9 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testGetByDiaari() {
-
         Peruste p = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSTUTKINTO, null, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         p.setDiaarinumero(new Diaarinumero(TestUtils.validiDiaarinumero()));
+
         perusteService.update(p.getId(), mapper.map(p, PerusteDto.class));
         p.asetaTila(PerusteTila.VALMIS);
 
@@ -264,7 +267,6 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
         PerusteInfoDto haettu = perusteService.getByDiaari(new Diaarinumero("ei_loydy"));
         Assert.assertNull(haettu);
-
     }
 
     @Value("${fi.vm.sade.eperusteet.tutkinnonrakenne.maksimisyvyys}")
@@ -299,8 +301,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
     public void testFindByTekstikappaleenTutkinnonosa() {
-
         Long ekaId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_111"));
         Long tokaId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_111"));
         Long kolmasId = lisaaPerusteTekstikappaleKoodilla(Arrays.asList("koodi_111", "koodi_222"));
@@ -410,7 +412,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
     private Long lisaaPerusteTekstikappaleKoodilla(List<String> koodiUrit) {
         Peruste peruste = new Peruste();
         peruste.asetaTila(PerusteTila.VALMIS);
-        em.persist(peruste);
+//        em.persist(peruste);
+        repo.save(peruste);
         Long perusteId = peruste.getId();
 
         Suoritustapa suoritustapa = new Suoritustapa();

@@ -30,10 +30,10 @@ public class PerusteprojektiQueryDto {
     private boolean siirtyma;
     private boolean poistunut;
 
-    public void setTila(ProjektiTila tila) {
-        this.tila = new HashSet<>();
-        this.tila.add(tila);
-    }
+//    public void setTila(ProjektiTila tila) {
+//        this.tila = new HashSet<>();
+//        this.tila.add(tila);
+//    }
 
     public void setTila(Set<ProjektiTila> tila) {
         this.tila = tila;

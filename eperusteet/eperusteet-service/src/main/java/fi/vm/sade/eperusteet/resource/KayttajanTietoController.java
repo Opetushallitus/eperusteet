@@ -1,21 +1,23 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanProjektitiedotDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
-import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @RequestMapping("/api/kayttajatieto")
-@Api("Kayttajat")
+@Tag(name = "Kayttajat")
 @InternalApi
 public class KayttajanTietoController {
 

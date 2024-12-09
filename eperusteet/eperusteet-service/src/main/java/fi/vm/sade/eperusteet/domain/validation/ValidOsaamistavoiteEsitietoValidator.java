@@ -1,8 +1,8 @@
 package fi.vm.sade.eperusteet.domain.validation;
 
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.Osaamistavoite;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 public class ValidOsaamistavoiteEsitietoValidator implements ConstraintValidator<ValidOsaamistavoiteEsitieto, Osaamistavoite> {
 

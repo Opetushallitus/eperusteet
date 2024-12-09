@@ -1,35 +1,50 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
 import com.google.common.base.Supplier;
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.kayttaja.HenkiloTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
+import fi.vm.sade.eperusteet.dto.yl.VuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.repository.version.Revision;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.yl.*;
-import io.swagger.annotations.Api;
+import fi.vm.sade.eperusteet.service.yl.LaajaalainenOsaaminenService;
+import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
+import fi.vm.sade.eperusteet.service.yl.OppiaineService;
+import fi.vm.sade.eperusteet.service.yl.PerusopetuksenPerusteenSisaltoService;
+import fi.vm.sade.eperusteet.service.yl.VuosiluokkaKokonaisuusService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/api/perusteet/{perusteId}/perusopetus")
-@Api(value = "PerusopetuksenPerusteenSisalto")
+@Tag(name = "PerusopetuksenPerusteenSisalto")
 @InternalApi
 public class PerusopetuksenPerusteenSisaltoController {
 

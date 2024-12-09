@@ -22,22 +22,29 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 
 import fi.vm.sade.eperusteet.service.util.Validointi;
+import net.bytebuddy.implementation.bytecode.Throw;
+import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
+
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.*;
 
 @Transactional
 @DirtiesContext
@@ -182,15 +189,24 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
         }
     }
 
-    @Test
+    @Test(expected = Exception.class)
     @Rollback
     public void testEiSallitaSamaaTunnistetta() {
+        startNewTransaction();
+        setup();
+        startNewTransaction();
+        //h2 ei aseta constrainttia
+        em.createNativeQuery("ALTER TABLE tutkinnon_rakenne ADD CONSTRAINT tunnisteuniikki UNIQUE (tunniste)").executeUpdate();
         RakenneModuuliDto rakenneDto = getRakenneDto();
         rakenneDto.getOsat().add(RakenneOsaDto.of(uusiTutkinnonOsa()));
         rakenneDto.getOsat().add(RakenneOsaDto.of(uusiTutkinnonOsa()));
         final RakenneModuuliDto updated = update(rakenneDto);
+
         updated.getOsat().get(0).setTunniste(updated.getOsat().get(1).getTunniste());
-        assertThatThrownBy(() -> update(updated));
+
+        startNewTransaction();
+        update(updated);
+        endTransaction();
     }
 
     @Test
@@ -548,6 +564,9 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testTemporaryTutkintonimike_invalid_koodisto() {
+        startNewTransaction();
+        setup();
+        startNewTransaction();
 
         perusteService.updateTutkintonimikkeet(peruste.getId(), Arrays.asList(
                 TutkintonimikeKoodiDto.builder()
@@ -562,10 +581,13 @@ public class PerusteenRakenneIT extends AbstractIntegrationTest {
                         .tutkintonimike(KoodiDto.builder().uri("temporary_tutkintonimikkeetxxx_1111-1111").build())
                         .build())
         );
-        assertThatThrownBy(() -> update(rakenneDto))
-                .isInstanceOf(ConstraintViolationException.class)
-                .hasMessageContaining("koodilla-vaara-koodisto");
 
+        assertThatThrownBy(() -> {
+            startNewTransaction();
+            update(rakenneDto);
+            endTransaction();
+        }).hasRootCauseInstanceOf(ConstraintViolationException.class)
+        .hasStackTraceContaining("koodilla-vaara-koodisto");
     }
 
     @Test
