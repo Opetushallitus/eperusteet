@@ -1,11 +1,16 @@
 package fi.vm.sade.eperusteet.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Schema;
+import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+
+import java.util.Map;
 
 @Configuration
 //@EnableSwagger2
@@ -50,4 +55,28 @@ public class SwaggerConfig {
                         .version("v3.0.0")
                         .license(new License().name("EUPL 1.1").url("https://interoperable-europe.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl")));
     }
+
+//    @Bean
+//    public OpenApiCustomiser customOpenApi() {
+//        return openApi -> {
+//            Components components = openApi.getComponents();
+//            if (components != null && components.getSchemas() != null) {
+//                Map<String, Schema> schemas = components.getSchemas();
+//
+//                for (Schema<?> schema : schemas.values()) {
+//                    if (schema.getProperties() != null) {
+//                        schema.getProperties().forEach((propertyName, propertySchema) -> {
+//                            if (propertySchema instanceof Schema) {
+//                                Schema<?> property = (Schema<?>) propertySchema;
+//
+//                                if ("array".equals(property.getType())) {
+//                                    property.setUniqueItems(null);
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        };
+//    }
 }

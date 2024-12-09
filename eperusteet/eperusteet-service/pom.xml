@@ -45,7 +45,7 @@
 <!--        <springfox.version>2.7.0</springfox.version>-->
         <springdoc.version>2.7.0</springdoc.version>
         <surefire.version>3.2.2</surefire.version>
-        <swagger-maven-plugin-version>3.1.7</swagger-maven-plugin-version>
+        <swagger-maven-plugin-version>3.1.8</swagger-maven-plugin-version>
         <jacoco.version>0.8.12</jacoco.version>
     </properties>
     <dependencies>
@@ -94,7 +94,13 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc.version}</version>
         </dependency>
-<!--        <dependency>-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-common</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
+        <!--        <dependency>-->
 <!--            <groupId>io.springfox</groupId>-->
 <!--            <artifactId>springfox-swagger2</artifactId>-->
 <!--            <version>${springfox.version}</version>-->
@@ -984,7 +990,7 @@
                         </executions>
                         <configuration>
                             <apiDocsUrl>http://localhost:8080/eperusteet-service/api-docs</apiDocsUrl>
-                            <outputFileName>eperusteet.json</outputFileName>
+                            <outputFileName>eperusteet.spec.json</outputFileName>
                             <outputDir>${project.build.directory}/openapi</outputDir>
                         </configuration>
                     </plugin>
