@@ -461,6 +461,7 @@ public class ValidatorPeruste implements Validator {
 
             for (TutkinnonOsaViite tov : st.getTutkinnonOsat()) {
                 TutkinnonOsa tosa = tov.getTutkinnonOsa();
+                TutkinnonOsaDto tosaDto = mapper.map(tosa, TutkinnonOsaDto.class);
                 Map<String, String> virheellisetKielet = new HashMap<>();
                 tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-ammattitaidon-osoittamistavat",
                         tosa.getAmmattitaidonOsoittamistavat(), vaaditutKielet, virheellisetKielet);
@@ -468,7 +469,7 @@ public class ValidatorPeruste implements Validator {
                         tosa.getAmmattitaitovaatimukset(), vaaditutKielet, virheellisetKielet);
                 tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-kuvaus", tosa.getKuvaus(),
                         vaaditutKielet, virheellisetKielet);
-                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", tosa.getNimi(),
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", TekstiPalanen.of(tosaDto.getNimi().getTekstit()),
                         vaaditutKielet, virheellisetKielet, true);
 
                 for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
