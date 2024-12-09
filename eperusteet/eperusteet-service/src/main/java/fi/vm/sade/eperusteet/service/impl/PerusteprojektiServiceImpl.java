@@ -649,6 +649,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         // Dokumentit generoidaan automaattisesti julkaisun yhteydessä
+        // FIXME: updaten kautta ei enää julkaista mistään?
         if (tila == ProjektiTila.JULKAISTU && projekti.getTila() == ProjektiTila.VALMIS) {
             setPerusteTila(projekti.getPeruste(), PerusteTila.VALMIS);
 

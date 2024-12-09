@@ -1,6 +1,8 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.Arrays;
 import java.util.List;
 

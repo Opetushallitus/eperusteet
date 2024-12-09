@@ -45,8 +45,8 @@ public class OsaamismerkkiController {
             @Parameter(name = "sivu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
             @Parameter(name = "sivukoko", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
             @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
-            @Parameter(name = "tila", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, array=@ArraySchema(schema = @Schema())),
-            @Parameter(name = "koodit", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY, array=@ArraySchema(schema = @Schema())),
+            @Parameter(name = "tila", array = @ArraySchema(schema = @Schema(type = "string")), in = ParameterIn.QUERY),
+            @Parameter(name = "koodit", array = @ArraySchema(schema = @Schema(type = "number")), in = ParameterIn.QUERY),
             @Parameter(name = "kategoria", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
             @Parameter(name = "voimassa", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
             @Parameter(name = "tuleva", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
@@ -62,7 +62,7 @@ public class OsaamismerkkiController {
     @Parameters({
             @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
             @Parameter(name = "kategoria", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
-            @Parameter(name = "koodit", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY, array=@ArraySchema(schema = @Schema())),
+            @Parameter(name = "koodit", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "number"))),
             @Parameter(name = "poistunut", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
             @Parameter(name = "kieli", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY)
     })
