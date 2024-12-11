@@ -1,26 +1,22 @@
 package fi.vm.sade.eperusteet.config;
 
 import com.fasterxml.jackson.databind.type.SimpleType;
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.media.Schema;
-import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.PropertyCustomizer;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.ResolvableType;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Configuration
 //@EnableSwagger2
-@Profile("!test")
+//@Profile("!test")
 public class SwaggerConfig {
 
 //    @Bean
@@ -75,4 +71,30 @@ public class SwaggerConfig {
             return schema;
         };
     }
+
+    @Bean
+    public GroupedOpenApi externalOpenApi() {
+        return GroupedOpenApi.builder()
+                .group("external")
+                .packagesToScan("fi.vm.sade.eperusteet.resource.julkinen")
+                .pathsToMatch("/api/external/**")
+                .build();
+    }
+
+//    @Bean
+//    public OpenApiCustomiser customOpenApi() {
+//        return openApi -> {
+//            // Define the base path of the controller to keep visible
+//            String visibleControllerBasePath = "/api/external";
+//
+//            // Filter paths to only include the ones that match the desired controller
+//            openApi.setPaths(openApi.getPaths().entrySet().stream()
+//                    .filter(entry -> entry.getKey().startsWith(visibleControllerBasePath))
+//                    .collect(
+//                            Paths::new,
+//                            (paths, entry) -> paths.addPathItem(entry.getKey(), entry.getValue()),
+//                            HashMap::putAll
+//                    ));
+//        };
+//    }
 }

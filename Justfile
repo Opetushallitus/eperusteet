@@ -19,13 +19,13 @@ sync_localisations:
 # Generoi openapi-kuvauksen
 gen_openapi:
 	@cd eperusteet/eperusteet-service/ \
-		&& mvn verify -DskipTests -Pspringdoc -Dspring-boot.run.profiles=default,dev \
+		&& mvn verify -Pspringdoc \
 		&& cp target/openapi/eperusteet.spec.json ../../generated
 		
 # Generoi julkinen openapikuvaus		
 gen_openapi_ext:
 	@cd eperusteet/eperusteet-service/ \
-		&& mvn clean compile -P generate-openapi-ext \
+		&& mvn verify -Pspringdoc-ext \
 		&& cp target/openapi/eperusteet-ext.spec.json ../../generated
 
 # Generoi lista puutteellisista osaamisaloista
