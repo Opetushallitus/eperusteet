@@ -57,10 +57,10 @@ public class DokumenttiController {
     @ResponseBody
     @Operation(summary = "luo dokumentti")
     public ResponseEntity<DokumenttiDto> createDokumentti(
-            @RequestParam("perusteId") final long perusteId,
-            @RequestParam(value = "kieli", defaultValue = "fi") final String kieli,
-            @RequestParam(value = "suoritustapakoodi") final String suoritustapakoodi,
-            @RequestParam(value = "version", defaultValue = "uusi") final String version
+            @RequestParam long perusteId,
+            @RequestParam String kieli,
+            @RequestParam String suoritustapakoodi,
+            @RequestParam(defaultValue = "uusi") final String version
     ) throws DokumenttiException {
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
@@ -128,9 +128,9 @@ public class DokumenttiController {
     @RequestMapping(value = "/peruste", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Long> getDokumenttiId(
-            @RequestParam final Long perusteId,
-            @RequestParam(defaultValue = "fi") final String kieli,
-            @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa
+            @RequestParam Long perusteId,
+            @RequestParam String kieli,
+            @RequestParam(defaultValue = "naytto") final String suoritustapa
     ) {
         Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
         Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s, GeneratorVersion.UUSI);
@@ -141,8 +141,8 @@ public class DokumenttiController {
     @ResponseBody
     public ResponseEntity<Long> getKVLiiteDokumenttiId(
             @RequestParam final Long perusteId,
-            @RequestParam(defaultValue = "fi") final String kieli,
-            @RequestParam(value = "suoritustapa", defaultValue = "naytto") final String suoritustapa
+            @RequestParam final String kieli,
+            @RequestParam(defaultValue = "naytto") final String suoritustapa
     ) {
         Suoritustapakoodi s = Suoritustapakoodi.of(suoritustapa);
         Long dokumenttiId = service.getDokumenttiId(perusteId, Kieli.of(kieli), s, GeneratorVersion.KVLIITE);
@@ -152,10 +152,10 @@ public class DokumenttiController {
     @RequestMapping(method = RequestMethod.GET, params = "perusteId")
     @ResponseBody
     public ResponseEntity<DokumenttiDto> getLatestDokumentti(
-            @RequestParam("perusteId") final Long perusteId,
-            @RequestParam(defaultValue = "fi") final String kieli,
-            @RequestParam("suoritustapa") final String suoritustapa,
-            @RequestParam(defaultValue = "") final String version
+            @RequestParam final Long perusteId,
+            @RequestParam final String kieli,
+            @RequestParam final String suoritustapa,
+            @RequestParam final String version
     ) {
         try {
             Kieli kielikoodi = Kieli.of(kieli);
@@ -185,8 +185,8 @@ public class DokumenttiController {
     @RequestMapping(value = "/julkaistu", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<DokumenttiDto> getJulkaistuDokumentti(
-            @RequestParam() final Long perusteId,
-            @RequestParam() final String kieli,
+            @RequestParam final Long perusteId,
+            @RequestParam final String kieli,
             @RequestParam(required = false) final Integer revision
     ) {
         return ResponseEntity.ok(service.getJulkaistuDokumentti(perusteId, Kieli.of(kieli), revision));
