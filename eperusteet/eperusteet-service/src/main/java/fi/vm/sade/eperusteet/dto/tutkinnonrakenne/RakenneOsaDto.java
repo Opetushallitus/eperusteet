@@ -20,7 +20,7 @@ public class RakenneOsaDto extends AbstractRakenneOsaDto {
     @Override
     public String validationIdentifier() {
         return tutkinnonOsaViite != null
-                ? tutkinnonOsaViite.getId()
+                ? tutkinnonOsaViite.toString()
                 : "";
     }
 

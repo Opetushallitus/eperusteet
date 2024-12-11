@@ -5,13 +5,8 @@ import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -27,12 +22,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping(value = "/api/perusteet", produces = "application/json;charset=UTF-8")
-@Api(value = "Julkaisut")
+@Tag(name = "Julkaisut")
 @Description("Perusteiden julkaisut")
 public class JulkaisuController {
 
@@ -59,7 +58,7 @@ public class JulkaisuController {
 
     @RequestMapping(method = GET, value = "/julkaisut")
     @ResponseBody
-    @ApiOperation(value = "julkaistujen perusteiden haku")
+    @Operation(summary = "julkaistujen perusteiden haku")
     public ResponseEntity<Page<PerusteenJulkaisuData>> getKoulutustyyppienJulkaisut(
             @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyyppi,
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,

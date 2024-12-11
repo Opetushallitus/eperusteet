@@ -12,22 +12,21 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import fi.vm.sade.eperusteet.repository.OsaamismerkkiRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,8 +44,6 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
         TypedQuery<Tuple> query = getQuery(oquery);
         query.setFirstResult(Long.valueOf(page.getOffset()).intValue());
         query.setMaxResults(page.getPageSize());
-
-        log.debug(query.unwrap(Query.class).getQueryString());
 
         List<Osaamismerkki> result = query.getResultList().stream()
                 .map(t -> t.get(0, Osaamismerkki.class))
