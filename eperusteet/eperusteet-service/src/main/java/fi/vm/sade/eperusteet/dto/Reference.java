@@ -32,8 +32,12 @@ public class Reference {
         this.id = id;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @JsonValue
-    public Object getId() {
+    public Object getJsonValue() {
         return id;
     }
 

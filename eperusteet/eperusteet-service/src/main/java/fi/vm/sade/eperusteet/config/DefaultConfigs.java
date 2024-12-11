@@ -7,6 +7,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.validation.ValidatorFactory;
 import org.flywaydb.core.Flyway;
 import org.hibernate.cfg.AvailableSettings;
+import org.hibernate.id.enhanced.SingleNamingStrategy;
 import org.hibernate.jpa.HibernatePersistenceProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.EnableCaching;
@@ -139,9 +140,8 @@ public class DefaultConfigs {
         props.put("org.hibernate.envers.revision_listener", "fi.vm.sade.eperusteet.service.impl.AuditRevisionListener");
         props.put("hibernate.jdbc.batch_size", 20);
         props.put("hibernate.jdbc.fetch_size", 20);
-        props.put(AvailableSettings.ID_DB_STRUCTURE_NAMING_STRATEGY, "legacy");
+        props.put(AvailableSettings.ID_DB_STRUCTURE_NAMING_STRATEGY, SingleNamingStrategy.STRATEGY_NAME);
 //        props.put("hibernate.ejb.interceptor", hibernateInterceptor());
-        props.put("hibernate.id.new_generator_mappings", false);
         entityManagerFactory.setJpaPropertyMap(props);
 //        entityManagerFactory.setMappingResources("hibernate-typedefs.hbm.xml");
         return entityManagerFactory;
