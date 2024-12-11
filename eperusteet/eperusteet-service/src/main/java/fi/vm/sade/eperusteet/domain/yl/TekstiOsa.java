@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.io.Serializable;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;

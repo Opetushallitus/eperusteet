@@ -18,7 +18,7 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenMuokkaustietoRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
@@ -84,13 +84,11 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma) {
         addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), null);
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void addMuokkaustieto(Long perusteId, HistoriaTapahtuma historiaTapahtuma, MuokkausTapahtuma muokkausTapahtuma, Set<PerusteenMuokkaustietoLisaparametrit> lisaparametrit) {
         addMuokkaustieto(perusteId, historiaTapahtuma, muokkausTapahtuma, historiaTapahtuma.getNavigationType(), null, lisaparametrit);
     }

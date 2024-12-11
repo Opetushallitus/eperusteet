@@ -275,38 +275,6 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
         this.checkLaajaOppiaine(luotuOppiaine.getId());
     }
 
-
-    @Test
-    @Ignore("oppiaineRepository.getRevisions(oaId) ei palauta revisioita testeissä")
-    @Rollback
-    public void testOppiaineidenPalautus() {
-
-        final Pair<Lops2019OppiaineDto, Long> pair = this.createOppiaine();
-        final Lops2019OppiaineDto luotuOppiaine = pair.getFirst();
-        this.createPlainOppiaine();
-
-        // Tarkistetaan lähtörakenne
-        this.checkLaajaOppiaine(luotuOppiaine.getId());
-
-        // Poistetaan oppimäärä
-        List<Lops2019OppiaineDto> oppiaineet = lops2019Service.getOppiaineet(projektiHelper.getPerusteId());
-        final Optional<Lops2019OppiaineDto> oppiaineOptional = oppiaineet.stream()
-                .filter(oa -> Objects.equals(oa.getId(), pair.getFirst().getId()))
-                .findAny();
-        assertThat(oppiaineOptional).isPresent();
-        final Lops2019OppiaineDto oppiaine = oppiaineOptional.get();
-        oppiaine.getOppimaarat().clear();
-        lops2019Service.updateOppiaine(projektiHelper.getPerusteId(), oppiaine);
-
-
-        // Yritetään palauttaa oppimäärä
-        lops2019Service.palautaSisaltoOppiaineet(projektiHelper.getPerusteId());
-
-        // Tarkistetaan loppurakenne
-        oppiaineet = lops2019Service.getOppiaineet(projektiHelper.getPerusteId());
-        this.checkLaajaOppiaine(oppiaineet.get(0).getId());
-    }
-
     private Lops2019Oppiaine mapOppiaine(Lops2019OppiaineKaikkiDto oa) {
         Lops2019Oppiaine result = mapper.map(oa, Lops2019Oppiaine.class);
         result.setOppimaarat(oa.getOppimaarat().stream()

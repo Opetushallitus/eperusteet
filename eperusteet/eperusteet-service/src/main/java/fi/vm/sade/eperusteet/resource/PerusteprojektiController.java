@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
@@ -17,11 +18,12 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiListausDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.TyoryhmaHenkiloDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import fi.vm.sade.eperusteet.service.util.Validointi;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,7 +53,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @Slf4j
 @RestController
 @RequestMapping("/api/perusteprojektit")
-@Api("Perusteprojektit")
+@Tag(name = "Perusteprojektit")
 @InternalApi
 public class PerusteprojektiController {
 
@@ -68,7 +71,7 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/perusteHaku", method = GET)
     @ResponseBody
-    public Page<PerusteprojektiKevytDto> getAllPerusteprojektitKevyt(PerusteprojektiQueryDto pquery) {
+    public Page<PerusteprojektiKevytDto> getAllPerusteprojektitKevyt(@Parameter(hidden = true) PerusteprojektiQueryDto pquery) {
         PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 20));
         Page<PerusteprojektiKevytDto> page = service.findBy(p, pquery);
         return page;
@@ -134,10 +137,9 @@ public class PerusteprojektiController {
     @ResponseBody
     public TilaUpdateStatus updatePerusteprojektiTila(
             @PathVariable("id") final long id,
-            @PathVariable("tila") final String tila,
-            @RequestBody TiedoteDto tiedoteDto
+            @PathVariable("tila") final String tila
     ) {
-        return service.updateTila(id, ProjektiTila.of(tila), tiedoteDto);
+        return service.updateTila(id, ProjektiTila.of(tila), null);
     }
 
     @RequestMapping(value = "/{id}/projekti/tila/{tila}", method = POST)

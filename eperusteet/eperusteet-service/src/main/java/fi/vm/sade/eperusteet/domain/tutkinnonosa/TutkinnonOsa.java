@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -109,7 +109,7 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     @NotNull
     private TutkinnonOsaTyyppi tyyppi = TutkinnonOsaTyyppi.NORMAALI;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @Getter
     @JoinColumn(name = "alkuperainen_peruste_id")
     private Peruste alkuperainenPeruste;
@@ -139,7 +139,6 @@ public class TutkinnonOsa extends PerusteenOsa implements Serializable {
     public void setTavoitteet(TekstiPalanen tavoitteet) {
         this.tavoitteet = tavoitteet;
     }
-
 
     public void setAmmattitaitovaatimukset(TekstiPalanen ammattitaitovaatimukset) {
         this.ammattitaitovaatimukset = ammattitaitovaatimukset;

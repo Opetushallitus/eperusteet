@@ -7,6 +7,8 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
+
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -57,8 +59,8 @@ public class PerusteenAikatauluServiceIT extends AbstractIntegrationTest {
     @Test
     public void test_modifyAikatauluja() {
 
-        Date date1 = new Date();
-        Date date2 = new Date(1000000l);
+        Timestamp date1 = new Timestamp(new Date().getTime());
+        Timestamp date2 = new Timestamp(1000000l);
 
         perusteAikatauluService.save(peruste.getId(), Arrays.asList(
                 PerusteAikatauluDto.builder().tapahtuma(AikatauluTapahtuma.JULKAISU).tapahtumapaiva(date1).build(),

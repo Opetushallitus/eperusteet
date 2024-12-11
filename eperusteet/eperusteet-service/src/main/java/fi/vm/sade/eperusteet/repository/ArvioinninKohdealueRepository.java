@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ArvioinninKohdealueRepository extends JpaWithVersioningRepository<ArvioinninKohdealue, Long> {
-    @Query("SELECT COUNT(ak) FROM ArvioinninKohdealue ak WHERE ak.koodi != null")
+    @Query("SELECT COUNT(ak) FROM ArvioinninKohdealue ak WHERE ak.koodi is not null")
     long koodillisetCount();
 }

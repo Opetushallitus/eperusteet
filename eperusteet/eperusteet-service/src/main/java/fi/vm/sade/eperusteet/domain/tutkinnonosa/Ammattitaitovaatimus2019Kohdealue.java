@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.*;
 
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;

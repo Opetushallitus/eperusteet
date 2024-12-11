@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fi.vm.sade.eperusteet.dto.Reference;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
+@Schema(name = "PerusteenOsaViiteDto")
 public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
 
     private Long id;
@@ -44,6 +46,7 @@ public class PerusteenOsaViiteDto<R extends PerusteenOsaDto> {
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
+    @Schema(name = "PuuPerusteenOsaDto")
     public static class Puu<R extends PerusteenOsaDto, L extends Puu<R, L>> extends PerusteenOsaViiteDto<R> {
         private List<L> lapset;
     }
