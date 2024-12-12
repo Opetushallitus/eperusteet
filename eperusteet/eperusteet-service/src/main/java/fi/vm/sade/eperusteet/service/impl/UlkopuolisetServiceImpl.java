@@ -25,9 +25,6 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
     @Value("${cas.service.organisaatio-service:''}")
     private String serviceUrl;
 
-    @Value("${cas.service.organisaatio-service.internal:${cas.service.organisaatio-service:''}}")
-    private String serviceInternalUrl;
-
     private static final String ORGANISAATIOT = "/rest/organisaatio/";
     private static final String ORGANISAATIORYHMAT = ORGANISAATIOT + "1.2.246.562.10.00000000001/ryhmat";
 
@@ -42,7 +39,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
 
         OphHttpClient client = restClientFactory.get(serviceUrl, true);
 
-        String url = serviceInternalUrl + ORGANISAATIOT + organisaatioOid;
+        String url = serviceUrl + ORGANISAATIOT + organisaatioOid;
 
         OphHttpRequest request = OphHttpRequest.Builder
                 .get(url)
@@ -68,7 +65,7 @@ public class UlkopuolisetServiceImpl implements UlkopuolisetService {
 
         OphHttpClient client = restClientFactory.get(serviceUrl, true);
 
-        String url = serviceInternalUrl + ORGANISAATIORYHMAT;
+        String url = serviceUrl + ORGANISAATIORYHMAT;
 
         OphHttpRequest request = OphHttpRequest.Builder
                 .get(url)

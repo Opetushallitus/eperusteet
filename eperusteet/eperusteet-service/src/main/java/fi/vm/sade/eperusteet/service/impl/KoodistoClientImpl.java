@@ -67,10 +67,7 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Value("${koodisto.service.url:https://virkailija.opintopolku.fi/koodisto-service}")
     private String koodistoServiceUrl;
-
-    @Value("${koodisto.service.internal.url:${koodisto.service.url:''}}")
-    private String koodistoServiceInternalUrl;
-
+    
     private static final String KOODISTO_API = "/rest/json/";
     private static final String YLARELAATIO = "relaatio/sisaltyy-ylakoodit/";
     private static final String ALARELAATIO = "relaatio/sisaltyy-alakoodit/";
@@ -116,7 +113,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Cacheable(value = "koodistot", key = "#p0 + #p1")
     public List<KoodistoKoodiDto> getAll(String koodisto, boolean onlyValidKoodis) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + KOODISTO_API + koodisto + "/koodi?onlyValidKoodis=" + onlyValidKoodis;
+        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi?onlyValidKoodis=" + onlyValidKoodis;
         try {
             ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
             List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
@@ -142,7 +139,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             return null;
         }
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "?koodistoVersio=" + versio.toString() : "");
+        String url = koodistoServiceUrl + KOODISTO_API + koodistoUri + "/koodi/" + koodiUri + (versio != null ? "?koodistoVersio=" + versio.toString() : "");
         ResponseEntity<KoodistoKoodiDto> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto.class);
         return response.getBody();
     }
@@ -167,7 +164,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Cacheable(value = "koodistot", key="'alarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getAlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + KOODISTO_API + ALARELAATIO + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + ALARELAATIO + koodi;
         ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
         return koodistoDtot;
@@ -176,7 +173,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public KoodistoKoodiLaajaDto getAllByVersio(String koodi, String versio) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + CODEELEMENT + "/" + koodi + "/" + versio;
+        String url = koodistoServiceUrl + CODEELEMENT + "/" + koodi + "/" + versio;
         ResponseEntity<KoodistoKoodiLaajaDto> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiLaajaDto.class);
         return response.getBody();
     }
@@ -184,7 +181,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public KoodistoKoodiDto getLatest(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + LATEST + koodi;
+        String url = koodistoServiceUrl + LATEST + koodi;
         ResponseEntity<KoodistoKoodiDto> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto.class);
         return response.getBody();
     }
@@ -193,7 +190,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Cacheable(value = "koodistot", key="'ylarelaatio:'+#p0")
     public List<KoodistoKoodiDto> getYlarelaatio(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + KOODISTO_API + YLARELAATIO + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + YLARELAATIO + koodi;
         ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
         return koodistoDtot;
@@ -203,7 +200,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Cacheable(value = "koodistot", key="'rinnasteiset:'+#p0")
     public List<KoodistoKoodiDto> getRinnasteiset(String koodi) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceInternalUrl + KOODISTO_API + RINNASTEINEN + koodi;
+        String url = koodistoServiceUrl + KOODISTO_API + RINNASTEINEN + koodi;
         ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
         List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
         return koodistoDtot;
@@ -239,7 +236,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     public KoodistoKoodiDto addKoodi(KoodistoKoodiDto koodi) {
         OphHttpClient client = restClientFactory.get(koodistoServiceUrl, true);
 
-        String url = koodistoServiceInternalUrl
+        String url = koodistoServiceUrl
                 + CODEELEMENT + "/"
                 + koodi.getKoodisto().getKoodistoUri();
 
@@ -391,7 +388,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
 
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceInternalUrl)
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
                 .path(ADD_CODE_ELEMENT_RELATION)
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
@@ -414,7 +411,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
 
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceInternalUrl)
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
                 .path(ADD_CODE_ELEMENT_RELATIONS).build();
 
         KoodiRelaatioMassaDto dto = KoodiRelaatioMassaDto.builder()
@@ -437,7 +434,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
 
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceInternalUrl)
+        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
                 .path(GET_CODES_WITH_URI)
                 .buildAndExpand(parentKoodi);
 
@@ -448,7 +445,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             throw new BusinessRuleViolationException("koodistoa " + parentKoodi + " ei loydy.");
         }
 
-        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceInternalUrl)
+        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
                 .path(GET_CODES_WITH_URI_AND_VERSION)
                 .buildAndExpand(parentKoodi, koodistoDto.getLatestKoodistoVersio().getVersio());
         KoodistoSuhteillaDto koodistoSuhteillaDto = ophClientHelper.get(koodistoServiceUrl, uri.toString(), KoodistoSuhteillaDto.class);
@@ -460,7 +457,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             return;
         }
 
-        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceInternalUrl)
+        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
                 .path(ADD_CODE_RELATION)
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
