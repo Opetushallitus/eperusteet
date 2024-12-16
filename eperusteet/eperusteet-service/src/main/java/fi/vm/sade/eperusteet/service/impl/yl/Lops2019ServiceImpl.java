@@ -381,7 +381,6 @@ public class Lops2019ServiceImpl implements Lops2019Service {
         final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, oppiaineId);
         final Lops2019OppiaineKaikkiDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineKaikkiDto.class);
 
-        // FIXME: Miksi?
         // Haetaan manuaalisesti oppimäärät ja moduulit
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineKaikkiDto.class));
         oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));

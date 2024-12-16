@@ -43,7 +43,6 @@
 
     <tx:annotation-driven order="100"/>
     <aop:aspectj-autoproxy  />
-    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
@@ -80,15 +79,9 @@
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.internal.DefaultAuditStrategy"/>
                 <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
                 <entry key="jakarta.persistence.validation.factory" value-ref="validator"/>
-<!--                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />-->
                 <entry key="hibernate.id.db_structure_naming_strategy" value="single"/>
             </map>
         </property>
-<!--        <property name="mappingResources">-->
-<!--            <list>-->
-<!--                <value>typedefs-pg.xml</value>-->
-<!--            </list>-->
-<!--        </property>-->
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

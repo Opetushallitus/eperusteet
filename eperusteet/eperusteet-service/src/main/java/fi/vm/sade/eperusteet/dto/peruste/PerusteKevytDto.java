@@ -30,6 +30,5 @@ public class PerusteKevytDto {
     private Reference perusteprojekti;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-//    @Schema(type = "array")
     private Set<SuoritustapaDto> suoritustavat;
 }
