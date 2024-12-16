@@ -42,7 +42,7 @@ import java.util.Map;
 @EnableCaching
 @EnableTransactionManagement
 @EnableMethodSecurity(securedEnabled = true)
-@EnableAspectJAutoProxy // (proxyTargetClass = true)
+@EnableAspectJAutoProxy
 @EnableJpaRepositories(basePackages = "fi.vm.sade.eperusteet.repository", repositoryFactoryBeanClass = JpaWithVersioningRepositoryFactoryBean.class)
 @PropertySource(
         ignoreResourceNotFound = true, value={

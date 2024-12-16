@@ -49,16 +49,6 @@ public class ArvioinninKohdealue implements Serializable {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Koodi koodi;
 
-    /// TODO: rikkoo testin fi.vm.sade.eperusteet.service.AuditedEntityTestIT#testTutkinnonOsaRevisions
-//    @Getter
-//    @NotAudited
-//    @RelatesToPeruste
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "arviointi_arvioinninkohdealue",
-//            inverseJoinColumns = @JoinColumn(name = "arviointi_id"),
-//            joinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
-//    private Set<Arviointi> arvioinnit = new HashSet<>();
-
     public ArvioinninKohdealue() {
     }
 

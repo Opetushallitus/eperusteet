@@ -75,7 +75,6 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
         <property name="persistenceProviderClass" value="org.hibernate.jpa.HibernatePersistenceProvider"/>
-<!--        <property name="entityManagerInterface" value="jakarta.persistence.EntityManager"/>-->
         <property name="jpaPropertyMap">
             <map>
                 <entry key="hibernate.hbm2ddl.auto" value="create"/>
@@ -84,14 +83,11 @@
                 <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
                 <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
-<!--                <entry key="jakarta.persistence.validation.factory" value-ref="validator"/>-->
-<!--                <entry key="hibernate.session_factory.interceptor" value-ref="hibernateInterceptor" />-->
                 <entry key="hibernate.id.db_structure_naming_strategy" value="single"/>
             </map>
         </property>
         <property name="mappingResources">
             <list>
-<!--                <value>typedefs-h2.xml</value>-->
                 <value>orm-h2.xml</value>
             </list>
         </property>

@@ -38,7 +38,6 @@ public class Liite implements Serializable {
     private String mime;
 
     @Getter
-    //@NotNull
     @Size(max = 1024)
     private String nimi;
 
