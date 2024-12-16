@@ -18,8 +18,6 @@ import org.hibernate.type.SqlTypes;
 @Entity
 @Immutable
 @Table(name = "julkaistu_peruste_data")
-//@TypeDef(name = "jsonb", defaultForType = JsonBType.class, typeClass = JsonBType.class)
-//@Convert(attributeName = "data", converter = JsonBType.class)
 public class JulkaistuPerusteData {
 
     @Id

@@ -258,8 +258,8 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         Peruste p = perusteService.luoPerusteRunko(KoulutusTyyppi.PERUSTUTKINTO, null, LaajuusYksikko.OPINTOVIIKKO, PerusteTyyppi.NORMAALI);
         p.setDiaarinumero(new Diaarinumero(TestUtils.validiDiaarinumero()));
 
-        perusteService.update(p.getId(), mapper.map(p, PerusteDto.class));
         p.asetaTila(PerusteTila.VALMIS);
+        perusteService.update(p.getId(), mapper.map(p, PerusteDto.class));
 
         // FIXME Flush repo
 //        PerusteInfoDto haettu = perusteService.getByDiaari(p.getDiaarinumero());

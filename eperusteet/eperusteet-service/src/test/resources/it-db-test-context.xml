@@ -41,7 +41,6 @@
     <context:component-scan base-package="fi.vm.sade.eperusteet.repository.custom"/>
     <tx:annotation-driven order="100"/>
     <aop:aspectj-autoproxy  />
-    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
@@ -78,15 +77,8 @@
                 <entry key="hibernate.cache.use_second_level_cache" value="true"/>
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.DefaultAuditStrategy"/>
-<!--                <entry key="jakarta.persistence.validation.factory" value-ref="validator" />-->
-<!--                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />-->
             </map>
         </property>
-<!--        <property name="mappingResources">-->
-<!--            <list>-->
-<!--                <value>typedefs-pg.xml</value>-->
-<!--            </list>-->
-<!--        </property>-->
     </bean>
 
     <bean id="flyway"
