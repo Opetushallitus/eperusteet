@@ -11,7 +11,8 @@ import fi.vm.sade.eperusteet.dto.maarays.MaaraysQueryDto;
 import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.MaaraysService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
@@ -42,7 +42,7 @@ import java.util.UUID;
 @InternalApi
 @RestController
 @RequestMapping(value = "/api/maaraykset")
-@Api("Maaraykset")
+@Tag(name = "Maaraykset")
 public class MaaraysController {
 
     @Autowired

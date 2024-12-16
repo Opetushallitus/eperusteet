@@ -3,7 +3,7 @@ package fi.vm.sade.eperusteet.resource;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.TietoaPalvelustaDto;
 import fi.vm.sade.eperusteet.service.JulkinenService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/julkinen")
-@Api(value = "julkinen")
+@Tag(name = "julkinen")
 public class JulkinenController {
 
     @Autowired

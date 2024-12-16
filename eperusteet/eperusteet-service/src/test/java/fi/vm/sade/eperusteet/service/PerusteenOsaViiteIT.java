@@ -10,9 +10,10 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import java.util.ArrayList;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -102,10 +103,8 @@ public class PerusteenOsaViiteIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testRemoveSisaltoOK() {
-        PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         service.removeSisalto(perusteId, lapsenlapsiId);
         em.flush();
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         assertNotEquals(null, repo.findOne(juuriId));
         assertNotEquals(null, repo.findOne(lapsiId));
         assertNotEquals(null, em.find(TekstiKappale.class, tekstikappaleId));

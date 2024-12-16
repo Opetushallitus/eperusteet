@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -95,8 +96,8 @@ public class LokalisoituTekstiDto {
     }
 
     @JsonValue
-    public Map<String, Object> asMap() {
-        HashMap<String, Object> map = new HashMap<>();
+    public Map<String, String> asMap() {
+        HashMap<String, String> map = new HashMap<>();
         if (id != null) {
             map.put("_id", id.toString());
         }

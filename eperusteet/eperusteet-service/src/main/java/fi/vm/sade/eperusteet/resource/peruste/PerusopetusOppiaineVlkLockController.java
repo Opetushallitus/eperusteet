@@ -1,13 +1,13 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
 import fi.vm.sade.eperusteet.resource.AbstractLockService;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.yl.OppiaineLockContext;
 import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @InternalApi
-@Api(value = "PerusopetusOppiaineVlkLukko")
+@Tag(name = "PerusopetusOppiaineVlkLukko")
 @RequestMapping("/api/perusteet/{perusteId}/perusopetus/oppiaineet/{oppiaineId}/vuosiluokkakokonaisuudet/{kokonaisuusId}/lukko")
 public class PerusopetusOppiaineVlkLockController extends AbstractLockService<OppiaineLockContext> {
 

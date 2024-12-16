@@ -25,7 +25,7 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.internal.LockManager;
@@ -41,7 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -197,7 +197,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
 
         current.mergeState(updated);
         current = perusteenOsaRepo.save(current);
-        notifyUpdate(current);
         mapper.map(current, perusteenOsaDto);
         return perusteenOsaDto;
     }
@@ -364,24 +363,7 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         osaAlueRepository.save(osaAlueEntity);
 
         aiheutaUusiTutkinnonOsaViiteRevisio(viiteId);
-        notifyUpdate(viite.getTutkinnonOsa());
         return mapper.map(osaAlueEntity, OsaAlueKokonaanDto.class);
-    }
-
-    private void notifyUpdate(PerusteenOsa osa) {
-         // Varmistetaan että tutkinnon osan muokkaus muuttaa valmiiden perusteiden viimeksi muokattu -päivämäärää (ja aiheuttaa uuden version).
-        if (osa.getTila() == PerusteTila.VALMIS) {
-            Set<Long> perusteIds;
-            if ( osa instanceof TutkinnonOsa ) {
-                perusteIds = perusteet.findByTutkinnonosaId(osa.getId(), PerusteTila.VALMIS);
-            } else {
-                final List<Long> roots = perusteenOsaViiteRepository.findRootsByPerusteenOsaId(osa.getId());
-                perusteIds = roots.isEmpty() ? Collections.<Long>emptySet() : perusteet.findBySisaltoRoots(roots, PerusteTila.VALMIS);
-            }
-            for (Long perusteId : perusteIds) {
-                eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, perusteId));
-            }
-        }
     }
 
     private List<AmmattitaitovaatimuksenKohdealue> connectAmmattitaitovaatimusListToOsaamistavoite(Osaamistavoite tavoite) {
@@ -546,7 +528,6 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
         }
         Osaamistavoite osaamistavoiteUusi = mapper.map(osaamistavoite, Osaamistavoite.class);
         osaamistavoiteEntity.mergeState(osaamistavoiteUusi);
-        notifyUpdate(perusteenOsaRepo.findById(id).orElse(null));
         return mapper.map(osaamistavoiteEntity, OsaamistavoiteLaajaDto.class);
     }
 
