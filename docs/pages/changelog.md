@@ -9,6 +9,7 @@ permalink: /changelog
 
   Päivämäärä | Muutokset
   ---------- | ------------ 
+  18.12.2024 | ePerusteet API - lisätty perusteen muutosmääräyksen voimaantulon alkupäivä (muutosmaarayksenVoimassaoloAlkaa)
   17.05.2024 | OPS-työkalu API - lisätty yksittäisen opetussuunnitelman haun rajapintaan sisältörakenteen tarkka haku
   26.02.2024 | OPS-työkalu API - Lisätty opetussuunnitelman perusteen haku -rajapinta
   26.02.2024 | OPS-työkalu API - Lisätty koulutustyypit-hakuehto opetussuunnitelmen hakuun 
