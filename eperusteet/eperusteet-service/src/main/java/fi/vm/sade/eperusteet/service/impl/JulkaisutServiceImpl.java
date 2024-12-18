@@ -317,6 +317,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             kooditaValiaikaisetKoodit(peruste.getId());
             PerusteKaikkiDto sisalto = perusteService.getKaikkiSisalto(peruste.getId());
             sisalto.setViimeisinJulkaisuAika(Optional.of(julkaisuaika));
+            sisalto.setMuutosmaarayksenVoimassaoloAlkaa(selvitaMuutosmaarayksenVoimassaoloAlkaa(peruste, julkaisuBaseDto));
             ObjectNode perusteDataJson = objectMapper.valueToTree(sisalto);
 
             Set<Long> dokumentit = generoiJulkaisuPdf(sisalto);
@@ -327,7 +328,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setLuoja(username);
             julkaisu.setLuotu(julkaisuaika);
             julkaisu.setPeruste(peruste);
-            julkaisu.setMuutosmaaraysVoimaan(julkaisuBaseDto.getMuutosmaaraysVoimaan());
             julkaisu.setJulkinen(true);
 
             if (julkaisuBaseDto.getJulkinenTiedote() != null) {
@@ -365,6 +365,20 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         julkaisuPerusteTilaService.saveJulkaisuPerusteTila(julkaisuPerusteTila);
 
         return CompletableFuture.completedFuture(null);
+    }
+
+    private Date selvitaMuutosmaarayksenVoimassaoloAlkaa(Peruste peruste, JulkaisuBaseDto julkaisu) {
+        if (julkaisu.getMuutosmaarays() != null) {
+            return julkaisu.getMuutosmaarays().getVoimassaoloAlkaa();
+        }
+
+        return julkaisutRepository.findAllByPerusteOrderByRevisionDesc(peruste)
+                .stream()
+                .map(JulkaistuPeruste::getMuutosmaarays)
+                .filter(Objects::nonNull)
+                .map(Maarays::getVoimassaoloAlkaa)
+                .findFirst()
+                .orElse(null);
     }
 
     private void lisaaMaaraysKokoelmaan(JulkaisuBaseDto julkaisuBaseDto, Peruste peruste, JulkaistuPeruste julkaisu) {

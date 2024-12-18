@@ -52,6 +52,7 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     private List<MuutosmaaraysDto> muutosmaaraykset = new ArrayList<>();
 
     private String diaarinumero;
+    @ApiModelProperty("Perusteen alkuperäinen voimaantulon alkamispäivä.")
     private Date voimassaoloAlkaa;
 
     @ApiModelProperty("Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.")
