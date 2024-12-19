@@ -148,9 +148,7 @@ public class PerusteJulkisetTestIT extends AbstractIntegrationTest {
         perusteenOsaService.lock(taiteenalaDto.getId());
         taiteenalaDto = perusteenOsaService.update(taiteenalaDto);
 
-        assertThatThrownBy(() -> {
-            perusteService.getJulkaistuSisalto(perusteDto.getId(), false);
-        }).isInstanceOf(NotExistsException.class);
+        assertThat(perusteService.getJulkaistuSisalto(perusteDto.getId(), false)).isNotNull();
 
         PerusteKaikkiDto tpoPeruste = perusteService.getJulkaistuSisalto(perusteDto.getId(), true);
         assertThat(tpoPeruste.getTpoOpetuksenSisalto().getSisalto().getLapset()).hasSize(1);
