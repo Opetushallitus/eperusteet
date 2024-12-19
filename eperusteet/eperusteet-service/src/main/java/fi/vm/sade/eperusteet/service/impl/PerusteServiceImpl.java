@@ -868,21 +868,18 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
             condition = "#useCurrentData == false && #julkaisuRevisio == null",
             key = "#id"
     )
-    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean useCurrentData) {
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean nykyinendata) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
             throw new NotExistsException();
         }
 
-        JulkaistuPeruste julkaisu;
         PerusteKaikkiDto perusteKaikkiDto = null;
 
-        if (peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN) || (useCurrentData && peruste.getPerusteprojekti().isEsikatseltavissa())) {
-            perusteKaikkiDto = getKaikkiSisalto(id);
-        }
+        if (!nykyinendata) {
+            JulkaistuPeruste julkaisu;
 
-        if (!useCurrentData) {
             if (julkaisuRevisio != null) {
                 julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
             } else {
@@ -898,6 +895,10 @@ public class PerusteServiceImpl implements PerusteService, ApplicationListener<P
                     throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
                 }
             }
+        }
+
+        if (perusteKaikkiDto == null && (peruste.getTyyppi().equals(PerusteTyyppi.AMOSAA_YHTEINEN) || peruste.getPerusteprojekti().isEsikatseltavissa())) {
+            perusteKaikkiDto = getKaikkiSisalto(id);
         }
 
         if (perusteKaikkiDto == null) {

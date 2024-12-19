@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
+import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -15,6 +16,8 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
+import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
+import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractDockerIntegrationTest;
@@ -55,6 +58,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -80,6 +84,9 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Autowired
+    private PerusteprojektiRepository perusteprojektiRepository;
 
     @Autowired
     @Dto
@@ -113,10 +120,24 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     @Test
     public void testJulkaise() throws ExecutionException, InterruptedException {
         assertThat(getJulkaisut(peruste)).hasSize(0);
+
+        assertThatThrownBy(() -> {
+            perusteService.getJulkaistuSisalto(peruste.getId(), false);
+        }).isInstanceOf(NotExistsException.class);
+
+        projekti.setEsikatseltavissa(true);
+        perusteprojektiRepository.saveAndFlush(mapper.map(projekti, Perusteprojekti.class));
+        assertThat(perusteService.getJulkaistuSisalto(peruste.getId(), false)).isNotNull();
+
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
         assertThat(getJulkaisut(peruste)).hasSize(1);
         assertThat(perusteRepository.findOne(peruste.getId()).getGlobalVersion().getAikaleima()).isEqualTo(perusteRepository.findOne(peruste.getId()).getJulkaisut().get(0).getLuotu());
+
+        assertThatThrownBy(() -> {
+            perusteService.getJulkaistuSisalto(peruste.getId(), true);
+        }).isInstanceOf(NotExistsException.class);
+        assertThat(perusteService.getJulkaistuSisalto(peruste.getId(), false)).isNotNull();
     }
 
     @Test
