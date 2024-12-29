@@ -37,7 +37,7 @@
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <org.apache.tomcat.version>9.0.90</org.apache.tomcat.version>
+        <org.apache.tomcat.version>9.0.98</org.apache.tomcat.version>
         <pdfbox.version>2.0.29</pdfbox.version>
         <postgresql.version>42.5.5</postgresql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -449,12 +449,12 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.13</version>
+            <version>1.5.13</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.2.13</version>
+            <version>1.5.13</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade</groupId>
