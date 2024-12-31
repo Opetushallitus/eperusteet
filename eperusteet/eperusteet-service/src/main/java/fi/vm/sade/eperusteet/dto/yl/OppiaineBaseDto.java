@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,18 +26,10 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     private Optional<Reference> oppiaine;
     private Optional<Boolean> koosteinen;
     private Optional<Boolean> abstrakti;
-    protected Optional<LokalisoituTekstiDto> nimi;
+    protected LokalisoituTekstiDto nimi;
+    private KoodiDto koodi;
     private Optional<Long> jnro;
     private Date muokattu;
-
-    @JsonIgnore
-    public LokalisoituTekstiDto getNimiOrDefault(LokalisoituTekstiDto defaultNimi) {
-        if (nimi != null) {
-            return nimi.orElse(defaultNimi);
-        } else {
-            return defaultNimi;
-        }
-    }
 
     @JsonIgnore
     public Long getJnroOrDefault(Long defaultJnro) {
@@ -45,5 +38,11 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
         } else {
             return defaultJnro;
         }
+    }
+
+    public LokalisoituTekstiDto getNimi() {
+        return Optional.ofNullable(koodi)
+                .map(KoodiDto::getNimi)
+                .orElse(Optional.ofNullable(nimi).orElse(LokalisoituTekstiDto.of("")));
     }
 }

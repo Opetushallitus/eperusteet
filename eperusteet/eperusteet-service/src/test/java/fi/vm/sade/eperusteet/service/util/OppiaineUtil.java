@@ -69,7 +69,7 @@ public class OppiaineUtil {
 
     public static OppiaineDto oppaine(LokalisoituTekstiDto nimi, Long parentId) {
         OppiaineDto dto = new OppiaineDto();
-        dto.setNimi(Optional.of(nimi));
+        dto.setNimi(nimi);
         dto.setOppiaine(parentId == null ? Optional.empty() : Optional.of(new fi.vm.sade.eperusteet.dto.Reference(parentId.toString())));
 
         return dto;

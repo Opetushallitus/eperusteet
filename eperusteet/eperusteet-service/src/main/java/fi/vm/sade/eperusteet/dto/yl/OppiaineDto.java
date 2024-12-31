@@ -22,14 +22,5 @@ public class OppiaineDto extends OppiaineBaseUpdateDto {
     private Set<OppiaineSuppeaDto> oppimaarat;
     private Set<OpetuksenKohdealueDto> kohdealueet;
     private Set<OppiaineenVuosiluokkaKokonaisuusDto> vuosiluokkakokonaisuudet;
-    private KoodiDto koodi;
     private List<KevytTekstiKappaleDto> vapaatTekstit;
-
-    public Optional<LokalisoituTekstiDto> getNimi() {
-        if (super.getNimi() != null && super.getNimi().isPresent()) {
-            return super.getNimi();
-        }
-
-        return Optional.ofNullable(koodi).map(KoodiDto::getNimi);
-    }
 }

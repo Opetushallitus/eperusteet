@@ -153,7 +153,7 @@ public class PerusopetusPerusteNavigationIT extends AbstractIntegrationTest {
 
     private <T extends OppiaineBaseDto> T oppiaineBase(T baseOppiaine, String nimi, Long jnro, Kieli kieli) {
         if (nimi != null) {
-            baseOppiaine.setNimi(Optional.of(lt(nimi, kieli)));
+            baseOppiaine.setNimi(lt(nimi, kieli));
         }
         if (jnro != null) {
             baseOppiaine.setJnro(Optional.of(jnro));
