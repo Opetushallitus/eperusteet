@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +30,6 @@ public class OppiaineLaajaDto extends OppiaineBaseDto {
     private String koodiArvo;
 
     public PerusteRakenneOsa getPerusteenOsa() {
-        return new PerusteRakenneOsa("perusopetus_oppiaine", nimi.get());
+        return new PerusteRakenneOsa("perusopetus_oppiaine", getNimi());
     }
 }

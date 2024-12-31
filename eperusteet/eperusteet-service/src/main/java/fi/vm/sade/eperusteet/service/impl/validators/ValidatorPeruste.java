@@ -209,7 +209,7 @@ public class ValidatorPeruste implements Validator {
         OppiaineSuppeaDto oaDto = mapper.map(oa, OppiaineSuppeaDto.class);
 
         if (oa.getKoodiArvo() == null && oa.getKoodiUri() == null) {
-            validointi.virhe("peruste-validointi-oppiaine-koodi", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId()));
+            validointi.virhe("peruste-validointi-oppiaine-koodi", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimi(), oa.getId()));
         }
 
         if (oa.getTehtava() != null) {
@@ -279,11 +279,11 @@ public class ValidatorPeruste implements Validator {
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
             if (!sisaltoalueetIdt.containsAll(tavoitteidenSisaltoalueetIdt)) {
-                validointi.virhe("peruste-validointi-oppiaine-vlk-tavoite-sisaltoalueet", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId()));
+                validointi.virhe("peruste-validointi-oppiaine-vlk-tavoite-sisaltoalueet", NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimi(), oa.getId()));
             }
         }
 
-        virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimiOrDefault(null), oa.getId())));
+        virheellisetKielet.entrySet().forEach(entry -> validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oaDto.getNimi(), oa.getId())));
 
         if (oa.getOppimaarat() != null) {
             for (Oppiaine oppimaara : oa.getOppimaarat()) {

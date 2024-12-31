@@ -65,7 +65,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         vk = vkrepo.save(vk);
 
         OppiaineDto oppiaineDto = new OppiaineDto();
-        oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
+        oppiaineDto.setNimi(lt("Oppiaine"));
         oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
         oppiaineDto.setKoosteinen(Optional.of(false));
         oppiaineDto.setVapaatTekstit(List.of(KevytTekstiKappaleDto.of("nimi", "teksti"), KevytTekstiKappaleDto.of("nimi2", "teksti2")));
@@ -186,7 +186,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         vk = vkrepo.save(vk);
 
         OppiaineDto oppiaineDto = new OppiaineDto();
-        oppiaineDto.setNimi(Optional.of(lt("Oppiaine")));
+        oppiaineDto.setNimi(lt("Oppiaine"));
         oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
         oppiaineDto.setKoosteinen(Optional.of(true));
 
@@ -205,7 +205,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         assertEquals(0, oa1.getOppimaarat().size());
 
         OppiaineDto oppimaara = new OppiaineDto();
-        oppimaara.setNimi(olt("OppimaaranNimi"));
+        oppimaara.setNimi(lt("OppimaaranNimi"));
         oppimaara.setOppiaine(Optional.of(new Reference(oa1.getId())));
         vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
         vkDto.setTehtava(Optional.of(to("Tehtävä", "")));

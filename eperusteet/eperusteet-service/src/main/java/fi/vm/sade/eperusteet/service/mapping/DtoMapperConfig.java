@@ -108,6 +108,8 @@ import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
 import fi.vm.sade.eperusteet.dto.yl.LukioOppiaineUpdateDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
+import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseUpdateDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineKevytDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineLaajaDto;
@@ -673,32 +675,30 @@ public class DtoMapperConfig {
                 .byDefault()
                 .register();
 
+        factory.classMap(OppiaineBaseDto.class, Oppiaine.class)
+                .mapNulls(true)
+                .customize(OppiaineCustomMapper.create(koodistoClient))
+                .byDefault()
+                .register();
+
         factory.classMap(OppiaineDto.class, Oppiaine.class)
                 .mapNulls(true)
                 .fieldBToA("vuosiluokkakokonaisuudet", "vuosiluokkakokonaisuudet")
-                .customize(new CustomMapper<OppiaineDto, Oppiaine>() {
-                    @Override
-                    public void mapBtoA(Oppiaine oppiaine, OppiaineDto oppiaineDto, MappingContext context) {
-                        super.mapBtoA(oppiaine, oppiaineDto, context);
-                        if (oppiaine.getKoodiUri() != null) {
-                            oppiaineDto.setKoodi(koodistoClient.getKoodi(oppiaine.getKoodiUri().split("_")[0], oppiaine.getKoodiUri()));
-                        }
-                    }
+                .customize(OppiaineCustomMapper.create(koodistoClient))
+                .byDefault()
+                .register();
 
-                    @Override
-                    public void mapAtoB(OppiaineDto oppiaineDto, Oppiaine oppiaine, MappingContext context) {
-                        super.mapAtoB(oppiaineDto, oppiaine, context);
-                        if (oppiaineDto.getKoodi() != null) {
-                            oppiaine.setKoodiUri(oppiaineDto.getKoodi().getUri());
-                            oppiaine.setKoodiArvo(oppiaineDto.getKoodi().getArvo());
-                        }
-                    }
-                })
+        factory.classMap(OppiaineLaajaDto.class, Oppiaine.class)
+                .mapNulls(true)
+                .fieldBToA("vuosiluokkakokonaisuudet", "vuosiluokkakokonaisuudet")
+                .customize(OppiaineCustomMapper.create(koodistoClient))
                 .byDefault()
                 .register();
 
         factory.classMap(OppiaineSuppeaDto.class, Oppiaine.class)
-                .fieldBToA("muokattu", "muokattu")
+                .mapNulls(true)
+                .fieldBToA("vuosiluokkakokonaisuudet", "vuosiluokkakokonaisuudet")
+                .customize(OppiaineCustomMapper.create(koodistoClient))
                 .byDefault()
                 .register();
 

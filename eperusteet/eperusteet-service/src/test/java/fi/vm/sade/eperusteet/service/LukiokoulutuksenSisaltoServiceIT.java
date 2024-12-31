@@ -96,7 +96,7 @@ public class LukiokoulutuksenSisaltoServiceIT extends AbstractIntegrationTest {
 
         List<OppiaineDto> aineet = lukiokoulutuksenPerusteenSisaltoService.getOppiaineet(perusteId, OppiaineDto.class);
         assertEquals(1, aineet.size());
-        assertEquals("Finska", aineet.get(0).getNimi().get().get(SV));
+        assertEquals("Finska", aineet.get(0).getNimi().get(SV));
         assertEquals(2, aineet.get(0).getOppimaarat().size());
     }
 }
