@@ -37,24 +37,9 @@ public class JsonBType implements UserType, Serializable {
         return Objects.equals(x, y);
     }
 
-//    @Override
-//    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-//        String str = rs.getString(names[0]);
-//        if (str != null) {
-//            try {
-//                JsonNode node = mapper.readTree(str);
-//                return node;
-//            } catch (IOException e) {
-//                throw new BusinessRuleViolationException("datan-luku-epaonnistui");
-//            }
-//        }
-//        return JsonNodeFactory.instance.objectNode();
-//    }
-
     @Override
     public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         if (value != null) {
-//            String jsonStr = gson.toJson(value);
             try {
                 String s = mapper.writeValueAsString(value);
                 st.setObject(index, s, Types.OTHER);
