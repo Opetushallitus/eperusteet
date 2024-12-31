@@ -1,9 +1,12 @@
 package fi.vm.sade.eperusteet.config;
 
 import com.fasterxml.jackson.databind.type.SimpleType;
+import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Schema;
+import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -31,12 +34,25 @@ public class SwaggerConfig {
         return (schema, type) -> {
             Type javaType = type.getType();
             if (javaType instanceof SimpleType && ((SimpleType) javaType).isEnumType()) {
-                Class<?> enumClass = ((SimpleType)javaType).getRawClass();
+                Class<?> enumClass = ((SimpleType) javaType).getRawClass();
                 schema.setEnum(Arrays.stream(enumClass.getEnumConstants())
                         .map(enumConstant -> ((Enum<?>) enumConstant).name())
                         .collect(Collectors.toList()));
             }
             return schema;
+        };
+    }
+
+    @Bean
+    public ParameterCustomizer enumParameterCustomizer() {
+        return (parameter, methodParameter) -> {
+            Class<?> paramType = methodParameter.getParameterType();
+            if (paramType.isEnum()) {
+                parameter.getSchema().setEnum(Arrays.stream(paramType.getEnumConstants())
+                        .map(enumConstant -> ((Enum<?>) enumConstant).name())  // Ensures uppercase
+                        .collect(Collectors.toList()));
+            }
+            return parameter;
         };
     }
 

@@ -160,8 +160,6 @@ public class LiitetiedostoController {
             @PathVariable("perusteId") Long perusteId,
             @PathVariable("fileName") String fileName,
             @RequestHeader(value = "If-None-Match", required = false) String etag,
-            String topLevelMediaType,
-            //HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));
