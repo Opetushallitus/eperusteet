@@ -37,6 +37,8 @@ import fi.vm.sade.eperusteet.service.yl.OppiaineOpetuksenSisaltoTyyppi;
 import fi.vm.sade.eperusteet.service.yl.OppiaineService;
 import java.util.List;
 import java.util.Set;
+
+import io.swagger.v3.oas.annotations.Hidden;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/api/perusteet/{perusteId}/lukiokoulutus")
-@InternalApi
+@Hidden
 public class LukiokoulutuksenPerusteenSisaltoController {
     private static final Logger logger = LoggerFactory.getLogger(LukiokoulutuksenPerusteenSisaltoController.class);
 
@@ -150,7 +152,7 @@ public class LukiokoulutuksenPerusteenSisaltoController {
     }
 
     @RequestMapping(value = "/kurssit/{id}/versiot/{version}/palauta", method = POST)
-    public LukiokurssiTarkasteleDto revertKurssi(
+    public LukiokurssiTarkasteleDto revertLukioKurssi(
             @PathVariable("perusteId") final Long perusteId,
             @PathVariable("id") Long id,
             @PathVariable("version") Integer version) {

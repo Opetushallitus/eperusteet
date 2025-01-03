@@ -22,6 +22,8 @@
         <security:csrf disabled="true" />
     </security:http>
 
+    <bean id="mvcHandlerMappingIntrospector" class="org.springframework.web.servlet.handler.HandlerMappingIntrospector" />
+
     <!-- Configures a custom login filter bean -->
     <bean id="loginFilter" class="org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter">
         <property name="authenticationManager" ref="authenticationManager"/>

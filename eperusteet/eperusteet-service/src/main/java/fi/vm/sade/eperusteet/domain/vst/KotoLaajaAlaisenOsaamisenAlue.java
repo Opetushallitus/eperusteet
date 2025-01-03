@@ -12,11 +12,11 @@ import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "koto_laaja_alainen_osaaminen_alue")
@@ -26,7 +26,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class KotoLaajaAlaisenOsaamisenAlue extends AbstractAuditedReferenceableEntity {
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidKoodisto(koodisto = KoodistoUriArvo.LAAJAALAINENOSAAMINENKOTO2022)
     private Koodi koodi;

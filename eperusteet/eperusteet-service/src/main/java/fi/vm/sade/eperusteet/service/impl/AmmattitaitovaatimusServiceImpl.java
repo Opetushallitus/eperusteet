@@ -42,7 +42,7 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
@@ -311,7 +311,6 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
 
     @Override
     @Async
-    @IgnorePerusteUpdateCheck
     public void addAmmattitaitovaatimuskooditToKoodisto() {
         perusteRepository.findAmmattitaitovaatimusPerusteelliset(ProjektiTila.JULKAISTU,
                 PerusteTyyppi.NORMAALI, KoulutusTyyppi.ammatilliset(), Suoritustapakoodi.REFORMI)
@@ -322,7 +321,6 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public List<KoodiDto> addAmmattitaitovaatimusJaArvioinninkohteetKooditToKoodisto(Long perusteId) {
         List<KoodiDto> koodit =  Stream.concat(
                 addAmmattitaitovaatimuskooditToKoodisto(perusteId).stream(),
@@ -349,6 +347,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
                 .map(TutkinnonOsaViite::getTutkinnonOsa)
                 .filter(tutkinnonosa -> tutkinnonosa.getKoodi() != null && tutkinnonosa.getKoodi().getUri() != null)
                 .map(TutkinnonOsa::getOsaAlueet)
+                .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toMap(t -> t.getKoodi().getUri(), t -> t.getKaikkiKoodit().stream()
                         .map(Koodi::getUri)
@@ -496,7 +495,7 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
         return mapper.mapAsList(vaatimukset, Ammattitaitovaatimus2019Dto.class);
     }
 
-    @IgnorePerusteUpdateCheck
+    
     @Override
     public void lisaaAmmattitaitovaatimusTutkinnonosaKoodistoon(Date projektiPaivitysAika) {
 

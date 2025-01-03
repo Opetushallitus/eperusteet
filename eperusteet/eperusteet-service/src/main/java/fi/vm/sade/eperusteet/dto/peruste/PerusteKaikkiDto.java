@@ -16,14 +16,12 @@ import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukiokoulutuksenPerusteenSisaltoDto;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.util.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -89,7 +87,7 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     private DigitaalisenOsaamisenSisaltoDto digitaalinenOsaaminenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä.")
+    @Schema(description = "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä.")
     private Date muutosmaarayksenVoimassaoloAlkaa;
 
     @JsonIgnore

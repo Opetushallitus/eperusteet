@@ -12,19 +12,17 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-
-import io.swagger.annotations.ApiModelProperty;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -45,22 +43,22 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private BigDecimal laajuusMaksimi;
 
-    @ApiModelProperty("Yhteisen tutkinnon osan osa-alueet")
+    @Schema(description = "Yhteisen tutkinnon osan osa-alueet")
     private List<OsaAlueKaikkiDto> osaAlueet;
 
-    @ApiModelProperty("Ilmaisee onko kyseessä normaali vai yhteinen osa (uusi tai vanha)")
+    @Schema(description = "Ilmaisee onko kyseessä normaali vai yhteinen osa (uusi tai vanha)")
     private TutkinnonOsaTyyppi tyyppi;
     private ValmaTelmaSisaltoDto valmaTelmaSisalto;
 
-    @ApiModelProperty("Yleinen perusteen ulkopuolella käytetty arviointiasteikko. Käytetään kaikissa uusissa perusteissa.")
+    @Schema(description = "Yleinen perusteen ulkopuolella käytetty arviointiasteikko. Käytetään kaikissa uusissa perusteissa.")
     private GeneerinenArviointiasteikkoKaikkiDto geneerinenArviointiasteikko;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Tutkinnon osan lisätarkennukset")
+    @Schema(description = "Tutkinnon osan lisätarkennukset")
     private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Uusien reformin mukaisien perusteiden ammattitaitovaatimukset")
+    @Schema(description = "Uusien reformin mukaisien perusteiden ammattitaitovaatimukset")
     private Ammattitaitovaatimukset2019Dto ammattitaitovaatimukset2019;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -68,21 +66,21 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
 
     @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Vanhentunut rakenteeton tavoitteet. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
+    @Schema(description = "Vanhentunut rakenteeton tavoitteet. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
     private LokalisoituTekstiDto tavoitteet;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Tutkinnon osa -kohtainen arviointi")
+    @Schema(description = "Tutkinnon osa -kohtainen arviointi")
     private ArviointiDto arviointi;
 
     @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
+    @Schema(description = "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
     private LokalisoituTekstiDto ammattitaitovaatimukset;
 
     @Deprecated
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty("Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
+    @Schema(description = "Vanhentunut rakenteeton ammattitaitovaatimukset. Ei käytössä uusissa reformin mukaisissa tutkinnon osissa.")
     private List<AmmattitaitovaatimusKohdealueetDto> ammattitaitovaatimuksetLista;
 
     public LokalisoituTekstiDto getAmmattitaitovaatimukset() {

@@ -4,12 +4,13 @@ import fi.vm.sade.eperusteet.domain.AbstractReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -22,13 +23,13 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
 
     @Getter
     @Setter
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @NotNull
     @JoinColumn(nullable = false)
     private LaajaalainenOsaaminen laajaalainenOsaaminen;
 
     @RelatesToPeruste
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Getter
     @NotNull
     @JoinColumn(updatable = false, nullable = false)
@@ -36,7 +37,7 @@ public class VuosiluokkaKokonaisuudenLaajaalainenOsaaminen extends AbstractRefer
 
     @Getter
     @Setter
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml
     private TekstiPalanen kuvaus;
