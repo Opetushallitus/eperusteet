@@ -41,8 +41,7 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     }
 
     public LokalisoituTekstiDto getNimi() {
-        return Optional.ofNullable(koodi)
-                .map(KoodiDto::getNimi)
-                .orElse(Optional.ofNullable(nimi).orElse(LokalisoituTekstiDto.of("")));
+        return Optional.ofNullable(nimi)
+                .orElse(Optional.ofNullable(koodi).map(KoodiDto::getNimi).orElse(LokalisoituTekstiDto.of("")));
     }
 }
