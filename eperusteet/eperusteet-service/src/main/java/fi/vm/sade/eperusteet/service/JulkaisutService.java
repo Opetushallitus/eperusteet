@@ -1,8 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
-import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
-import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -32,6 +30,9 @@ public interface JulkaisutService {
 
     @PreAuthorize("hasPermission(#projektiId, 'perusteprojekti', 'TILANVAIHTO') or hasPermission(#projektiId, 'perusteprojekti', 'KORJAUS')")
     CompletableFuture<Void> teeJulkaisu(@P("projektiId") long projektiId, JulkaisuBaseDto julkaisuBaseDto);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'MUOKKAUS') or hasPermission(#perusteId, 'peruste', 'KORJAUS')")
+    void paivitaMaarayskokoelmaanPerusteenTiedot(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     JulkaisuTila viimeisinJulkaisuTila(@P("perusteId") Long perusteId);

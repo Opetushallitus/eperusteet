@@ -260,6 +260,8 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             perusteRepository.saveAndFlush(peruste);
             julkaisutRepository.saveAndFlush(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
+
+            julkaisutService.paivitaMaarayskokoelmaanPerusteenTiedot(perusteId);
             return true;
         });
     }
