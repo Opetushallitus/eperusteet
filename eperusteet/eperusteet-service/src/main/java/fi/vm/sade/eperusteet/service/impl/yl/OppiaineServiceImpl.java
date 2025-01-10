@@ -350,7 +350,6 @@ public class OppiaineServiceImpl implements OppiaineService {
                             lockService.unlock(vkctx);
                         }
                     }
-                    //"ominaisuus": vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
                 }
             }
         }

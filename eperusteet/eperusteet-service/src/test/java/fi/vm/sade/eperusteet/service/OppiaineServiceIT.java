@@ -160,6 +160,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         tavoiteDto.setArvioinninKuvaus(olt("arvioinnin kohde"));
         vkDto.getTavoitteet().add(tavoiteDto);
+        vkDto.getTavoitteet().add(OpetuksenTavoiteDto.builder().tavoite(olt("tavoite2")).build());
 
         lc = OppiaineLockContext.of(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS, perusteId, oa.getId(), vkDto.getId());
         startNewTransaction();
@@ -169,6 +170,7 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
 
         versionDto = perusteService.getPerusteVersion(perusteId);
         vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), new UpdateDto<>(vkDto));
+        assertEquals(vkDto.getTavoitteet().size(), 2);
         assertEquals(vkDto.getTavoitteet().get(0).getTavoite().get().get(Kieli.FI), "Tässäpä jokin kiva tavoite");
 
         List<TavoitteenArviointiDto> arvioinnit = new ArrayList<>(vkDto.getTavoitteet().get(0).getArvioinninkohteet()).stream()
@@ -189,31 +191,62 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
         assertEquals("vapaa teksti kentta", vkDto.getTavoitteet().get(0).getVapaaTeksti().get().get(Kieli.FI));
 
         vkDto.getSisaltoalueet().clear();
-        vkDto.getTavoitteet().clear();
-//        versionDto = perusteService.getPerusteVersion(perusteId);
+        vkDto.setTavoitteet(List.of(vkDto.getTavoitteet().get(0)));
 
         startNewTransaction();
         vkDto = service.updateOppiaineenVuosiluokkaKokonaisuus(perusteId, oa.getId(), new UpdateDto<>(vkDto));
-//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
-
-//        lc = OppiaineLockContext.of(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS, perusteId, oa.getId(), null);
-//        List<Revision> revs = service.getOppiaineRevisions(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
-
-//        startNewTransaction();
-//        lockService.lock(lc);
-
-//        startNewTransaction();
-//        oa = service.revertOppiaine(perusteId, oa.getId(), revs.get(2).getNumero(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        assertEquals(vkDto.getTavoitteet().size(), 1);
 
         startNewTransaction();
-//        versionDto = perusteService.getPerusteVersion(perusteId);
         service.deleteOppiaine(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
 
         endTransaction();
         final Long oppiaineId = oa.getId();
         Assertions.assertThatThrownBy(() -> service.getOppiaine(perusteId, oppiaineId, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS)).isInstanceOf(BusinessRuleViolationException.class);
-//        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
-//        endTransaction();
+    }
+
+    @Test
+    public void testLisaaJaPoistaVuosiluokkakokonaisuudenTavoite() {
+        startNewTransaction();
+        VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
+        vk = vkrepo.save(vk);
+
+        OppiaineDto oppiaineDto = new OppiaineDto();
+        oppiaineDto.setNimi(lt("Oppiaine"));
+        oppiaineDto.setTehtava(to("TehtävänOtsikko", "Tehtava"));
+        oppiaineDto.setKoosteinen(Optional.of(false));
+        oppiaineDto.setVapaatTekstit(List.of(KevytTekstiKappaleDto.of("nimi", "teksti"), KevytTekstiKappaleDto.of("nimi2", "teksti2")));
+
+        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setTehtava(Optional.of(to("Tehtävä", "")));
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+        vkDto.setVapaatTekstit(List.of(KevytTekstiKappaleDto.of("vkDtonimi", "teksti"), KevytTekstiKappaleDto.of("vkDtonimi2", "teksti2")));
+        vkDto.setTavoitteet(List.of(
+                OpetuksenTavoiteDto.builder().tavoite(olt("tavoite1")).build(),
+                OpetuksenTavoiteDto.builder().tavoite(olt("tavoite2")).build(),
+                OpetuksenTavoiteDto.builder().tavoite(olt("tavoite3")).build()));
+
+        oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+        OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+
+        startNewTransaction();
+
+        oa = service.getOppiaine(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        assertEquals(oa.getVuosiluokkakokonaisuudet().iterator().next().getTavoitteet().size(), 3);
+
+        OppiaineLockContext lc = new OppiaineLockContext();
+        lc.setTyyppi(OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        lc.setPerusteId(perusteId);
+        lc.setOppiaineId(oa.getId());
+        lockService.lock(lc);
+
+        startNewTransaction();
+
+        oa.getVuosiluokkakokonaisuudet().iterator().next().setTavoitteet(List.of(oa.getVuosiluokkakokonaisuudet().iterator().next().getTavoitteet().get(0)));
+        oa = service.updateOppiaine(perusteId, new UpdateDto<>(oa), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        assertEquals(oa.getVuosiluokkakokonaisuudet().iterator().next().getTavoitteet().size(), 1);
+
+        endTransaction();
     }
 
     @Test

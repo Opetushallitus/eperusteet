@@ -123,11 +123,11 @@ public class OpetuksenTavoite extends AbstractReferenceableEntity {
     @Getter
     @RelatesToPeruste
     @NotAudited
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_oppiaineen_vlkok_yl_opetuksen_tavoite",
             joinColumns = @JoinColumn(name = "tavoitteet_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "yl_oppiaineen_vlkok_id", nullable = false))
-    private Set<OppiaineenVuosiluokkaKokonaisuus> oppiaineenVuosiluokkaKokonaisuudet = new HashSet<>();
+    private OppiaineenVuosiluokkaKokonaisuus oppiaineenVuosiluokkaKokonaisuudet;
 
     @Getter
     @OrderColumn
