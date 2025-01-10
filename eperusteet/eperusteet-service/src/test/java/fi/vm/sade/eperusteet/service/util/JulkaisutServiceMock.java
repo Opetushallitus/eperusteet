@@ -43,6 +43,11 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
+    public void paivitaMaarayskokoelmaanPerusteenTiedot(long perusteId) {
+        
+    }
+
+    @Override
     public JulkaisuTila viimeisinJulkaisuTila(Long perusteId) {
         return null;
     }

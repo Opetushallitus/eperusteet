@@ -381,8 +381,11 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 .orElse(null);
     }
 
-    private void lisaaMaaraysKokoelmaan(JulkaisuBaseDto julkaisuBaseDto, Peruste peruste, JulkaistuPeruste julkaisu) {
-        MaaraysDto maarays = maaraysService.getPerusteenMaarays(peruste.getId());
+    @Override
+    @IgnorePerusteUpdateCheck
+    public void paivitaMaarayskokoelmaanPerusteenTiedot(long perusteId) {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+        MaaraysDto maarays = maaraysService.getPerusteenMaarays(perusteId);
         if (maarays != null) {
             maarays.setTila(MaaraysTila.JULKAISTU);
             maarays.setNimi(mapper.map(peruste.getNimi(), LokalisoituTekstiDto.class));
@@ -390,8 +393,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             maarays.setVoimassaoloAlkaa(peruste.getVoimassaoloAlkaa());
             maarays.setVoimassaoloLoppuu(peruste.getVoimassaoloLoppuu());
             maarays.setMaarayspvm(peruste.getPaatospvm());
-            maarays = maaraysService.updateMaarays(maarays);
+            maaraysService.updateMaarays(maarays);
         }
+    }
+
+    private void lisaaMaaraysKokoelmaan(JulkaisuBaseDto julkaisuBaseDto, Peruste peruste, JulkaistuPeruste julkaisu) {
+        paivitaMaarayskokoelmaanPerusteenTiedot(peruste.getId());
+        MaaraysDto maarays = maaraysService.getPerusteenMaarays(peruste.getId());
 
         if (julkaisuBaseDto.getMuutosmaarays() != null) {
             if (peruste.getJulkaisut().isEmpty() && maarays != null) {
