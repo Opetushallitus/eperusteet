@@ -50,9 +50,6 @@
 
     <tx:annotation-driven order="100"/>
     <aop:aspectj-autoproxy  />
-<!--    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>-->
-
-<!--    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>-->
 
     <bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
         <property name="scopes">

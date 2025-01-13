@@ -1,3 +1,0 @@
-com.fasterxml.jackson.databind.JsonNode : java.lang.Object
-org.springframework.http.ResponseEntity : java.util.Optional
-fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto : fi.vm.sade.eperusteet.service.util.HashMapStringString;
