@@ -63,6 +63,10 @@ public class LokalisoituTekstiDto {
         return tk.tekstit.getOrDefault(kieli, otherwise);
     }
 
+    public String getOrDefault(Kieli kieli, String otherwise) {
+        return getOrDefault(this, kieli, otherwise);
+    }
+
     public static LokalisoituTekstiDto of(Map<Kieli, String> tekstit) {
         if (tekstit == null) {
             return null;

@@ -56,7 +56,7 @@ public class NavigationNodeDto implements KoodillinenDto {
 
     public NavigationNodeDto addAll(Stream<NavigationNodeDto> nodes) {
         if (nodes != null) {
-            this.children.addAll(nodes.collect(Collectors.toList()));
+            this.children.addAll(nodes.toList());
         }
         return this;
     }
