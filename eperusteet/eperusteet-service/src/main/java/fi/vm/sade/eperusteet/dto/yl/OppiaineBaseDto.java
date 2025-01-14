@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -43,5 +44,13 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     public LokalisoituTekstiDto getNimi() {
         return Optional.ofNullable(nimi)
                 .orElse(Optional.ofNullable(koodi).map(KoodiDto::getNimi).orElse(LokalisoituTekstiDto.of("")));
+    }
+
+    public String getNimiOrDefault(String kieli, String defaultNimi) {
+        return getNimi().getOrDefault(Kieli.of(kieli), defaultNimi);
+    }
+
+    public String getNimiOrEmpty(String kieli) {
+        return getNimiOrDefault(kieli, "");
     }
 }

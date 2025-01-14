@@ -1,11 +1,9 @@
 package fi.vm.sade.eperusteet.service.impl.navigation;
 
 import com.google.common.collect.Sets;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -91,7 +89,7 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
     private NavigationNodeDto oppiaineet(Long perusteId, String kieli) {
         return NavigationNodeDto.of(NavigationType.perusopetusoppiaineet)
                 .addAll(sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class).stream()
-                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimi().get(Kieli.of(kieli))))
+                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
                         .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99L)))
                         .map(oppiaine ->
                         NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimi(), oppiaine.getId())
@@ -103,7 +101,7 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
         return Stream.concat(
                     Stream.of(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)),
                     oppimaarat.stream()
-                            .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimi().get(Kieli.of(kieli))))
+                            .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
                             .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
                             .map(oppimaara -> NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppimaara.getNimi(), oppimaara.getId()).meta("oppimaara", true)));
     }
