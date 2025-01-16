@@ -40,7 +40,7 @@ import java.util.Map;
 @ComponentScan(basePackages  = {"fi.vm.sade.eperusteet.utils"})
 @EnableAsync
 @EnableCaching
-@EnableTransactionManagement
+@EnableTransactionManagement(order = 0)
 @EnableMethodSecurity(securedEnabled = true)
 @EnableAspectJAutoProxy
 @EnableJpaRepositories(basePackages = "fi.vm.sade.eperusteet.repository", repositoryFactoryBeanClass = JpaWithVersioningRepositoryFactoryBean.class)
@@ -55,7 +55,7 @@ public class DefaultConfigs {
     private DataSource dataSource;
 
     @Bean
-    public TaskExecutor defaultExecutor() {
+    public TaskExecutor taskExecutor() {
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(10);
