@@ -1081,14 +1081,14 @@ public class PerusteServiceImpl implements PerusteService{
     }
 
     private void getLops2019KaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
-        lops2019Service.getOppiaineet(peruste.getId()).forEach(oppiaine -> {
+        perusteDto.getLops2019Sisalto().setOppiaineet(lops2019Service.getOppiaineet(peruste.getId()).stream().map(oppiaine -> {
             Lops2019OppiaineKaikkiDto oa = lops2019Service.getOppiaineKaikki(peruste.getId(), oppiaine.getId());
             List<Lops2019OppiaineKaikkiDto> oppimaarat = oa.getOppimaarat().stream()
                     .map(om -> lops2019Service.getOppiaineKaikki(peruste.getId(), om.getId()))
                     .collect(Collectors.toList());
             oa.setOppimaarat(oppimaarat);
-            perusteDto.getLops2019Sisalto().getOppiaineet().add(oa);
-        });
+            return oa;
+        }).toList());
     }
 
     private void updateLukioKaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
