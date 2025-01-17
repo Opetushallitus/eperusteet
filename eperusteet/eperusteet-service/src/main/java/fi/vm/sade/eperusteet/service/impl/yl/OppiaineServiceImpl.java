@@ -44,7 +44,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class OppiaineServiceImpl implements OppiaineService {
 
     @Autowired
@@ -83,7 +83,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     private static final Logger LOG = LoggerFactory.getLogger(OppiaineServiceImpl.class);
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public OppiaineDto addOppiaine(Long perusteId, OppiaineDto dto, OppiaineOpetuksenSisaltoTyyppi tyyppi) {
         AbstractOppiaineOpetuksenSisalto sisalto = tyyppi.getLockedByPerusteId(applicationContext, perusteId);
         if (sisalto != null) {
@@ -111,7 +111,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public OppiaineenVuosiluokkaKokonaisuusDto addOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId,
                                                                                    OppiaineenVuosiluokkaKokonaisuusDto dto) {
         PerusopetuksenPerusteenSisalto sisalto =  perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
@@ -134,7 +134,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteOppiaine(Long perusteId, Long oppiaineId, OppiaineOpetuksenSisaltoTyyppi tyyppi) {
         Oppiaine aine = oppiaineRepository.findOne(oppiaineId);
         AbstractOppiaineOpetuksenSisalto sisalto = tyyppi.getRepository(applicationContext).findByPerusteId(perusteId);
@@ -174,7 +174,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public void deleteOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, Long vuosiluokkaKokonaisuusId) {
         deleteOppiaineenVuosiluokkaKokonaisuus(perusteId, oppiaineId, vuosiluokkaKokonaisuusId, true);
     }
@@ -295,7 +295,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public <T extends OppiaineBaseUpdateDto> OppiaineDto updateOppiaine(Long perusteId, UpdateDto<T> updateDto,
                                                                         OppiaineOpetuksenSisaltoTyyppi tyyppi) {
         T dto = updateDto.getDto();
@@ -377,7 +377,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public OppiaineenVuosiluokkaKokonaisuusDto updateOppiaineenVuosiluokkaKokonaisuus(Long perusteId, Long oppiaineId, UpdateDto<OppiaineenVuosiluokkaKokonaisuusDto> updateDto) {
         PerusopetuksenPerusteenSisalto sisalto = perusOpetuksenSisaltoRepository.findByPerusteId(perusteId);
         OppiaineenVuosiluokkaKokonaisuusDto tmp = mapper.map(doUpdateOppiaineenVuosiluokkaKokonaisuus(sisalto, oppiaineId, updateDto.getDto(), true), OppiaineenVuosiluokkaKokonaisuusDto.class);
@@ -436,7 +436,7 @@ public class OppiaineServiceImpl implements OppiaineService {
     }
 
     @Override
-    @Transactional(readOnly = false)
+    @Transactional
     public OpetuksenKohdealueDto addKohdealue(Long perusteId, Long oppiaineId, OpetuksenKohdealueDto kohdealue) {
         Oppiaine aine = getAndLockOppiaine(perusteId, oppiaineId);
         OpetuksenKohdealue kohde = null;

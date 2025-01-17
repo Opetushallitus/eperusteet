@@ -163,6 +163,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     private TekstiPalanen kielikasvatus;
 
     @Getter
+    @Setter
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",

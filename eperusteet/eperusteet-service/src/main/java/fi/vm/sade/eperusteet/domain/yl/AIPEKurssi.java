@@ -55,6 +55,7 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     private Integer jarjestys;
 
     @Getter
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @NotAudited
     @JoinTable(name = "aipeoppiaine_aipekurssi",

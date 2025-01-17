@@ -496,7 +496,6 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         Lops2019OppiaineDto oppimaara1Dto = new Lops2019OppiaineDto();
         oppimaara1Dto.setNimi(LokalisoituTekstiDto.of("om1"));
-        oppimaara1Dto.setOppiaine(Reference.of(dto.getId()));
         final KoodiDto koodi1Dto = new KoodiDto();
         koodi1Dto.setUri("oppiaineetjaoppimaaratlops2021_om1");
         koodi1Dto.setKoodisto("oppiaineetjaoppimaaratlops2021");
@@ -506,7 +505,6 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         Lops2019OppiaineDto oppimaara2Dto = new Lops2019OppiaineDto();
         oppimaara2Dto.setNimi(LokalisoituTekstiDto.of("om2"));
-        oppimaara2Dto.setOppiaine(Reference.of(dto.getId()));
         final KoodiDto koodi2Dto = new KoodiDto();
         koodi2Dto.setUri("oppiaineetjaoppimaaratlops2021_om2");
         koodi2Dto.setKoodisto("oppiaineetjaoppimaaratlops2021");

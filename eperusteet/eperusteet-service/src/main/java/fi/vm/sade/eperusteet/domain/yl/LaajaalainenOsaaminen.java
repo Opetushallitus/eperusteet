@@ -70,7 +70,7 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implement
     @RelatesToPeruste
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_aipe_opetuksensisalto_yl_laajaalainen_osaaminen",
-            joinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id", nullable = false),
+            joinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id",nullable = false),
             inverseJoinColumns = @JoinColumn(name = "yl_aipe_opetuksensisalto_id", nullable = false))
     private Set<AIPEOpetuksenSisalto> aipeSisallot = new HashSet<>();
 
@@ -79,7 +79,7 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implement
     @RelatesToPeruste
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_opetuksen_tavoite_yl_laajaalainen_osaaminen",
-            joinColumns = @JoinColumn(name = "laajattavoitteet_id", nullable = false),
+            joinColumns = @JoinColumn(name = "laajattavoitteet_id",nullable = false),
             inverseJoinColumns = @JoinColumn(name = "yl_opetuksen_tavoite_id", nullable = false))
     private Set<OpetuksenTavoite> opetuksenTavoitteet = new HashSet<>();
 

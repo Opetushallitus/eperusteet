@@ -117,6 +117,7 @@ public class Lops2019Oppiaine extends AbstractAuditedReferenceableEntity impleme
     private Integer jarjestys;
 
     @Getter
+    @Setter
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_lops2019_oppiaine_oppimaara",

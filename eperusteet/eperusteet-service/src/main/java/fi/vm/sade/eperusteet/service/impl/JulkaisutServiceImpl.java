@@ -380,7 +380,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public void paivitaMaarayskokoelmaanPerusteenTiedot(long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
         MaaraysDto maarays = maaraysService.getPerusteenMaarays(perusteId);
