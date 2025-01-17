@@ -38,7 +38,7 @@ public class WebSecurityConfigurationDev {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/buildversion.txt").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/").permitAll()
