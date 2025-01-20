@@ -1,15 +1,18 @@
 package fi.vm.sade.eperusteet.resource;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiBaseDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiKategoriaDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.OsaamismerkkiService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.tika.mime.MimeTypeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -31,41 +33,41 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/api/osaamismerkit")
-@Api(value = "Osaamismerkit")
+@Tag(name = "Osaamismerkit")
 @InternalApi
 public class OsaamismerkkiController {
 
     @Autowired
     private OsaamismerkkiService osaamismerkkiService;
 
-    @ApiOperation(value = "osaamismerkkien haku")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "tila", dataType = "string", paramType = "query", allowMultiple = true),
-            @ApiImplicitParam(name = "koodit", dataType = "long", paramType = "query", allowMultiple = true),
-            @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "voimassa", dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "tuleva", dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query"),
+    @Operation(summary = "osaamismerkkien haku")
+    @Parameters({
+            @Parameter(name = "sivu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "sivukoko", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "tila", array = @ArraySchema(schema = @Schema(type = "string")), in = ParameterIn.QUERY),
+            @Parameter(name = "koodit", array = @ArraySchema(schema = @Schema(type = "number")), in = ParameterIn.QUERY),
+            @Parameter(name = "kategoria", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "voimassa", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
+            @Parameter(name = "tuleva", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
+            @Parameter(name = "poistunut", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
+            @Parameter(name = "kieli", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
     })
     @RequestMapping(value = "/haku", method = GET)
-    public Page<OsaamismerkkiDto> findOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
+    public Page<OsaamismerkkiDto> findOsaamismerkitBy(@Parameter(hidden = true) OsaamismerkkiQuery query) {
         return osaamismerkkiService.findBy(query);
     }
 
-    @ApiOperation(value = "julkisten osaamismerkkien haku")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "kategoria", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "koodit", dataType = "long", paramType = "query", allowMultiple = true),
-            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query")
+    @Operation(summary = "julkisten osaamismerkkien haku")
+    @Parameters({
+            @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "kategoria", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "koodit", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "number"))),
+            @Parameter(name = "poistunut", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
+            @Parameter(name = "kieli", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY)
     })
     @RequestMapping(value = "/haku/julkiset", method = GET)
-    public List<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@ApiIgnore OsaamismerkkiQuery query) {
+    public List<OsaamismerkkiBaseDto> findJulkisetOsaamismerkitBy(@Parameter(hidden = true) OsaamismerkkiQuery query) {
         return osaamismerkkiService.findJulkisetBy(query);
     }
 
@@ -99,13 +101,13 @@ public class OsaamismerkkiController {
         return osaamismerkkiService.getKategoriat();
     }
 
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query")
+    @Parameters({
+            @Parameter(name = "poistunut", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY),
+            @Parameter(name = "kieli", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY)
     })
     @RequestMapping(value = "/kategoriat/julkiset", method = GET)
     @ResponseBody
-    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat(@ApiIgnore OsaamismerkkiQuery query) {
+    public List<OsaamismerkkiKategoriaDto> getJulkisetKategoriat(@Parameter(hidden = true) OsaamismerkkiQuery query) {
         return osaamismerkkiService.getJulkisetKategoriat(query);
     }
 

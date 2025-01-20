@@ -15,7 +15,7 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.LockCtx;
 import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -350,7 +350,6 @@ public class OppiaineServiceImpl implements OppiaineService {
                             lockService.unlock(vkctx);
                         }
                     }
-                    //"ominaisuus": vuosiluokkakokonaisuuksia ei voi poistaa tätä kautta.
                 }
             }
         }
@@ -423,7 +422,6 @@ public class OppiaineServiceImpl implements OppiaineService {
         ovk = vuosiluokkakokonaisuusRepository.save(ovk);
         ovk.getOppiaine().muokattu();
         oppiaineRepository.setRevisioKommentti("Muokattu oppiaineen vuosiluokkakokonaisuutta");
-        eventPublisher.publishEvent(PerusteUpdatedEvent.of(this, sisalto.getPeruste().getId()));
         return ovk;
     }
 

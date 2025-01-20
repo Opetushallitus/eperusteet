@@ -73,9 +73,9 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.ConstraintViolationException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.validation.ConstraintViolationException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -251,9 +251,7 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void test_tutkinnonOsanOsaalue_lisaa() {
-        TestTransaction.end();
-        TestTransaction.start();
-        TestTransaction.flagForCommit();
+        startNewTransaction();
 
         PerusteprojektiDto pp1 = ppTestUtils.createPerusteprojekti(ppl -> {
         });
@@ -270,9 +268,8 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
                     .build());
             return osaalue;
         });
-        TestTransaction.end();
-        TestTransaction.start();
 
+        startNewTransaction();
         viiteDto = perusteService.getTutkinnonOsaViite(perusteDto1.getId(), Suoritustapakoodi.REFORMI, viiteDto.getId());
         OsaAlueLaajaDto osaAlueLaajaDto = osaAlueService.getOsaAlue(viiteDto.getId(), viiteDto.getTutkinnonOsaDto().getOsaAlueet().get(0).getId());
         assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet()).isNotNull();
@@ -280,16 +277,16 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohde().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("kohde").getTekstit());
         assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohdealueet()).hasSize(1);
         assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohdealueet().get(0).getKuvaus().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("kuvaus").getTekstit());
-        TestTransaction.end();
 
-        TestTransaction.start();
-        TestTransaction.flagForCommit();
-        osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohde().setTekstit(LokalisoituTekstiDto.of("kohde2").getTekstit());
+        startNewTransaction();
         osaAlueService.lockOsaAlue(viiteDto.getId(), osaAlueLaajaDto.getId());
-        osaAlueService.updateOsaAlue(perusteDto1.getId(), viiteDto.getId(), osaAlueLaajaDto.getId(), osaAlueLaajaDto);
-        TestTransaction.end();
 
-        TestTransaction.start();
+        startNewTransaction();
+        osaAlueLaajaDto = osaAlueService.getOsaAlue(viiteDto.getId(), viiteDto.getTutkinnonOsaDto().getOsaAlueet().get(0).getId());
+        osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().setKohde(LokalisoituTekstiDto.of("kohde2"));
+        osaAlueService.updateOsaAlue(perusteDto1.getId(), viiteDto.getId(), osaAlueLaajaDto.getId(), osaAlueLaajaDto);
+
+        startNewTransaction();
         osaAlueLaajaDto = osaAlueService.getOsaAlue(viiteDto.getId(), viiteDto.getTutkinnonOsaDto().getOsaAlueet().get(0).getId());
         assertThat(osaAlueLaajaDto.getPakollisetOsaamistavoitteet().getTavoitteet().getKohde().getTekstit()).isEqualTo(LokalisoituTekstiDto.of("kohde2").getTekstit());
         TestTransaction.end();

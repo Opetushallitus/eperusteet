@@ -23,8 +23,8 @@ public class JsonBType implements UserType, Serializable {
     private final ObjectMapper mapper = InitJacksonConverter.createMapper();
 
     @Override
-    public int[] sqlTypes() {
-        return new int[]{Types.JAVA_OBJECT};
+    public int getSqlType() {
+        return Types.JAVA_OBJECT;
     }
 
     @Override
@@ -38,23 +38,8 @@ public class JsonBType implements UserType, Serializable {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner) throws HibernateException, SQLException {
-        String str = rs.getString(names[0]);
-        if (str != null) {
-            try {
-                JsonNode node = mapper.readTree(str);
-                return node;
-            } catch (IOException e) {
-                throw new BusinessRuleViolationException("datan-luku-epaonnistui");
-            }
-        }
-        return JsonNodeFactory.instance.objectNode();
-    }
-
-    @Override
     public void nullSafeSet(PreparedStatement st, Object value, int index, SharedSessionContractImplementor session) throws HibernateException, SQLException {
         if (value != null) {
-//            String jsonStr = gson.toJson(value);
             try {
                 String s = mapper.writeValueAsString(value);
                 st.setObject(index, s, Types.OTHER);
@@ -83,6 +68,11 @@ public class JsonBType implements UserType, Serializable {
     @Override
     public int hashCode(Object x) throws HibernateException {
         return 0;
+    }
+
+    @Override
+    public Object nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner) throws SQLException {
+        return null;
     }
 
     @Override

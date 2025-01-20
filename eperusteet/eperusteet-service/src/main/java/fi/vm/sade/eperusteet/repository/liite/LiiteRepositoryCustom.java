@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.repository.liite;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 

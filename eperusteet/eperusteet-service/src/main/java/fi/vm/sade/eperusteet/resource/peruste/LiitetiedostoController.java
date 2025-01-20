@@ -6,7 +6,9 @@ import fi.vm.sade.eperusteet.resource.util.CacheControl;
 import fi.vm.sade.eperusteet.service.LiiteService;
 import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
 import fi.vm.sade.eperusteet.service.util.Pair;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tika.mime.MimeTypeException;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,7 +44,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/api/perusteet/{perusteId}")
-@Api("Liitetiedostot")
+@Tag(name = "Liitetiedostot")
 public class LiitetiedostoController {
 
     @Autowired
@@ -139,7 +139,7 @@ public class LiitetiedostoController {
             //HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-        getLiite(perusteId, fileName, etag, "image", /*request,*/ response);
+        getLiite(perusteId, fileName, etag,  response);
     }
 
     @RequestMapping(value = "/liitteet/{fileName}", method = RequestMethod.GET)
@@ -148,8 +148,6 @@ public class LiitetiedostoController {
             @PathVariable("perusteId") Long perusteId,
             @PathVariable("fileName") String fileName,
             @RequestHeader(value = "If-None-Match", required = false) String etag,
-            String topLevelMediaType,
-            //HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));
@@ -162,8 +160,6 @@ public class LiitetiedostoController {
             @PathVariable("perusteId") Long perusteId,
             @PathVariable("fileName") String fileName,
             @RequestHeader(value = "If-None-Match", required = false) String etag,
-            String topLevelMediaType,
-            //HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
         UUID id = UUID.fromString(FilenameUtils.removeExtension(fileName));

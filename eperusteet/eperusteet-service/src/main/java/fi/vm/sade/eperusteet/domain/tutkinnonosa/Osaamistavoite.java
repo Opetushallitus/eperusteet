@@ -14,7 +14,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Getter
     @Setter
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen nimi;
 
@@ -56,14 +56,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
     private Ammattitaitovaatimukset2019 tavoitteet2020;
-
-    @Deprecated
-    @Getter
-    @Setter
-    @ValidHtml(whitelist = ValidHtml.WhitelistType.SIMPLIFIED)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen tavoitteet;
 
     @Deprecated
     @Getter
@@ -126,7 +118,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.kieli = ot.kieli;
         this.koodi = ot.koodi;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
-        this.tavoitteet = ot.tavoitteet;
 
         for (AmmattitaitovaatimuksenKohdealue avKohdealue : ot.ammattitaitovaatimuksetLista) {
             this.ammattitaitovaatimuksetLista.add(new AmmattitaitovaatimuksenKohdealue(avKohdealue));
@@ -156,7 +147,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
             this.setPakollinen(updated.isPakollinen());
             this.setKieli(updated.getKieli());
             this.setLaajuus(updated.getLaajuus());
-            this.setTavoitteet(updated.getTavoitteet());
             this.setTunnustaminen(updated.getTunnustaminen());
             this.setArviointi(updated.getArviointi());
             this.setKoodi(updated.getKoodi());
@@ -199,7 +189,6 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         boolean result = refXnor(getNimi(), other.getNimi());
         result &= isPakollinen() == other.isPakollinen();
         result &= Objects.equal(getLaajuus(), other.getLaajuus());
-        result &= refXnor(getTavoitteet(), other.getTavoitteet());
         result &= refXnor(getTunnustaminen(), other.getTunnustaminen());
         result &= refXnor(getEsitieto(), other.getEsitieto());
         result &= refXnor(getArviointi(), other.getArviointi());

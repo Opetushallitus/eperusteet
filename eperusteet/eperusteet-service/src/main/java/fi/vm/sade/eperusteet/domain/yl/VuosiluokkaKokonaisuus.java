@@ -13,8 +13,8 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -42,7 +42,7 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity i
 
     @Getter
     @Setter
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen nimi;
@@ -83,8 +83,8 @@ public class VuosiluokkaKokonaisuus extends AbstractAuditedReferenceableEntity i
     @NotAudited
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_vlkokonaisuus",
-            joinColumns = @JoinColumn(name = "vuosiluokkakokonaisuudet_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "vuosiluokkakokonaisuudet_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false))
     private Set<PerusopetuksenPerusteenSisalto> perusopetuksenPerusteenSisallot = new HashSet<>();
 
     @Getter

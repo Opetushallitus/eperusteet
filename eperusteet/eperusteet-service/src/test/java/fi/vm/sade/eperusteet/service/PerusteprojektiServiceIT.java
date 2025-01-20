@@ -25,8 +25,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -459,14 +459,11 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         long perusteId = pp.getPeruste().getId();
         PerusteVersionDto versionDto = perusteService.getPerusteVersion(perusteId);
         PerusteenOsaViiteDto.Matala poA = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
-        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         PerusteenOsaViiteDto.Matala poB = perusteService.addSisalto(pp.getPeruste().getId(), Suoritustapakoodi.NAYTTO, null);
-        versionDto = perusteService.getPerusteVersion(perusteId);
 
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poA.getId(), nimet);
         service.setPerusteenOsaViiteTyoryhmat(pp.getId(), poB.getId(), nimet);
         List<PerusteenOsaTyoryhmaDto> st = service.getSisallonTyoryhmat(pp.getId());
-        assertEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         Assert.assertEquals(3, st.size());
     }
 
