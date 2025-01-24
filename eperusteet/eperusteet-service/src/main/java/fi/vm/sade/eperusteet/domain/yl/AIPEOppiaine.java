@@ -9,9 +9,9 @@ import fi.vm.sade.eperusteet.domain.Tunnistettava;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.util.*;
-import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -31,7 +31,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @Getter
     private UUID tunniste = UUID.randomUUID();
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @Getter
     @Setter
@@ -41,7 +41,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
 
     @Getter
     @Setter
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
 
@@ -122,7 +122,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @OrderBy("jarjestys, id")
     private List<AIPEKurssi> kurssit = new ArrayList<>();
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -156,18 +156,19 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     private List<AIPEOppiaine> oppimaarat = new ArrayList<>();
 
     @ValidHtml(whitelist = WhitelistType.NORMAL)
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kielikasvatus;
 
     @Getter
+    @Setter
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
-               joinColumns = {@JoinColumn(name = "oppimaara_id", insertable = false, updatable = false)},
-               inverseJoinColumns = {@JoinColumn(name = "oppiaine_id", insertable = false, updatable = false)})
+               joinColumns = {@JoinColumn(name = "oppimaara_id")},
+               inverseJoinColumns = {@JoinColumn(name = "oppiaine_id")})
     private AIPEOppiaine oppiaine;
 
     @Override

@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.resource.peruste;
 
+import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
@@ -9,26 +10,37 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.*;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
+import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
+import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.util.CombinedDto;
-import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
-import fi.vm.sade.eperusteet.service.*;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Supplier;
+import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
+import fi.vm.sade.eperusteet.service.KoodistoClient;
+import fi.vm.sade.eperusteet.service.PerusteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,7 +53,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -50,7 +69,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping(value = "/api/perusteet", produces = "application/json;charset=UTF-8")
-@Api(value = "Perusteet")
+@Tag(name = "Perusteet")
 public class PerusteController {
 
     @Autowired
@@ -79,7 +98,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/kooste", method = GET)
     @ResponseBody
-    @ApiIgnore
+    @Parameter(hidden = true)
     public ResponseEntity<List<PerusteKoosteDto>> getPerusteKooste() {
         return new ResponseEntity<>(service.getKooste(), HttpStatus.OK);
     }
@@ -94,7 +113,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/perusopetus", method = GET)
     @ResponseBody
-    @ApiIgnore
+    @Parameter(hidden = true)
     public ResponseEntity<List<PerusteInfoDto>> getAllPerusopetus() {
         List<PerusteInfoDto> poi = service.getAllPerusopetusInfo();
         return new ResponseEntity<>(poi, HttpStatus.OK);
@@ -102,65 +121,65 @@ public class PerusteController {
 
     @RequestMapping(method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteiden sisäinen haku")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "tuleva", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös tulevatperusteet"),
-            @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös siirtymäajalla olevat perusteet"),
-            @ApiImplicitParam(name = "voimassaolo", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös voimassaolevat perusteet"),
-            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös poistuneet perusteet"),
-            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
-            @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "perusteen kieli"),
-            @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
-            @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
-            @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
-            @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
-            @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
-            @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
-            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
-            @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
-            @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
-            @ApiImplicitParam(name = "tutkinnonosaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
-            @ApiImplicitParam(name = "osaamisalaKoodit", dataType = "string", paramType = "query", allowMultiple = true),
+    @Operation(summary = "perusteiden sisäinen haku")
+    @Parameters({
+            @Parameter(name = "sivu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "sivukoko", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "tuleva", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös tulevatperusteet"),
+            @Parameter(name = "siirtyma", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös siirtymäajalla olevat perusteet"),
+            @Parameter(name = "voimassaolo", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös voimassaolevat perusteet"),
+            @Parameter(name = "poistunut", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös poistuneet perusteet"),
+            @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "koulutusala", in = ParameterIn.QUERY, array =  @ArraySchema(schema = @Schema(type = "string"))),
+            @Parameter(name = "koulutustyyppi", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "koulutustyyppi (koodistokoodi)"),
+            @Parameter(name = "kieli", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "perusteen kieli"),
+            @Parameter(name = "opintoala", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "opintoalakoodi"),
+            @Parameter(name = "suoritustapa", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, description = "AM-perusteet; naytto tai ops"),
+            @Parameter(name = "koulutuskoodi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "diaarinumero", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "muokattu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY, description = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
+            @Parameter(name = "tutkintonimikkeet", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "hae myös tutkintonimikkeistä"),
+            @Parameter(name = "tutkinnonosat", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "hae myös tutkinnon osista"),
+            @Parameter(name = "osaamisalat", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "hae myös osaamisaloista"),
+            @Parameter(name = "koulutusvienti", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "Haku ainoastaan koulutusviennistä"),
+            @Parameter(name = "perusteTyyppi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, description = "Perusteen tyyppi"),
+            @Parameter(name = "julkaistu", schema = @Schema(implementation = Boolean.class, defaultValue = "false"), in = ParameterIn.QUERY, description = "julkaistut perusteet"),
+            @Parameter(name = "tutkinnonosaKoodit", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string"))),
+            @Parameter(name = "osaamisalaKoodit", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string"))),
     })
-    public Page<PerusteHakuDto> getAllPerusteet(@ApiIgnore PerusteQuery pquery) {
+    public Page<PerusteHakuDto> getAllPerusteet(@Parameter(hidden = true) PerusteQuery pquery) {
         PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 100));
         return service.findJulkinenBy(p, pquery);
     }
 
     @RequestMapping(value = "/internal", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteiden sisäinen haku")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sivu", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "sivukoko", dataType = "long", paramType = "query"),
-            @ApiImplicitParam(name = "tuleva", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös tulevatperusteet"),
-            @ApiImplicitParam(name = "siirtyma", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös siirtymäajalla olevat perusteet"),
-            @ApiImplicitParam(name = "voimassaolo", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös voimassaolevat perusteet"),
-            @ApiImplicitParam(name = "poistunut", dataType = "boolean", paramType = "query", defaultValue = "true", value = "hae myös poistuneet perusteet"),
-            @ApiImplicitParam(name = "nimi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "koulutusala", dataType = "string", paramType = "query", allowMultiple = true),
-            @ApiImplicitParam(name = "koulutustyyppi", dataType = "string", paramType = "query", allowMultiple = true, value = "koulutustyyppi (koodistokoodi)"),
-            @ApiImplicitParam(name = "kieli", dataType = "string", paramType = "query", allowMultiple = true, value = "perusteen kieli"),
-            @ApiImplicitParam(name = "opintoala", dataType = "string", paramType = "query", allowMultiple = true, value = "opintoalakoodi"),
-            @ApiImplicitParam(name = "suoritustapa", dataType = "string", paramType = "query", value = "AM-perusteet; naytto tai ops"),
-            @ApiImplicitParam(name = "koulutuskoodi", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "muokattu", dataType = "long", paramType = "query", value = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
-            @ApiImplicitParam(name = "tutkintonimikkeet", dataType = "boolean", paramType = "query", value = "hae myös tutkintonimikkeistä"),
-            @ApiImplicitParam(name = "tutkinnonosat", dataType = "boolean", paramType = "query", value = "hae myös tutkinnon osista"),
-            @ApiImplicitParam(name = "osaamisalat", dataType = "boolean", paramType = "query", value = "hae myös osaamisaloista"),
-            @ApiImplicitParam(name = "koulutusvienti", dataType = "boolean", paramType = "query", value = "Haku ainoastaan koulutusviennistä"),
-            @ApiImplicitParam(name = "tila", dataType = "string", paramType = "query", allowMultiple = true, value = "Sallitut tilat"),
-            @ApiImplicitParam(name = "perusteTyyppi", dataType = "string", paramType = "query", value = "Perusteen tyyppi"),
-            @ApiImplicitParam(name = "julkaistu", dataType = "boolean", paramType = "query", defaultValue = "false", value = "julkaistut perusteet"),
+    @Operation(summary = "perusteiden sisäinen haku")
+    @Parameters({
+            @Parameter(name = "sivu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "sivukoko", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY),
+            @Parameter(name = "tuleva", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös tulevatperusteet"),
+            @Parameter(name = "siirtyma", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös siirtymäajalla olevat perusteet"),
+            @Parameter(name = "voimassaolo", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös voimassaolevat perusteet"),
+            @Parameter(name = "poistunut", schema = @Schema(implementation = Boolean.class, defaultValue = "true"), in = ParameterIn.QUERY, description = "hae myös poistuneet perusteet"),
+            @Parameter(name = "nimi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "koulutusala", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string"))),
+            @Parameter(name = "koulutustyyppi", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "koulutustyyppi (koodistokoodi)"),
+            @Parameter(name = "kieli", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "perusteen kieli"),
+            @Parameter(name = "opintoala", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "opintoalakoodi"),
+            @Parameter(name = "suoritustapa", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, description = "AM-perusteet; naytto tai ops"),
+            @Parameter(name = "koulutuskoodi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "diaarinumero", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY),
+            @Parameter(name = "muokattu", schema = @Schema(implementation = Long.class), in = ParameterIn.QUERY, description = "Perustetta muokattu jälkeen (aikaleima; millisenkunteja alkaen 1970-01-01 00:00:00 UTC). Huomioi koko perusteen sisällön."),
+            @Parameter(name = "tutkintonimikkeet", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "hae myös tutkintonimikkeistä"),
+            @Parameter(name = "tutkinnonosat", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "hae myös tutkinnon osista"),
+            @Parameter(name = "osaamisalat", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "hae myös osaamisaloista"),
+            @Parameter(name = "koulutusvienti", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "Haku ainoastaan koulutusviennistä"),
+            @Parameter(name = "tila", in = ParameterIn.QUERY, array = @ArraySchema(schema = @Schema(type = "string")), description = "Sallitut tilat"),
+            @Parameter(name = "perusteTyyppi", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, description = "Perusteen tyyppi"),
+            @Parameter(name = "julkaistu", schema = @Schema(implementation = Boolean.class, defaultValue = "false"), in = ParameterIn.QUERY, description = "julkaistut perusteet"),
     })
-    public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@ApiIgnore PerusteQuery pquery) {
+    public Page<PerusteHakuInternalDto> getAllPerusteetInternal(@Parameter(hidden = true) PerusteQuery pquery) {
         PageRequest p = PageRequest.of(pquery.getSivu(), Math.min(pquery.getSivukoko(), 1000));
         return service.findByInternal(p, pquery);
     }
@@ -295,35 +314,35 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/meta", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen tietojen haku")
+    @Operation(summary = "perusteen tietojen haku")
     public ResponseEntity<PerusteInfoDto> getMeta(@PathVariable("perusteId") final long id) {
         return ResponseEntity.ok(service.getMeta(id));
     }
 
     @RequestMapping(value = "/{perusteId}", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen tietojen haku")
+    @Operation(summary = "perusteen tietojen haku")
     public ResponseEntity<PerusteDto> getPerusteenTiedot(@PathVariable("perusteId") final long id) {
         return handleGet(id, 1, () -> service.get(id));
     }
 
     @RequestMapping(value = "/{perusteId}/projektitila", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteprojektin tila")
+    @Operation(summary = "perusteprojektin tila")
     public ResponseEntity<ProjektiTila> getPerusteProjektiTila(@PathVariable("perusteId") final long id) {
         return ResponseEntity.ok(service.getPerusteProjektiTila(id));
     }
 
     @RequestMapping(value = "/{perusteId}/version", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen uusin versio")
+    @Operation(summary = "perusteen uusin versio")
     public PerusteVersionDto getPerusteVersion(@PathVariable("perusteId") final long id) {
         return service.getPerusteVersion(id);
     }
 
     @RequestMapping(value = "/{perusteId}/osaamisalakuvaukset", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen osaamisalojen kuvaukset koulutustarjontaa varten")
+    @Operation(summary = "perusteen osaamisalojen kuvaukset koulutustarjontaa varten")
     public ResponseEntity<Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>>> getOsaamisalat(@PathVariable("perusteId") final long id) {
         return new ResponseEntity<>(service.getOsaamisalaKuvaukset(id), HttpStatus.OK);
     }
@@ -331,7 +350,7 @@ public class PerusteController {
     @RequestMapping(value = "/amosaapohja", method = GET)
     @ResponseBody
     @InternalApi
-    @ApiOperation(value = "Amosaa jaetun tutkinnon pohja")
+    @Operation(summary = "Amosaa jaetun tutkinnon pohja")
     public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja() {
         PerusteKaikkiDto t = service.getAmosaaYhteinenPohja();
         if (t == null) {
@@ -343,7 +362,7 @@ public class PerusteController {
     @RequestMapping(value = "/amosaaops", method = GET)
     @ResponseBody
     @InternalApi
-    @ApiOperation(value = "Paikallisen puolen ammatillista laadintaa tukevat perusteet")
+    @Operation(summary = "Paikallisen puolen ammatillista laadintaa tukevat perusteet")
     public ResponseEntity<List<PerusteHakuDto>> getAmosaaOpsit() {
         List<PerusteHakuDto> perusteet = service.getAmosaaOpsit();
         return new ResponseEntity<>(perusteet, HttpStatus.OK);
@@ -351,11 +370,11 @@ public class PerusteController {
 
     @RequestMapping(value = "/diaari", method = GET)
     @ResponseBody
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "diaarinumero", dataType = "string", paramType = "query")
+    @Parameters({
+            @Parameter(name = "diaarinumero", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY)
     })
-    @ApiOperation(value = "perusteen yksilöintietojen haku diaarinumerolla")
-    public ResponseEntity<PerusteInfoDto> getByDiaari(@ApiIgnore final Diaarinumero diaarinumero) {
+    @Operation(summary = "perusteen yksilöintietojen haku diaarinumerolla")
+    public ResponseEntity<PerusteInfoDto> getByDiaari(@Parameter(hidden = true) final Diaarinumero diaarinumero) {
         PerusteInfoDto t = service.getByDiaari(diaarinumero);
         if (t == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -365,7 +384,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/kaikki", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen kaikkien tietojen haku")
+    @Operation(summary = "perusteen kaikkien tietojen haku")
     public ResponseEntity<PerusteKaikkiDto> getKokoSisalto(
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "rev", required = false) final Integer rev,
@@ -375,7 +394,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/kaikki/tutkinnonosat", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen tutkinnon osien haku julkaistusta datasta")
+    @Operation(summary = "perusteen tutkinnon osien haku julkaistusta datasta")
     public ResponseEntity<List<TutkinnonOsaKaikkiDto>> getJulkaistutTutkinnonOsat(
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
@@ -384,7 +403,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/{perusteId}/kaikki/tutkinnonosaviitteet", method = GET)
     @ResponseBody
-    @ApiOperation(value = "perusteen tutkinnon osien viitteiden haku julkaistusta datasta")
+    @Operation(summary = "perusteen tutkinnon osien viitteiden haku julkaistusta datasta")
     public ResponseEntity<Set<TutkinnonOsaViiteSuppeaDto>> getJulkaistutTutkinnonOsaViitteet(
             @PathVariable("perusteId") final long id,
             @RequestParam(value = "useCurrentData", required = false, defaultValue = "false") final boolean useCurrentData) {
@@ -434,7 +453,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/aikataululliset", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Perusteet julkisilla aikatauluillla")
+    @Operation(summary = "Perusteet julkisilla aikatauluillla")
     public Page<PerusteBaseDto> getJulkaisuAikatauluPerusteet(
             @RequestParam(value = "sivu") final Integer sivu,
             @RequestParam(value = "sivukoko") final Integer sivukoko,
@@ -445,7 +464,7 @@ public class PerusteController {
 
     @RequestMapping(value = "/lukumaara", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Perusteiden koulutustyyppikohtaiset lukumäärät")
+    @Operation(summary = "Perusteiden koulutustyyppikohtaiset lukumäärät")
     public List<KoulutustyyppiLukumaara> getJulkaistutLukumaarilla(
             @RequestParam(value = "koulutustyyppi") final List<String> koulutustyypit
     ) {
@@ -454,28 +473,28 @@ public class PerusteController {
 
     @RequestMapping(value = "/julkaistutkoulutustyypit", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
+    @Operation(summary = "Julkaistut perustekoulutustyypit annetulla kielellä")
     public List<KoulutusTyyppi> getJulkaistutKoulutustyypit(@RequestParam(defaultValue = "fi") String kieli) {
         return service.getJulkaistutKoulutustyyppit(Kieli.of(kieli));
     }
 
     @RequestMapping(value = "/julkaistutkoulutustyyppimaarat", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Julkaistut perustekoulutustyypit annetulla kielellä")
+    @Operation(summary = "Julkaistut perustekoulutustyypit annetulla kielellä")
     public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(@RequestParam(defaultValue = "fi") String kieli) {
         return service.getJulkaistutKoulutustyyppiLukumaarat(Kieli.of(kieli));
     }
 
     @RequestMapping(value = "/opaskoodikiinnitys/{koodiUri}", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Oppaat joihin kiinnitetty koodiUri")
+    @Operation(summary = "Oppaat joihin kiinnitetty koodiUri")
     public List<PerusteDto> getOpasKiinnitettyKoodi(@PathVariable("koodiUri") final String koodiUri) {
         return service.getOpasKiinnitettyKoodi(koodiUri);
     }
 
     @RequestMapping(value = "/peruste/korvattavatperusteet/{perusteId}", method = GET)
     @ResponseBody
-    @ApiOperation(value = "Perusteet jotka peruste korvaa")
+    @Operation(summary = "Perusteet jotka peruste korvaa")
     public List<PerusteInfoDto> getKorvattavatPerusteet(@PathVariable("perusteId") final long perusteId) {
         return service.getKorvattavatPerusteet(perusteId);
     }

@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.julkinen.LukioOppiainePuuDto;
 import fi.vm.sade.eperusteet.resource.util.CacheableResponse;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.yl.LukiokoulutuksenPerusteenSisaltoService;
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/perusteet/{perusteId}/lukiokoulutus/julkinen")
-@Api(value = "Lukioperusteen julkiset tiedot")
+@Tag(name = "Lukioperusteen julkiset tiedot")
 public class LukiokoulutusJulkisetPerusteenSisallotController {
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoService sisaltoService;

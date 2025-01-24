@@ -45,8 +45,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -287,6 +287,10 @@ public class OpasServiceIT extends AbstractPerusteprojektiTest {
         assertThat(perusteDto.getOppaanSisalto().getOppaanKiinnitetytKoodit())
                 .extracting("kiinnitettyKoodiTyyppi")
                 .containsExactlyInAnyOrder(KiinnitettyKoodiTyyppi.TUTKINNONOSA, KiinnitettyKoodiTyyppi.OSAAMISALA, KiinnitettyKoodiTyyppi.OPINTOKOKONAISUUS);
+
+        oppaanKiinnitettyKoodiRepository.findAll().forEach(op -> {
+            System.out.println(op.getKiinnitettyKoodiTyyppi() + " " + op.getKoodi().getUri());
+        });
 
         assertThat(oppaanKiinnitettyKoodiRepository.findAll()).hasSize(3);
 

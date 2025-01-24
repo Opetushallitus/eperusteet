@@ -25,7 +25,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "   SELECT ROW_NUMBER() OVER(partition by id) as rownumber, * " +
             "   FROM julkaistu_peruste_data_store data" +
             "   WHERE (" +
-            "           COALESCE(:koulutustyypit, NULL) = '' " +
+            "           COALESCE(:koulutustyypit, null) IS NULL " +
             "           OR koulutustyyppi IN (:koulutustyypit) " +
             "           OR exists (select 1 from jsonb_array_elements(oppaankoulutustyypit) okt where okt->>0 in (:koulutustyypit))" +
             "         ) " +
@@ -199,9 +199,9 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             "       'koulutustyyppi_5', 'koulutustyyppi_18', " +
             "       'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_40') " +
             "   AND (p.voimassaoloLoppuu IS NULL " +
-            "       OR p.voimassaoloLoppuu > NOW() " +
+            "       OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP " +
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
-            "           AND p.siirtymaPaattyy > NOW()))")
+            "           AND p.siirtymaPaattyy > CURRENT_TIMESTAMP ))")
     Set<Peruste> findAmosaaJulkaisut();
 
     JulkaistuPeruste findOneByDokumentitIn(Set<Long> dokumentit);

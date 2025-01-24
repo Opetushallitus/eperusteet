@@ -19,7 +19,7 @@ import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
 import fi.vm.sade.eperusteet.service.dokumentti.ExternalPdfService;
 import fi.vm.sade.eperusteet.service.dokumentti.impl.util.DokumenttiUtils;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -64,7 +64,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @IgnorePerusteUpdateCheck
     public DokumenttiDto createDtoFor(
             long id,
             Kieli kieli,
@@ -94,14 +93,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi) {
         return findLatest(id, kieli, suoritustapakoodi, null);
     }
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public DokumenttiDto findLatest(Long id, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion version) {
         Dokumentti dokumentti;
 
@@ -133,7 +130,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision) {
         Peruste peruste = perusteRepository.findOne(perusteId);
 
@@ -161,14 +157,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
-    @IgnorePerusteUpdateCheck
     public void generateWithDto(DokumenttiDto dto) throws DokumenttiException {
         generateWithDto(dto, null);
     }
 
     @Override
     @Transactional(noRollbackFor = DokumenttiException.class, propagation = Propagation.REQUIRES_NEW)
-    @IgnorePerusteUpdateCheck
     public void generateWithDto(DokumenttiDto dto, PerusteKaikkiDto perusteDto) throws DokumenttiException {
         dto.setTila(DokumenttiTila.LUODAAN);
         dokumenttiStateService.save(dto);
@@ -186,7 +180,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public byte[] get(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id).orElse(null);
 
@@ -209,7 +202,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional
-    @IgnorePerusteUpdateCheck
     public Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion generatorVersion) {
         Sort sort = Sort.by(Sort.Direction.DESC, "valmistumisaika");
 
@@ -239,7 +231,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    @IgnorePerusteUpdateCheck
     public void setStarted(DokumenttiDto dto) {
         dto.setAloitusaika(new Date());
         dto.setLuoja(SecurityUtil.getAuthenticatedPrincipal().getName());
@@ -249,7 +240,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    @IgnorePerusteUpdateCheck
     public DokumenttiDto query(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id).orElse(null);
         DokumenttiDto dto = mapper.map(dokumentti, DokumenttiDto.class);
@@ -274,7 +264,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional
-    @IgnorePerusteUpdateCheck
     public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
         Optional<Dokumentti> optionalDokumentti = dokumenttiRepository.findById(dokumenttiId);
         if (optionalDokumentti.isPresent()) {
@@ -288,7 +277,6 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional
-    @IgnorePerusteUpdateCheck
     public void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId) {
         Optional<Dokumentti> optionalDokumentti = dokumenttiRepository.findById(dokumenttiId);
         if (optionalDokumentti.isPresent()) {

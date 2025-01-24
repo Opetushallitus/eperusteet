@@ -7,8 +7,8 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -55,7 +55,7 @@ public class Kurssi extends AbstractAuditedReferenceableEntity implements Nimett
     @Audited
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "yl_kurssi_toteuttava_oppiaine",
-            joinColumns = @JoinColumn(name = "kurssi_id", nullable = false, updatable = false),
-            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false, updatable = false))
+            joinColumns = @JoinColumn(name = "kurssi_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false))
     protected Set<Oppiaine> toteuttavatOppiaineet = new HashSet<>(0);
 }
