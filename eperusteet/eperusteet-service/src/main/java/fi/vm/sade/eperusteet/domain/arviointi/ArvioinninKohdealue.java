@@ -11,7 +11,7 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,16 +48,6 @@ public class ArvioinninKohdealue implements Serializable {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Koodi koodi;
-
-    /// TODO: rikkoo testin fi.vm.sade.eperusteet.service.AuditedEntityTestIT#testTutkinnonOsaRevisions
-//    @Getter
-//    @NotAudited
-//    @RelatesToPeruste
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "arviointi_arvioinninkohdealue",
-//            inverseJoinColumns = @JoinColumn(name = "arviointi_id"),
-//            joinColumns = @JoinColumn(name = "arvioinninkohdealue_id"))
-//    private Set<Arviointi> arvioinnit = new HashSet<>();
 
     public ArvioinninKohdealue() {
     }

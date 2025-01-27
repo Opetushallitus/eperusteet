@@ -12,30 +12,33 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.*;
-import javax.persistence.*;
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
+import jakarta.persistence.*;
+import jakarta.validation.Constraint;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Payload;
 
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
+import org.springframework.validation.annotation.Validated;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
+@Validated
 @Entity
 @DiscriminatorValue("RM")
 @Audited
 @RakenneModuuli.ValidRakenneModuuli
 public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<RakenneModuuli>, HistoriaTapahtuma {
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = NOT_AUDITED)
@@ -55,14 +58,14 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
     @Enumerated(EnumType.STRING)
     private RakenneModuuliErikoisuus erikoisuus;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidKoodisto(koodisto = KoodistoUriArvo.OSAAMISALA)
     private Koodi osaamisala;
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
@@ -244,7 +247,12 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
         Class<? extends Payload>[] payload() default {};
     }
 
-    private static class ValidRakenneModuuliValidator implements ConstraintValidator<ValidRakenneModuuli, RakenneModuuli> {
+    public static class ValidRakenneModuuliValidator implements ConstraintValidator<ValidRakenneModuuli, RakenneModuuli> {
+
+        public ValidRakenneModuuliValidator() {
+
+        }
+
         @Override
         public void initialize(ValidRakenneModuuli validRakenneModuuliValidator) {
 
@@ -255,7 +263,8 @@ public class RakenneModuuli extends AbstractRakenneOsa implements Mergeable<Rake
             boolean hasTutkintonimikeAndOsaamisala = moduuli.getTutkintonimike() != null && moduuli.getOsaamisala() != null;
             boolean hasCorrectTutkintonimike = moduuli.getTutkintonimike() == null || moduuli.getRooli() == RakenneModuuliRooli.TUTKINTONIMIKE;
             boolean hasCorrectOsaamisala = moduuli.getOsaamisala() == null || moduuli.getRooli() == RakenneModuuliRooli.OSAAMISALA;
-            return !hasTutkintonimikeAndOsaamisala && hasCorrectOsaamisala && hasCorrectOsaamisala;
+            return !hasTutkintonimikeAndOsaamisala && hasCorrectOsaamisala && hasCorrectTutkintonimike;
+
         }
     }
 }

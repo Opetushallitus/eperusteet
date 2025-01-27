@@ -17,14 +17,9 @@ import java.util.stream.Stream;
 
 @Repository
 public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, Long>, PerusteRepositoryCustom {
-    @Query("SELECT s.sisalto FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
-    PerusteenOsaViite findSisaltoByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
 
-    @Query("SELECT s FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
+    @Query("SELECT s FROM Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
     Suoritustapa findSuoritustapaByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
-
-    @Query("SELECT p FROM Suoritustapa s, Peruste p LEFT JOIN p.suoritustavat s WHERE p.id = ?1 AND s.suoritustapakoodi = ?2")
-    Peruste findPerusteByIdAndSuoritustapakoodi(Long id, Suoritustapakoodi suoritustapakoodi);
 
     List<Peruste> findAllByKoulutustyyppi(String koulutustyyppi);
 
@@ -50,7 +45,6 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
     @Query("SELECT p from Peruste p WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and p.diaarinumero IN (?1)")
     Set<Peruste> findAllByDiaarinumerot(Set<Diaarinumero> diaarinumero);
 
-    //    @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and ?1 = diaari")
     @Query("SELECT DISTINCT p FROM Peruste p LEFT JOIN FETCH p.korvattavatDiaarinumerot diaari WHERE p.tyyppi = 'NORMAALI' and p.tila = 'VALMIS' and diaari.diaarinumero = ?1")
     Set<Peruste> findAllKorvaavatByDiaarinumero(String diaarinumero);
 
@@ -96,9 +90,9 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "WHERE p.tila = 'VALMIS' AND p.tyyppi = 'NORMAALI' " +
             "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', 'koulutustyyppi_5', 'koulutustyyppi_18', 'koulutustyyppi_10')" +
             "   AND (p.voimassaoloLoppuu IS NULL " +
-            "       OR p.voimassaoloLoppuu > NOW() " +
+            "       OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP " +
             "       OR (p.siirtymaPaattyy IS NOT NULL " +
-            "           AND p.siirtymaPaattyy > NOW()))")
+            "           AND p.siirtymaPaattyy > CURRENT_TIMESTAMP))")
     List<Peruste> findAllAmosaa();
 
     @Query("SELECT DISTINCT p FROM Peruste p " +
@@ -144,8 +138,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "WHERE p.tyyppi = :tyyppi " +
             "AND j.id IS NOT NULL " +
             "AND tila != 'POISTETTU' " +
-            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
-            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))")
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < CURRENT_TIMESTAMP) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > CURRENT_TIMESTAMP))")
     List<Peruste> findJulkaistutVoimassaolevatPerusteetByTyyppi(@Param("tyyppi") PerusteTyyppi tyyppi);
 
     @Query("SELECT distinct p FROM Peruste p " +
@@ -177,8 +171,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "AND p.koulutustyyppi IN(:koulutustyypit) " +
             "AND p.tyyppi = 'NORMAALI' " +
             "AND (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
-            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
-            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < CURRENT_TIMESTAMP) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > CURRENT_TIMESTAMP)) " +
             "GROUP BY p.koulutustyyppi")
     List<KoulutustyyppiLukumaara> findVoimassaolevatJulkaistutPerusteLukumaarat(@Param("koulutustyypit") List<String> koulutustyypit);
 
@@ -189,7 +183,7 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "WHERE p.koulutustyyppi IS NOT NULL " +
             "AND p.tyyppi = 'NORMAALI' " +
             "AND (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
-            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW())) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > CURRENT_TIMESTAMP)) " +
             "AND k = :kieli")
     List<String> findJulkaistutDistinctKoulutustyyppiByKieli(@Param("kieli") Kieli kieli);
 
@@ -201,8 +195,8 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "LEFT JOIN p.julkaisut j " +
             "WHERE p.tyyppi = 'OPAS' " +
             "and (p.tila = 'VALMIS' OR j.id IS NOT NULL) " +
-            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < NOW()) " +
-            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > NOW()) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > NOW()))" +
+            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < CURRENT_TIMESTAMP) " +
+            "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > CURRENT_TIMESTAMP))" +
             "AND k.uri = :koodiUri")
     List<Peruste> findAllByJulkaisutOppaatKiinnitettyKoodilla(@Param("koodiUri") String koodiUri);
 

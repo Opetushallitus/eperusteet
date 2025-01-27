@@ -43,7 +43,6 @@
 
     <tx:annotation-driven order="100"/>
     <aop:aspectj-autoproxy  />
-    <bean name="hibernateInterceptor" class="fi.vm.sade.eperusteet.hibernate.HibernateInterceptor"/>
 
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
@@ -57,9 +56,9 @@
         </property>
     </bean>
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="org.testcontainers.jdbc.ContainerDatabaseDriver"/>
-        <property name="url" value="jdbc:tc:postgresql:12.10:////test"/>
+        <property name="url" value="jdbc:tc:postgresql:15.7:////test"/>
         <property name="username" value="test"/>
         <property name="password" value="test"/>
     </bean>
@@ -74,19 +73,14 @@
                 <entry key="hibernate.hbm2ddl.auto" value="none"/>
                 <entry key="hibernate.show_sql" value="${hibernate.show_sql:false}"/>
                 <entry key="hibernate.enable_lazy_load_no_trans" value="true"/>
-                <entry key="hibernate.dialect" value="fi.vm.sade.eperusteet.utils.repository.dialect.CustomPostgreSqlDialect"/>
-                <entry key="javax.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
+                <entry key="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+                <entry key="jakarta.persistence.sharedCache.mode" value="ENABLE_SELECTIVE"/>
                 <entry key="hibernate.cache.use_second_level_cache" value="false"/>
                 <entry key="org.hibernate.envers.audit_strategy" value="org.hibernate.envers.strategy.internal.DefaultAuditStrategy"/>
                 <entry key="org.hibernate.envers.allow_identifier_reuse" value="true"/>
-                <entry key="javax.persistence.validation.factory" value-ref="validator"/>
-                <entry key="hibernate.ejb.interceptor" value-ref="hibernateInterceptor" />
+                <entry key="jakarta.persistence.validation.factory" value-ref="validator"/>
+                <entry key="hibernate.id.db_structure_naming_strategy" value="single"/>
             </map>
-        </property>
-        <property name="mappingResources">
-            <list>
-                <value>typedefs-pg.xml</value>
-            </list>
         </property>
     </bean>
 

@@ -16,7 +16,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.util.PerusteIdentifiable;
 import fi.vm.sade.eperusteet.service.util.PerusteUtils;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,13 +37,13 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     @JsonIgnore
     private Integer revision;
 
-    @ApiModelProperty("Perusteen sisältöjen viimeisin päivitysaika")
+    @Schema(description = "Perusteen sisältöjen viimeisin päivitysaika")
     private PerusteVersionDto globalVersion;
 
     private LokalisoituTekstiDto nimi;
     private String koulutustyyppi;
 
-    @ApiModelProperty("Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)")
+    @Schema(description = "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)")
     private KoulutustyyppiToteutus toteutus;
     private Set<KoulutusDto> koulutukset;
     private Set<Kieli> kielet;
@@ -52,53 +52,53 @@ public abstract class PerusteBaseDto implements Serializable, PerusteIdentifiabl
     private List<MuutosmaaraysDto> muutosmaaraykset = new ArrayList<>();
 
     private String diaarinumero;
-    @ApiModelProperty("Perusteen alkuperäinen voimaantulon alkamispäivä.")
+    @Schema(description = "Perusteen alkuperäinen voimaantulon alkamispäivä.")
     private Date voimassaoloAlkaa;
 
-    @ApiModelProperty("Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.")
+    @Schema(description = "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.")
     private Date siirtymaPaattyy;
     private Date voimassaoloLoppuu;
 
-    @ApiModelProperty("Perusteen määräyksen päätöspäivämäärä")
+    @Schema(description = "Perusteen määräyksen päätöspäivämäärä")
     private Date paatospvm;
     private Optional<Date> viimeisinJulkaisuAika;
 
     private Date luotu;
-    @ApiModelProperty(hidden = true)
+    @Schema(hidden = true)
     private Date muokattu;
 
-    @ApiModelProperty("Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen")
+    @Schema(description = "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen")
     private PerusteTila tila;
     private PerusteTyyppi tyyppi;
 
-    @ApiModelProperty("EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste")
+    @Schema(description = "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste")
     private Boolean koulutusvienti;
 
-    @ApiModelProperty("Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin")
+    @Schema(description = "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin")
     private Set<String> korvattavatDiaarinumerot;
 
-    @ApiModelProperty("Perusteeseen liittyvät osaamisalakoodit")
+    @Schema(description = "Perusteeseen liittyvät osaamisalakoodit")
     private Set<KoodiDto> osaamisalat;
 
     // Tuodaan kvliitteestä
-    @ApiModelProperty("kv-liitteen lisätieto")
+    @Schema(description = "kv-liitteen lisätieto")
     private LokalisoituTekstiDto tyotehtavatJoissaVoiToimia;
 
-    @ApiModelProperty("kv-liitteen lisätieto")
+    @Schema(description = "kv-liitteen lisätieto")
     private LokalisoituTekstiDto suorittaneenOsaaminen;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     List<TutkintonimikeKoodiDto> tutkintonimikkeet;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @ApiModelProperty("Perusteet joihin opas liittyy")
+    @Schema(description = "Perusteet joihin opas liittyy")
     private Set<PerusteKevytDto> oppaanPerusteet;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @ApiModelProperty("Koulutustyypit joihin opas liittyy")
+    @Schema(description = "Koulutustyypit joihin opas liittyy")
     private Set<KoulutusTyyppi> oppaanKoulutustyypit;
 
-    @ApiModelProperty("Perusteprosessin päivämäärät")
+    @Schema(description = "Perusteprosessin päivämäärät")
     private Set<PerusteAikatauluDto> perusteenAikataulut;
 
     private LokalisoituTekstiDto poikkeamismaaraysTarkennus;

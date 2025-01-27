@@ -22,8 +22,8 @@ import fi.vm.sade.eperusteet.repository.lops2019.Lops2019SisaltoRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.event.PerusteUpdatedEvent;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
+
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -34,15 +34,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 @Transactional
-public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener<PerusteUpdatedEvent> {
+public class Lops2019ServiceImpl implements Lops2019Service {
 
     @Autowired
     private EntityManager em;
@@ -135,8 +135,6 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         sisalto = sisaltoRepository.save(sisalto);
 
-        onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
-
         addLaajaAlainenMuokkaustieto(perusteId, mapper.mapAsList(originalKokonaisuusCopy.getLaajaAlaisetOsaamiset(), Lops2019LaajaAlainenOsaaminen.class), kokonaisuus.getLaajaAlaisetOsaamiset());
         return mapper.map(sisalto.getLaajaAlainenOsaaminen(), Lops2019LaajaAlainenOsaaminenKokonaisuusDto.class);
     }
@@ -182,7 +180,6 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public List<Lops2019OppiaineDto> getOppiaineet(final Long perusteId) {
         final Lops2019Sisalto sisalto = sisaltoRepository.findByPerusteId(perusteId);
         return mapper.mapAsList(sisalto.getOppiaineet(), Lops2019OppiaineDto.class);
@@ -380,12 +377,10 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
     }
 
     @Override
-    @IgnorePerusteUpdateCheck
     public Lops2019OppiaineKaikkiDto getOppiaineKaikki(final Long perusteId, final Long oppiaineId) {
         final Lops2019Oppiaine oppiaine = this.findOppiaine(perusteId, oppiaineId);
         final Lops2019OppiaineKaikkiDto oppiaineDto = mapper.map(oppiaine, Lops2019OppiaineKaikkiDto.class);
 
-        // FIXME: Miksi?
         // Haetaan manuaalisesti oppimäärät ja moduulit
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineKaikkiDto.class));
         oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliDto.class));
@@ -472,8 +467,6 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
         oppiaineDto.setOppimaarat(mapper.mapAsList(oppiaine.getOppimaarat(), Lops2019OppiaineDto.class));
         oppiaineDto.setModuulit(mapper.mapAsList(oppiaine.getModuulit(), Lops2019ModuuliBaseDto.class));
 
-        onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
-
         return oppiaineDto;
     }
 
@@ -552,8 +545,6 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
 
         moduuli = moduuliRepository.save(moduuli);
 
-        onApplicationEvent(PerusteUpdatedEvent.of(this, perusteId));
-
         return mapper.map(moduuli, Lops2019ModuuliDto.class);
     }
 
@@ -574,20 +565,5 @@ public class Lops2019ServiceImpl implements Lops2019Service, ApplicationListener
             moduuliRepository.deleteById(moduuliId);
         }
         muokkausTietoService.addMuokkaustieto(perusteId, oppiaine, MuokkausTapahtuma.PAIVITYS);
-    }
-
-    @Override
-    @IgnorePerusteUpdateCheck
-    @Transactional
-    public void onApplicationEvent(PerusteUpdatedEvent event) {
-        Peruste peruste = perusteRepository.findOne(event.getPerusteId());
-        if (peruste == null) {
-            return;
-        }
-        Date muokattu = new Date();
-        if (peruste.getGlobalVersion() == null) {
-            peruste.setGlobalVersion(new PerusteVersion(peruste));
-        }
-        peruste.getGlobalVersion().setAikaleima(muokattu);
     }
 }

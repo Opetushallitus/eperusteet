@@ -2,8 +2,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 
 import fi.vm.sade.eperusteet.dto.peruste.PerusteAikatauluDto;
 import fi.vm.sade.eperusteet.service.PerusteAikatauluService;
-import io.swagger.annotations.Api;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,11 +12,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @RestController
 @RequestMapping("/api/aikataulu")
-@Api(value = "Aikataulut")
+@Tag(name = "Aikataulut")
 public class PerusteAikatauluController {
 
     @Autowired

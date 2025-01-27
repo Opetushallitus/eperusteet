@@ -4,7 +4,7 @@ import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiStateService;
-import fi.vm.sade.eperusteet.service.event.aop.IgnorePerusteUpdateCheck;
+
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class DokumenttiStateServiceImpl implements DokumenttiStateService {
     @Autowired
     private DtoMapper mapper;
 
-    @IgnorePerusteUpdateCheck
+    
     @Transactional
     public DokumenttiDto save(DokumenttiDto dto) {
         Dokumentti dokumentti = mapper.map(dto, Dokumentti.class);

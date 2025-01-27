@@ -3,8 +3,7 @@ package fi.vm.sade.eperusteet.resource.peruste;
 import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.dto.PoistettuSisaltoDto;
 import fi.vm.sade.eperusteet.service.PoistoService;
-import io.swagger.annotations.Api;
-import java.util.List;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/poistettusisalto", produces = "application/json;charset=UTF-8")
-@Api(value = "PoistettuSisalto")
+@Tag(name = "PoistettuSisalto")
 @InternalApi
 public class PoistettuSisaltoController {
 

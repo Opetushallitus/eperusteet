@@ -151,6 +151,7 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
     @Test
     @Rollback
     public void testPerusteAmmattitaitovaatimuskoodit() {
+
         TutkinnonOsa tosa = new TutkinnonOsa();
         tosa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
         tosa = perusteenOsaRepository.save(tosa);
@@ -161,16 +162,15 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         kohdealue.setOtsikko(TekstiPalanen.of(Kieli.FI, "ammattitaitovaatimus"));
         arviointi.getArvioinninKohdealueet().add(kohdealue);
         tosa.setArviointi(arviointi);
-        perusteenOsaRepository.saveAndFlush(tosa);
+        perusteenOsaRepository.save(tosa);
 
         TutkinnonOsaViite tov = new TutkinnonOsaViite();
         tov.setTutkinnonOsa(tosa);
         tov.setSuoritustapa(suoritustapa);
         suoritustapa.getTutkinnonOsat().add(tov);
-        suoritustapa = suoritustapaRepository.saveAndFlush(suoritustapa);
+        suoritustapa = suoritustapaRepository.save(suoritustapa);
 
         ammattitaitovaatimusService.addAmmattitaitovaatimuskoodit();
-        em.flush();
         assertThat(arvioinninKohdealueRepository.koodillisetCount()).isEqualTo(0);
         assertThat(getFirstAmmattitaitovaatimuskoodi()).isNull();
 
@@ -179,7 +179,7 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         projekti = perusteprojektiRepository.save(projekti);
         peruste = perusteRepository.save(peruste);
         ammattitaitovaatimusService.addAmmattitaitovaatimuskoodit();
-        em.flush();
+
         assertThat(arvioinninKohdealueRepository.koodillisetCount()).isEqualTo(1);
         assertThat(getFirstAmmattitaitovaatimuskoodi())
                 .isNotNull()

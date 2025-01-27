@@ -7,8 +7,8 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.Tunnistettava;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import java.util.*;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -29,7 +29,7 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
 
     @Getter
     @Setter
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
     private TekstiPalanen nimi;
@@ -71,8 +71,8 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
     @Audited
     @OneToMany(cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinTable(name = "aipevaihe_kohdealue",
-            joinColumns = @JoinColumn(name = "vaihe_id", insertable = false, unique = true),
-            inverseJoinColumns = @JoinColumn(name = "kohdealue_id", insertable = false, unique = true))
+            joinColumns = @JoinColumn(name = "vaihe_id", unique = true),
+            inverseJoinColumns = @JoinColumn(name = "kohdealue_id", unique = true))
     @OrderColumn(name = "kohdealue_order")
     private List<OpetuksenKohdealue> opetuksenKohdealueet = new ArrayList<>();
 

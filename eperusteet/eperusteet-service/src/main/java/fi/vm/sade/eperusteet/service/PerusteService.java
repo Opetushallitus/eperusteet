@@ -121,8 +121,8 @@ public interface PerusteService {
     @Transactional(readOnly = true)
     PerusteKaikkiDto getKaikkiSisalto(final Long id);
 
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
+//    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+//    PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("permitAll()")
     Page<PerusteHakuDto> getAll(PageRequest page, String kieli);

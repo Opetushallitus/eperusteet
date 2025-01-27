@@ -56,7 +56,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -149,39 +149,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         rakenne = perusteService.updateTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, rakenne);
         status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
         assertThat(status.isVaihtoOk()).isFalse();
-    }
-
-    @Test
-    @Rollback
-    @Ignore
-    public void testReforminmukaistaPerusteprojektiaEiVoiJulkaistaTutkinnonOsienTekstisisalloilla() {
-        PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(perusteprojektiLuontiDto -> {
-            perusteprojektiLuontiDto.setReforminMukainen(true);
-            perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
-        });
-        PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
-        TutkinnonOsaViiteDto tovDto = ppTestUtils.addTutkinnonOsa(perusteDto.getId(), tov -> {
-            tov.getTutkinnonOsaDto().setAmmattitaitovaatimukset(TestUtils.lt("ammatitaitovaatimukset tekstinä"));
-//            AmmattitaitovaatimusKohdealueetDto list = new AmmattitaitovaatimusKohdealueetDto();
-//            list.
-//            tov.getTutkinnonOsaDto().setAmmattitaitovaatimuksetLista();
-        });
-        RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);
-        rakenne.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE)));
-        assertThat(rakenne.getOsat()).hasSize(0);
-        rakenne.getOsat().add(RakenneOsaDto.of(tovDto));
-        lockService.lock(TutkinnonRakenneLockContext.of(perusteDto.getId(), Suoritustapakoodi.REFORMI));
-        rakenne = perusteService.updateTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, rakenne);
-        assertThat(rakenne.getOsat()).hasSize(1);
-
-        // Julkaisu
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.VIIMEISTELY, null);
-
-        // FIXME
-//        assertThat(status.isVaihtoOk()).isFalse();
-//        assertThat(status.getInfot().get(0).getViesti()).isEqualTo("tutkinnon-osan-ammattitaitovaatukset-tekstina");
-//        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, siirtyma);
-//        assertThat(status.isVaihtoOk()).isTrue();
     }
 
     @Test

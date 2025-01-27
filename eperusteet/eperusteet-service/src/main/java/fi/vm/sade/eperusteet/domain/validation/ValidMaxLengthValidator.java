@@ -4,8 +4,8 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import org.springframework.util.StringUtils;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.util.Map;
 
 public class ValidMaxLengthValidator extends ValidHtmlValidatorBase implements ConstraintValidator<ValidMaxLength, TekstiPalanen>  {

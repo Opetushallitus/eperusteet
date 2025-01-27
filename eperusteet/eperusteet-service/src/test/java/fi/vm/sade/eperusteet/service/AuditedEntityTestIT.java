@@ -23,6 +23,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +35,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
 public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuditedEntityTestIT.class);
@@ -48,6 +50,8 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
     public void testAuditing() {
         final String user1 = "user1";
         final String user2 = "user2";
+
+        startNewTransaction();
 
         setUpSecurityContext(user1);
         TekstiKappale teksti = new TekstiKappale();
@@ -66,6 +70,8 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         assertTrue(teksti.getLuotu().equals(luotu));
         assertTrue(teksti.getMuokattu().equals(luotu));
 
+        startNewTransaction();
+
         setUpSecurityContext(user2);
         TekstiKappale teksti2 = new TekstiKappale();
         teksti2.setId(teksti.getId());
@@ -74,42 +80,58 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         teksti2.asetaTila(teksti.getTila());
 
         teksti2 = perusteenOsaRepository.save(teksti2);
+
+        startNewTransaction();
         teksti2 = (TekstiKappale)perusteenOsaRepository.findOne(teksti.getId());
 
         assertEquals(user1, teksti2.getLuoja());
         assertEquals(user2, teksti2.getMuokkaaja());
         assertEquals(luotu, teksti2.getLuotu());
         assertTrue(teksti2.getMuokattu().compareTo(luotu)>=0);
+
+        endTransaction();
     }
 
     @Test
     public void testAuditRevisions() {
 
+        startNewTransaction();
         TekstiKappale teksti = new TekstiKappale();
         teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
         teksti.setTeksti(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Teksti")));
-        teksti = perusteenOsaRepository.save(teksti);
+        teksti = perusteenOsaRepository.saveAndFlush(teksti);
 
-        teksti.getNimi().getTeksti().put(Kieli.FI, "nimi, muokattu");
-        teksti = perusteenOsaRepository.save(teksti);
+        startNewTransaction();
+        teksti.setNimi(TekstiPalanen.of(Collections.singletonMap(Kieli.FI, "Nimi")));
+        teksti = perusteenOsaRepository.saveAndFlush(teksti);
 
+        startNewTransaction();
         List<Revision> revisions = perusteenOsaService.getVersiot(teksti.getId());
 
     	assertNotNull(revisions);
         assertEquals(2, revisions.size());
 
+        endTransaction();
     }
 
     @Test
     public void testTutkinnonOsaRevisions() {
+
+        startNewTransaction();
+
     	TutkinnonOsa tutkinnonOsa = new TutkinnonOsa();
     	tutkinnonOsa.setNimi(TekstiPalanen.of(Kieli.FI,"Nimi"));
         tutkinnonOsa.setTyyppi(TutkinnonOsaTyyppi.NORMAALI);
     	tutkinnonOsa = perusteenOsaRepository.save(tutkinnonOsa);
 
+        startNewTransaction();
+
         TutkinnonOsaDto tutkinnonOsaDto = (TutkinnonOsaDto)perusteenOsaService.get(tutkinnonOsa.getId());
+
+        startNewTransaction();
         perusteenOsaService.lock(tutkinnonOsa.getId());
 
+        startNewTransaction();
     	tutkinnonOsaDto.setArviointi(new ArviointiDto());
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot")));
         tutkinnonOsaDto.getArviointi().setArvioinninKohdealueet(new ArrayList<ArvioinninKohdealueDto>());
@@ -118,10 +140,13 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().add(ke);
     	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
+        startNewTransaction();
+
     	tutkinnonOsaDto.getArviointi().setLisatiedot(new LokalisoituTekstiDto(Collections.singletonMap("fi", "lisätiedot, muokattu")));
         tutkinnonOsaDto.getArviointi().getArvioinninKohdealueet().get(0).setOtsikko(new LokalisoituTekstiDto(Collections.singletonMap("fi", "kohdealue, muokattu")));
-    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
 
+    	tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
+        startNewTransaction();
 
         tutkinnonOsaDto.setAmmattitaitovaatimukset( new LokalisoituTekstiDto((Collections.singletonMap("fi", "Ammattitaitovaatimukset"))) );
 
@@ -150,6 +175,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
         tutkinnonOsaDto.setAmmattitaitovaatimuksetLista( ammattitaitovaatimusLista );
 
         tutkinnonOsaDto = perusteenOsaService.update(tutkinnonOsaDto);
+        startNewTransaction();
 
     	List<Revision> tutkinnonOsaRevisions = perusteenOsaService.getVersiot(tutkinnonOsaDto.getId());
 
@@ -181,6 +207,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
         perusteenOsaService.unlock(tutkinnonOsaDto.getId());
 
+        endTransaction();
     }
 
     private void setUpSecurityContext(String username) {

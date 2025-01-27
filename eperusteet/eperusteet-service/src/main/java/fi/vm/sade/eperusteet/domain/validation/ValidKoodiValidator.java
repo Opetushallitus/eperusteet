@@ -1,14 +1,14 @@
 package fi.vm.sade.eperusteet.domain.validation;
 
 import fi.vm.sade.eperusteet.domain.Koodi;
-import java.util.Collection;
-import javax.validation.UnexpectedTypeException;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.UnexpectedTypeException;
 import org.springframework.util.ObjectUtils;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class ValidKoodiValidator implements ConstraintValidator<ValidKoodisto, Object> {

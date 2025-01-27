@@ -1,20 +1,23 @@
 package fi.vm.sade.eperusteet.domain;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import fi.vm.sade.eperusteet.repository.dialect.JsonBType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.*;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Immutable
 @Table(name = "julkaistu_peruste_data")
-@TypeDef(name = "jsonb", defaultForType = JsonBType.class, typeClass = JsonBType.class)
 public class JulkaistuPerusteData {
 
     @Id
@@ -30,7 +33,7 @@ public class JulkaistuPerusteData {
     @NotNull
     @Getter
     @Setter
-    @Type(type = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "data")
     private ObjectNode data;
 
