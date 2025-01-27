@@ -136,6 +136,7 @@ public class WebSecurityConfiguration {
                 .headers(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
+                    .requestMatchers("/buildversion.txt").permitAll()
                     .requestMatchers("/actuator/health").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/").permitAll()
