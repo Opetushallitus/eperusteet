@@ -114,6 +114,7 @@ public class DefaultConfigs {
         props.put("hibernate.jdbc.batch_size", 20);
         props.put("hibernate.jdbc.fetch_size", 20);
         props.put(AvailableSettings.ID_DB_STRUCTURE_NAMING_STRATEGY, SingleNamingStrategy.STRATEGY_NAME);
+        props.put("hibernate.javax.cache.missing_cache_strategy", "create");
         entityManagerFactory.setJpaPropertyMap(props);
         return entityManagerFactory;
     }
