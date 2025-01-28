@@ -618,6 +618,8 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         if (projekti.getTila().equals(ProjektiTila.POISTETTU) && tila.equals(LAADINTA) && peruste.getViimeisinJulkaisuAika().isPresent()) {
             peruste.asetaTila(PerusteTila.VALMIS);
             projekti.setTila(ProjektiTila.JULKAISTU);
+            repository.saveAndFlush(projekti);
+            julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
             return new TilaUpdateStatus();
         }
 
@@ -694,7 +696,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
         }
 
         projekti.setTila(tila);
-        repository.save(projekti);
+        repository.saveAndFlush(projekti);
         julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
         return updateStatus;
     }
