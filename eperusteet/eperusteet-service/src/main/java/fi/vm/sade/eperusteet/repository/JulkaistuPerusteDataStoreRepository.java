@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.repository;
 
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
