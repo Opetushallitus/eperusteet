@@ -113,7 +113,7 @@ public class ExternalController {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
     }
 
-    @RequestMapping(value = "/peruste/{perusteId:\\d+}/**", method = GET)
+    @RequestMapping(value = "/peruste/{perusteId:\\d+}/{custompath}", method = GET)
     @ResponseBody
     @Operation(
             summary = "Perusteen tietojen haku tarkalla sisältörakenteella",
@@ -123,6 +123,12 @@ public class ExternalController {
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PerusteKaikkiDto.class))}),
     })
     public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
+        return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
+    }
+
+    // Springdoc ei generoi rajapintoja /** poluille, joten tämä on tehty erikseen
+    @RequestMapping(value = "/peruste/{perusteId:\\d+}/{custompath}/**", method = GET)
+    public ResponseEntity<Object> getPerusteDynamicQueryHidden(HttpServletRequest req, @PathVariable("perusteId") final long id) {
         return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
 

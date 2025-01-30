@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.ParameterCustomizer;
 import org.springdoc.core.customizers.PropertyCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
@@ -16,6 +17,7 @@ import org.springframework.core.MethodParameter;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -24,6 +26,12 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
+                .servers(
+                        List.of(
+                                new Server()
+                                        .description("ePerusteet API")
+                                        .url("https://virkailija.opintopolku.fi/eperusteet-service")
+                        ))
                 .info(new Info()
                 .title("ePerusteet rajapinta")
                 .description("Spring MVC API based on the swagger 3.0 specification")
