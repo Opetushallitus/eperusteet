@@ -71,7 +71,7 @@ public class ExternalController {
         return ResponseEntity.ok(peruste);
     }
 
-    @RequestMapping(method = GET, value = "/perusteet")
+    @RequestMapping(method = GET, value = { "/perusteet", "/perusteet/" })
     @ResponseBody
     @Operation(summary = "Perusteiden haku")
     public ResponseEntity<Page<PerusteenJulkaisuData>> getPerusteet(
@@ -122,10 +122,11 @@ public class ExternalController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = PerusteKaikkiDto.class))}),
     })
-    public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id) {
+    public ResponseEntity<Object> getPerusteDynamicQuery(HttpServletRequest req, @PathVariable("perusteId") final long id, @PathVariable("custompath") final String custompath ) {
         return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
 
+    @Hidden
     // Springdoc ei generoi rajapintoja /** poluille, joten tämä on tehty erikseen
     @RequestMapping(value = "/peruste/{perusteId:\\d+}/{custompath}/**", method = GET)
     public ResponseEntity<Object> getPerusteDynamicQueryHidden(HttpServletRequest req, @PathVariable("perusteId") final long id) {
