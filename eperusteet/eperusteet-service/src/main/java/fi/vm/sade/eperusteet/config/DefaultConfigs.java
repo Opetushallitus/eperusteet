@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.config;
 
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean;
 import fi.vm.sade.eperusteet.service.security.PermissionEvaluator;
 import jakarta.persistence.EntityManager;
@@ -129,4 +130,9 @@ public class DefaultConfigs {
         return new HandlerMappingIntrospector();
     }
 
+    static {
+        StreamReadConstraints.overrideDefaultStreamReadConstraints(
+                StreamReadConstraints.builder().maxStringLength(200000000).build()
+        );
+    }
 }
