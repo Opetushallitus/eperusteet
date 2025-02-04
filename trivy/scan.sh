@@ -41,7 +41,7 @@ repot=(
 
 for repo in "${repot[@]}"; do
   printf "Skannataan repo: ${repo}\n"
-  trivy repo --scanners vuln --severity ${vakavuudet} "github.com/Opetushallitus/${repo}" --format template --template "@html.tpl" --output "results/${repo}_$(date '+%Y-%m-%d').html" &
+  trivy repo --scanners vuln --severity ${vakavuudet} "github.com/Opetushallitus/${repo}" --output "results/${repo}_$(date '+%Y-%m-%d').txt" &
 done
 
 printf "\nOdotetaan taustatehtävien valmistumista...\n"
