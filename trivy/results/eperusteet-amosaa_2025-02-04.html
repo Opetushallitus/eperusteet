@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style>
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      h1 {
+        text-align: center;
+      }
+      .group-header th {
+        font-size: 200%;
+      }
+      .sub-header th {
+        font-size: 150%;
+      }
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        white-space: nowrap;
+        padding: .3em;
+      }
+      table {
+        margin: 0 auto;
+      }
+      .severity {
+        text-align: center;
+        font-weight: bold;
+        color: #fafafa;
+      }
+      .severity-LOW .severity { background-color: #5fbb31; }
+      .severity-MEDIUM .severity { background-color: #e9c600; }
+      .severity-HIGH .severity { background-color: #ff8800; }
+      .severity-CRITICAL .severity { background-color: #e40000; }
+      .severity-UNKNOWN .severity { background-color: #747474; }
+      .severity-LOW { background-color: #5fbb3160; }
+      .severity-MEDIUM { background-color: #e9c60060; }
+      .severity-HIGH { background-color: #ff880060; }
+      .severity-CRITICAL { background-color: #e4000060; }
+      .severity-UNKNOWN { background-color: #74747460; }
+      table tr td:first-of-type {
+        font-weight: bold;
+      }
+      .links a,
+      .links[data-more-links=on] a {
+        display: block;
+      }
+      .links[data-more-links=off] a:nth-of-type(1n+5) {
+        display: none;
+      }
+      a.toggle-more-links { cursor: pointer; }
+    </style>
+    <title>eperusteet-amosaa-service/pom.xml - Trivy Report - 2025-02-04 12:39:45.3931765 +0200 EET m=+20.863326801 </title>
+    <script>
+      window.onload = function() {
+        document.querySelectorAll('td.links').forEach(function(linkCell) {
+          var links = [].concat.apply([], linkCell.querySelectorAll('a'));
+          [].sort.apply(links, function(a, b) {
+            return a.href > b.href ? 1 : -1;
+          });
+          links.forEach(function(link, idx) {
+            if (links.length > 3 && 3 === idx) {
+              var toggleLink = document.createElement('a');
+              toggleLink.innerText = "Toggle more links";
+              toggleLink.href = "#toggleMore";
+              toggleLink.setAttribute("class", "toggle-more-links");
+              linkCell.appendChild(toggleLink);
+            }
+            linkCell.appendChild(link);
+          });
+        });
+        document.querySelectorAll('a.toggle-more-links').forEach(function(toggleLink) {
+          toggleLink.onclick = function() {
+            var expanded = toggleLink.parentElement.getAttribute("data-more-links");
+            toggleLink.parentElement.setAttribute("data-more-links", "on" === expanded ? "off" : "on");
+            return false;
+          };
+        });
+      };
+    </script>
+  </head>
+  <body>
+    <h1>eperusteet-amosaa-service/pom.xml - Trivy Report - 2025-02-04 12:39:45.3931765 +0200 EET m=+20.863326801</h1>
+    <table>
+      <tr class="group-header"><th colspan="6">pom</th></tr>
+      <tr class="sub-header">
+        <th>Package</th>
+        <th>Vulnerability ID</th>
+        <th>Severity</th>
+        <th>Installed Version</th>
+        <th>Fixed Version</th>
+        <th>Links</th>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">ch.qos.logback:logback-core</td>
+        <td>CVE-2024-12798</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">1.5.12</td>
+        <td>1.5.13, 1.3.15</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2024-12798">https://access.redhat.com/security/cve/CVE-2024-12798</a>
+          <a href="https://github.com/qos-ch/logback">https://github.com/qos-ch/logback</a>
+          <a href="https://github.com/qos-ch/logback/commit/2cb6d520df7592ef1c3a198f1b5df3c10c93e183">https://github.com/qos-ch/logback/commit/2cb6d520df7592ef1c3a198f1b5df3c10c93e183</a>
+          <a href="https://logback.qos.ch/news.html#1.3.15">https://logback.qos.ch/news.html#1.3.15</a>
+          <a href="https://logback.qos.ch/news.html#1.5.13">https://logback.qos.ch/news.html#1.5.13</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-12798">https://nvd.nist.gov/vuln/detail/CVE-2024-12798</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2024-12798">https://www.cve.org/CVERecord?id=CVE-2024-12798</a>
+        </td>
+      </tr>
+      <tr class="severity-LOW">
+        <td class="pkg-name">ch.qos.logback:logback-core</td>
+        <td>CVE-2024-12801</td>
+        <td class="severity">LOW</td>
+        <td class="pkg-version">1.5.12</td>
+        <td>1.5.13, 1.3.15</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2024-12801">https://access.redhat.com/security/cve/CVE-2024-12801</a>
+          <a href="https://github.com/qos-ch/logback">https://github.com/qos-ch/logback</a>
+          <a href="https://github.com/qos-ch/logback/commit/5f05041cba4c4ac0a62748c5c527a2da48999f2d">https://github.com/qos-ch/logback/commit/5f05041cba4c4ac0a62748c5c527a2da48999f2d</a>
+          <a href="https://logback.qos.ch/news.html#1.3.15">https://logback.qos.ch/news.html#1.3.15</a>
+          <a href="https://logback.qos.ch/news.html#1.5.13">https://logback.qos.ch/news.html#1.5.13</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-12801">https://nvd.nist.gov/vuln/detail/CVE-2024-12801</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2024-12801">https://www.cve.org/CVERecord?id=CVE-2024-12801</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">com.google.guava:guava</td>
+        <td>CVE-2023-2976</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">31.1-jre</td>
+        <td>32.0.0-android</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2023-2976">https://access.redhat.com/security/cve/CVE-2023-2976</a>
+          <a href="https://github.com/google/guava">https://github.com/google/guava</a>
+          <a href="https://github.com/google/guava/commit/feb83a1c8fd2e7670b244d5afd23cba5aca43284">https://github.com/google/guava/commit/feb83a1c8fd2e7670b244d5afd23cba5aca43284</a>
+          <a href="https://github.com/google/guava/issues/2575">https://github.com/google/guava/issues/2575</a>
+          <a href="https://github.com/google/guava/issues/6532">https://github.com/google/guava/issues/6532</a>
+          <a href="https://github.com/google/guava/releases/tag/v32.0.0">https://github.com/google/guava/releases/tag/v32.0.0</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-2976">https://nvd.nist.gov/vuln/detail/CVE-2023-2976</a>
+          <a href="https://security.netapp.com/advisory/ntap-20230818-0008">https://security.netapp.com/advisory/ntap-20230818-0008</a>
+          <a href="https://security.netapp.com/advisory/ntap-20230818-0008/">https://security.netapp.com/advisory/ntap-20230818-0008/</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2023-2976">https://www.cve.org/CVERecord?id=CVE-2023-2976</a>
+          <a href="https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-01006.html">https://www.intel.com/content/www/us/en/security-center/advisory/intel-sa-01006.html</a>
+        </td>
+      </tr>
+      <tr class="severity-LOW">
+        <td class="pkg-name">com.google.guava:guava</td>
+        <td>CVE-2020-8908</td>
+        <td class="severity">LOW</td>
+        <td class="pkg-version">31.1-jre</td>
+        <td>32.0.0-android</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2020-8908">https://access.redhat.com/security/cve/CVE-2020-8908</a>
+          <a href="https://github.com/google/guava">https://github.com/google/guava</a>
+          <a href="https://github.com/google/guava/commit/feb83a1c8fd2e7670b244d5afd23cba5aca43284">https://github.com/google/guava/commit/feb83a1c8fd2e7670b244d5afd23cba5aca43284</a>
+          <a href="https://github.com/google/guava/commit/fec0dbc4634006a6162cfd4d0d09c962073ddf40">https://github.com/google/guava/commit/fec0dbc4634006a6162cfd4d0d09c962073ddf40</a>
+          <a href="https://github.com/google/guava/issues/4011">https://github.com/google/guava/issues/4011</a>
+          <a href="https://github.com/google/guava/issues/4011#issuecomment-1578991974">https://github.com/google/guava/issues/4011#issuecomment-1578991974</a>
+          <a href="https://lists.apache.org/thread.html/r007add131977f4f576c232b25e024249a3d16f66aad14a4b52819d21%40%3Ccommon-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r007add131977f4f576c232b25e024249a3d16f66aad14a4b52819d21%40%3Ccommon-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r007add131977f4f576c232b25e024249a3d16f66aad14a4b52819d21@%3Ccommon-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r007add131977f4f576c232b25e024249a3d16f66aad14a4b52819d21@%3Ccommon-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r037fed1d0ebde50c9caf8d99815db3093c344c3f651c5a49a09824ce@%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r037fed1d0ebde50c9caf8d99815db3093c344c3f651c5a49a09824ce@%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r07ed3e4417ad043a27bee7bb33322e9bfc7d7e6d1719b8e3dfd95c14%40%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r07ed3e4417ad043a27bee7bb33322e9bfc7d7e6d1719b8e3dfd95c14%40%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r07ed3e4417ad043a27bee7bb33322e9bfc7d7e6d1719b8e3dfd95c14@%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r07ed3e4417ad043a27bee7bb33322e9bfc7d7e6d1719b8e3dfd95c14@%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r161b87f8037bbaff400194a63cd2016c9a69f5949f06dcc79beeab54%40%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r161b87f8037bbaff400194a63cd2016c9a69f5949f06dcc79beeab54%40%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r161b87f8037bbaff400194a63cd2016c9a69f5949f06dcc79beeab54@%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r161b87f8037bbaff400194a63cd2016c9a69f5949f06dcc79beeab54@%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e%40%3Ccommits.ws.apache.org%3E">https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e%40%3Ccommits.ws.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e@%3Ccommits.ws.apache.org%3E">https://lists.apache.org/thread.html/r215b3d50f56faeb2f9383505f3e62faa9f549bb23e8a9848b78a968e@%3Ccommits.ws.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r294be9d31c0312d2c0837087204b5d4bf49d0552890e6eec716fa6a6%40%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r294be9d31c0312d2c0837087204b5d4bf49d0552890e6eec716fa6a6%40%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r294be9d31c0312d2c0837087204b5d4bf49d0552890e6eec716fa6a6@%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r294be9d31c0312d2c0837087204b5d4bf49d0552890e6eec716fa6a6@%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r2fe45d96eea8434b91592ca08109118f6308d60f6d0e21d52438cfb4%40%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r2fe45d96eea8434b91592ca08109118f6308d60f6d0e21d52438cfb4%40%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r2fe45d96eea8434b91592ca08109118f6308d60f6d0e21d52438cfb4@%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r2fe45d96eea8434b91592ca08109118f6308d60f6d0e21d52438cfb4@%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r3c3b33ee5bef0c67391d27a97cbfd89d44f328cf072b601b58d4e748%40%3Ccommits.pulsar.apache.org%3E">https://lists.apache.org/thread.html/r3c3b33ee5bef0c67391d27a97cbfd89d44f328cf072b601b58d4e748%40%3Ccommits.pulsar.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r3c3b33ee5bef0c67391d27a97cbfd89d44f328cf072b601b58d4e748@%3Ccommits.pulsar.apache.org%3E">https://lists.apache.org/thread.html/r3c3b33ee5bef0c67391d27a97cbfd89d44f328cf072b601b58d4e748@%3Ccommits.pulsar.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r3dd8881de891598d622227e9840dd7c2ef1d08abbb49e9690c7ae1bc%40%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/r3dd8881de891598d622227e9840dd7c2ef1d08abbb49e9690c7ae1bc%40%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r3dd8881de891598d622227e9840dd7c2ef1d08abbb49e9690c7ae1bc@%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/r3dd8881de891598d622227e9840dd7c2ef1d08abbb49e9690c7ae1bc@%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r4776f62dfae4a0006658542f43034a7fc199350e35a66d4e18164ee6%40%3Ccommits.cxf.apache.org%3E">https://lists.apache.org/thread.html/r4776f62dfae4a0006658542f43034a7fc199350e35a66d4e18164ee6%40%3Ccommits.cxf.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r4776f62dfae4a0006658542f43034a7fc199350e35a66d4e18164ee6@%3Ccommits.cxf.apache.org%3E">https://lists.apache.org/thread.html/r4776f62dfae4a0006658542f43034a7fc199350e35a66d4e18164ee6@%3Ccommits.cxf.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r49549a8322f62cd3acfa4490d25bfba0be04f3f9ff4d14fe36199d27%40%3Cyarn-dev.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r49549a8322f62cd3acfa4490d25bfba0be04f3f9ff4d14fe36199d27%40%3Cyarn-dev.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r49549a8322f62cd3acfa4490d25bfba0be04f3f9ff4d14fe36199d27@%3Cyarn-dev.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r49549a8322f62cd3acfa4490d25bfba0be04f3f9ff4d14fe36199d27@%3Cyarn-dev.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r58a8775205ab1839dba43054b09a9ab3b25b423a4170b2413c4067ac%40%3Ccommon-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r58a8775205ab1839dba43054b09a9ab3b25b423a4170b2413c4067ac%40%3Ccommon-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r58a8775205ab1839dba43054b09a9ab3b25b423a4170b2413c4067ac@%3Ccommon-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r58a8775205ab1839dba43054b09a9ab3b25b423a4170b2413c4067ac@%3Ccommon-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r5b3d93dfdfb7708e796e8762ab40edbde8ff8add48aba53e5ea26f44%40%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/r5b3d93dfdfb7708e796e8762ab40edbde8ff8add48aba53e5ea26f44%40%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r5b3d93dfdfb7708e796e8762ab40edbde8ff8add48aba53e5ea26f44@%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/r5b3d93dfdfb7708e796e8762ab40edbde8ff8add48aba53e5ea26f44@%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r5d61b98ceb7bba939a651de5900dbd67be3817db6bfcc41c6e04e199%40%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r5d61b98ceb7bba939a651de5900dbd67be3817db6bfcc41c6e04e199%40%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r5d61b98ceb7bba939a651de5900dbd67be3817db6bfcc41c6e04e199@%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r5d61b98ceb7bba939a651de5900dbd67be3817db6bfcc41c6e04e199@%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r6874dfe26eefc41b7c9a5e4a0487846fc4accf8c78ff948b24a1104a%40%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r6874dfe26eefc41b7c9a5e4a0487846fc4accf8c78ff948b24a1104a%40%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r6874dfe26eefc41b7c9a5e4a0487846fc4accf8c78ff948b24a1104a@%3Cdev.drill.apache.org%3E">https://lists.apache.org/thread.html/r6874dfe26eefc41b7c9a5e4a0487846fc4accf8c78ff948b24a1104a@%3Cdev.drill.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222%40%3Ccommits.ws.apache.org%3E">https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222%40%3Ccommits.ws.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222@%3Ccommits.ws.apache.org%3E">https://lists.apache.org/thread.html/r68d86f4b06c808204f62bcb254fcb5b0432528ee8d37a07ef4bc8222@%3Ccommits.ws.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r79e47ed555bdb1180e528420a7a2bb898541367a29a3bc6bbf0baf2c%40%3Cissues.hive.apache.org%3E">https://lists.apache.org/thread.html/r79e47ed555bdb1180e528420a7a2bb898541367a29a3bc6bbf0baf2c%40%3Cissues.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r79e47ed555bdb1180e528420a7a2bb898541367a29a3bc6bbf0baf2c@%3Cissues.hive.apache.org%3E">https://lists.apache.org/thread.html/r79e47ed555bdb1180e528420a7a2bb898541367a29a3bc6bbf0baf2c@%3Cissues.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r7b0e81d8367264d6cad98766a469d64d11248eb654417809bfdacf09%40%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r7b0e81d8367264d6cad98766a469d64d11248eb654417809bfdacf09%40%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r7b0e81d8367264d6cad98766a469d64d11248eb654417809bfdacf09@%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/r7b0e81d8367264d6cad98766a469d64d11248eb654417809bfdacf09@%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r841c5e14e1b55281523ebcde661ece00b38a0569e00ef5e12bd5f6ba%40%3Cissues.maven.apache.org%3E">https://lists.apache.org/thread.html/r841c5e14e1b55281523ebcde661ece00b38a0569e00ef5e12bd5f6ba%40%3Cissues.maven.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/r841c5e14e1b55281523ebcde661ece00b38a0569e00ef5e12bd5f6ba@%3Cissues.maven.apache.org%3E">https://lists.apache.org/thread.html/r841c5e14e1b55281523ebcde661ece00b38a0569e00ef5e12bd5f6ba@%3Cissues.maven.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/ra7ab308481ee729f998691e8e3e02e93b1dedfc98f6b1cd3d86923b3%40%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/ra7ab308481ee729f998691e8e3e02e93b1dedfc98f6b1cd3d86923b3%40%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/ra7ab308481ee729f998691e8e3e02e93b1dedfc98f6b1cd3d86923b3@%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/ra7ab308481ee729f998691e8e3e02e93b1dedfc98f6b1cd3d86923b3@%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rb2364f4cf4d274eab5a7ecfaf64bf575cedf8b0173551997c749d322%40%3Cgitbox.hive.apache.org%3E">https://lists.apache.org/thread.html/rb2364f4cf4d274eab5a7ecfaf64bf575cedf8b0173551997c749d322%40%3Cgitbox.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rb2364f4cf4d274eab5a7ecfaf64bf575cedf8b0173551997c749d322@%3Cgitbox.hive.apache.org%3E">https://lists.apache.org/thread.html/rb2364f4cf4d274eab5a7ecfaf64bf575cedf8b0173551997c749d322@%3Cgitbox.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rb8c0f1b7589864396690fe42a91a71dea9412e86eec66dc85bbacaaf%40%3Ccommits.cxf.apache.org%3E">https://lists.apache.org/thread.html/rb8c0f1b7589864396690fe42a91a71dea9412e86eec66dc85bbacaaf%40%3Ccommits.cxf.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rb8c0f1b7589864396690fe42a91a71dea9412e86eec66dc85bbacaaf@%3Ccommits.cxf.apache.org%3E">https://lists.apache.org/thread.html/rb8c0f1b7589864396690fe42a91a71dea9412e86eec66dc85bbacaaf@%3Ccommits.cxf.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rbc7642b9800249553f13457e46b813bea1aec99d2bc9106510e00ff3%40%3Ctorque-dev.db.apache.org%3E">https://lists.apache.org/thread.html/rbc7642b9800249553f13457e46b813bea1aec99d2bc9106510e00ff3%40%3Ctorque-dev.db.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rbc7642b9800249553f13457e46b813bea1aec99d2bc9106510e00ff3@%3Ctorque-dev.db.apache.org%3E">https://lists.apache.org/thread.html/rbc7642b9800249553f13457e46b813bea1aec99d2bc9106510e00ff3@%3Ctorque-dev.db.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rc2dbc4633a6eea1fcbce6831876cfa17b73759a98c65326d1896cb1a%40%3Ctorque-dev.db.apache.org%3E">https://lists.apache.org/thread.html/rc2dbc4633a6eea1fcbce6831876cfa17b73759a98c65326d1896cb1a%40%3Ctorque-dev.db.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rc2dbc4633a6eea1fcbce6831876cfa17b73759a98c65326d1896cb1a@%3Ctorque-dev.db.apache.org%3E">https://lists.apache.org/thread.html/rc2dbc4633a6eea1fcbce6831876cfa17b73759a98c65326d1896cb1a@%3Ctorque-dev.db.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rc607bc52f3507b8b9c28c6a747c3122f51ac24afe80af2a670785b97%40%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/rc607bc52f3507b8b9c28c6a747c3122f51ac24afe80af2a670785b97%40%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rc607bc52f3507b8b9c28c6a747c3122f51ac24afe80af2a670785b97@%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/rc607bc52f3507b8b9c28c6a747c3122f51ac24afe80af2a670785b97@%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rcafc3a637d82bdc9a24036b2ddcad1e519dd0e6f848fcc3d606fd78f%40%3Cdev.hive.apache.org%3E">https://lists.apache.org/thread.html/rcafc3a637d82bdc9a24036b2ddcad1e519dd0e6f848fcc3d606fd78f%40%3Cdev.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rcafc3a637d82bdc9a24036b2ddcad1e519dd0e6f848fcc3d606fd78f@%3Cdev.hive.apache.org%3E">https://lists.apache.org/thread.html/rcafc3a637d82bdc9a24036b2ddcad1e519dd0e6f848fcc3d606fd78f@%3Cdev.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd01f5ff0164c468ec7abc96ff7646cea3cce6378da2e4aa29c6bcb95%40%3Cgithub.arrow.apache.org%3E">https://lists.apache.org/thread.html/rd01f5ff0164c468ec7abc96ff7646cea3cce6378da2e4aa29c6bcb95%40%3Cgithub.arrow.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd01f5ff0164c468ec7abc96ff7646cea3cce6378da2e4aa29c6bcb95@%3Cgithub.arrow.apache.org%3E">https://lists.apache.org/thread.html/rd01f5ff0164c468ec7abc96ff7646cea3cce6378da2e4aa29c6bcb95@%3Cgithub.arrow.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd2704306ec729ccac726e50339b8a8f079515cc29ccb77713b16e7c5%40%3Cissues.hive.apache.org%3E">https://lists.apache.org/thread.html/rd2704306ec729ccac726e50339b8a8f079515cc29ccb77713b16e7c5%40%3Cissues.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd2704306ec729ccac726e50339b8a8f079515cc29ccb77713b16e7c5@%3Cissues.hive.apache.org%3E">https://lists.apache.org/thread.html/rd2704306ec729ccac726e50339b8a8f079515cc29ccb77713b16e7c5@%3Cissues.hive.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd5d58088812cf8e677d99b07f73c654014c524c94e7fedbdee047604%40%3Ctorque-dev.db.apache.org%3E">https://lists.apache.org/thread.html/rd5d58088812cf8e677d99b07f73c654014c524c94e7fedbdee047604%40%3Ctorque-dev.db.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd5d58088812cf8e677d99b07f73c654014c524c94e7fedbdee047604@%3Ctorque-dev.db.apache.org%3E">https://lists.apache.org/thread.html/rd5d58088812cf8e677d99b07f73c654014c524c94e7fedbdee047604@%3Ctorque-dev.db.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd7e12d56d49d73e2b8549694974b07561b79b05455f7f781954231bf%40%3Cdev.pig.apache.org%3E">https://lists.apache.org/thread.html/rd7e12d56d49d73e2b8549694974b07561b79b05455f7f781954231bf%40%3Cdev.pig.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rd7e12d56d49d73e2b8549694974b07561b79b05455f7f781954231bf@%3Cdev.pig.apache.org%3E">https://lists.apache.org/thread.html/rd7e12d56d49d73e2b8549694974b07561b79b05455f7f781954231bf@%3Cdev.pig.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/re120f6b3d2f8222121080342c5801fdafca2f5188ceeb3b49c8a1d27%40%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/re120f6b3d2f8222121080342c5801fdafca2f5188ceeb3b49c8a1d27%40%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/re120f6b3d2f8222121080342c5801fdafca2f5188ceeb3b49c8a1d27@%3Cyarn-issues.hadoop.apache.org%3E">https://lists.apache.org/thread.html/re120f6b3d2f8222121080342c5801fdafca2f5188ceeb3b49c8a1d27@%3Cyarn-issues.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/reebbd63c25bc1a946caa419cec2be78079f8449d1af48e52d47c9e85%40%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/reebbd63c25bc1a946caa419cec2be78079f8449d1af48e52d47c9e85%40%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/reebbd63c25bc1a946caa419cec2be78079f8449d1af48e52d47c9e85@%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/reebbd63c25bc1a946caa419cec2be78079f8449d1af48e52d47c9e85@%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rf00b688ffa620c990597f829ff85fdbba8bf73ee7bfb34783e1f0d4e%40%3Cyarn-dev.hadoop.apache.org%3E">https://lists.apache.org/thread.html/rf00b688ffa620c990597f829ff85fdbba8bf73ee7bfb34783e1f0d4e%40%3Cyarn-dev.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rf00b688ffa620c990597f829ff85fdbba8bf73ee7bfb34783e1f0d4e@%3Cyarn-dev.hadoop.apache.org%3E">https://lists.apache.org/thread.html/rf00b688ffa620c990597f829ff85fdbba8bf73ee7bfb34783e1f0d4e@%3Cyarn-dev.hadoop.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rf9f0fa84b8ae1a285f0210bafec6de2a9eba083007d04640b82aa625%40%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/rf9f0fa84b8ae1a285f0210bafec6de2a9eba083007d04640b82aa625%40%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rf9f0fa84b8ae1a285f0210bafec6de2a9eba083007d04640b82aa625@%3Cissues.geode.apache.org%3E">https://lists.apache.org/thread.html/rf9f0fa84b8ae1a285f0210bafec6de2a9eba083007d04640b82aa625@%3Cissues.geode.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rfc27e2727a20a574f39273e0432aa97486a332f9b3068f6ac1346594%40%3Cdev.myfaces.apache.org%3E">https://lists.apache.org/thread.html/rfc27e2727a20a574f39273e0432aa97486a332f9b3068f6ac1346594%40%3Cdev.myfaces.apache.org%3E</a>
+          <a href="https://lists.apache.org/thread.html/rfc27e2727a20a574f39273e0432aa97486a332f9b3068f6ac1346594@%3Cdev.myfaces.apache.org%3E">https://lists.apache.org/thread.html/rfc27e2727a20a574f39273e0432aa97486a332f9b3068f6ac1346594@%3Cdev.myfaces.apache.org%3E</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2020-8908">https://nvd.nist.gov/vuln/detail/CVE-2020-8908</a>
+          <a href="https://security.netapp.com/advisory/ntap-20220210-0003">https://security.netapp.com/advisory/ntap-20220210-0003</a>
+          <a href="https://security.netapp.com/advisory/ntap-20220210-0003/">https://security.netapp.com/advisory/ntap-20220210-0003/</a>
+          <a href="https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415">https://snyk.io/vuln/SNYK-JAVA-COMGOOGLEGUAVA-1015415</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2020-8908">https://www.cve.org/CVERecord?id=CVE-2020-8908</a>
+          <a href="https://www.oracle.com//security-alerts/cpujul2021.html">https://www.oracle.com//security-alerts/cpujul2021.html</a>
+          <a href="https://www.oracle.com/security-alerts/cpuApr2021.html">https://www.oracle.com/security-alerts/cpuApr2021.html</a>
+          <a href="https://www.oracle.com/security-alerts/cpuapr2022.html">https://www.oracle.com/security-alerts/cpuapr2022.html</a>
+          <a href="https://www.oracle.com/security-alerts/cpujan2022.html">https://www.oracle.com/security-alerts/cpujan2022.html</a>
+          <a href="https://www.oracle.com/security-alerts/cpuoct2021.html">https://www.oracle.com/security-alerts/cpuoct2021.html</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">commons-httpclient:commons-httpclient</td>
+        <td>CVE-2012-5783</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">3.1</td>
+        <td>4.0</td>
+        <td class="links" data-more-links="off">
+          <a href="http://lists.opensuse.org/opensuse-updates/2013-02/msg00078.html">http://lists.opensuse.org/opensuse-updates/2013-02/msg00078.html</a>
+          <a href="http://lists.opensuse.org/opensuse-updates/2013-04/msg00040.html">http://lists.opensuse.org/opensuse-updates/2013-04/msg00040.html</a>
+          <a href="http://lists.opensuse.org/opensuse-updates/2013-04/msg00041.html">http://lists.opensuse.org/opensuse-updates/2013-04/msg00041.html</a>
+          <a href="http://lists.opensuse.org/opensuse-updates/2013-04/msg00053.html">http://lists.opensuse.org/opensuse-updates/2013-04/msg00053.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-0270.html">http://rhn.redhat.com/errata/RHSA-2013-0270.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-0679.html">http://rhn.redhat.com/errata/RHSA-2013-0679.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-0680.html">http://rhn.redhat.com/errata/RHSA-2013-0680.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-0681.html">http://rhn.redhat.com/errata/RHSA-2013-0681.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-0682.html">http://rhn.redhat.com/errata/RHSA-2013-0682.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-1147.html">http://rhn.redhat.com/errata/RHSA-2013-1147.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2013-1853.html">http://rhn.redhat.com/errata/RHSA-2013-1853.html</a>
+          <a href="http://rhn.redhat.com/errata/RHSA-2014-0224.html">http://rhn.redhat.com/errata/RHSA-2014-0224.html</a>
+          <a href="http://www.cs.utexas.edu/~shmat/shmat_ccs12.pdf">http://www.cs.utexas.edu/~shmat/shmat_ccs12.pdf</a>
+          <a href="http://www.securityfocus.com/bid/58073">http://www.securityfocus.com/bid/58073</a>
+          <a href="http://www.ubuntu.com/usn/USN-2769-1">http://www.ubuntu.com/usn/USN-2769-1</a>
+          <a href="https://access.redhat.com/errata/RHSA-2017:0868">https://access.redhat.com/errata/RHSA-2017:0868</a>
+          <a href="https://access.redhat.com/security/cve/CVE-2012-5783">https://access.redhat.com/security/cve/CVE-2012-5783</a>
+          <a href="https://exchange.xforce.ibmcloud.com/vulnerabilities/79984">https://exchange.xforce.ibmcloud.com/vulnerabilities/79984</a>
+          <a href="https://github.com/apache/httpcomponents-client">https://github.com/apache/httpcomponents-client</a>
+          <a href="https://issues.apache.org/jira/browse/HTTPCLIENT-1265">https://issues.apache.org/jira/browse/HTTPCLIENT-1265</a>
+          <a href="https://linux.oracle.com/cve/CVE-2012-5783.html">https://linux.oracle.com/cve/CVE-2012-5783.html</a>
+          <a href="https://linux.oracle.com/errata/ELSA-2013-0270.html">https://linux.oracle.com/errata/ELSA-2013-0270.html</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2012-5783">https://nvd.nist.gov/vuln/detail/CVE-2012-5783</a>
+          <a href="https://ubuntu.com/security/notices/USN-2769-1">https://ubuntu.com/security/notices/USN-2769-1</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2012-5783">https://www.cve.org/CVERecord?id=CVE-2012-5783</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">org.bouncycastle:bcprov-jdk15on</td>
+        <td>CVE-2023-33201</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">1.70</td>
+        <td></td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2023-33201">https://access.redhat.com/security/cve/CVE-2023-33201</a>
+          <a href="https://bouncycastle.org">https://bouncycastle.org</a>
+          <a href="https://bouncycastle.org/releasenotes.html#r1rv74">https://bouncycastle.org/releasenotes.html#r1rv74</a>
+          <a href="https://github.com/bcgit/bc-java">https://github.com/bcgit/bc-java</a>
+          <a href="https://github.com/bcgit/bc-java/commit/ccf93ca736b89250ff4ce079a5aa56f5cbf0ebbd">https://github.com/bcgit/bc-java/commit/ccf93ca736b89250ff4ce079a5aa56f5cbf0ebbd</a>
+          <a href="https://github.com/bcgit/bc-java/commit/e8c409a8389c815ea3fda5e8b94c92fdfe583bcc">https://github.com/bcgit/bc-java/commit/e8c409a8389c815ea3fda5e8b94c92fdfe583bcc</a>
+          <a href="https://github.com/bcgit/bc-java/commits/main/prov/src/main/java/org/bouncycastle/jce/provider/X509LDAPCertStoreSpi.java">https://github.com/bcgit/bc-java/commits/main/prov/src/main/java/org/bouncycastle/jce/provider/X509LDAPCertStoreSpi.java</a>
+          <a href="https://github.com/bcgit/bc-java/wiki/CVE-2023-33201">https://github.com/bcgit/bc-java/wiki/CVE-2023-33201</a>
+          <a href="https://lists.debian.org/debian-lts-announce/2023/08/msg00000.html">https://lists.debian.org/debian-lts-announce/2023/08/msg00000.html</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2023-33201">https://nvd.nist.gov/vuln/detail/CVE-2023-33201</a>
+          <a href="https://security.netapp.com/advisory/ntap-20230824-0008">https://security.netapp.com/advisory/ntap-20230824-0008</a>
+          <a href="https://security.netapp.com/advisory/ntap-20230824-0008/">https://security.netapp.com/advisory/ntap-20230824-0008/</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2023-33201">https://www.cve.org/CVERecord?id=CVE-2023-33201</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">org.bouncycastle:bcprov-jdk15on</td>
+        <td>CVE-2024-29857</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">1.70</td>
+        <td>1.78</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2024-29857">https://access.redhat.com/security/cve/CVE-2024-29857</a>
+          <a href="https://github.com/bcgit/bc-csharp/commit/56daa6eac526f165416d17f661422d60de0dfd63">https://github.com/bcgit/bc-csharp/commit/56daa6eac526f165416d17f661422d60de0dfd63</a>
+          <a href="https://github.com/bcgit/bc-csharp/wiki/CVE%E2%80%902024%E2%80%9029857">https://github.com/bcgit/bc-csharp/wiki/CVE%E2%80%902024%E2%80%9029857</a>
+          <a href="https://github.com/bcgit/bc-java/commit/efc498ca4caa340ac2fe11f2efee06c1a294501f">https://github.com/bcgit/bc-java/commit/efc498ca4caa340ac2fe11f2efee06c1a294501f</a>
+          <a href="https://github.com/bcgit/bc-java/commit/fee80dd230e7fba132d03a34f1dd1d6aae0d0281">https://github.com/bcgit/bc-java/commit/fee80dd230e7fba132d03a34f1dd1d6aae0d0281</a>
+          <a href="https://github.com/bcgit/bc-java/wiki/CVE%E2%80%902024%E2%80%9029857">https://github.com/bcgit/bc-java/wiki/CVE%E2%80%902024%E2%80%9029857</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-29857">https://nvd.nist.gov/vuln/detail/CVE-2024-29857</a>
+          <a href="https://security.netapp.com/advisory/ntap-20241206-0008">https://security.netapp.com/advisory/ntap-20241206-0008</a>
+          <a href="https://security.netapp.com/advisory/ntap-20241206-0008/">https://security.netapp.com/advisory/ntap-20241206-0008/</a>
+          <a href="https://www.bouncycastle.org/latest_releases.html">https://www.bouncycastle.org/latest_releases.html</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2024-29857">https://www.cve.org/CVERecord?id=CVE-2024-29857</a>
+        </td>
+      </tr>
+      <tr class="severity-MEDIUM">
+        <td class="pkg-name">org.bouncycastle:bcprov-jdk15on</td>
+        <td>CVE-2024-30171</td>
+        <td class="severity">MEDIUM</td>
+        <td class="pkg-version">1.70</td>
+        <td>1.78</td>
+        <td class="links" data-more-links="off">
+          <a href="https://access.redhat.com/security/cve/CVE-2024-30171">https://access.redhat.com/security/cve/CVE-2024-30171</a>
+          <a href="https://github.com/bcgit/bc-csharp/commit/c984b8bfd8544dfc55dba91a02cbbbb9c580c217">https://github.com/bcgit/bc-csharp/commit/c984b8bfd8544dfc55dba91a02cbbbb9c580c217</a>
+          <a href="https://github.com/bcgit/bc-csharp/wiki/CVE%E2%80%902024%E2%80%9030171">https://github.com/bcgit/bc-csharp/wiki/CVE%E2%80%902024%E2%80%9030171</a>
+          <a href="https://github.com/bcgit/bc-java/commit/d7d5e735abd64bf0f413f54fd9e495fc02400fb0">https://github.com/bcgit/bc-java/commit/d7d5e735abd64bf0f413f54fd9e495fc02400fb0</a>
+          <a href="https://github.com/bcgit/bc-java/commit/e0569dcb1dea9d421d84fc4c5c5688fe101afa2d">https://github.com/bcgit/bc-java/commit/e0569dcb1dea9d421d84fc4c5c5688fe101afa2d</a>
+          <a href="https://github.com/bcgit/bc-java/wiki/CVE%E2%80%902024%E2%80%9030171">https://github.com/bcgit/bc-java/wiki/CVE%E2%80%902024%E2%80%9030171</a>
+          <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-30171">https://nvd.nist.gov/vuln/detail/CVE-2024-30171</a>
+          <a href="https://people.redhat.com/~hkario/marvin/">https://people.redhat.com/~hkario/marvin/</a>
+          <a href="https://security.netapp.com/advisory/ntap-20240614-0008">https://security.netapp.com/advisory/ntap-20240614-0008</a>
+          <a href="https://security.netapp.com/advisory/ntap-20240614-0008/">https://security.netapp.com/advisory/ntap-20240614-0008/</a>
+          <a href="https://www.bouncycastle.org/latest_releases.html">https://www.bouncycastle.org/latest_releases.html</a>
+          <a href="https://www.cve.org/CVERecord?id=CVE-2024-30171">https://www.cve.org/CVERecord?id=CVE-2024-30171</a>
+        </td>
+      </tr>
+      <tr><th colspan="6">No Misconfigurations found</th></tr>
+    </table>
+  </body>
+</html>
