@@ -241,7 +241,7 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
     @Transactional
     private PerusteenOsaViite updateTraverse(PerusteenOsaViite parent, PerusteenOsaViiteDto.Puu<?, ?> uusi, Set<PerusteenOsaViite> refs) {
         PerusteenOsaViite pov = repository.getOne(uusi.getId());
-        if (!refs.remove(pov)) {
+        if (!refs.remove(refs.stream().filter(r -> r.getId().equals(pov.getId())).findFirst().orElse(null))) {
             throw new BusinessRuleViolationException("viitepuun päivitysvirhe");
         }
         pov.setVanhempi(parent);
