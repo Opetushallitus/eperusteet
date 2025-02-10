@@ -562,27 +562,22 @@ public class ValidatorPeruste implements Validator {
                 PerusteenRakenne.Validointi validointi;
 
                 // Osaamisaloilla täytyy olla tekstikuvaukset
-                if (peruste.getOsaamisalat() != null && peruste.getOsaamisalat().size() > 0) {
+                if (peruste.getOsaamisalat() != null && !peruste.getOsaamisalat().isEmpty()) {
                     PerusteenOsaViite sisalto = peruste.getSisallot(null);
                     if (sisalto != null) {
-                        Set<Koodi> kuvaukselliset = flattenSisalto(sisalto).stream()
+                        Set<String> kuvaukselliset = flattenSisalto(sisalto).stream()
                                 .filter(osa -> osa.getPerusteenOsa() instanceof TekstiKappale)
                                 .map(osa -> (TekstiKappale) osa.getPerusteenOsa())
                                 .map(TekstiKappale::getOsaamisala)
                                 .filter(Objects::nonNull)
+                                .map(Koodi::getUri)
                                 .collect(Collectors.toSet());
 
-                        Set<Koodi> oalat = new HashSet<>(peruste.getOsaamisalat());
-
-                        if (!Objects.equals(oalat, kuvaukselliset)) {
-                            oalat.removeAll(kuvaukselliset);
-                            List<LokalisoituTekstiDto> puuttuvat = oalat.stream()
-                                    .map(koodi -> mapper.map(koodi, KoodiDto.class))
-                                    .map(koodiDto -> koodiDto.getNimi())
-                                    .collect(Collectors.toList());
-
-                            puuttuvat.forEach(puuttuva -> perusteValidointi.virhe("osaamisalan-kuvauksia-puuttuu-sisallosta", NavigationNodeDto.of(NavigationType.muodostuminen), puuttuva.getTekstit()));
-                        }
+                        peruste.getOsaamisalat().stream()
+                                .filter(oa -> !kuvaukselliset.contains(oa.getUri()))
+                                .map(oa -> mapper.map(oa, KoodiDto.class))
+                                .map(KoodiDto::getNimi)
+                                .forEach(nimi -> perusteValidointi.virhe("osaamisalan-kuvauksia-puuttuu-sisallosta", NavigationNodeDto.of(NavigationType.muodostuminen), nimi.getTekstit()));
                     }
                 }
 
