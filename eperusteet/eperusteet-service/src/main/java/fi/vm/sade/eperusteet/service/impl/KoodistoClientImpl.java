@@ -119,6 +119,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
             return koodistoDtot;
         } catch (HttpServerErrorException ex) {
+            log.error("koodistoa {} ei löytynyt", koodisto);
             throw new BusinessRuleViolationException("koodistoa-ei-loytynyt");
         }
     }
