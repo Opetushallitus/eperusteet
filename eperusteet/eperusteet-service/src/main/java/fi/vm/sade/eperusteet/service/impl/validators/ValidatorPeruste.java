@@ -573,11 +573,9 @@ public class ValidatorPeruste implements Validator {
                                 .map(Koodi::getUri)
                                 .collect(Collectors.toSet());
 
-                        peruste.getOsaamisalat().stream()
-                                .filter(oa -> !kuvaukselliset.contains(oa.getUri()))
-                                .map(oa -> mapper.map(oa, KoodiDto.class))
-                                .map(KoodiDto::getNimi)
-                                .forEach(nimi -> perusteValidointi.virhe("osaamisalan-kuvauksia-puuttuu-sisallosta", NavigationNodeDto.of(NavigationType.muodostuminen), nimi.getTekstit()));
+                        if (peruste.getOsaamisalat().stream().anyMatch(oa -> !kuvaukselliset.contains(oa.getUri()))) {
+                            perusteValidointi.virhe("osaamisalan-kuvauksia-puuttuu-sisallosta", NavigationNodeDto.of(NavigationType.muodostuminen));
+                        }
                     }
                 }
 
