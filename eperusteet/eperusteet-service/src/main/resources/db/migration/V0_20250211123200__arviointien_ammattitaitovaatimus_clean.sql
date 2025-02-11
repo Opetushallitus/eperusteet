@@ -1,0 +1,1 @@
+update arvioinninkohdealue set koodi_id = null where koodi_id in (select id from koodi where uri like 'ammattitaitovaatimukset_%' and length(uri) <= 27)
