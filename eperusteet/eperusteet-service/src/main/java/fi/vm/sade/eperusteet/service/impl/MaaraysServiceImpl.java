@@ -253,28 +253,17 @@ public class MaaraysServiceImpl implements MaaraysService {
     @Override
     public UUID uploadFile(MaaraysLiiteDto maaraysLiiteUploadDto) {
         try {
-            byte[] decoder = Base64.getDecoder().decode(maaraysLiiteUploadDto.getFileB64());
-            InputStream is = new ByteArrayInputStream(decoder);
-
-            try (PushbackInputStream pis = new PushbackInputStream(is, BUFSIZE)) {
-                byte[] buf = new byte[Math.min(decoder.length, BUFSIZE)];
-                int len = pis.read(buf);
-                if (len < buf.length) {
-                    throw new IOException("luku epäonnistui");
-                }
-                pis.unread(buf);
+            byte[] liiteBytes = Base64.getDecoder().decode(maaraysLiiteUploadDto.getFileB64());
 
                 MaaraysLiite liite = new MaaraysLiite(
                         UUID.randomUUID(),
                         dtoMapper.map(maaraysLiiteUploadDto.getNimi(), TekstiPalanen.class),
                         maaraysLiiteUploadDto.getTiedostonimi(),
                         maaraysLiiteUploadDto.getTyyppi(),
-                        BlobProxy.generateProxy(IOUtils.toByteArray(is)));
+                        liiteBytes);
                 em.persist(liite);
                 em.flush();
-
                 return liite.getId();
-            }
         } catch(Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("liitteen-tallennus-epaonnistui");
@@ -288,10 +277,8 @@ public class MaaraysServiceImpl implements MaaraysService {
 
     @Override
     @Transactional(readOnly = true)
-    public void exportLiite(UUID id, OutputStream os) throws SQLException, IOException {
+    public byte[] exportLiite(UUID id, OutputStream os) {
         MaaraysLiite liite = maaraysLiiteRepository.findById(id).orElseThrow();
-        try (InputStream is = liite.getData().getBinaryStream()) {
-            IOUtils.copy(is, os);
-        }
+        return liite.getData();
     }
 }

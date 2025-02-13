@@ -52,7 +52,7 @@ public class MaaraysLiite implements Serializable {
     @Column(updatable = false, nullable = false)
     @Lob
     @NotNull
-    private Blob data;
+    private byte[] data;
 
     public MaaraysLiite copy() {
         MaaraysLiite copy = new MaaraysLiite();

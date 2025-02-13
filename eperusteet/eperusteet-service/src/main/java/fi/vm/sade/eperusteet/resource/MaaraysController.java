@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -147,7 +148,7 @@ public class MaaraysController {
 
     @GetMapping(value = "/liite/{fileName}")
     @CacheControl(age = CacheControl.ONE_YEAR)
-    public void getMaaraysLiite(
+    public ResponseEntity<Object> getMaaraysLiite(
             @PathVariable("fileName") String fileName,
             @RequestHeader(value = "If-None-Match", required = false) String etag,
             HttpServletResponse response
@@ -156,31 +157,22 @@ public class MaaraysController {
         MaaraysLiiteDto dto = maaraysService.getLiite(id);
 
         try {
-            getFile(id, dto, response, etag);
+            return getFile(id, dto);
         } catch(Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("liitteen-haku-epaonnistui");
         }
     }
 
-    private void getFile(UUID id, MaaraysLiiteDto maaraysLiite, HttpServletResponse response, String etag) throws IOException, SQLException {
+    private ResponseEntity<Object> getFile(UUID id, MaaraysLiiteDto maaraysLiite) throws IOException, SQLException {
         if (maaraysLiite != null) {
-            response.setHeader("Content-disposition", "inline; filename=\"" + maaraysLiite.getNimi() + ".pdf\"");
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Content-disposition", "inline; filename=\"" + maaraysLiite.getNimi() + ".pdf\"");
+            headers.set("Content-Type", MediaType.APPLICATION_PDF_VALUE);
+            headers.set("ETag", id.toString());
 
-            if (maaraysLiite.getId().toString().equals(etag)) {
-                response.setStatus(HttpStatus.NOT_MODIFIED.value());
-            } else {
-                response.setHeader("Content-Type", MediaType.APPLICATION_PDF_VALUE);
-                response.setHeader("ETag", id.toString());
-                try (OutputStream os = response.getOutputStream()) {
-                    maaraysService.exportLiite(id, os);
-                    os.flush();
-                }
-            }
-        } else {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
+            return new ResponseEntity<>(maaraysService.exportLiite(id, null), headers, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
-
 }
