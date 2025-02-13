@@ -19,15 +19,13 @@ import fi.vm.sade.eperusteet.repository.MaaraysLiiteRepository;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.MaaraysService;
-
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -40,12 +38,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import jakarta.persistence.EntityManager;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PushbackInputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -254,27 +249,17 @@ public class MaaraysServiceImpl implements MaaraysService {
     public UUID uploadFile(MaaraysLiiteDto maaraysLiiteUploadDto) {
         try {
             byte[] decoder = Base64.getDecoder().decode(maaraysLiiteUploadDto.getFileB64());
-            InputStream is = new ByteArrayInputStream(decoder);
 
-            try (PushbackInputStream pis = new PushbackInputStream(is, BUFSIZE)) {
-                byte[] buf = new byte[Math.min(decoder.length, BUFSIZE)];
-                int len = pis.read(buf);
-                if (len < buf.length) {
-                    throw new IOException("luku epäonnistui");
-                }
-                pis.unread(buf);
+            MaaraysLiite liite = new MaaraysLiite(
+                    UUID.randomUUID(),
+                    dtoMapper.map(maaraysLiiteUploadDto.getNimi(), TekstiPalanen.class),
+                    maaraysLiiteUploadDto.getTiedostonimi(),
+                    maaraysLiiteUploadDto.getTyyppi(),
+                    BlobProxy.generateProxy(decoder));
+            em.persist(liite);
+            em.flush();
 
-                MaaraysLiite liite = new MaaraysLiite(
-                        UUID.randomUUID(),
-                        dtoMapper.map(maaraysLiiteUploadDto.getNimi(), TekstiPalanen.class),
-                        maaraysLiiteUploadDto.getTiedostonimi(),
-                        maaraysLiiteUploadDto.getTyyppi(),
-                        BlobProxy.generateProxy(IOUtils.toByteArray(is)));
-                em.persist(liite);
-                em.flush();
-
-                return liite.getId();
-            }
+            return liite.getId();
         } catch(Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
             throw new BusinessRuleViolationException("liitteen-tallennus-epaonnistui");
