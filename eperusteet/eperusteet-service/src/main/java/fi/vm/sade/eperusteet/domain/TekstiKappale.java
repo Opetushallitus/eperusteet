@@ -120,6 +120,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
             }
             this.setKoodit(koodit);
         }
+        this.setLiite(other.isLiite());
     }
 
      @Override
