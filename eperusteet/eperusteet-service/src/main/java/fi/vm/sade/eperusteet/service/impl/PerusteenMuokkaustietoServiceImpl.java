@@ -175,6 +175,11 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
         // vain relevantit luonti-tapahtumat
         List<PerusteenMuokkaustietoDto> finalLuonnit = luonnit.stream()
                 .filter(tieto -> poistot.stream().noneMatch(poisto -> poisto.getKohdeId().equals(tieto.getKohdeId())))
+                .peek(tieto -> {
+                    paivitykset.stream()
+                            .filter(paivitys -> paivitys.getKohdeId().equals(tieto.getKohdeId()))
+                            .findFirst().ifPresent(luonninJalkeenPaivitetty -> tieto.setNimi(luonninJalkeenPaivitetty.getNimi()));
+                })
                 .collect(Collectors.toList());
         checkEmptyNames(finalLuonnit);
 
