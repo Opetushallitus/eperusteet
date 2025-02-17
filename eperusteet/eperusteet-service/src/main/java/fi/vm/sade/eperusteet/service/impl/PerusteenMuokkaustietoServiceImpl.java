@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
@@ -150,7 +151,14 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
             // ei löydy vanhempaa julkista julkaisua, johon verrata
             return new ArrayList<>();
         }
-        return filterTapahtumat(getVersioidenValisetMuutokset(perusteId, edellinenJulkinenJulkaisu.getLuotu(), tarkasteltavaJulkaisu.getLuotu()));
+        return filterTapahtumat(
+                getVersioidenValisetMuutokset(
+                        perusteId,
+                        edellinenJulkinenJulkaisu.getLuotu(),
+                        tarkasteltavaJulkaisu.getLuotu())
+                            .stream().sorted(comparing(PerusteenMuokkaustietoDto::getLuotu).reversed())
+                            .toList()
+        );
     }
 
     private List<PerusteenMuokkaustietoDto> getVersioidenValisetMuutokset(Long perusteId, Date edellinenLuotu, Date nykyinenLuotu) {
@@ -232,7 +240,7 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
     private List<PerusteenMuokkaustietoDto> filterMuokkaustiedotByTapahtuma(List<PerusteenMuokkaustietoDto> muokkaustiedot, MuokkausTapahtuma tapahtuma) {
         return muokkaustiedot.stream()
                 .filter(t -> t.getTapahtuma().equals(tapahtuma) && t.getKohdeId() != null)
-                .collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(PerusteenMuokkaustietoDto::getKohdeId))), ArrayList::new));
+                .toList();
     }
 
     private void addMuutostapahtuma(List<PerusteenMuokkaustietoDto> tiedotTyypeittain, MuokkausTapahtuma muokkausTapahtuma, List<MuutostapahtumaDto> tapahtumat) {

@@ -1,7 +1,7 @@
 
 pom.xml (pom)
 =============
-Total: 9 (LOW: 2, MEDIUM: 7, HIGH: 0, CRITICAL: 0)
+Total: 8 (LOW: 2, MEDIUM: 6, HIGH: 0, CRITICAL: 0)
 
 ┌───────────────────────────────────────┬────────────────┬──────────┬──────────┬───────────────────┬────────────────┬─────────────────────────────────────────────────────────────┐
 │                Library                │ Vulnerability  │ Severity │  Status  │ Installed Version │ Fixed Version  │                            Title                            │
@@ -24,10 +24,6 @@ Total: 9 (LOW: 2, MEDIUM: 7, HIGH: 0, CRITICAL: 0)
 │ commons-httpclient:commons-httpclient │ CVE-2012-5783  │ MEDIUM   │          │ 3.1               │ 4.0            │ jakarta-commons-httpclient: missing connection hostname     │
 │                                       │                │          │          │                   │                │ check against X.509 certificate name                        │
 │                                       │                │          │          │                   │                │ https://avd.aquasec.com/nvd/cve-2012-5783                   │
-├───────────────────────────────────────┼────────────────┤          │          ├───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
-│ org.apache.xmlgraphics:fop-core       │ CVE-2024-28168 │          │          │ 2.9               │ 2.10           │ fop: Improper Restriction of XML External Entity Reference  │
-│                                       │                │          │          │                   │                │ ('XXE')                                                     │
-│                                       │                │          │          │                   │                │ https://avd.aquasec.com/nvd/cve-2024-28168                  │
 ├───────────────────────────────────────┼────────────────┤          ├──────────┼───────────────────┼────────────────┼─────────────────────────────────────────────────────────────┤
 │ org.bouncycastle:bcprov-jdk15on       │ CVE-2023-33201 │          │ affected │ 1.70              │                │ bouncycastle: potential blind LDAP injection attack using a │
 │                                       │                │          │          │                   │                │ self-signed certificate                                     │
