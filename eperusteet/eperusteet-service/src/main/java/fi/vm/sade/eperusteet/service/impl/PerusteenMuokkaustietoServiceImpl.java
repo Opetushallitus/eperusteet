@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -195,14 +196,15 @@ public class PerusteenMuokkaustietoServiceImpl implements PerusteenMuokkaustieto
         List<PerusteenMuokkaustietoDto> finalPaivitykset = paivitykset.stream()
                 .filter(tieto -> poistot.stream().noneMatch(poisto -> poisto.getKohdeId().equals(tieto.getKohdeId()))
                         && luonnit.stream().noneMatch(luonti -> luonti.getKohdeId().equals(tieto.getKohdeId())))
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(PerusteenMuokkaustietoDto::getKohdeId, Function.identity(), (existing, replacement) -> existing))
+                .values().stream().toList();
 
         // listataan kaikkien filtteröityjen tapahtumien kohteet
         List<NavigationType> navTypes = Stream.of(finalPoistot, finalLuonnit, finalPaivitykset)
                 .flatMap(Collection::stream)
                 .map(PerusteenMuokkaustietoDto::getKohde)
                 .distinct()
-                .collect(Collectors.toList());
+                .toList();
 
         List<PerusteenMuutostietoDto> tyypinmukaan = new ArrayList<>();
 
