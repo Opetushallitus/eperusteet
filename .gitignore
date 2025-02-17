@@ -27,3 +27,5 @@ npm-debug.log
 /tools/lokalisointi/*.json
 
 **/.DS_Store
+
+/docs/Gemfile.lock
