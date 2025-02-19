@@ -10,6 +10,9 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKaikkiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.OsaamismerkkiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
@@ -58,6 +61,8 @@ public class ExternalController {
     private OsaamismerkkiService osaamismerkkiService;
 
     private static final int DEFAULT_PATH_SKIP_VALUE = 5;
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     @RequestMapping(value = "/peruste/{perusteId:\\d+}", method = GET)
     @ResponseBody
@@ -214,6 +219,20 @@ public class ExternalController {
     @Operation(summary = "Hae julkaistu osaamismerkki koodiurilla")
     public ResponseEntity<OsaamismerkkiDto> getOsaamismerkkiByUri(@PathVariable("uri") final String uri) {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkkiByUri(uri));
+    }
+
+    @RequestMapping(value = "/peruste/tutkinnonosa/{tutkinnonOsaKoodiUri}", method = GET)
+    @ResponseBody
+    @Operation(
+            summary = "Tutkinnon osan haku tutkinnon osan koodin URI:lla."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = TutkinnonOsaKaikkiDto.class))}),
+    })
+    public ResponseEntity<Object> getTutkinnonOsaByKoodi(
+            HttpServletRequest req,
+            @PathVariable("tutkinnonOsaKoodiUri") final String tutkinnonOsaKoodiUri) {
+        return ResponseEntity.ofNullable(julkaisutRepository.findTutkinnonOsaByTutkinnonOsaKoodi(tutkinnonOsaKoodiUri));
     }
 
     private List<String> requestToQueries(HttpServletRequest req, int skipCount) {

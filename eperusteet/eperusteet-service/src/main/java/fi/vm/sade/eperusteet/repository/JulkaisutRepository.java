@@ -207,4 +207,20 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
     JulkaistuPeruste findOneByDokumentitIn(Set<Long> dokumentit);
 
     List<JulkaistuPeruste> findByMuutosmaarays(Maarays maarays);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT jsonb_path_query(data,concat('$.tutkinnonOsat[*] ? (@.koodi.uri == \"', :tutkinnonOsaKoodiUri, '\")')::jsonpath) " +
+                    "FROM julkaistu_peruste jp " +
+                    "INNER JOIN julkaistu_peruste_data d ON d.id = jp.data_id " +
+                    "INNER JOIN peruste p ON p.id = jp.peruste_id " +
+                    "WHERE jsonb_path_exists( " +
+                    "    data, " +
+                    "    concat('$.tutkinnonOsat[*].koodi ? (@.uri == \"', :tutkinnonOsaKoodiUri, '\")')::jsonpath " +
+                    ") " +
+                    "AND p.tyyppi = 'NORMAALI' " +
+                    "ORDER BY jp.luotu DESC " +
+                    "limit 1"
+    )
+    Object findTutkinnonOsaByTutkinnonOsaKoodi(@Param("tutkinnonOsaKoodiUri") String tutkinnonOsaKoodiUri);
 }
