@@ -29,6 +29,7 @@ vakavuudet='CRITICAL,HIGH,MEDIUM,LOW'
 # Skannattavien repojen nimet
 repot=(
   'eperusteet'
+  'eperusteet-ai'
   'eperusteet-ui'
   'eperusteet-amosaa'
   'eperusteet-amosaa-ui'
@@ -40,7 +41,6 @@ repot=(
 )
 
 for repo in "${repot[@]}"; do
-  printf "Skannataan repo: ${repo}\n"
   trivy repo "github.com/Opetushallitus/${repo}" --scanners vuln --severity ${vakavuudet} --output "results/${repo}_$(date '+%Y-%m-%d').txt" &
 done
 
