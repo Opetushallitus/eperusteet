@@ -27,7 +27,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 @RequestMapping("/api/koodisto")
 @InternalApi
-@PreAuthorize("isAuthenticated()")
 @Tag(name = "Koodisto")
 public class KoodistoController {
     @Autowired

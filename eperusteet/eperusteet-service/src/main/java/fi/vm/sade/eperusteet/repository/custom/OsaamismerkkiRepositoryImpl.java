@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.LokalisoituTeksti_;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen_;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki;
+import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiKategoria_;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.OsaamismerkkiTila;
 import fi.vm.sade.eperusteet.domain.osaamismerkki.Osaamismerkki_;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
@@ -110,7 +111,7 @@ public class OsaamismerkkiRepositoryImpl implements OsaamismerkkiRepositoryCusto
         }
 
         if (!ObjectUtils.isEmpty(tq.getKategoria())) {
-            pred = cb.and(pred, cb.equal(root.get(Osaamismerkki_.kategoria), tq.getKategoria()));
+            pred = cb.and(pred, cb.equal(root.get(Osaamismerkki_.kategoria).get(OsaamismerkkiKategoria_.ID), tq.getKategoria()));
         }
 
         final Expression<Date> voimassaoloAlkaa = root.get(Osaamismerkki_.voimassaoloAlkaa);
