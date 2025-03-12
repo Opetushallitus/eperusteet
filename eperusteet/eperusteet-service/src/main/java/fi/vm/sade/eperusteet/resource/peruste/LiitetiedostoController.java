@@ -33,6 +33,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -220,8 +222,7 @@ public class LiitetiedostoController {
     private void getFile(UUID id, LiiteDto dto, HttpServletResponse response, String etag, Long perusteId) throws IOException {
         if (dto != null) {
             if (DOCUMENT_TYPES.contains(dto.getMime())) {
-                response.setHeader("Content-disposition",
-                        "inline; filename=\"" + dto.getNimi() + ".pdf\"");
+                response.setHeader("Content-Disposition", "inline;filename*=UTF-8''" + encodeFilename(dto.getNimi(), id.toString()));
             }
 
             if (dto.getId().toString().equals(etag)) {
@@ -237,5 +238,21 @@ public class LiitetiedostoController {
         } else {
             response.setStatus(HttpStatus.NOT_FOUND.value());
         }
+    }
+
+    private String encodeFilename(String filename, String fallBack) {
+        String fileName;
+
+        try {
+            fileName =  URLEncoder.encode(filename, StandardCharsets.UTF_8).replace("+", "%20");
+        } catch (Exception e) {
+            fileName = fallBack + ".pdf";
+        }
+
+        if (!fileName.contains(".pdf")) {
+            fileName += ".pdf";
+        }
+
+        return fileName;
     }
 }
