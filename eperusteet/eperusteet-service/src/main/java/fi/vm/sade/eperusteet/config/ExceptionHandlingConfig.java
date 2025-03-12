@@ -25,6 +25,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.lang.Nullable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -96,16 +98,13 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-            PersistenceException.class,
-            MappingException.class,
-            NestedRuntimeException.class,
-            NestedCheckedException.class,
-            ServletException.class,
-            ValidationException.class,
-            IllegalArgumentException.class,
             Exception.class
     })
     public ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest request) throws Exception {
+        if (e instanceof AuthenticationException || e instanceof AccessDeniedException) {
+            throw e;
+        }
+
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ResponseStatus rs = e.getClass().getAnnotation(ResponseStatus.class);
         if (rs != null) {
