@@ -565,7 +565,10 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     public List<PerusteInfoDto> getKorvattavatPerusteet(Long perusteId) {
-        Peruste peruste = perusteRepository.findById(perusteId).orElseThrow();
+        Peruste peruste = perusteRepository.findById(perusteId).orElse(null);
+        if (peruste == null) {
+            return Collections.emptyList();
+        }
         return mapper.mapAsList(perusteRepository.findAllByDiaarinumerot(peruste.getKorvattavatDiaarinumerot()), PerusteInfoDto.class);
     }
 
