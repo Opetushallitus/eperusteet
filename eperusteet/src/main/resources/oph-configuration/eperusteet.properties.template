@@ -35,7 +35,6 @@ cas.callback.eperusteet-service=http://${server.name}:8322/eperusteet-service
 cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
 cas.group-search-filter=(uniqueMember\={0})
-cas.sendRenew=false
 cas.service.oppijanumerorekisteri-service=https\://${host.virkailija}/oppijanumerorekisteri-service
 cas.service.kayttooikeus-service=https\://${host.virkailija}/kayttooikeus-service
 cas.service.eperusteet-service=https\://${host.virkailija}/eperusteet-service
