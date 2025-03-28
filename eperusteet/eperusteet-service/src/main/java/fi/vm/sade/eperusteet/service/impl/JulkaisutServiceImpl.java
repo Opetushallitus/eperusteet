@@ -344,7 +344,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisutRepository.saveAndFlush(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
 
-            if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)) {
+            if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)
+                || peruste.getToteutus().equals(KoulutustyyppiToteutus.VAPAASIVISTYSTYO)
+                || peruste.getToteutus().equals(KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS)
+                || peruste.getToteutus().equals(KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA)) {
                 Cache amosaaperusteet = cacheManager.getCache("amosaaperusteet");
                 if (amosaaperusteet != null) {
                     amosaaperusteet.clear();
