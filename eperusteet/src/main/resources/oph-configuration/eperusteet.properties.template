@@ -71,3 +71,7 @@ host_postgresql_eperusteet_password={{host_postgresql_eperusteet_app_password}}
 cas.login=${web.url.cas}/login
 cas.service=${cas.service.eperusteet-service}
 cas_callback_url=${cas.callback.eperusteet-service}
+
+#lampi export
+eperusteet.export.lampi-role-arn={{eperusteet_export_lampi_role_arn}}
+eperusteet.export.lampi-external-id={{eperusteet_export_lampi_external_id}}
