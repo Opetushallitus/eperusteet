@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Deprecated // addScalar ei toimi helposti hibernate 6 kanssa: repo käytössä vain vanhan lukion kanssa = voidaan tuhota(?)
 @Repository
 public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositoryCustom {
@@ -29,8 +32,9 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
     @Override
     public List<LokalisoituTekstiHakuDto> findLokalisoitavatTekstit(Set<Long> tekstiPalanenIds) {
         // Make sure PostgreSQL's max parameter size 34464 won't affect us:
-        return Lists.partition(new ArrayList<Long>(tekstiPalanenIds), 34460).stream()
-                .map(this::getTekstipalaset).flatMap(Collection::stream).collect(toList());
+//        return Lists.partition(new ArrayList<Long>(tekstiPalanenIds), 34460).stream()
+//                .map(this::getTekstipalaset).flatMap(Collection::stream).collect(toList());
+        return Collections.emptyList();
     }
 
     private List<LokalisoituTekstiHakuDto> getTekstipalaset(List<Long> tekstiPalanenIds) {
