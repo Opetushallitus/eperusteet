@@ -8,8 +8,10 @@ import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
 import fi.vm.sade.eperusteet.service.AmosaaClient;
 import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.export.LampiExportService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
@@ -55,6 +57,9 @@ public class MaintenanceController {
 
     @Autowired
     private AmosaaClient amosaaClient;
+
+    @Autowired
+    private LampiExportService lampiExportService;
 
     @RequestMapping(value = "/cacheclear/{cache}", method = GET)
     public ResponseEntity clearCache(@PathVariable final String cache) {
@@ -162,5 +167,16 @@ public class MaintenanceController {
     public ResponseEntity<String> paivitaAmosaaKoulutustoimijat() {
         amosaaClient.paivitaAmosaaKoulutustoimijat();
         return ResponseEntity.ok("paivitys kaynnistetty");
+    }
+
+    @GetMapping(value = "/lampi/export")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void exportLampi() throws JSONException, IOException {
+        lampiExportService.export();
+    }
+
+    @GetMapping(value = "/lampi/export/result")
+    public List<String> exportResultsLampi() {
+        return lampiExportService.listUploadedFiles();
     }
 }
