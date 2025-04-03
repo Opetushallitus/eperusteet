@@ -16,6 +16,7 @@ nbproject/
 /eperusteet/eperusteet-service/nbactions-oph.xml
 /eperusteet/eperusteet-service/log.txt
 /eperusteet/eperusteet-service/logs/
+/trivy/results
 
 npm-debug.log
 
