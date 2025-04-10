@@ -327,4 +327,11 @@ public interface PerusteService {
 
     @PreAuthorize("permitAll()")
     List<PerusteInfoDto> getKorvattavatPerusteet(Long perusteId);
+
+    @PreAuthorize("permitAll()")
+    List<PerusteKevytDto> getJulkaistutKoostePerusteet();
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
+    void updateJulkaistutKoostePerusteet(List<PerusteKevytDto> perusteet);
+
 }

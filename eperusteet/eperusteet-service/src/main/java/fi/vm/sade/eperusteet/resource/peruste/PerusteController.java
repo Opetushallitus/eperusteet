@@ -46,7 +46,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -497,6 +499,19 @@ public class PerusteController {
     @Operation(summary = "Perusteet jotka peruste korvaa")
     public List<PerusteInfoDto> getKorvattavatPerusteet(@PathVariable("perusteId") final long perusteId) {
         return service.getKorvattavatPerusteet(perusteId);
+    }
+
+    @GetMapping(value = "/julkisivunkoosteperusteet")
+    @ResponseBody
+    public List<PerusteKevytDto> getJulkaistutKoostePerusteet() {
+        return service.getJulkaistutKoostePerusteet();
+    }
+
+    @PostMapping(value = "/julkisivunkoosteperusteet")
+    @ResponseBody
+    public ResponseEntity<Void> updateJulkaistutKoostePerusteet(@RequestBody List<PerusteKevytDto> perusteet) {
+        service.updateJulkaistutKoostePerusteet(perusteet);
+        return ResponseEntity.ok().build();
     }
 
 }
