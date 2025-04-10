@@ -331,6 +331,16 @@ public class Peruste extends AbstractAuditedEntity
     @JoinColumn(name = "tietoa_palvelusta_kuvaus")
     private TekstiPalanen tietoapalvelustaKuvaus;
 
+    @Getter
+    @Setter
+    @Column(name= "julkisivu_jarjestys_nro")
+    private Integer julkisivuJarjestysNro = 0;
+
+    @Getter
+    @Setter
+    @Column(name= "piilota_julkisivulta")
+    private Boolean piilotaJulkisivulta = false;
+
     public Optional<Date> getViimeisinJulkaisuAika() {
         if (CollectionUtils.isNotEmpty(julkaisut)) {
             return julkaisut.stream()

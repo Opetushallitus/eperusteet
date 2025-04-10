@@ -28,6 +28,8 @@ public class PerusteKevytDto {
     private Date voimassaoloAlkaa;
     private Date voimassaoloLoppuu;
     private Reference perusteprojekti;
+    private Integer julkisivuJarjestysNro;
+    private Boolean piilotaJulkisivulta;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<SuoritustapaDto> suoritustavat;

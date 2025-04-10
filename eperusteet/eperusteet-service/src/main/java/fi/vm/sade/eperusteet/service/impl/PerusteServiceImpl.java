@@ -572,6 +572,29 @@ public class PerusteServiceImpl implements PerusteService{
         return mapper.mapAsList(perusteRepository.findAllByDiaarinumerot(peruste.getKorvattavatDiaarinumerot()), PerusteInfoDto.class);
     }
 
+    @Override
+    public List<PerusteKevytDto> getJulkaistutKoostePerusteet() {
+        return perusteRepository.findJulkaistutPerusteet(Arrays
+                        .stream(KoulutusTyyppi.values())
+                        .filter(kt -> !kt.isAmmatillinen())
+                        .map(KoulutusTyyppi::toString).collect(Collectors.toList()))
+                .stream()
+                .map(peruste -> mapper.map(peruste, PerusteKevytDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void updateJulkaistutKoostePerusteet(List<PerusteKevytDto> perusteet) {
+        perusteet.forEach(perusteDto -> {
+            Peruste peruste = perusteRepository.findById(perusteDto.getId()).orElse(null);
+            if (peruste != null) {
+                peruste.setJulkisivuJarjestysNro(perusteDto.getJulkisivuJarjestysNro());
+                peruste.setPiilotaJulkisivulta(perusteDto.getPiilotaJulkisivulta());
+                perusteRepository.save(peruste);
+            }
+        });
+    }
+
     // Julkinen haku
     @Override
     @Transactional(readOnly = true)
@@ -1253,6 +1276,8 @@ public class PerusteServiceImpl implements PerusteService{
             current.setKoulutustyyppi(updated.getKoulutustyyppi());
             current.setPoikkeamismaaraysTyyppi(updated.getPoikkeamismaaraysTyyppi());
             current.setPoikkeamismaaraysTarkennus(updated.getPoikkeamismaaraysTarkennus());
+            current.setJulkisivuJarjestysNro(updated.getJulkisivuJarjestysNro());
+            current.setPiilotaJulkisivulta(updated.getPiilotaJulkisivulta());
 
             if (updated.getVstSisalto() != null) {
                 current.setSisalto(updated.getVstSisalto());
