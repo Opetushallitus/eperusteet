@@ -576,7 +576,7 @@ public class PerusteServiceImpl implements PerusteService{
     public List<PerusteKevytDto> getJulkaistutKoostePerusteet() {
         return perusteRepository.findJulkaistutPerusteet(Arrays
                         .stream(KoulutusTyyppi.values())
-                        .filter(kt -> !kt.isAmmatillinen())
+                        .filter(kt -> !kt.isAmmatillinen() && !kt.isValmaTelma())
                         .map(KoulutusTyyppi::toString).collect(Collectors.toList()))
                 .stream()
                 .map(peruste -> mapper.map(peruste, PerusteKevytDto.class))
