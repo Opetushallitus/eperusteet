@@ -11,8 +11,10 @@ import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.PerusteService;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -61,10 +63,18 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
                 .filter(oppiaine -> oppiaineJaOppimaaraVuosiluokkakokonaisuusIdt(oppiaine).contains(vlkId))
                 .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
                 .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
-                .map(oppiaine ->
-                        NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimi(), oppiaine.getId()).meta("vlkId", vlkId)
-                                .add(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), vlkId, kieli) : null)
-                ).collect(Collectors.toList());
+                .map(oppiaine ->{
+                    Set<OppiaineDto> oppimaarat = Optional.ofNullable(oppiaine.getOppimaarat())
+                            .orElse(Collections.emptySet())
+                            .stream().filter(oppimaara -> oppimaara.getVuosiluokkakokonaisuudet().stream()
+                            .anyMatch(vlk -> vlk.getVuosiluokkaKokonaisuus().get().getIdLong().equals(vlkId)))
+                            .collect(Collectors.toSet());
+                    return NavigationNodeDto
+                            .of(NavigationType.perusopetusoppiaine, oppiaine.getNimi(), oppiaine.getId())
+                            .meta("vlkId", vlkId)
+                            .add(!ObjectUtils.isEmpty(oppimaarat) ? oppimaarat(oppimaarat, vlkId, kieli) : null);
+
+                }).collect(Collectors.toList());
     }
 
     private List<Long> oppiaineJaOppimaaraVuosiluokkakokonaisuusIdt(OppiaineLaajaDto oppiaine) {
