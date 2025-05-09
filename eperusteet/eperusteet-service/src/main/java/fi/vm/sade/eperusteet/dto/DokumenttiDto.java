@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +26,5 @@ public class DokumenttiDto {
     private GeneratorVersion generatorVersion;
     private Boolean julkaisuDokumentti = false;
     private int julkaisuRevision;
+    private List<String> dataTyypit;
 }
