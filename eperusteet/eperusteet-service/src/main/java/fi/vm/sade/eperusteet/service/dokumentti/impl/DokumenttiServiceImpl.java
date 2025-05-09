@@ -11,6 +11,7 @@ import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.pdf.PdfData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.repository.DokumenttiRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -181,24 +183,38 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional(readOnly = true)
-    public byte[] get(Long id) {
+    public byte[] getData(Long id) {
+        return getDokumenttiCheckStatus(id)
+                .map(Dokumentti::getData)
+                .orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] getHtml(Long id) {
+        return getDokumenttiCheckStatus(id)
+                .map(Dokumentti::getHtml)
+                .orElse(null);
+    }
+
+    private Optional<Dokumentti> getDokumenttiCheckStatus(Long id) {
         Dokumentti dokumentti = dokumenttiRepository.findById(id).orElse(null);
 
         if (dokumentti != null) {
             Peruste peruste = perusteRepository.findOne(dokumentti.getPerusteId());
             if (peruste == null) {
-                return null;
+                return Optional.empty();
             }
 
             String name = SecurityUtil.getAuthenticatedPrincipal().getName();
             if (name.equals("anonymousUser") && !peruste.getTila().equals(PerusteTila.VALMIS) && julkaisutRepository.findAllByPeruste(peruste).isEmpty()) {
-                return null;
+                return Optional.empty();
             }
 
-            return dokumentti.getData();
+            return Optional.of(dokumentti);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     @Override
@@ -265,11 +281,12 @@ public class DokumenttiServiceImpl implements DokumenttiService {
 
     @Override
     @Transactional
-    public void updateDokumenttiPdfData(byte[] data, Long dokumenttiId) {
+    public void updateDokumenttiPdfData(PdfData pdfData, Long dokumenttiId) {
         Optional<Dokumentti> optionalDokumentti = dokumenttiRepository.findById(dokumenttiId);
         if (optionalDokumentti.isPresent()) {
             Dokumentti dokumentti = optionalDokumentti.get();
-            dokumentti.setData(data);
+            dokumentti.setData(Base64.getDecoder().decode(pdfData.getData()));
+            dokumentti.setHtml(Base64.getDecoder().decode(pdfData.getHtml()));
             dokumentti.setTila(DokumenttiTila.VALMIS);
             dokumentti.setValmistumisaika(new Date());
             dokumenttiRepository.save(dokumentti);
