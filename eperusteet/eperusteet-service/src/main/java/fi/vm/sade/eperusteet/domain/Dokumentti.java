@@ -6,7 +6,9 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "dokumentti")
@@ -46,6 +48,11 @@ public class Dokumentti implements Serializable {
     @Column(name = "dokumenttidata")
     private byte[] data;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "dokumenttihtml")
+    private byte[] html;
+
     @Enumerated(EnumType.STRING)
     @NotNull
     private DokumenttiVirhe virhekoodi = DokumenttiVirhe.EI_VIRHETTA;
@@ -58,4 +65,15 @@ public class Dokumentti implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "generator_version")
     private GeneratorVersion generatorVersion = GeneratorVersion.UUSI;
+
+    public List<String> getDataTyypit() {
+        List<String> tyypit = new ArrayList<>();
+        if (data != null) {
+            tyypit.add("PDF");
+        }
+        if (html != null) {
+            tyypit.add("HTML");
+        }
+        return tyypit;
+    }
 }
