@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -39,6 +40,7 @@ import fi.vm.sade.eperusteet.repository.YllapitoRepository;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.MaintenanceService;
 import fi.vm.sade.eperusteet.service.PerusteService;
+import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -108,6 +110,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Autowired
     private JulkaistuPerusteDataStoreRepository julkaistuPerusteDataStoreRepository;
+
+    @Autowired
+    private PerusteenMuokkaustietoService muokkausTietoService;
 
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
 
@@ -261,6 +266,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
 
             julkaisutService.paivitaMaarayskokoelmaanPerusteenTiedot(perusteId);
+            muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
             return true;
         });
     }
