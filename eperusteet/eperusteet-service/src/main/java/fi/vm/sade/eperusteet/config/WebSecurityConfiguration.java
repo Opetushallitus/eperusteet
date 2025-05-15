@@ -146,7 +146,7 @@ public class WebSecurityConfiguration {
                 .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class)
                 .logout((logout) -> {
                     logout.logoutUrl("/api/logout");
-                    logout.logoutSuccessUrl("https://" + this.hostVirkailija + "/service-provider-app/saml/logout");
+                    logout.logoutSuccessUrl("https://" + this.hostVirkailija + "/cas/logout?service=https%3A%2F%2F" + this.hostVirkailija);
                     logout.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)));
                     logout.invalidateHttpSession(true);
                 })
