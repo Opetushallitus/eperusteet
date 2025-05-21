@@ -666,7 +666,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                         koodi.setKoodisto(KoodistoUriArvo.TUTKINNONOSAT);
                         koodi = koodiRepository.save(koodi);
 
-                        TutkinnonOsa tutkinnonOsa = mapper.map(tutkinnonOsaViite.getTutkinnonOsaDto(), TutkinnonOsa.class);
+                        TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepository.findOne(tutkinnonOsaViite.getTutkinnonOsa().getIdLong());
                         tutkinnonOsa.setKoodi(koodi);
                         tutkinnonOsaRepository.save(tutkinnonOsa);
                     }
