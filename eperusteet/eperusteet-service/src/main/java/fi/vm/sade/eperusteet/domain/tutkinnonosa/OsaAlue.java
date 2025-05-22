@@ -108,12 +108,20 @@ public class OsaAlue implements Serializable, PartialMergeable<OsaAlue>, Histori
     }
 
     public OsaAlue(OsaAlue o) {
+        if (o == null) {
+            return;
+        }
+
         this.nimi = o.nimi;
         this.kuvaus = o.kuvaus;
         this.osaamistavoitteet = new ArrayList<>();
         this.valmaTelmaSisalto = null;
         this.koodi = o.koodi;
         this.kielikoodi = o.kielikoodi;
+        this.tyyppi = o.tyyppi;
+        this.pakollisetOsaamistavoitteet = new Osaamistavoite(o.getPakollisetOsaamistavoitteet());
+        this.valinnaisetOsaamistavoitteet = new Osaamistavoite(o.getValinnaisetOsaamistavoitteet());
+        this.geneerinenArviointiasteikko = o.getGeneerinenArviointiasteikko();
 
         IdentityHashMap<Osaamistavoite, Osaamistavoite> identityMap = new IdentityHashMap<>();
         if (CollectionUtils.isNotEmpty(o.getOsaamistavoitteet())) {

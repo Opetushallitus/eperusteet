@@ -110,7 +110,15 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
     public Osaamistavoite() {
     }
 
-    Osaamistavoite(Osaamistavoite ot, Map<Osaamistavoite, Osaamistavoite> esitiedot) {
+    public Osaamistavoite(Osaamistavoite ot) {
+        this(ot, null);
+    }
+
+    public Osaamistavoite(Osaamistavoite ot, Map<Osaamistavoite, Osaamistavoite> esitiedot) {
+        if (ot == null) {
+            return;
+        }
+
         this.nimi = ot.getNimi();
         this.pakollinen = ot.isPakollinen();
         this.laajuus = ot.getLaajuus();
@@ -118,6 +126,7 @@ public class Osaamistavoite implements Serializable, PartialMergeable<Osaamistav
         this.kieli = ot.kieli;
         this.koodi = ot.koodi;
         this.arviointi = ot.getArviointi() == null ? null : new Arviointi(ot.getArviointi());
+        this.tavoitteet2020 = new Ammattitaitovaatimukset2019(ot.getTavoitteet2020());
 
         for (AmmattitaitovaatimuksenKohdealue avKohdealue : ot.ammattitaitovaatimuksetLista) {
             this.ammattitaitovaatimuksetLista.add(new AmmattitaitovaatimuksenKohdealue(avKohdealue));

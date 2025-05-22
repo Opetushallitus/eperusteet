@@ -46,6 +46,10 @@ public class Ammattitaitovaatimukset2019 extends AbstractAuditedReferenceableEnt
     private List<Ammattitaitovaatimus2019Kohdealue> kohdealueet = new ArrayList<>();
 
     public Ammattitaitovaatimukset2019(Ammattitaitovaatimukset2019 other) {
+        if (other == null) {
+            return;
+        }
+
         this.kohde = other.kohde;
 
         if (other.getVaatimukset() != null) {
