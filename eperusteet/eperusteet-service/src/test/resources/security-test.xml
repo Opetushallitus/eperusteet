@@ -45,4 +45,9 @@
     <context:component-scan base-package="fi.vm.sade.eperusteet.service"/>
     <context:component-scan base-package="fi.vm.sade.eperusteet.resource" />
     <context:component-scan base-package="fi.vm.sade.eperusteet.config"/>
+
+    <bean id="jdbcTemplate" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.springframework.jdbc.core.JdbcTemplate"/>
+    </bean>
+
 </beans>

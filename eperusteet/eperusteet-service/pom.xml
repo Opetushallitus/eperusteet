@@ -18,11 +18,36 @@
         <springdoc.output.file.name>eperusteet.spec.json</springdoc.output.file.name>
         <springdoc.api.docs.url.external>http://localhost:8080/eperusteet-service/api-docs/external</springdoc.api.docs.url.external>
         <springdoc.output.file.name.external>eperusteet-ext.spec.json</springdoc.output.file.name.external>
+        <aws.java.sdk.version>2.31.11</aws.java.sdk.version>
+        <opencsv.version>5.10</opencsv.version>
     </properties>
 
     <build>
         <finalName>eperusteet-service</finalName>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${aws.java.sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3-transfer-manager</artifactId>
+            <version>${aws.java.sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sts</artifactId>
+            <version>${aws.java.sdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
+        </dependency>
+    </dependencies>
 
     <distributionManagement>
         <repository>
