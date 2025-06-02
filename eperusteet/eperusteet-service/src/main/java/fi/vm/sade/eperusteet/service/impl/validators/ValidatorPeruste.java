@@ -589,7 +589,9 @@ public class ValidatorPeruste implements Validator {
                                     suoritustapa.getRakenne(),
                                     KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma());
                             if (!validointi.ongelmat.isEmpty()) {
-                                perusteValidointi.virhe("rakenteen-validointi-virhe", NavigationNodeDto.of(NavigationType.muodostuminen));
+                                validointi.ongelmat.forEach(ongelma -> {
+                                    perusteValidointi.virhe("rakenteen-validointi-virhe-" + ongelma.getOngelma(), NavigationNodeDto.of(NavigationType.muodostuminen));
+                                });
                             }
                         }
 

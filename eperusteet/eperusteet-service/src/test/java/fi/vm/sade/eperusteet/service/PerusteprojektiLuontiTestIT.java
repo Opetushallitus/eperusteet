@@ -142,7 +142,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         assertThat(status.getVirheet()).hasSize(2);
         assertThat(status.getVirheet())
                 .extracting("kuvaus")
-                .contains("rakenteen-validointi-virhe");
+                .contains("rakenteen-validointi-virhe-tutkinnolle-ei-maaritetty-kokonaislaajuutta");
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);
         rakenne.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE)));
         lockService.lock(TutkinnonRakenneLockContext.of(perusteDto.getId(), Suoritustapakoodi.REFORMI));
@@ -503,7 +503,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             TilaUpdateStatus status = new TilaUpdateStatus(perusteprojektiService.validoiProjekti(projekti.getId(), ProjektiTila.JULKAISTU));
             assertThat(status.getVirheet())
                     .extracting(Validointi.Virhe::getKuvaus)
-                    .contains("rakenteen-validointi-virhe");
+                    .contains("rakenteen-validointi-virhe-tutkinnolle-ei-maaritetty-kokonaislaajuutta");
         }
     }
 

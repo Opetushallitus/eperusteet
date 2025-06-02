@@ -201,17 +201,17 @@ public class PerusteenRakenne {
 
         if (rooli == RakenneModuuliRooli.VIRTUAALINEN) {
             if (osat.size() > 0) {
-                validointi.ongelmat.add(new Ongelma("Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia", nimi, syvyys));
+                validointi.ongelmat.add(new Ongelma("rakennehierarkia-ei-saa-sisaltaa-tutkinnossa-maariteltavia-ryhmia-joihin-liitetty-osia", nimi, syvyys));
             }
         }
 
         if (validointi.sisakkaisiaOsaamisalaryhmia > 1) {
             validointi.sisakkaisiaOsaamisalaryhmia = 1;
-            validointi.ongelmat.add(new Ongelma("Rakenteessa sisäkkäisiä osaamisalaryhmiä", nimi, syvyys));
+            validointi.ongelmat.add(new Ongelma("rakenteessa-sisakkaisia-osaamisalaryhmia", nimi, syvyys));
         }
 
         if (rooli == RakenneModuuliRooli.NORMAALI && uniikit.size() + ryhmienMaara != osat.size()) {
-            validointi.ongelmat.add(new Ongelma("Ryhmässä on samoja tutkinnon osia (" + uniikit.size() + " uniikkia).", nimi, syvyys));
+            validointi.ongelmat.add(new Ongelma("ryhmassa-on-samoja-tutkinnon-osia", nimi, syvyys));
         }
 
         // Tutkintonimike- ja osaamisalaryhmillä täytyy olla sisältöä
@@ -229,15 +229,15 @@ public class PerusteenRakenne {
 
             if (rooli == RakenneModuuliRooli.NORMAALI) {
                 if (laajuusSummaMin.compareTo(laajuusMin) < 0) {
-                    validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (" + laajuusSummaMin + " < " + laajuusMin + ").", nimi, syvyys));
+                    validointi.ongelmat.add(new Ongelma("laskettu-laajuuksien-summan-minimi-on-pienempi-kuin-ryhman-vaadittu-minimi", nimi, syvyys));
                 } else if (laajuusSummaMax.compareTo(laajuusMax) < 0) {
-                    validointi.ongelmat.add(new Ongelma("Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (" + laajuusSummaMax + " > " + laajuusMax + ").", nimi, syvyys));
+                    validointi.ongelmat.add(new Ongelma("laskettu-laajuuksien-summan-maksimi-on-pienempi-kuin-ryhman-vaadittu-maksimi", nimi, syvyys));
                 }
 
                 if (osat.size() < kokoMin) {
-                    validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin vaadittu minimi (" + osat.size() + " < " + kokoMin + ").", nimi, syvyys));
+                    validointi.ongelmat.add(new Ongelma("laskettu-koko-on-pienempi-kuin-vaadittu-minimi", nimi, syvyys));
                 } else if (osat.size() < kokoMax) {
-                    validointi.ongelmat.add(new Ongelma("Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (" + osat.size() + " < " + kokoMax + ").", nimi, syvyys));
+                    validointi.ongelmat.add(new Ongelma("laskettu-koko-on-pienempi-kuin-ryhman-vaadittu-maksimi", nimi, syvyys));
                 }
                 validointi.laskettuLaajuus = ms.laajuusMaksimi() != null && ms.laajuusMaksimi() > 0 ? laajuusMax : laajuusSummaMax;
             } else if (rooli == RakenneModuuliRooli.VIRTUAALINEN) {
