@@ -212,7 +212,7 @@ public class PerusteenRakenneTestIT {
                         "ryhman-osaamisalaa-ei-perusteella",
                         "ryhman-osaamisalaa-ei-perusteella",
                         "rakenteessa-osaamisaloja-useassa-ryhmassa",
-                        "Rakenteessa sisäkkäisiä osaamisalaryhmiä",
+                        "rakenteessa-sisakkaisia-osaamisalaryhmia",
                         "ryhman-osaamisalaa-ei-perusteella",
                         "rakenteessa-osaamisaloja-useassa-ryhmassa");
     }
@@ -230,7 +230,7 @@ public class PerusteenRakenneTestIT {
                 .containsExactlyInAnyOrder(
                         "tutkinnolle-ei-maaritetty-kokonaislaajuutta",
                         "paatason-muodostumisen-rooli-virheellinen",
-                        "Rakennehierarkia ei saa sisältää tutkinnossa määriteltäviä ryhmiä, joihin liitetty osia");
+                        "rakennehierarkia-ei-saa-sisaltaa-tutkinnossa-maariteltavia-ryhmia-joihin-liitetty-osia");
     }
 
     @Test
@@ -244,8 +244,8 @@ public class PerusteenRakenneTestIT {
         assertThat(validoitu.ongelmat)
                 .extracting(PerusteenRakenne.Ongelma::getOngelma)
                 .containsExactlyInAnyOrder(
-                        "Laskettu laajuuksien summan minimi on pienempi kuin ryhmän vaadittu minimi (0 < 180).",
-                        "Laskettu koko on pienempi kuin vaadittu minimi (0 < 2).");
+                        "laskettu-laajuuksien-summan-minimi-on-pienempi-kuin-ryhman-vaadittu-minimi",
+                        "laskettu-koko-on-pienempi-kuin-vaadittu-minimi");
     }
 
     @Test
@@ -268,8 +268,8 @@ public class PerusteenRakenneTestIT {
         assertThat(validoitu.ongelmat)
                 .extracting(PerusteenRakenne.Ongelma::getOngelma)
                 .containsExactlyInAnyOrder(
-                        "Laskettu laajuuksien summan maksimi on pienempi kuin ryhmän vaadittu maksimi (160 > 180).",
-                        "Laskettu koko on pienempi kuin ryhmän vaadittu maksimi (3 < 4).");
+                        "laskettu-laajuuksien-summan-maksimi-on-pienempi-kuin-ryhman-vaadittu-maksimi",
+                        "laskettu-koko-on-pienempi-kuin-ryhman-vaadittu-maksimi");
     }
 
 }
