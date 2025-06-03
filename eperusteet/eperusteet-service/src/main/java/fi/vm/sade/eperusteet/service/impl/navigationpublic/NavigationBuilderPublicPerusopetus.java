@@ -88,6 +88,10 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
     }
 
     private NavigationNodeDto oppiaineet(PerusteKaikkiDto peruste, String kieli) {
+        if (ObjectUtils.isEmpty(peruste.getPerusopetuksenPerusteenSisalto().getOppiaineet())) {
+            return null;
+        }
+
         return NavigationNodeDto.of(NavigationType.perusopetusoppiaineet)
                 .addAll(peruste.getPerusopetuksenPerusteenSisalto().getOppiaineet().stream()
                         .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
