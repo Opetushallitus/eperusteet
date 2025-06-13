@@ -1,6 +1,6 @@
 package fi.vm.sade.eperusteet.config;
 
-import ch.qos.logback.access.tomcat.LogbackValve;
+import org.apache.catalina.valves.AccessLogValve;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -14,9 +14,12 @@ public class AccessLogConfiguration {
     @ConditionalOnProperty(name = "logback.access")
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> containerCustomizer() {
         return container -> container.addContextCustomizers(context -> {
-            LogbackValve logbackValve = new LogbackValve();
-            logbackValve.setFilename("logback-access.xml");
-            context.getPipeline().addValve(logbackValve);
+            AccessLogValve accessLogValve = new AccessLogValve();
+            accessLogValve.setPattern("%h %l %u %t \"%r\" %s %b %D");
+            accessLogValve.setDirectory("logs");
+            accessLogValve.setPrefix("access_log");
+            accessLogValve.setSuffix(".log");
+            context.getPipeline().addValve(accessLogValve);
         });
     }
 }
