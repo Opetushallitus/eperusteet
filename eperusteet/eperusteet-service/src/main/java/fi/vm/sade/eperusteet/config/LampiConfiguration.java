@@ -9,6 +9,8 @@ import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.sts.StsClient;
 import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider;
 import software.amazon.awssdk.services.sts.model.AssumeRoleRequest;
+import software.amazon.awssdk.transfer.s3.S3TransferManager;
+import software.amazon.awssdk.transfer.s3.internal.TransferManagerFactory;
 
 @Configuration
 public class LampiConfiguration {
@@ -26,6 +28,11 @@ public class LampiConfiguration {
                 .credentialsProvider(lampiCredentialsProvider())
                 .region(Region.EU_WEST_1)
                 .build();
+    }
+
+    @Bean
+    public S3TransferManager.Builder s3tranferManagerBuilder() {
+        return new TransferManagerFactory.DefaultBuilder();
     }
 
     private StsAssumeRoleCredentialsProvider lampiCredentialsProvider() {
