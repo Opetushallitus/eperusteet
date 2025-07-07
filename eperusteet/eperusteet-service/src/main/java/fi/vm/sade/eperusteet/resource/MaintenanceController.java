@@ -168,15 +168,4 @@ public class MaintenanceController {
         amosaaClient.paivitaAmosaaKoulutustoimijat();
         return ResponseEntity.ok("paivitys kaynnistetty");
     }
-
-    @GetMapping(value = "/lampi/export")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void exportLampi() throws JSONException, IOException {
-        lampiExportService.export();
-    }
-
-    @GetMapping(value = "/lampi/export/result")
-    public List<String> exportResultsLampi() {
-        return lampiExportService.listUploadedFiles();
-    }
 }

@@ -1,16 +1,20 @@
 package fi.vm.sade.eperusteet.service.export;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import software.amazon.awssdk.core.ResponseBytes;
+import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Request;
 import software.amazon.awssdk.services.s3.model.ListObjectsV2Response;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -27,9 +31,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,14 +48,21 @@ public class LampiExportService {
     @Autowired
     private S3AsyncClient lampiS3Client;
 
+    @Autowired
+    private S3TransferManager.Builder s3tranferManagerBuilder;
+
     @Value("${eperusteet.export.lampi-bucket:''}")
     private String bucketName;
 
     @Value("${eperusteet.export.lampi.enabled:false}")
     private boolean enabled;
 
+    @Value("${eperusteet.export.lampi.temp-files.delete:true}")
+    private boolean deleteTempFiles;
+
     private final String bucketPath = "fulldump/eperusteet/v1/";
-    private final String fileName = "perusteet.csv";
+    private final String csvFileName = "peruste.csv";
+    private final String manifestFileName = "manifest.json";
     private final String query =
             """
             SELECT jp.peruste_id, jpd.data
@@ -81,7 +94,6 @@ public class LampiExportService {
                 .build();
 
         CompletableFuture<ListObjectsV2Response> futureResponse = lampiS3Client.listObjectsV2(listObjectsRequest);
-
         return futureResponse.thenApply(response ->
                 response.contents().stream()
                         .map(S3Object::key) // Extract file names (keys)
@@ -101,19 +113,32 @@ public class LampiExportService {
             throw new IllegalArgumentException("Bucket name is required");
         }
 
-        File csvFile = generateCsvFile();
-        String s3Key = bucketPath + fileName;
+        File csvFile = null;
+        File manifestFile = null;
+
         try {
-            PutObjectResponse response = uploadToS3(csvFile, bucketPath + fileName);
-            uploadManifest(s3Key, response.versionId());
+            csvFile = generateCsvFile();
+            String s3Key = bucketPath + csvFileName;
+
+            PutObjectResponse response = uploadToS3(csvFile, s3Key);
+            manifestFile = createManifestfile(s3Key, response.versionId());
+            uploadToS3(manifestFile, bucketPath + manifestFileName);
         } finally {
-            Files.deleteIfExists(csvFile.toPath());
+            if (deleteTempFiles) {
+                if (csvFile != null && csvFile.exists()) {
+                    Files.deleteIfExists(csvFile.toPath());
+                }
+
+                if (manifestFile != null && manifestFile.exists()) {
+                    Files.deleteIfExists(manifestFile.toPath());
+                }
+            }
         }
     }
 
     private File generateCsvFile() throws IOException {
         log.info("Generating CSV file from query: {}", query);
-        File csvFile = new File(fileName);
+        File csvFile = new File(csvFileName);
         try (FileWriter writer = new FileWriter(csvFile);
             CSVWriter csvWriter = new CSVWriter(writer)) {
             List<Map<String, Object>> rows = jdbcTemplate.queryForList(query);
@@ -133,7 +158,7 @@ public class LampiExportService {
 
     private PutObjectResponse uploadToS3(File file, String key) {
         log.info("Uploading file to S3: {} -> {}", file.getAbsolutePath(), key);
-        try (S3TransferManager uploader = S3TransferManager.builder().s3Client(lampiS3Client).build()) {
+        try (S3TransferManager uploader = s3tranferManagerBuilder.s3Client(lampiS3Client).build()) {
             FileUpload fileUpload = uploader.uploadFile(UploadFileRequest.builder()
                     .putObjectRequest(b -> b.bucket(bucketName).key(key))
                     .source(file)
@@ -143,19 +168,59 @@ public class LampiExportService {
         }
     }
 
-    private void uploadManifest(String s3Key, String versionId) throws JSONException, IOException {
+    private File createManifestfile(String s3Key, String versionId) throws JSONException, IOException {
         log.info("Uploading manifest.json to S3");
-        JSONObject manifest = new JSONObject()
-                .put("tables", List.of(new JSONObject()
-                        .put("key", s3Key)
-                        .put("s3Version", versionId)));
 
-        String manifestFile = "manifest.json";
+        Map<String, Object> table = new HashMap<>();
+        table.put("key", s3Key);
+        table.put("s3Version", versionId);
+
+        Map<String, Object> manifest = new HashMap<>();
+        manifest.put("tables", List.of(table));
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        File manifestFile = new File(manifestFileName);
         try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(manifestFile), StandardCharsets.UTF_8)) {
-            writer.write(manifest.toString(4));
-            uploadToS3(new File(manifestFile), bucketPath + "manifest.json");
-        } finally {
-            Files.deleteIfExists(new File(manifestFile).toPath());
+            writer.write(mapper.writeValueAsString(manifest));
+        }
+
+        return manifestFile;
+    }
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUKU')")
+    public byte[] downloadManifest() throws IOException {
+        if (!enabled) {
+            throw new IOException("Lampi export is disabled");
+        }
+        String key = bucketPath + manifestFileName;
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            CompletableFuture<ResponseBytes<GetObjectResponse>> future = lampiS3Client.getObject(getObjectRequest, AsyncResponseTransformer.toBytes());
+            return future.get().asByteArray();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IOException("Failed to download manifest.json from S3", e);
+        }
+    }
+
+    @PreAuthorize("hasPermission(null, 'pohja', 'LUKU')")
+    public byte[] downloadCsv() throws IOException {
+        if (!enabled) {
+            throw new IOException("Lampi export is disabled");
+        }
+        String key = bucketPath + csvFileName;
+        try {
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+                    .build();
+            CompletableFuture<ResponseBytes<GetObjectResponse>> future = lampiS3Client.getObject(getObjectRequest, AsyncResponseTransformer.toBytes());
+            return future.get().asByteArray();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new IOException("Failed to download peruste.csv from S3", e);
         }
     }
 }

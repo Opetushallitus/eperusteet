@@ -66,7 +66,7 @@ class LampiExportServiceTest {
     void testListUploadedFiles_ReturnsKeys() {
         // Setup mock S3 response
         S3Object s3Object = S3Object.builder()
-                .key("fulldump/eperusteet/v1/perusteet.csv")
+                .key("fulldump/eperusteet/v1/peruste.csv")
                 .build();
 
         ListObjectsV2Response response = ListObjectsV2Response.builder()
@@ -82,7 +82,7 @@ class LampiExportServiceTest {
 
         // Verify results
         assertEquals(1, files.size());
-        assertEquals("fulldump/eperusteet/v1/perusteet.csv", files.get(0));
+        assertEquals("fulldump/eperusteet/v1/peruste.csv", files.get(0));
 
         // Verify the correct bucket and prefix were used
         ArgumentCaptor<ListObjectsV2Request> requestCaptor = ArgumentCaptor.forClass(ListObjectsV2Request.class);
@@ -147,7 +147,7 @@ class LampiExportServiceTest {
 
         // Verify
         assertNotNull(result);
-        assertTrue(result.getName().equals("perusteet.csv"));
+        assertTrue(result.getName().equals("peruste.csv"));
 
         // Verify database was queried
         verify(jdbcTemplate).queryForList(anyString());
