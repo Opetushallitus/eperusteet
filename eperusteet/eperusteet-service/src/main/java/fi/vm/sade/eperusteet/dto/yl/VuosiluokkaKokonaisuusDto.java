@@ -23,7 +23,7 @@ public class VuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private Long id;
     private UUID tunniste;
     private Set<Vuosiluokka> vuosiluokat;
-    private Optional<LokalisoituTekstiDto> nimi;
+    private LokalisoituTekstiDto nimi;
     private Optional<TekstiOsaDto> siirtymaEdellisesta;
     private Optional<TekstiOsaDto> tehtava;
     private Optional<TekstiOsaDto> siirtymaSeuraavaan;
@@ -33,6 +33,6 @@ public class VuosiluokkaKokonaisuusDto implements ReferenceableDto {
     private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     public PerusteRakenneOsa getPerusteenOsa() {
-        return new PerusteRakenneOsa("vuosiluokkakokonaisuus", nimi.get());
+        return new PerusteRakenneOsa("vuosiluokkakokonaisuus", nimi);
     }
 }
