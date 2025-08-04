@@ -16,6 +16,7 @@ import jakarta.validation.constraints.NotNull;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
@@ -217,10 +218,6 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
             throw new BusinessRuleViolationException("koodia-ei-voi-muuttaa");
         }
 
-        if (!Objects.equals(a.getTunniste(), b.getTunniste())) {
-            throw new BusinessRuleViolationException("tunnistetta-ei-voi-muuttaa");
-        }
-
         if (a.pakollinenKurssiKuvaus != null && b.pakollinenKurssiKuvaus == null) {
             throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
         }
@@ -274,7 +271,6 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
             }
         }
     }
-
 
     @Override
     public NavigationType getNavigationType() {
