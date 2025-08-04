@@ -420,6 +420,6 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     @Override
     public NavigationType getNavigationType() {
-        return NavigationType.oppiaine;
+        return NavigationType.perusopetusoppiaine;
     }
 }

@@ -80,10 +80,6 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     public static void validateChange(AIPEKurssi a, AIPEKurssi b) {
         Koodi.validateChange(a.koodi, b.koodi);
 
-        if (!Objects.equals(a.getTunniste(), b.getTunniste())) {
-            throw new BusinessRuleViolationException("tunnistetta-ei-voi-muuttaa");
-        }
-
         if (a.nimi != null && b.nimi == null) {
             throw new BusinessRuleViolationException("nimea-ei-voi-poistaa");
         }
