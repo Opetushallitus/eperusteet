@@ -45,6 +45,7 @@ jobs:
           cd eperusteet-frontend-utils/vue
           yarn install --silent
           yarn gen:api:eperusteet
+          yarn gen:api:ai
           rm -rf node_modules
           cd ../..
           echo "----------eperusteet-ui:n viimeisimman commitin sha----------"

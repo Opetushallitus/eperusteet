@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Base64;
 import java.util.Objects;
 
 @RestController
@@ -92,18 +91,29 @@ public class DokumenttiController {
     public ResponseEntity<Object> getDokumentti(
             @PathVariable("fileName") String fileName
     ) {
+        return pdfDataResponse(fileName, service.getData(Long.valueOf(FilenameUtils.removeExtension(fileName))), "pdf");
+    }
+
+    @RequestMapping(value = "/{fileName}/html", method = RequestMethod.GET, produces = "text/html")
+    @ResponseBody
+    @CacheControl(age = CacheControl.ONE_YEAR, nonpublic = false)
+    public ResponseEntity<Object> getDokumenttihtml(
+            @PathVariable("fileName") String fileName
+    ) {
+        return pdfDataResponse(fileName, service.getHtml(Long.valueOf(FilenameUtils.removeExtension(fileName))), "html");
+    }
+
+    private ResponseEntity<Object> pdfDataResponse(String fileName, byte[] data, String type) {
         Long dokumenttiId = Long.valueOf(FilenameUtils.removeExtension(fileName));
         String extension = FilenameUtils.getExtension(fileName);
 
-        byte[] pdfdata = service.get(dokumenttiId);
-
         // Tarkistetaan tiedostopääte jos asetettu kutsuun
-        if (!ObjectUtils.isEmpty(extension) && !Objects.equals(extension, "pdf")) {
+        if (!ObjectUtils.isEmpty(extension) && !Objects.equals(extension, type)) {
             LOG.error("Got wrong file extension");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        if (pdfdata == null || pdfdata.length == 0) {
+        if (data == null || data.length == 0) {
             LOG.error("Got null or empty data from service");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -115,14 +125,14 @@ public class DokumenttiController {
             TekstiPalanen nimi = peruste.getNimi();
             if (nimi != null && nimi.getTeksti().containsKey(dokumenttiDto.getKieli())) {
                 headers.set("Content-disposition", "inline; filename=\""
-                        + nimi.getTeksti().get(dokumenttiDto.getKieli()) + ".pdf\"");
+                        + nimi.getTeksti().get(dokumenttiDto.getKieli()) + "." + type +"\"");
             } else {
-                headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + ".pdf\"");
+                headers.set("Content-disposition", "inline; filename=\"" + dokumenttiId + "." + type +"\"");
             }
         }
         // estetään googlea indeksoimasta pdf:iä
         headers.set("X-Robots-Tag", "noindex");
-        return new ResponseEntity<>(pdfdata, headers, HttpStatus.OK);
+        return new ResponseEntity<>(data, headers, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/peruste", method = RequestMethod.GET)
@@ -196,7 +206,7 @@ public class DokumenttiController {
     @ResponseBody
     public ResponseEntity<String> savePdfData(@PathVariable("dokumenttiId") Long dokumenttiId,
                                               @RequestBody PdfData pdfData) {
-        service.updateDokumenttiPdfData(Base64.getDecoder().decode(pdfData.getData()), dokumenttiId);
+        service.updateDokumenttiPdfData(pdfData, dokumenttiId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
