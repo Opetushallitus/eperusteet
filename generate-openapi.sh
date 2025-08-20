@@ -19,10 +19,10 @@ gen_openapi_ext() {
 
 # Dispatch based on argument
 case "${1:-}" in
-  gen_openapi)
+  openapi)
     gen_openapi
     ;;
-  gen_openapi_ext)
+  openapi_ext)
     gen_openapi_ext
     ;;
   *)
