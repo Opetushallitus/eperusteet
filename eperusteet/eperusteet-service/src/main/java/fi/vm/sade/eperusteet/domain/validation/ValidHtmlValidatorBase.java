@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.domain.validation;
 import com.google.common.base.CharMatcher;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.jsoup.Jsoup;
@@ -10,6 +11,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
+@Slf4j
 public abstract class ValidHtmlValidatorBase {
 
 	private Safelist whitelist;
@@ -24,6 +26,8 @@ public abstract class ValidHtmlValidatorBase {
 		if (palanen != null && palanen.getTeksti() != null && !palanen.getTeksti().isEmpty()) {
 			for (Kieli kieli : palanen.getTeksti().keySet()) {
 				if (!Jsoup.isValid(palanen.getTeksti().get(kieli), whitelist)) {
+
+                    log.error("Invalid HTML detected in language {}: {}", kieli, palanen.getTeksti().get(kieli));
 					return false;
 				}
 			}
