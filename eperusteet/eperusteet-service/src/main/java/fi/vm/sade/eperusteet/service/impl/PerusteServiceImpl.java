@@ -1093,6 +1093,8 @@ public class PerusteServiceImpl implements PerusteService{
                             .collect(Collectors.toList()));
         }
 
+        perusteDto.setKvLiite(getJulkinenKVLiite(peruste.getId()));
+
         return perusteDto;
     }
 

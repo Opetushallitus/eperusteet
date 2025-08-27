@@ -90,6 +90,10 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     @Schema(description = "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä.")
     private Date muutosmaarayksenVoimassaoloAlkaa;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "Perusteen kv-liite")
+    private KVLiiteJulkinenDto kvLiite;
+
     @JsonIgnore
     public Set<PerusteenSisaltoDto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {
