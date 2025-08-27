@@ -27,6 +27,7 @@ import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.liite.LiiteTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
+import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiite;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiittyyTyyppi;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysTila;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
@@ -517,9 +518,13 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
                 Maarays copy = muutosmaarays.copy();
                 copy.setPeruste(peruste);
                 copy.setTila(MaaraysTila.LUONNOS);
-                copy.getLiitteet().forEach((kieli, maaraysKieliLiitteet) -> maaraysKieliLiitteet.setLiitteet(maaraysKieliLiitteet.getLiitteet().stream()
-                        .peek(liite -> maaraysLiiteRepository.save(liite))
-                        .collect(Collectors.toList())));
+                copy.getLiitteet().forEach((kieli, maaraysKieliLiitteet) -> {
+                    List<MaaraysLiite> savedLiitteet = maaraysKieliLiitteet.getLiitteet().stream()
+                            .map(liite -> maaraysLiiteRepository.save(liite))
+                            .collect(Collectors.toList());
+                    maaraysKieliLiitteet.setLiitteet(savedLiitteet);
+                });
+
                 maaraysRepository.save(copy);
             });
         }
