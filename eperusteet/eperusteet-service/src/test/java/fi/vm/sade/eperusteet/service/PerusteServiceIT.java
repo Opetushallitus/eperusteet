@@ -121,6 +121,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         p.setSuoritustavat(Sets.newHashSet(s));
         s.getPerusteet().add(p);
         p.setKoulutukset(Sets.newHashSet(koulutus));
+        p.setKoulutustyyppi(KoulutusTyyppi.AMMATTITUTKINTO.toString());
 
         pp.setPeruste(p);
         perusteprojektiRepository.save(pp);
