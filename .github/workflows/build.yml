@@ -85,17 +85,17 @@ jobs:
           cd eperusteet/eperusteet-service        
           mvn clean verify -B -Pit
           
-      - name: Upload Coverage to Code Climate
-        if: ${{ github.ref_name == 'master' }}
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          cd eperusteet/eperusteet-service/src/main/java
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-          chmod +x ./cc-test-reporter
-          ./cc-test-reporter before-build
-          ./cc-test-reporter format-coverage -t jacoco --add-prefix src/main/java/ ../../../target/jacoco/jacoco.xml
-          ./cc-test-reporter upload-coverage  
+      #- name: Upload Coverage to Code Climate
+      #  if: ${{ github.ref_name == 'master' }}
+      #  env:
+      #    CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      #  run: |
+      #    cd eperusteet/eperusteet-service/src/main/java
+      #    curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+      #    chmod +x ./cc-test-reporter
+      #    ./cc-test-reporter before-build
+      #    ./cc-test-reporter format-coverage -t jacoco --add-prefix src/main/java/ ../../../target/jacoco/jacoco.xml
+      #    ./cc-test-reporter upload-coverage  
           
       - name: Upload eperusteet-service-jar
         uses: actions/upload-artifact@v4
