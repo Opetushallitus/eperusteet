@@ -5,17 +5,14 @@ import fi.vm.sade.eperusteet.resource.util.ProfilingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 
 import jakarta.persistence.EntityManagerFactory;
 import java.util.List;
@@ -25,6 +22,13 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Autowired
     EntityManagerFactory emf;
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/ui/")
+                .addResourceLocations("classpath:/static/ui/")
+                .setCacheControl(CacheControl.noStore());
+    }
 
     @Override
     public void configurePathMatch(PathMatchConfigurer matcher) {
