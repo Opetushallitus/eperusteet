@@ -10,7 +10,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -229,7 +229,7 @@ public class PerusteController {
     @RequestMapping(value = "/{perusteId}/kvliite", method = GET)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public KVLiiteJulkinenDto getKvLiite(
+    public KVLiiteLaajaDto getKvLiite(
             @PathVariable("perusteId") final long id) {
         return service.getJulkinenKVLiite(id);
     }
@@ -240,7 +240,7 @@ public class PerusteController {
     @InternalApi
     public PerusteDto updateKvLiite(
             @PathVariable("perusteId") final long id,
-            @RequestBody KVLiiteJulkinenDto kvliiteDto
+            @RequestBody KVLiiteLaajaDto kvliiteDto
     ) {
         return service.updateKvLiite(id, kvliiteDto);
     }

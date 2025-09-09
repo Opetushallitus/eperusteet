@@ -199,7 +199,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteRepository.flush();
         PerusteDto peruste = perusteService.get(projekti.getPeruste().getIdLong());
         Assert.assertNotNull(peruste.getKvliite());
-        KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
+        KVLiiteLaajaDto julkinenKVLiite = perusteService.getJulkinenKVLiite(peruste.getId());
         Assert.assertNotNull(julkinenKVLiite);
     }
 
@@ -268,7 +268,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         perusteDto = perusteService.updateFull(perusteDto.getId(), perusteDto);
         testKvliite(perusteDto.getKvliite(), "b");
 
-        KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(perusteDto.getId());
+        KVLiiteLaajaDto julkinenKVLiite = perusteService.getJulkinenKVLiite(perusteDto.getId());
         Assert.assertEquals("a1", julkinenKVLiite.getJatkoopintoKelpoisuus().get(Kieli.FI));
         Assert.assertEquals("a2", julkinenKVLiite.getKansainvalisetSopimukset().get(Kieli.FI));
         Assert.assertEquals("a3", julkinenKVLiite.getLisatietoja().get(Kieli.FI));

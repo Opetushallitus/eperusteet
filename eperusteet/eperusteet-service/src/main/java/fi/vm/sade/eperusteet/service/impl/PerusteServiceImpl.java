@@ -15,7 +15,6 @@ import fi.vm.sade.eperusteet.domain.Koulutus;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
-import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.domain.Maarayskirje;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Muutosmaarays;
@@ -23,7 +22,6 @@ import fi.vm.sade.eperusteet.domain.OpasTyyppi;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteVersion;
 import fi.vm.sade.eperusteet.domain.PerusteenOsa;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
@@ -64,9 +62,8 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
-import fi.vm.sade.eperusteet.dto.opas.OpasDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
 import fi.vm.sade.eperusteet.dto.peruste.KoosteenOsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.peruste.MaarayskirjeDto;
@@ -108,14 +105,11 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
 import fi.vm.sade.eperusteet.dto.util.TutkinnonOsaViiteUpdateDto;
 import fi.vm.sade.eperusteet.dto.util.UpdateDto;
-import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
-import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
-import fi.vm.sade.eperusteet.dto.yl.OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineKevytDto;
 import fi.vm.sade.eperusteet.dto.yl.TPOOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
@@ -142,8 +136,6 @@ import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
-import fi.vm.sade.eperusteet.service.LockCtx;
-import fi.vm.sade.eperusteet.service.LockService;
 import fi.vm.sade.eperusteet.service.NavigationBuilder;
 import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
 import fi.vm.sade.eperusteet.service.PerusteDispatcher;
@@ -154,7 +146,6 @@ import fi.vm.sade.eperusteet.service.PerusteenOsaService;
 import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
 import fi.vm.sade.eperusteet.service.TermistoService;
 import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
-import fi.vm.sade.eperusteet.service.TutkinnonRakenneLockContext;
 import fi.vm.sade.eperusteet.service.VapaasivistystyoSisaltoService;
 
 
@@ -181,26 +172,22 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Validator;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
@@ -214,7 +201,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -1094,7 +1080,6 @@ public class PerusteServiceImpl implements PerusteService{
         }
 
         perusteDto.setKvLiite(getJulkinenKVLiite(peruste.getId()));
-
         return perusteDto;
     }
 
@@ -2611,13 +2596,13 @@ public class PerusteServiceImpl implements PerusteService{
     }
 
     @Override
-    public KVLiiteJulkinenDto getJulkinenKVLiite(long perusteId) {
+    public KVLiiteLaajaDto getJulkinenKVLiite(long perusteId) {
         Peruste peruste = perusteRepository.getOne(perusteId);
         PerusteDto perusteDto = mapper.map(peruste, PerusteDto.class);
-        KVLiiteJulkinenDto kvliiteDto = mapper.map(peruste.getKvliite(), KVLiiteJulkinenDto.class);
+        KVLiiteLaajaDto kvliiteDto = mapper.map(peruste.getKvliite(), KVLiiteLaajaDto.class);
 
         if (kvliiteDto == null) {
-            kvliiteDto = new KVLiiteJulkinenDto();
+            kvliiteDto = new KVLiiteLaajaDto();
         }
 
         kvliiteDto.setDiaarinumero(perusteDto.getDiaarinumero());
@@ -2683,7 +2668,7 @@ public class PerusteServiceImpl implements PerusteService{
     }
 
     @Override
-    public PerusteDto updateKvLiite(Long id, KVLiiteJulkinenDto kvliiteDto) {
+    public PerusteDto updateKvLiite(Long id, KVLiiteLaajaDto kvliiteDto) {
         Peruste current = perusteRepository.findById(id).orElse(null);
 
         KVLiite liite = current.getKvliite();
