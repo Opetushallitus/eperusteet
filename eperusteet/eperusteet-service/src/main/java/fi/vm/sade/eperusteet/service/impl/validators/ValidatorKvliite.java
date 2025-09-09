@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -35,7 +35,7 @@ public class ValidatorKvliite implements Validator {
     @Override
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila tila) {
         Perusteprojekti projekti = perusteprojektiRepository.findById(perusteprojektiId).orElse(null);
-        KVLiiteJulkinenDto julkinenKVLiite = perusteService.getJulkinenKVLiite(projekti.getPeruste().getId());
+        KVLiiteLaajaDto julkinenKVLiite = perusteService.getJulkinenKVLiite(projekti.getPeruste().getId());
         Set<Kieli> vaaditutKielet = new HashSet<Kieli>() {{
             add(Kieli.FI);
             add(Kieli.SV);
@@ -61,7 +61,7 @@ public class ValidatorKvliite implements Validator {
         return tyyppi.isOneOf(PerusteTyyppi.NORMAALI);
     }
 
-    private void tarkistaKvliite(KVLiiteJulkinenDto julkinenKVLiite, Set<Kieli> vaaditutKielet, Validointi validointi) {
+    private void tarkistaKvliite(KVLiiteLaajaDto julkinenKVLiite, Set<Kieli> vaaditutKielet, Validointi validointi) {
 
         Map<String, Set<Kieli>> virheellisetKielet = new HashMap<>();
         tarkistaLokalisoituTekstiDto("kvliite-validointi-suorittaneen-osaaminen",

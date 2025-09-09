@@ -11,7 +11,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteJulkinenDto;
+import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
@@ -284,10 +284,10 @@ public interface PerusteService {
     TutkinnonOsaViiteDto getTutkinnonOsaViiteByKoodiUri(@P("perusteId") Long perusteId, Suoritustapakoodi suoritustapakoodi, String koodiUri);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU') or isAuthenticated()")
-    KVLiiteJulkinenDto getJulkinenKVLiite(@P("perusteId") long perusteId);
+    KVLiiteLaajaDto getJulkinenKVLiite(@P("perusteId") long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'perusteenmetatiedot', 'MUOKKAUS')")
-    PerusteDto updateKvLiite(@P("perusteId") Long perusteId, KVLiiteJulkinenDto kvliiteDto);
+    PerusteDto updateKvLiite(@P("perusteId") Long perusteId, KVLiiteLaajaDto kvliiteDto);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<KVLiiteTasoDto> haeTasot(@P("perusteId") Long perusteId, Peruste peruste);
