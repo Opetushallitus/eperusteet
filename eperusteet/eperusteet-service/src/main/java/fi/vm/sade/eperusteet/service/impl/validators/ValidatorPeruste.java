@@ -26,6 +26,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.AbstractRakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
+import fi.vm.sade.eperusteet.domain.validation.ValidHtmlValidator;
 import fi.vm.sade.eperusteet.domain.yl.KeskeinenSisaltoalue;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenKohdealue;
@@ -186,6 +188,10 @@ public class ValidatorPeruste implements Validator {
             TekstiKappale tekstikappale = (TekstiKappale) perusteenOsa;
             tarkistaTekstipalanen("peruste-validointi-tekstikappale-nimi", tekstikappale.getNimi(), pakolliset, virheellisetKielet, true);
             tarkistaTekstipalanen("peruste-validointi-tekstikappale-teksti", tekstikappale.getTeksti(), pakolliset, virheellisetKielet);
+
+            if (!ValidHtmlValidator.isValid(tekstikappale.getTeksti(), ValidHtml.WhitelistType.NORMAL.getWhitelist())) {
+                validointi.virhe("tekstin-sisalto-virheellinen-html", NavigationNodeDto.of(NavigationType.viite, mapper.map(perusteenOsa, PerusteenOsaDto.class).getNimi(), viite.getId()));
+            }
         }
 
         for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
