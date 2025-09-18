@@ -78,7 +78,8 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> kuvaukset = perusteService.getOsaamisalaKuvaukset(this.peruste.getId());
         TekstiKappaleDto tk = kuvaukset.values().iterator().next().values().iterator().next().get(0);
 
-        assertThat(tk.getNimi().get(Kieli.FI)).isEqualTo("oa nimi");
+        assertThat(tk.getNimi().get(Kieli.FI)).isNotEqualTo("oa nimi");
+        assertThat(tk.getNimi().get(Kieli.FI)).contains("uniikki");
         assertThat(tk.getTeksti().get(Kieli.FI)).isEqualTo("oa teksti");
         assertThat(tk)
                 .extracting("osaamisala.uri", "osaamisala.koodisto")
