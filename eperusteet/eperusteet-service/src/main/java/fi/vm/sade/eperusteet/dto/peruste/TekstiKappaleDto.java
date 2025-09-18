@@ -41,4 +41,16 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
     public NavigationType getNavigationType() {
         return NavigationType.viite;
     }
+
+    public LokalisoituTekstiDto getNimi() {
+        if (osaamisala != null && osaamisala.getNimi() != null) {
+            return osaamisala.getNimi();
+        }
+
+        if (tutkintonimike != null && tutkintonimike.getNimi() != null) {
+            return tutkintonimike.getNimi();
+        }
+
+        return super.getNimi();
+    }
 }
