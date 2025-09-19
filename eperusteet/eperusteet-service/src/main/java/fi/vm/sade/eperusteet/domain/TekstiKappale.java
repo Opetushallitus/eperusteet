@@ -26,15 +26,15 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
  @Audited
  public class TekstiKappale extends PerusteenOsa implements Serializable, Liitteellinen {
 
-     @ValidHtml
-     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-     private TekstiPalanen teksti;
+    @ValidHtml
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen teksti;
 
-     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
-     @Getter
-     @Setter
-     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Getter
+    @Setter
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi osaamisala;
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
