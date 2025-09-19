@@ -37,6 +37,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
+import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -106,6 +107,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private EntityManager em;
+
+    @Autowired
+    private KoodiRepository koodiRepository;
 
     @Test
     @Rollback
@@ -474,8 +478,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Rollback(true)
     public void testOsaamisaloillaTaytyyOllaKuvaukset() {
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti();
-        KoodiDto osaamisala1 = KoodiDto.of("osaamisala", "1234");
-        KoodiDto osaamisala2 = KoodiDto.of("osaamisala", "12345");
+
+        KoodiDto osaamisala1 = mapper.map(koodiRepository.save(mapper.map(KoodiDto.of("osaamisala", "1234"), Koodi.class)), KoodiDto.class);
+        KoodiDto osaamisala2 = mapper.map(koodiRepository.save(mapper.map(KoodiDto.of("osaamisala", "12345"), Koodi.class)), KoodiDto.class);
 
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong(), (PerusteDto peruste) -> {
             Set<KoodiDto> osaamisalat = Stream.of(osaamisala1, osaamisala2).collect(Collectors.toSet());
