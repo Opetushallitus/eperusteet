@@ -1,0 +1,1 @@
+ALTER TABLE dokumentti ADD COLUMN dokumenttihtml OID;
