@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.dto.ReferenceableDto;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -9,10 +10,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -34,4 +38,13 @@ public class OpetuksenTavoiteDto implements ReferenceableDto {
     private Optional<LokalisoituTekstiDto> vapaaTeksti;
     private List<OppiaineenTavoitteenOpetuksenTavoiteDto> oppiaineenTavoitteenOpetuksenTavoitteet = new ArrayList<>();
 
+    public Set<TavoitteenArviointiDto> getArvioinninkohteet() {
+        if (arvioinninkohteet == null) {
+            return Sets.newLinkedHashSet();
+        }
+
+        return arvioinninkohteet.stream()
+                .sorted(Comparator.comparing(arviointi -> arviointi.getArvosana().orElse(0)))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
 }
