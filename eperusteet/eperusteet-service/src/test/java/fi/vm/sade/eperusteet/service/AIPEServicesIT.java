@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
 import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -188,7 +190,11 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
         assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet()).hasSize(1);
         assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet().iterator().next().getArvosana().get()).isEqualTo(8);
 
-        oppiaine.getTavoitteet().get(0).getArvioinninkohteet().add(TavoitteenArviointiDto.builder().arvosana(Optional.of(4)).build());
+        Set<TavoitteenArviointiDto> arvioinninKohteet = Sets.newHashSet(
+                TavoitteenArviointiDto.builder().arvosana(Optional.of(4)).build(),
+                 oppiaine.getTavoitteet().get(0).getArvioinninkohteet().iterator().next()
+            );
+        oppiaine.getTavoitteet().get(0).setArvioinninkohteet(arvioinninKohteet);
         oppiaine = sisalto.updateOppiaine(perusteId, vaiheet.get(0).getId(), oppiaine.getId(), oppiaine);
         assertThat(oppiaine.getTavoitteet()).hasSize(1);
         assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet()).hasSize(2);
