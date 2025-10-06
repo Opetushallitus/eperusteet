@@ -42,7 +42,7 @@ public class Ammattitaitovaatimus2019Kohdealue extends AbstractAuditedReferencea
         if (other.getVaatimukset() != null) {
             this.vaatimukset = new ArrayList<>();
             for (Ammattitaitovaatimus2019 vaatimus : other.getVaatimukset()) {
-                this.vaatimukset.add(Ammattitaitovaatimus2019.of(vaatimus.getVaatimus()));
+                this.vaatimukset.add(new Ammattitaitovaatimus2019(vaatimus));
             }
         }
     }
