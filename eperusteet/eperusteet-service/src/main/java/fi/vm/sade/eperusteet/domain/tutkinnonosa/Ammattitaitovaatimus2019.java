@@ -8,6 +8,7 @@ import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.validation.ValidMaxLength;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
@@ -21,6 +22,7 @@ import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 @Entity
 @Table(name = "ammattitaitovaatimus2019")
 @Audited
+@NoArgsConstructor
 public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity {
 
     @ValidKoodisto(koodisto = { KoodistoUriArvo.AMMATTITAITOVAATIMUKSET, KoodistoUriArvo.OSAAMISTAVOITTEET })
@@ -37,6 +39,11 @@ public class Ammattitaitovaatimus2019 extends AbstractAuditedReferenceableEntity
     @Audited(targetAuditMode = NOT_AUDITED)
     @ValidMaxLength
     private TekstiPalanen vaatimus;
+
+    public Ammattitaitovaatimus2019(Ammattitaitovaatimus2019 other) {
+        this.vaatimus = other.vaatimus;
+        this.koodi = other.koodi;
+    }
 
     public static Ammattitaitovaatimus2019 of(TekstiPalanen tp) {
         Ammattitaitovaatimus2019 result = new Ammattitaitovaatimus2019();
