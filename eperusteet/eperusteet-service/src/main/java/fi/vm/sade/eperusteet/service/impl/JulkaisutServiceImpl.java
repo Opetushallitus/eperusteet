@@ -510,6 +510,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         julkaisu = julkaisutRepository.save(julkaisu);
+        julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
         muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
 
         return taytaKayttajaTiedot(mapper.map(julkaisu, JulkaisuBaseDto.class));
