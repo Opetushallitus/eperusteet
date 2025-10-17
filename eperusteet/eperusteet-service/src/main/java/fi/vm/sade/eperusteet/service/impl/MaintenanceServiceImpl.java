@@ -5,21 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
 import fi.vm.sade.eperusteet.config.InitJacksonConverter;
-import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
-import fi.vm.sade.eperusteet.domain.JulkaistuPerusteData;
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.Koodi;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTila;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
-import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.Yllapito;
+import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysAsiasana;
 import fi.vm.sade.eperusteet.domain.maarays.MaaraysKieliLiitteet;
@@ -48,6 +34,7 @@ import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
@@ -324,7 +311,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
     @Override
     public void clearPerusteCaches(Long perusteId) {
-        perusteRepository.findOne(perusteId).getKielet().forEach(kieli -> {
+        Peruste peruste = perusteRepository.findOne(perusteId);
+
+        peruste.getKielet().forEach(kieli -> {
             cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI ).evictIfPresent(perusteId + kieli.toString());
         });
 

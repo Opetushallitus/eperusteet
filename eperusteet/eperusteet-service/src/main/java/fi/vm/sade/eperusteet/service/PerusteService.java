@@ -11,24 +11,7 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
@@ -254,10 +237,10 @@ public interface PerusteService {
     PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
-    PerusteKaikkiDto getAmosaaYhteinenPohja();
+    List<PerusteKaikkiDto> getAmosaaYhteisetPohjat();
 
     @PreAuthorize("permitAll()")
-    List<PerusteHakuDto> getAmosaaOpsit();
+    PerusteKaikkiDto getAmosaaYhteinenPohja(Long perusteId);
 
     @PreAuthorize("permitAll()")
     PerusteVersionDto getPerusteVersion(long id);
