@@ -57,16 +57,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.TutkintonimikeKoodiRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
-import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
-import fi.vm.sade.eperusteet.service.JulkaisuPerusteTilaService;
-import fi.vm.sade.eperusteet.service.JulkaisutService;
-import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.KoodistoClient;
-import fi.vm.sade.eperusteet.service.LiiteTiedostoService;
-import fi.vm.sade.eperusteet.service.MaaraysService;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
-import fi.vm.sade.eperusteet.service.PerusteprojektiService;
+import fi.vm.sade.eperusteet.service.*;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -343,17 +334,6 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             julkaisutRepository.saveAndFlush(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
-
-            if (peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN)
-                || peruste.getToteutus().equals(KoulutustyyppiToteutus.VAPAASIVISTYSTYO)
-                || peruste.getToteutus().equals(KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS)
-                || peruste.getToteutus().equals(KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA)) {
-                Cache amosaaperusteet = cacheManager.getCache("amosaaperusteet");
-                if (amosaaperusteet != null) {
-                    amosaaperusteet.clear();
-                }
-            }
-
             muokkausTietoService.addMuokkaustieto(peruste.getId(), peruste, MuokkausTapahtuma.JULKAISU);
         } catch(Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
