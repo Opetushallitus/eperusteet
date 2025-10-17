@@ -159,7 +159,7 @@ public class ExternalController {
                 "",
                 JulkaisuSisaltoTyyppi.PERUSTE,
                 0,
-                1);
+                10);
 
         if (amosaaPeruste.getTotalElements() == 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

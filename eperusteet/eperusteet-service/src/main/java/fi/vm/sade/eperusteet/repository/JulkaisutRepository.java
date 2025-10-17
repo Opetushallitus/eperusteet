@@ -19,51 +19,52 @@ import java.util.Set;
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {
     List<JulkaistuPeruste> findAllByPeruste(Peruste peruste);
 
-    String julkaisutQuery =
-            "FROM (SELECT * " +
-            "  FROM (" +
-            "   SELECT ROW_NUMBER() OVER(partition by id) as rownumber, * " +
-            "   FROM julkaistu_peruste_data_store data" +
-            "   WHERE (" +
-            "           COALESCE(:koulutustyypit, null) IS NULL " +
-            "           OR koulutustyyppi IN (:koulutustyypit) " +
-            "           OR exists (select 1 from jsonb_array_elements(oppaankoulutustyypit) okt where okt->>0 in (:koulutustyypit))" +
-            "         ) " +
-            "   AND (:nimiTaiKoodi LIKE '' " +
-            "           OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%')) " +
-            "           OR EXISTS (SELECT 1 FROM json_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))) " +
-            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))) " +
-            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))) " +
-            "           OR EXISTS (SELECT 1 FROM jsonb_array_elements(koodit) kd where kd->>0 LIKE CONCAT('%_',:nimiTaiKoodi,'%')) " +
-            "       )" +
-            "   AND (:nimi LIKE '' " +
-            "           OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')) " +
-            "           OR EXISTS (SELECT 1 FROM json_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
-            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
-            "           OR EXISTS (SELECT 1 FROM json_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))) " +
-            "       )" +
-            "   AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%')) " +
-            "   AND tyyppi = :tyyppi " +
-            "   AND (:diaarinumero like '' OR LOWER(diaarinumero) LIKE LOWER(:diaarinumero)) " +
-            "   AND (:koodi like '' OR exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodi))) " +
-            "   AND (" +
-            "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
-            "           OR (" +
-            "               ((:tulevat = true AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
-            "               OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
-            "               OR (:siirtymat = true " +
-            "                       AND (data.\"voimassaoloLoppuu\" IS NOT NULL AND data.\"siirtymaPaattyy\" IS NOT NULL " +
-            "                       AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
-            "               OR (:voimassa = true " +
-            "                       AND (CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
-            "                       AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
-            "              )" +
-            "       )" +
-            "   AND (:sisaltotyyppi = 'kaikki' OR sisaltotyyppi = :sisaltotyyppi)" +
-            "  ) subquery " +
-            "  WHERE subquery.rownumber = 1 " +
-            "   order by nimi->>:kieli asc " +
-            ") t";
+    String julkaisutQuery = """
+            FROM (SELECT *
+              FROM (
+               SELECT ROW_NUMBER() OVER(partition by id) as rownumber, *
+               FROM julkaistu_peruste_data_store data
+               WHERE (
+                       COALESCE(:koulutustyypit, null) IS NULL
+                       OR koulutustyyppi IN (:koulutustyypit)
+                       OR exists (select 1 from jsonb_array_elements(oppaankoulutustyypit) okt where okt->>0 in (:koulutustyypit))
+                     )
+               AND (:nimiTaiKoodi LIKE ''
+                       OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%'))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%')))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%')))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimiTaiKoodi,'%')))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(koodit) kd where kd->>0 LIKE CONCAT('%_',:nimiTaiKoodi,'%'))
+                   )
+               AND (:nimi LIKE ''
+                       OR LOWER(nimi->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%'))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(osaamisalanimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(tutkintonimikkeetnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')))
+                       OR EXISTS (SELECT 1 FROM jsonb_array_elements(tutkinnonosatnimet) elem WHERE LOWER(elem->>:kieli) LIKE LOWER(CONCAT('%',:nimi,'%')))
+                   )
+               AND CAST(kielet as text) LIKE LOWER(CONCAT('%',:kieli,'%'))
+               AND tyyppi = :tyyppi
+               AND (:diaarinumero like '' OR LOWER(diaarinumero) LIKE LOWER(:diaarinumero))
+               AND (:koodi like '' OR exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodi)))
+               AND (
+                       (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false)
+                       OR (
+                           ((:tulevat = true AND CAST(data."voimassaoloAlkaa" as bigint) > :nykyhetki)
+                           OR (:poistuneet = true AND CAST(data."voimassaoloLoppuu" as bigint) < :nykyhetki AND COALESCE(CAST(data."siirtymaPaattyy" as bigint), 0) < :nykyhetki)
+                           OR (:siirtymat = true
+                                   AND (data."voimassaoloLoppuu" IS NOT NULL AND data."siirtymaPaattyy" IS NOT NULL
+                                   AND CAST(data."voimassaoloLoppuu" as bigint) < :nykyhetki AND CAST(data."siirtymaPaattyy" as bigint) > :nykyhetki))
+                           OR (:voimassa = true
+                                   AND (CAST(data."voimassaoloAlkaa" as bigint) < :nykyhetki)
+                                   AND (data."voimassaoloLoppuu" IS NULL OR CAST(data."voimassaoloLoppuu" as bigint) > :nykyhetki)))
+                          )
+                   )
+               AND (:sisaltotyyppi = 'kaikki' OR sisaltotyyppi = :sisaltotyyppi)
+              ) subquery
+              WHERE subquery.rownumber = 1
+               order by nimi->>:kieli asc
+            ) t
+            """;
 
     @Query(nativeQuery = true,
             value = "SELECT CAST(row_to_json(t) as text) " + julkaisutQuery,
@@ -86,27 +87,29 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             Pageable pageable);
 
     @Query(nativeQuery = true,
-            value = "SELECT CAST(row_to_json(t) as text) " +
-                    "FROM ( " +
-                    "   SELECT * " +
-                    "   FROM julkaistu_peruste_data_store data" +
-                    "   WHERE exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodit))" +
-                    "   AND (" +
-                    "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
-                    "           OR (" +
-                    "               ((:tulevat = true AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
-                    "               OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
-                    "               OR (:siirtymat = true " +
-                    "                       AND (data.\"voimassaoloLoppuu\" IS NOT NULL AND data.\"siirtymaPaattyy\" IS NOT NULL " +
-                    "                       AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
-                    "               OR (:voimassa = true " +
-                    "                       AND (CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
-                    "                       AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
-                    "              )" +
-                    "       )" +
-                    "   AND sisaltotyyppi = 'peruste' " +
-                    "   AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen') " +
-                    ") t"
+            value = """
+                    SELECT CAST(row_to_json(t) as text)
+                    FROM (
+                       SELECT *
+                       FROM julkaistu_peruste_data_store data
+                       WHERE exists (select 1 from jsonb_array_elements(koodit) kd where kd->>0 in (:koodit))
+                       AND (
+                               (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false)
+                               OR (
+                                   ((:tulevat = true AND CAST(data."voimassaoloAlkaa" as bigint) > :nykyhetki)
+                                   OR (:poistuneet = true AND CAST(data."voimassaoloLoppuu" as bigint) < :nykyhetki AND COALESCE(CAST(data."siirtymaPaattyy" as bigint), 0) < :nykyhetki)
+                                   OR (:siirtymat = true
+                                           AND (data."voimassaoloLoppuu" IS NOT NULL AND data."siirtymaPaattyy" IS NOT NULL
+                                           AND CAST(data."voimassaoloLoppuu" as bigint) < :nykyhetki AND CAST(data."siirtymaPaattyy" as bigint) > :nykyhetki))
+                                   OR (:voimassa = true
+                                           AND (CAST(data."voimassaoloAlkaa" as bigint) < :nykyhetki)
+                                           AND (data."voimassaoloLoppuu" IS NULL OR CAST(data."voimassaoloLoppuu" as bigint) > :nykyhetki)))
+                                  )
+                           )
+                       AND sisaltotyyppi = 'peruste'
+                       AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen')
+                    ) t
+                    """
     )
     List<String> findAllJulkaistutPerusteetByKoodi(
             @Param("koodit") Set<String> koodit,
@@ -117,27 +120,29 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("poistuneet") boolean poistuneet);
 
     @Query(nativeQuery = true,
-            value = "SELECT CAST(row_to_json(t) as text) " +
-                    "FROM ( " +
-                    "   SELECT * " +
-                    "   FROM julkaistu_peruste_data_store data" +
-                    "   WHERE 1 = 1 " +
-                    "   AND (" +
-                    "           (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false) " +
-                    "           OR (" +
-                    "               ((:tulevat = true AND CAST(data.\"voimassaoloAlkaa\" as bigint) > :nykyhetki) " +
-                    "               OR (:poistuneet = true AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND COALESCE(CAST(data.\"siirtymaPaattyy\" as bigint), 0) < :nykyhetki)" +
-                    "               OR (:siirtymat = true " +
-                    "                       AND (data.\"voimassaoloLoppuu\" IS NOT NULL AND data.\"siirtymaPaattyy\" IS NOT NULL " +
-                    "                       AND CAST(data.\"voimassaoloLoppuu\" as bigint) < :nykyhetki AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
-                    "               OR (:voimassa = true " +
-                    "                       AND (CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
-                    "                       AND (data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki))) " +
-                    "              )" +
-                    "       )" +
-                    "   AND sisaltotyyppi = 'peruste' " +
-                    "   AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen')" +
-                    ") t"
+            value = """
+                    SELECT CAST(row_to_json(t) as text)
+                    FROM (
+                       SELECT *
+                       FROM julkaistu_peruste_data_store data
+                       WHERE 1 = 1
+                       AND (
+                               (:tulevat = false AND :poistuneet = false AND :siirtymat = false AND :voimassa = false)
+                               OR (
+                                   ((:tulevat = true AND CAST(data."voimassaoloAlkaa" as bigint) > :nykyhetki)
+                                   OR (:poistuneet = true AND CAST(data."voimassaoloLoppuu" as bigint) < :nykyhetki AND COALESCE(CAST(data."siirtymaPaattyy" as bigint), 0) < :nykyhetki)
+                                   OR (:siirtymat = true
+                                           AND (data."voimassaoloLoppuu" IS NOT NULL AND data."siirtymaPaattyy" IS NOT NULL
+                                           AND CAST(data."voimassaoloLoppuu" as bigint) < :nykyhetki AND CAST(data."siirtymaPaattyy" as bigint) > :nykyhetki))
+                                   OR (:voimassa = true
+                                           AND (CAST(data."voimassaoloAlkaa" as bigint) < :nykyhetki)
+                                           AND (data."voimassaoloLoppuu" IS NULL OR CAST(data."voimassaoloLoppuu" as bigint) > :nykyhetki)))
+                                  )
+                           )
+                       AND sisaltotyyppi = 'peruste'
+                       AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen')
+                    ) t
+                    """
     )
     List<String> findAllJulkaistutPerusteetByVoimassaolo(
             @Param("nykyhetki") Long nykyhetki,
@@ -149,27 +154,33 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
 
     @Query(nativeQuery = true,
-            value = "SELECT data.koulutustyyppi, COUNT(*) as lukumaara " +
-                    "FROM julkaistu_peruste_data_store data " +
-                    "WHERE data.koulutustyyppi IS NOT NULL " +
-                    "AND (data.\"voimassaoloAlkaa\" IS NULL OR CAST(data.\"voimassaoloAlkaa\" as bigint) < :nykyhetki) " +
-                    "AND ((data.\"voimassaoloLoppuu\" IS NULL OR CAST(data.\"voimassaoloLoppuu\" as bigint) > :nykyhetki) " +
-                    "   OR (data.\"siirtymaPaattyy\" IS NOT NULL AND CAST(data.\"siirtymaPaattyy\" as bigint) > :nykyhetki)) " +
-                    "AND LOWER(CAST(kielet as text)) LIKE LOWER(CONCAT('%', :kieli,'%')) " +
-                    "AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen') " +
-                    "AND sisaltotyyppi = 'peruste' " +
-                    "GROUP BY data.koulutustyyppi")
+            value = """
+                    SELECT data.koulutustyyppi, COUNT(*) as lukumaara
+                    FROM julkaistu_peruste_data_store data
+                    WHERE data.koulutustyyppi IS NOT NULL
+                    AND (data."voimassaoloAlkaa" IS NULL OR CAST(data."voimassaoloAlkaa" as bigint) < :nykyhetki)
+                    AND ((data."voimassaoloLoppuu" IS NULL OR CAST(data."voimassaoloLoppuu" as bigint) > :nykyhetki)
+                       OR (data."siirtymaPaattyy" IS NOT NULL AND CAST(data."siirtymaPaattyy" as bigint) > :nykyhetki))
+                    AND LOWER(CAST(kielet as text)) LIKE LOWER(CONCAT('%', :kieli,'%'))
+                    AND tyyppi IN ('normaali', 'opas', 'digitaalinen_osaaminen')
+                    AND sisaltotyyppi = 'peruste'
+                    GROUP BY data.koulutustyyppi
+                    """
+    )
     List<KoulutustyyppiLukumaara> findJulkaistutKoulutustyyppiLukumaaratByKieli(
             @Param("kieli") String kieli,
             @Param("nykyhetki") Long nykyhetki
     );
 
     @Query(nativeQuery = true,
-            value = "SELECT CAST(jsonb_path_query(jpd.data, CAST(:query AS jsonpath)) AS text) " +
-                    "FROM julkaistu_peruste jp " +
-                    "INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id " +
-                    "WHERE jp.peruste_id = :perusteId " +
-                    "AND luotu = (SELECT MAX(luotu) FROM julkaistu_peruste WHERE peruste_id = jp.peruste_id)")
+            value = """
+                    SELECT CAST(jsonb_path_query(jpd.data, CAST(:query AS jsonpath)) AS text)
+                    FROM julkaistu_peruste jp
+                    INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id
+                    WHERE jp.peruste_id = :perusteId
+                    AND luotu = (SELECT MAX(luotu) FROM julkaistu_peruste WHERE peruste_id = jp.peruste_id)
+                    """
+    )
     String findJulkaisutByJsonPath(@Param("perusteId") Long perusteId, @Param("query") String query);
 
     List<JulkaistuPeruste> findAllByPerusteId(Long id);
@@ -190,18 +201,21 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     JulkaistuPeruste findFirstByPerusteAndRevisionOrderByIdDesc(Peruste peruste, int revision);
 
-    @Query("SELECT p " +
-            "FROM JulkaistuPeruste jp " +
-            "    INNER JOIN jp.peruste p " +
-            "WHERE p.tyyppi = 'NORMAALI' " +
-            "   AND p.tila != 'POISTETTU' " +
-            "   AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12', " +
-            "       'koulutustyyppi_5', 'koulutustyyppi_18', " +
-            "       'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_40') " +
-            "   AND (p.voimassaoloLoppuu IS NULL " +
-            "       OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP " +
-            "       OR (p.siirtymaPaattyy IS NOT NULL " +
-            "           AND p.siirtymaPaattyy > CURRENT_TIMESTAMP ))")
+    @Query("""
+            SELECT p
+            FROM JulkaistuPeruste jp
+                INNER JOIN jp.peruste p
+            WHERE p.tyyppi = 'NORMAALI'
+               AND p.tila != 'POISTETTU'
+               AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12',
+                   'koulutustyyppi_5', 'koulutustyyppi_18',
+                   'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_40')
+               AND (p.voimassaoloLoppuu IS NULL
+                   OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP
+                   OR (p.siirtymaPaattyy IS NOT NULL
+                       AND p.siirtymaPaattyy > CURRENT_TIMESTAMP ))
+            """
+    )
     Set<Peruste> findAmosaaJulkaisut();
 
     JulkaistuPeruste findOneByDokumentitIn(Set<Long> dokumentit);
@@ -210,17 +224,19 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     @Query(
             nativeQuery = true,
-            value = "SELECT jsonb_path_query(data,concat('$.tutkinnonOsat[*] ? (@.koodi.uri == \"', :tutkinnonOsaKoodiUri, '\")')::jsonpath) " +
-                    "FROM julkaistu_peruste jp " +
-                    "INNER JOIN julkaistu_peruste_data d ON d.id = jp.data_id " +
-                    "INNER JOIN peruste p ON p.id = jp.peruste_id " +
-                    "WHERE jsonb_path_exists( " +
-                    "    data, " +
-                    "    concat('$.tutkinnonOsat[*].koodi ? (@.uri == \"', :tutkinnonOsaKoodiUri, '\")')::jsonpath " +
-                    ") " +
-                    "AND p.tyyppi = 'NORMAALI' " +
-                    "ORDER BY jp.luotu DESC " +
-                    "limit 1"
+            value = """
+                    SELECT jsonb_path_query(data,concat('$.tutkinnonOsat[*] ? (@.koodi.uri == "', :tutkinnonOsaKoodiUri, '")')::jsonpath)
+                    FROM julkaistu_peruste jp
+                    INNER JOIN julkaistu_peruste_data d ON d.id = jp.data_id
+                    INNER JOIN peruste p ON p.id = jp.peruste_id
+                    WHERE jsonb_path_exists(
+                        data,
+                        concat('$.tutkinnonOsat[*].koodi ? (@.uri == "', :tutkinnonOsaKoodiUri, '")')::jsonpath
+                    )
+                    AND p.tyyppi = 'NORMAALI'
+                    ORDER BY jp.luotu DESC
+                    limit 1
+                    """
     )
     Object findTutkinnonOsaByTutkinnonOsaKoodi(@Param("tutkinnonOsaKoodiUri") String tutkinnonOsaKoodiUri);
 }
