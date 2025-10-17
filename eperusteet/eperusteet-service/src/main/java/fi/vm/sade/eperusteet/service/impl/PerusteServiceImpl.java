@@ -669,13 +669,11 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteKaikkiDto getAmosaaYhteinenPohja() {
+    public List<PerusteKaikkiDto> getAmosaaYhteisetPohjat() {
         List<Peruste> loydetyt = perusteRepository.findAllAmosaaYhteisetPohjat();
-
-        if (loydetyt.size() != 1) {
-            throw new BusinessRuleViolationException("amosaa-pohjia-väärä-määrä");
-        }
-        return getJulkaistuSisalto(loydetyt.stream().findFirst().get().getId(), true);
+        return loydetyt.stream()
+                .map(peruste -> getJulkaistuSisalto(peruste.getId(), true))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -1275,6 +1273,9 @@ public class PerusteServiceImpl implements PerusteService{
                 current.setOsaamisalat(updated.getOsaamisalat());
 
                 if (permissionManager.isUserAdmin()) {
+                    if (!current.getTyyppi().equals(updated.getTyyppi())) {
+
+                    }
                     current.setTyyppi(updated.getTyyppi());
                 }
             }
