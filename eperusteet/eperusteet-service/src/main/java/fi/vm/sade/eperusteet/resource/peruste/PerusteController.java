@@ -353,12 +353,8 @@ public class PerusteController {
     @ResponseBody
     @InternalApi
     @Operation(summary = "Amosaa jaetun tutkinnon pohja")
-    public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja() {
-        PerusteKaikkiDto t = service.getAmosaaYhteinenPohja();
-        if (t == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(t, HttpStatus.OK);
+    public ResponseEntity<List<PerusteKaikkiDto>> getAmosaaPohja() {
+        return new ResponseEntity<>(service.getAmosaaYhteisetPohjat(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/amosaaops", method = GET)

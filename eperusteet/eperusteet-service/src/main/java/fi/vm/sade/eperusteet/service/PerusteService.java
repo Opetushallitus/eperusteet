@@ -254,7 +254,7 @@ public interface PerusteService {
     PerusteInfoDto getByDiaari(Diaarinumero diaarinumero);
 
     @PreAuthorize("permitAll()")
-    PerusteKaikkiDto getAmosaaYhteinenPohja();
+    List<PerusteKaikkiDto> getAmosaaYhteisetPohjat();
 
     @PreAuthorize("permitAll()")
     List<PerusteHakuDto> getAmosaaOpsit();
