@@ -9,7 +9,8 @@ import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
-import fi.vm.sade.eperusteet.domain.yl.DigitaalisenOsaamisenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -225,6 +226,10 @@ public class Peruste extends AbstractAuditedEntity
     private DigitaalisenOsaamisenPerusteenSisalto digitaalinenOsaaminenSisalto;
 
     @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private KieliJaKaantajaTutkintoPerusteenSisalto kieliJaKaantajaTutkintoPerusteenSisalto;
+
+    @Getter
     @Enumerated(EnumType.STRING)
     @NotNull
     private PerusteTila tila = PerusteTila.LUONNOS;
@@ -376,6 +381,8 @@ public class Peruste extends AbstractAuditedEntity
                 return Collections.singleton(this.getTuvasisalto());
             } else if (this.getDigitaalinenOsaaminenSisalto() != null) {
                 return Collections.singleton(this.getDigitaalinenOsaaminenSisalto());
+            } else if (this.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {
+                return Collections.singleton(this.getKieliJaKaantajaTutkintoPerusteenSisalto());
             }
         }
         return new HashSet<>();
@@ -447,6 +454,10 @@ public class Peruste extends AbstractAuditedEntity
 
         if (this.tyyppi == PerusteTyyppi.DIGITAALINEN_OSAAMINEN) {
             return this.getDigitaalinenOsaaminenSisalto().getSisalto();
+        }
+
+        if (this.tyyppi == PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO) {
+            return this.getKieliJaKaantajaTutkintoPerusteenSisalto().getSisalto();
         }
 
         KoulutusTyyppi kt = KoulutusTyyppi.of(this.koulutustyyppi);
@@ -602,6 +613,12 @@ public class Peruste extends AbstractAuditedEntity
         this.digitaalinenOsaaminenSisalto.setPeruste(this);
     }
 
+    @JsonIgnore
+    public void setSisalto(KieliJaKaantajaTutkintoPerusteenSisalto sisalto) {
+        this.kieliJaKaantajaTutkintoPerusteenSisalto = sisalto;
+        this.kieliJaKaantajaTutkintoPerusteenSisalto.setPeruste(this);
+    }
+
     // Käytetään ainoastaan testaamiseen
     @Deprecated
     public void setLops2019Sisalto(Lops2019Sisalto lops2019Sisalto) {
@@ -656,6 +673,10 @@ public class Peruste extends AbstractAuditedEntity
 
         if (this.digitaalinenOsaaminenSisalto != null) {
             return this.digitaalinenOsaaminenSisalto.containsViite(viite);
+        }
+
+        if (this.kieliJaKaantajaTutkintoPerusteenSisalto != null) {
+            return this.kieliJaKaantajaTutkintoPerusteenSisalto.containsViite(viite);
         }
 
         throw new BusinessRuleViolationException("Ei toteutusta koulutustyypillä");

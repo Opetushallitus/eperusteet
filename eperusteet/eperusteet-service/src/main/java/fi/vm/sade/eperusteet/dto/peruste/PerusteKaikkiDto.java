@@ -12,6 +12,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TutkintoonvalmentavaSisaltoDto;
 import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
+import fi.vm.sade.eperusteet.dto.kios.KieliJaKaantajaTutkintoSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOpetuksenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.EsiopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
@@ -88,6 +89,10 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     private DigitaalisenOsaamisenSisaltoDto digitaalinenOsaaminenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("kielijakaantajatutkinto")
+    private KieliJaKaantajaTutkintoSisaltoDto kieliJaKaantajaTutkintoPerusteenSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @Schema(description = "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä.")
     private Date muutosmaarayksenVoimassaoloAlkaa;
 
@@ -120,6 +125,8 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
                 return Collections.singleton(this.getTuvasisalto());
             } else if (this.getDigitaalinenOsaaminenSisalto() != null) {
                 return Collections.singleton(this.getDigitaalinenOsaaminenSisalto());
+            } else if (this.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {
+                return Collections.singleton(this.getKieliJaKaantajaTutkintoPerusteenSisalto());
             }
         }
         return new HashSet<>();

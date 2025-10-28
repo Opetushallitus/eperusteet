@@ -44,7 +44,8 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
-import fi.vm.sade.eperusteet.domain.yl.DigitaalisenOsaamisenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
@@ -2230,7 +2231,7 @@ public class PerusteServiceImpl implements PerusteService{
             PerusteTyyppi tyyppi,
             boolean isReforminMukainen
     ) {
-        if (koulutustyyppi == null && !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
+        if (koulutustyyppi == null && !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN) && !tyyppi.equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
 
@@ -2248,6 +2249,8 @@ public class PerusteServiceImpl implements PerusteService{
 
         if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             peruste.setSisalto(new DigitaalisenOsaamisenPerusteenSisalto());
+        } else if (tyyppi.equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
+            peruste.setSisalto(new KieliJaKaantajaTutkintoPerusteenSisalto());
         } else if (isReforminMukainen) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.REFORMI, LaajuusYksikko.OSAAMISPISTE);
         } else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
@@ -2368,6 +2371,12 @@ public class PerusteServiceImpl implements PerusteService{
 
         if (vanha.getTyyppi().equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             DigitaalisenOsaamisenPerusteenSisalto uusiSisalto = vanha.getDigitaalinenOsaaminenSisalto().kloonaa(peruste);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setSisalto(uusiSisalto);
+            peruste = perusteRepository.save(peruste);
+        }
+        else if (vanha.getTyyppi().equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
+            KieliJaKaantajaTutkintoPerusteenSisalto uusiSisalto = vanha.getKieliJaKaantajaTutkintoPerusteenSisalto().kloonaa(peruste);
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
             peruste = perusteRepository.save(peruste);

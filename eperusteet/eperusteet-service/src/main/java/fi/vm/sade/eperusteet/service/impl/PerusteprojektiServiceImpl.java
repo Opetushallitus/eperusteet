@@ -424,7 +424,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             throw new BusinessRuleViolationException("Virheellinen perustetyyppi");
         }
 
-        if (tyyppi != PerusteTyyppi.POHJA && tyyppi != PerusteTyyppi.DIGITAALINEN_OSAAMINEN) {
+        if (tyyppi != PerusteTyyppi.POHJA && tyyppi != PerusteTyyppi.DIGITAALINEN_OSAAMINEN && tyyppi != PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO) {
             if (yksikko == null && koulutustyyppi
                     .isOneOf(KoulutusTyyppi.PERUSTUTKINTO,
                             KoulutusTyyppi.AMMATTITUTKINTO,
@@ -471,7 +471,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             peruste.setKvliite(kvliite);
         }
 
-        if (tyyppi.equals(PerusteTyyppi.POHJA) || tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
+        if (tyyppi.equals(PerusteTyyppi.POHJA) || tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN) || tyyppi.equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
             TekstiPalanen pnimi = TekstiPalanen.of(Kieli.FI, perusteprojektiDto.getNimi());
             peruste.setNimi(pnimi);
         }
