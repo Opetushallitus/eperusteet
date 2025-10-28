@@ -1,10 +1,11 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
-import fi.vm.sade.eperusteet.domain.yl.DigitaalisenOsaamisenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -58,7 +59,7 @@ import java.util.stream.Collectors;
     name = "PerusteenOsaViite.rootId",
     columns = {@ColumnResult(name="id", type=Long.class)}
 )
-public class PerusteenOsaViite implements
+public class  PerusteenOsaViite implements
         ReferenceableEntity,
         Serializable,
         Copyable<PerusteenOsaViite>,
@@ -154,6 +155,13 @@ public class PerusteenOsaViite implements
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private DigitaalisenOsaamisenPerusteenSisalto digitaalinenOsaaminenSisalto;
 
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private KieliJaKaantajaTutkintoPerusteenSisalto kieliJaKaantajaTutkintoPerusteenSisalto;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @Getter
     @Setter
@@ -210,6 +218,10 @@ public class PerusteenOsaViite implements
 
     public PerusteenOsaViite(final DigitaalisenOsaamisenPerusteenSisalto sisalto) {
         this.digitaalinenOsaaminenSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(final KieliJaKaantajaTutkintoPerusteenSisalto sisalto) {
+        this.kieliJaKaantajaTutkintoPerusteenSisalto = sisalto;
     }
 
     @Override
@@ -359,6 +371,10 @@ public class PerusteenOsaViite implements
 
         if (digitaalinenOsaaminenSisalto != null) {
             return digitaalinenOsaaminenSisalto.getPeruste();
+        }
+
+        if (kieliJaKaantajaTutkintoPerusteenSisalto != null) {
+            return kieliJaKaantajaTutkintoPerusteenSisalto.getPeruste();
         }
 
         return null;

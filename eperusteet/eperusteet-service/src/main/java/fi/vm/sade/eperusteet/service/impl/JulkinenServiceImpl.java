@@ -115,6 +115,10 @@ public class JulkinenServiceImpl implements JulkinenService {
                 dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.DIGITAALINEN_OSAAMINEN);
             }
 
+            if (PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
+                dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.KIELI_KAANTAJA_TUTKINTO);
+            }
+
             return dto;
         }).collect(Collectors.toList());
     }

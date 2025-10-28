@@ -809,7 +809,7 @@ public class ValidatorPeruste implements Validator {
 
     @Override
     public boolean applicablePerustetyyppi(PerusteTyyppi tyyppi) {
-        return !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN);
+        return !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN) && !tyyppi.equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO);
     }
 
     @Override
