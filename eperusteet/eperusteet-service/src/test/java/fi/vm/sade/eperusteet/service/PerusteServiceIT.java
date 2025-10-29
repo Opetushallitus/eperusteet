@@ -252,6 +252,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
         assertNotNull(kokoSisalto.getTutkinnonOsat());
         Assertions.assertThat(kokoSisalto.getSuoritustavat()).hasSize(1);
         Assertions.assertThat(kokoSisalto.getTutkinnonOsat()).hasSize(2);
+        Assertions.assertThat(kokoSisalto.getKvLiite()).isNotNull();
     }
 
     @Test

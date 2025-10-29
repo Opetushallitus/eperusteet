@@ -151,6 +151,7 @@ public class Lops2019ServiceIT extends AbstractPerusteprojektiTest {
 
         final PerusteKaikkiDto perusteKaikkiDto = perusteService.getKaikkiSisalto(perusteDto.getId());
         Assert.notNull(perusteKaikkiDto.getLops2019Sisalto(), "Perusteen sisältö puuttuu");
+        Assert.isNull(perusteKaikkiDto.getKvLiite(), "Perusteella ei pitäisi olla KV-liitettä");
 
         final Peruste peruste = repository.findOne(perusteKaikkiDto.getId());
         Assert.notNull(peruste, "Peruste puuttuu");
