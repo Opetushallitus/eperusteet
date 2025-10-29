@@ -1079,7 +1079,10 @@ public class PerusteServiceImpl implements PerusteService{
                             .collect(Collectors.toList()));
         }
 
-        perusteDto.setKvLiite(getJulkinenKVLiite(peruste.getId()));
+        if (KoulutusTyyppi.ammatilliset().contains(peruste.getKoulutustyyppi()) || KoulutusTyyppi.valmaTelma().contains(peruste.getKoulutustyyppi())) {
+            perusteDto.setKvLiite(getJulkinenKVLiite(peruste.getId()));
+        }
+
         return perusteDto;
     }
 

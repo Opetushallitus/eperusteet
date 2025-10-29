@@ -76,4 +76,8 @@ public enum KoulutusTyyppi {
     public static List<String> ammatilliset() {
         return Arrays.asList(AMMATTITUTKINTO.toString(), ERIKOISAMMATTITUTKINTO.toString(), PERUSTUTKINTO.toString());
     }
+
+    public static List<String> valmaTelma() {
+        return Arrays.asList(VALMA.toString(), TELMA.toString());
+    }
 }
