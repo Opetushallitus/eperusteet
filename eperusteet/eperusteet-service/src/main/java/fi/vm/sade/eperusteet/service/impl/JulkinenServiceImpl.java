@@ -98,7 +98,7 @@ public class JulkinenServiceImpl implements JulkinenService {
                 .filter(peruste -> peruste.getTila().equals(PerusteTila.VALMIS))
                 .map(peruste -> mapper.map(peruste, TietoaPalvelustaDto.class))
                 .findFirst()
-                .orElseThrow(NotExistsException::new);
+                .orElse(null);
     }
 
     private List<JulkiEtusivuDto> getPerusteet() {
