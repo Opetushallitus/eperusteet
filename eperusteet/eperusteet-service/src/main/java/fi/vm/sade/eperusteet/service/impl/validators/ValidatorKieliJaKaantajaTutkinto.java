@@ -1,23 +1,16 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
-import fi.vm.sade.eperusteet.domain.Kieli;
-import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
-import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
-import fi.vm.sade.eperusteet.domain.PerusteenOsa;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
-import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
-import fi.vm.sade.eperusteet.domain.Perusteprojekti;
-import fi.vm.sade.eperusteet.domain.ProjektiTila;
-import fi.vm.sade.eperusteet.domain.TekstiKappale;
+import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
-import fi.vm.sade.eperusteet.service.Validator;
+import fi.vm.sade.eperusteet.service.MaaraysService;
+import fi.vm.sade.eperusteet.service.mapping.Dto;
+import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.Validointi;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +24,20 @@ import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
 @Component
 @Transactional
 @Slf4j
-public class ValidatorKieliJaKaantajaTutkinto implements Validator {
+public class ValidatorKieliJaKaantajaTutkinto extends ValidatorPeruste {
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Autowired
+    @Dto
+    private DtoMapper mapper;
+
+    @Autowired
+    private MaaraysService maaraysService;
 
     @Override
     public List<Validointi> validate(Long perusteprojektiId, ProjektiTila targetTila) {
@@ -56,12 +56,19 @@ public class ValidatorKieliJaKaantajaTutkinto implements Validator {
             perusteValidointi.virhe("peruste-ei-voimassaolon-alkamisaikaa", NavigationNodeDto.of(NavigationType.tiedot));
         }
 
+        if (projekti.getPeruste().getDiaarinumero() == null || !isDiaariValid(projekti.getPeruste().getDiaarinumero())) {
+            perusteValidointi.virhe("diaarinumero-ei-validi", NavigationNodeDto.of(NavigationType.tiedot));
+        }
+
         tarkistaPerusteenSisaltoTekstipalaset(projekti.getPeruste(), sisaltoValidointi);
-        return Arrays.asList(perusteValidointi, sisaltoValidointi);
+        return Arrays.asList(
+                perusteValidointi,
+                sisaltoValidointi,
+                tarkistaMaarays(projekti.getPeruste())
+        );
     }
 
-    @Transactional(readOnly = true)
-    public void tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste, Validointi validointi) {
+    private void tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste, Validointi validointi) {
         Set<Kieli> vaaditutKielet = peruste.getKielet();
 
         if (peruste.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {
@@ -71,7 +78,7 @@ public class ValidatorKieliJaKaantajaTutkinto implements Validator {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Override
     public void tarkistaSisalto(final PerusteenOsaViite viite, final Set<Kieli> pakolliset, Validointi validointi) {
         PerusteenOsa perusteenOsa = viite.getPerusteenOsa();
         if (perusteenOsa instanceof TekstiKappale && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
@@ -85,19 +92,73 @@ public class ValidatorKieliJaKaantajaTutkinto implements Validator {
             }
         }
 
+        if (perusteenOsa instanceof KaantajaTaito kaantajaTaito && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-nimi", kaantajaTaito.getNimi(), pakolliset, virheellisetKielet, true);
+
+            if (kaantajaTaito.getKuvaus() != null) {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-kuvaus", kaantajaTaito.getKuvaus(), pakolliset, virheellisetKielet, true);
+            }
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-sisalto", kaantajaTaito.getValiotsikko(), pakolliset, virheellisetKielet, true);
+
+            kaantajaTaito.getKohdealueet().forEach(kohdealue -> {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-sisalto", kohdealue.getKohdealueOtsikko(), pakolliset, virheellisetKielet, true);
+                kohdealue.getTutkintovaatimukset().forEach(vaatimus -> {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-sisalto", vaatimus, pakolliset, virheellisetKielet, true);
+                });
+                kohdealue.getArviointikriteerit().forEach(kriteeri -> {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-sisalto", kriteeri, pakolliset, virheellisetKielet, true);
+                });
+
+            });
+
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(kaantajaTaito).getNavigationNode());
+            }
+        }
+
+        if (perusteenOsa instanceof KaantajaTaitotasoasteikko taitotasoasteikko && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotaso-asteikko-nimi", taitotasoasteikko.getNimi(), pakolliset, virheellisetKielet, true);
+
+            if (taitotasoasteikko.getKuvaus() != null) {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotaso-asteikko-kuvaus", taitotasoasteikko.getKuvaus(), pakolliset, virheellisetKielet, true);
+            }
+
+            taitotasoasteikko.getTaitotasoasteikkoKategoriat().forEach(kategoria -> {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotaso-asteikko-sisalto", kategoria.getOtsikko(), pakolliset, virheellisetKielet, true);
+
+                kategoria.getTaitotasoasteikkoKategoriaTaitotasot().forEach(taitotaso -> {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotaso-asteikko-sisalto", taitotaso.getOtsikko(), pakolliset, virheellisetKielet, true);
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotaso-asteikko-sisalto", taitotaso.getKuvaus(), pakolliset, virheellisetKielet, true);
+                });
+            });
+
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(taitotasoasteikko).getNavigationNode());
+            }
+        }
+
         for (PerusteenOsaViite lapsi : viite.getLapset()) {
             tarkistaSisalto(lapsi, pakolliset, validointi);
         }
     }
 
-    @Override
-    public boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi) {
-        return true;
-    }
+    private Validointi tarkistaMaarays(Peruste peruste) {
+        Validointi validointi = new Validointi(ValidointiKategoria.PERUSTE);
+        Maarays maarays = mapper.map(maaraysService.getPerusteenMaarays(peruste.getId()), Maarays.class);
 
-    @Override
-    public boolean applicableToteutus(KoulutustyyppiToteutus toteutus) {
-        return true;
+        if (maarays != null) {
+            Set<Kieli> vaaditutKielet = peruste.getKielet();
+
+            vaaditutKielet.forEach(kieli -> {
+                if (peruste.getMaarayskirje() == null || !peruste.getMaarayskirje().getLiitteet().containsKey(kieli)) {
+                    validointi.virhe("peruste-validointi-maarays-dokumentti", NavigationNodeDto.of(NavigationType.tiedot));
+                }
+            });
+        }
+
+        return validointi;
     }
 
     @Override
