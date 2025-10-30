@@ -69,16 +69,7 @@ import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiTyoryhmaRepository;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
-import fi.vm.sade.eperusteet.service.AmmattitaitovaatimusService;
-import fi.vm.sade.eperusteet.service.JulkaisutService;
-import fi.vm.sade.eperusteet.service.KayttajanTietoService;
-import fi.vm.sade.eperusteet.service.LiiteService;
-import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
-import fi.vm.sade.eperusteet.service.MaaraysService;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteprojektiService;
-import fi.vm.sade.eperusteet.service.ProjektiValidator;
-import fi.vm.sade.eperusteet.service.TiedoteService;
+import fi.vm.sade.eperusteet.service.*;
 
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -230,6 +221,9 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
 
     @Autowired
     private JulkaistuPerusteDataStoreRepository julkaistuPerusteDataStoreRepository;
+
+    @Autowired
+    private MaintenanceService maintenanceService;
 
     @Override
     @Transactional(readOnly = true)

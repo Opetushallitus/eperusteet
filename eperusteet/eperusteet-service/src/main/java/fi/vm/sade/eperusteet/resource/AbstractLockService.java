@@ -19,7 +19,7 @@ public abstract class AbstractLockService<T> {
         handleContext(ctx);
         LukkoDto lock = service().getLock(ctx);
         lukkomanageri.lisaaNimiLukkoon(lock);
-        return lock == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
+        return lock == null ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(lock, eTagHeader(lock.getRevisio()), HttpStatus.OK);
     }
 
     public ResponseEntity<LukkoDto> lock(T ctx, String eTag) {

@@ -80,4 +80,18 @@ public enum KoulutusTyyppi {
     public static List<String> valmaTelma() {
         return Arrays.asList(VALMA.toString(), TELMA.toString());
     }
+
+    public static List<String> amosaaAppKoulutustyypit() {
+        return Arrays.asList(
+                PERUSTUTKINTO.toString(),
+                TELMA.toString(),
+                AMMATTITUTKINTO.toString(),
+                ERIKOISAMMATTITUTKINTO.toString(),
+                VALMA.toString(),
+                VAPAASIVISTYSTYO.toString(),
+                MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString(),
+                VAPAASIVISTYSTYOLUKUTAITO.toString(),
+                TUTKINTOONVALMENTAVA.toString()
+        );
+    }
 }

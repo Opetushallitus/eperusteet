@@ -54,7 +54,7 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
         return peruste.getPerusopetuksenPerusteenSisalto().getVuosiluokkakokonaisuudet().stream()
                 .sorted(Comparator.comparing(vlk -> vlk.getVuosiluokat().iterator().next()))
                 .map(vlk ->
-                        NavigationNodeDto.of(NavigationType.vuosiluokkakokonaisuus, (vlk.getNimi() != null && vlk.getNimi().isPresent() ? vlk.getNimi().get() : null), vlk.getId()).addAll(vuosiluokanOppiaineet(peruste, vlk.getId(), kieli)))
+                        NavigationNodeDto.of(NavigationType.vuosiluokkakokonaisuus, (vlk.getNimi() != null ? vlk.getNimi() : null), vlk.getId()).addAll(vuosiluokanOppiaineet(peruste, vlk.getId(), kieli)))
                 .collect(Collectors.toList());
     }
 

@@ -81,7 +81,7 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
                 .map(vlk ->
                         NavigationNodeDto.of(
                                 NavigationType.vuosiluokkakokonaisuus,
-                                (vlk.getNimi() != null && vlk.getNimi().isPresent() ? vlk.getNimi().get() : null),
+                                (vlk.getNimi() != null ? vlk.getNimi() : null),
                                 vlk.getId()))
                 .collect(Collectors.toList()));
     }

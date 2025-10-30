@@ -10,21 +10,7 @@ import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.Ammattitaitovaatimus2019Dto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -349,25 +335,17 @@ public class PerusteController {
         return new ResponseEntity<>(service.getOsaamisalaKuvaukset(id), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/amosaapohja", method = GET)
+    @RequestMapping(value = "/amosaapohjat", method = GET)
     @ResponseBody
     @InternalApi
-    @Operation(summary = "Amosaa jaetun tutkinnon pohja")
-    public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja() {
-        PerusteKaikkiDto t = service.getAmosaaYhteinenPohja();
-        if (t == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(t, HttpStatus.OK);
+    @Operation(summary = "Ammatillisien jaettujen osien pohjat")
+    public ResponseEntity<List<PerusteKaikkiDto>> getAmosaaPohjat() {
+        return new ResponseEntity<>(service.getAmosaaYhteisetPohjat(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/amosaaops", method = GET)
-    @ResponseBody
-    @InternalApi
-    @Operation(summary = "Paikallisen puolen ammatillista laadintaa tukevat perusteet")
-    public ResponseEntity<List<PerusteHakuDto>> getAmosaaOpsit() {
-        List<PerusteHakuDto> perusteet = service.getAmosaaOpsit();
-        return new ResponseEntity<>(perusteet, HttpStatus.OK);
+    @GetMapping("/amosaapohja/{id}")
+    public ResponseEntity<PerusteKaikkiDto> getAmosaaPohja(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(service.getAmosaaYhteinenPohja(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/diaari", method = GET)
