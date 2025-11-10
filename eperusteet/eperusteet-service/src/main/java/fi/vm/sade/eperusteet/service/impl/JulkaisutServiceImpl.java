@@ -660,7 +660,7 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
             tutkinnonOsaViitteet.forEach(tutkinnonOsaViite -> {
                 if (tutkinnonOsaViite.getTutkinnonOsaDto().getKoodi() == null ) {
-                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(KoodistoUriArvo.TUTKINNONOSAT, tutkinnonOsaViite.getTutkinnonOsaDto().getNimi());
+                    KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimellaPakotaUusiKoodiArvo(KoodistoUriArvo.TUTKINNONOSAT, tutkinnonOsaViite.getTutkinnonOsaDto().getNimi());
                     if (lisattyKoodi != null) {
                         Koodi koodi = new Koodi();
                         koodi.setUri(lisattyKoodi.getKoodiUri());

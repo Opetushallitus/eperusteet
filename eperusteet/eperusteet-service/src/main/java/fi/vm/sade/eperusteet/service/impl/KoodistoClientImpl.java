@@ -337,11 +337,20 @@ public class KoodistoClientImpl implements KoodistoClient {
     }
 
     @Override
-    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
+    public KoodistoKoodiDto addKoodiNimellaPakotaUusiKoodiArvo(String koodistonimi, LokalisoituTekstiDto koodinimi) {
+        long seuraavaKoodi = nextKoodiId(koodistonimi);
+        return lisaaKoodiKoodistoPalveluun(koodistonimi, koodinimi, seuraavaKoodi);
+    }
 
+    @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
         KoodistoKoodiDto olemassaoleva = haeOlemassaOlevaKoodinArvoNimella(koodistonimi, koodinimi);
         if (olemassaoleva != null) return olemassaoleva;
 
+        return lisaaKoodiKoodistoPalveluun(koodistonimi, koodinimi, seuraavaKoodi);
+    }
+
+    private KoodistoKoodiDto lisaaKoodiKoodistoPalveluun(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
         if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > KOODISTO_TEKSTI_MAX_LENGTH)) {
             log.error("tallennettava koodinimi: {}", koodinimi);
             throw new BusinessRuleViolationException("koodi-arvo-liian-pitka");

@@ -58,6 +58,9 @@ public interface KoodistoClient {
     KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi);
 
     @PreAuthorize("isAuthenticated()")
+    KoodistoKoodiDto addKoodiNimellaPakotaUusiKoodiArvo(String koodistonimi, LokalisoituTekstiDto koodinimi);
+
+    @PreAuthorize("isAuthenticated()")
     KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength);
 
     @PreAuthorize("isAuthenticated()")
