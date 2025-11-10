@@ -16,9 +16,6 @@ public interface KoodistoClient {
     List<KoodistoKoodiDto> getAll(String koodisto);
 
     @PreAuthorize("permitAll()")
-    List<KoodistoKoodiDto> getAll(String koodisto, boolean onlyValidKoodis);
-
-    @PreAuthorize("permitAll()")
     KoodistoKoodiDto get(String koodistoUri, String koodiUri);
 
     @PreAuthorize("permitAll()")
