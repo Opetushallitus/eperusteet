@@ -106,15 +106,10 @@ public class KoodistoClientImpl implements KoodistoClient {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
+    @Cacheable(value = "koodistot")
     public List<KoodistoKoodiDto> getAll(String koodisto) {
-        return self.getAll(koodisto, false);
-    }
-
-    @Override
-    @Cacheable(value = "koodistot", key = "#p0 + #p1")
-    public List<KoodistoKoodiDto> getAll(String koodisto, boolean onlyValidKoodis) {
         RestTemplate restTemplate = new RestTemplate();
-        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi?onlyValidKoodis=" + onlyValidKoodis;
+        String url = koodistoServiceUrl + KOODISTO_API + koodisto + "/koodi?onlyValidKoodis=false";
         try {
             ResponseEntity<KoodistoKoodiDto[]> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, KoodistoKoodiDto[].class);
             List<KoodistoKoodiDto> koodistoDtot = mapper.mapAsList(Arrays.asList(response.getBody()), KoodistoKoodiDto.class);
@@ -294,8 +289,7 @@ public class KoodistoClientImpl implements KoodistoClient {
                     .mapWith(text -> {
                         try {
                             KoodistoKoodiDto updatedKoodi = objectMapper.readValue(text, KoodistoKoodiDto.class);
-                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri() + false);
-                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri() + true);
+                            cacheManager.getCache("koodistot").evict(updatedKoodi.getKoodisto().getKoodistoUri());
                             return updatedKoodi;
                         } catch (IOException e) {
                             throw new BusinessRuleViolationException("koodin-parsinta-epaonnistui");
@@ -307,8 +301,7 @@ public class KoodistoClientImpl implements KoodistoClient {
         }
     }
 
-    @Override
-    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi) {
+    private KoodistoKoodiDto haeOlemassaOlevaKoodinArvoNimella(String koodistonimi, LokalisoituTekstiDto koodinimi) {
         List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
         KoodistoKoodiDto olemassaoleva = koodit.stream()
                 .filter(koodi -> !ObjectUtils.isEmpty(koodi.getMetadata()))
@@ -328,7 +321,11 @@ public class KoodistoClientImpl implements KoodistoClient {
         if (olemassaoleva != null) {
             return olemassaoleva;
         }
+        return null;
+    }
 
+    @Override
+    public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi) {
         long seuraavaKoodi = nextKoodiId(koodistonimi);
         return addKoodiNimella(koodistonimi, koodinimi, seuraavaKoodi);
     }
@@ -341,6 +338,9 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
+
+        KoodistoKoodiDto olemassaoleva = haeOlemassaOlevaKoodinArvoNimella(koodistonimi, koodinimi);
+        if (olemassaoleva != null) return olemassaoleva;
 
         if (koodinimi.getTekstit().values().stream().anyMatch(teksti -> teksti != null && teksti.length() > KOODISTO_TEKSTI_MAX_LENGTH)) {
             log.error("tallennettava koodinimi: {}", koodinimi);
@@ -366,8 +366,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             return null;
         }
 
-        cacheManager.getCache("koodistot").evict(koodistonimi + false);
-        cacheManager.getCache("koodistot").evict(koodistonimi + true);
+        cacheManager.getCache("koodistot").evict(koodistonimi);
 
         return lisattyKoodi;
     }
@@ -384,8 +383,7 @@ public class KoodistoClientImpl implements KoodistoClient {
 
     @Override
     public Collection<Long> nextKoodiId(String koodistonimi, int count, int koodiArvoLength) {
-        cacheManager.getCache("koodistot").evict(koodistonimi + false);
-        cacheManager.getCache("koodistot").evict(koodistonimi + true);
+        cacheManager.getCache("koodistot").evict(koodistonimi);
 
         List<KoodistoKoodiDto> koodit = self.getAll(koodistonimi);
         Long minAllowedArvo = Long.parseLong("10000".substring(0, koodiArvoLength));
