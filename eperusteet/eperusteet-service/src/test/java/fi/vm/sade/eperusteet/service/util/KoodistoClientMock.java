@@ -150,6 +150,11 @@ public class KoodistoClientMock implements KoodistoClient {
     }
 
     @Override
+    public KoodistoKoodiDto addKoodiNimellaPakotaUusiKoodiArvo(String koodistonimi, LokalisoituTekstiDto koodinimi) {
+        return null;
+    }
+
+    @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, int koodiArvoLength) {
         return null;
     }
