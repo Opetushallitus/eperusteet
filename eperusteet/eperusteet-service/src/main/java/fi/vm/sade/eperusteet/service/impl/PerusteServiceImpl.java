@@ -54,38 +54,12 @@ import fi.vm.sade.eperusteet.domain.yl.VuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukiokoulutuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
-import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
-import fi.vm.sade.eperusteet.dto.LukkoDto;
-import fi.vm.sade.eperusteet.dto.PerusteTekstikappaleillaDto;
-import fi.vm.sade.eperusteet.dto.Reference;
+import fi.vm.sade.eperusteet.dto.*;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteBaseDto;
 import fi.vm.sade.eperusteet.dto.liite.LiiteDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteLaajaDto;
-import fi.vm.sade.eperusteet.dto.peruste.KVLiiteTasoDto;
-import fi.vm.sade.eperusteet.dto.peruste.KoosteenOsaamisalaDto;
-import fi.vm.sade.eperusteet.dto.peruste.MaarayskirjeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
-import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteBaseDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteHakuInternalDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteInfoDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteKoosteDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteQuery;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteVersionDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
-import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaDto;
-import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
-import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.peruste.TermiDto;
-import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
+import fi.vm.sade.eperusteet.dto.peruste.*;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiImportDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiInfoDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
@@ -134,19 +108,7 @@ import fi.vm.sade.eperusteet.repository.VuosiluokkaKokonaisuusRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.config.InitJacksonConverter;
-import fi.vm.sade.eperusteet.service.KoodistoClient;
-import fi.vm.sade.eperusteet.service.LocalizedMessagesService;
-import fi.vm.sade.eperusteet.service.NavigationBuilder;
-import fi.vm.sade.eperusteet.service.NavigationBuilderPublic;
-import fi.vm.sade.eperusteet.service.PerusteDispatcher;
-import fi.vm.sade.eperusteet.service.PerusteImport;
-import fi.vm.sade.eperusteet.service.PerusteService;
-import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaService;
-import fi.vm.sade.eperusteet.service.PerusteenOsaViiteService;
-import fi.vm.sade.eperusteet.service.TermistoService;
-import fi.vm.sade.eperusteet.service.TutkinnonOsaViiteService;
-import fi.vm.sade.eperusteet.service.VapaasivistystyoSisaltoService;
+import fi.vm.sade.eperusteet.service.*;
 
 
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -309,9 +271,6 @@ public class PerusteServiceImpl implements PerusteService{
     @Autowired
     private LukiokoulutuksenPerusteenSisaltoService lukiokoulutuksenPerusteenSisaltoService;
 
-//    @Autowired
-//    private Validator validator;
-
     @Autowired
     private KoodistoClient koodistoService;
 
@@ -350,6 +309,9 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Autowired
     private PerusteprojektiRepository perusteprojektiRepository;
+
+    @Autowired
+    private JulkaisutService julkaisutService;
 
     private final ObjectMapper ieMapper = InitJacksonConverter.createImportExportMapper();
     private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
@@ -669,25 +631,16 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     @Transactional(readOnly = true)
-    public PerusteKaikkiDto getAmosaaYhteinenPohja() {
+    public List<PerusteKaikkiDto> getAmosaaYhteisetPohjat() {
         List<Peruste> loydetyt = perusteRepository.findAllAmosaaYhteisetPohjat();
-
-        if (loydetyt.size() != 1) {
-            throw new BusinessRuleViolationException("amosaa-pohjia-väärä-määrä");
-        }
-        return getJulkaistuSisalto(loydetyt.stream().findFirst().get().getId(), true);
+        return loydetyt.stream()
+                .map(peruste -> getJulkaistuSisalto(peruste.getId()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional(readOnly = true)
-    @Cacheable("amosaaperusteet")
-    public List<PerusteHakuDto> getAmosaaOpsit() {
-        Set<Peruste> perusteet = julkaisutRepository.findAmosaaJulkaisut();
-        perusteet.addAll(perusteRepository.findAllAmosaa());
-        List<PerusteHakuDto> result = perusteet.stream()
-                .map(p -> mapper.map(p, PerusteHakuDto.class))
-                .collect(Collectors.toList());
-        return result;
+    public PerusteKaikkiDto getAmosaaYhteinenPohja(Long perusteId) {
+        return getJulkaistuSisalto(perusteId);
     }
 
     @Override

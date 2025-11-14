@@ -34,8 +34,7 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.MuodostumisSaantoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.OsaamisalaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneModuuliDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.RakenneOsaDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
 import fi.vm.sade.eperusteet.repository.KoodiRepository;
 import fi.vm.sade.eperusteet.repository.KoulutusRepository;
@@ -48,7 +47,6 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.Validointi;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -110,6 +108,9 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Autowired
     private KoodiRepository koodiRepository;
+
+    @Autowired
+    private MaintenanceService maintenanceService;
 
     @Test
     @Rollback
@@ -316,8 +317,8 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback
-    public void testAmosaaJaettujaPohjiaSaaOllaVainYksi() {
-        assertThatThrownBy(() -> perusteService.getAmosaaYhteinenPohja()).isInstanceOf(BusinessRuleViolationException.class);
+    public void testAmosaaJaettujaPohjiaSaaOllaUseampi() {
+        assertThat(perusteService.getAmosaaYhteisetPohjat()).hasSize(0);
 
         PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
@@ -326,17 +327,17 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         Peruste p1 = perusteRepository.findOne(amosaaPohja1.getPeruste().getIdLong());
         p1.asetaTila(PerusteTila.VALMIS);
         perusteRepository.save(p1);
-        assertThat(perusteService.getAmosaaYhteinenPohja()).isNotNull();
+        assertThat(perusteService.getAmosaaYhteisetPohjat()).hasSize(1);
 
         PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
         });
-        assertThat(perusteService.getAmosaaYhteinenPohja()).isNotNull();
+        assertThat(perusteService.getAmosaaYhteisetPohjat()).hasSize(1);
 
         Peruste p2 = perusteRepository.findOne(amosaaPohja2.getPeruste().getIdLong());
         p2.asetaTila(PerusteTila.VALMIS);
         perusteRepository.save(p2);
-        assertThatThrownBy(() -> perusteService.getAmosaaYhteinenPohja()).isInstanceOf(BusinessRuleViolationException.class);
+        assertThat(perusteService.getAmosaaYhteisetPohjat()).hasSize(2);
     }
 
     @Test
@@ -360,8 +361,6 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
     @Test
     @Rollback
     public void testAmosaaJaettuPohja() {
-        assertThatThrownBy(() -> perusteService.getAmosaaYhteinenPohja()).isInstanceOf(BusinessRuleViolationException.class);
-
         PerusteprojektiDto amosaaPohja1 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
             ppl.setTyyppi(PerusteTyyppi.AMOSAA_YHTEINEN);
         });
@@ -378,7 +377,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
         Page<PerusteHakuDto> perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
 
-        PerusteKaikkiDto pohja = perusteService.getAmosaaYhteinenPohja();
+        PerusteKaikkiDto pohja = perusteService.getAmosaaYhteisetPohjat().get(0);
         assertThat(pohja).isNotNull().hasFieldOrPropertyWithValue("id", perusteDto.getId());
 
         PerusteprojektiDto amosaaPohja2 = ppTestUtils.createPerusteprojekti((PerusteprojektiLuontiDto ppl) -> {
@@ -390,7 +389,7 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
 
         perusteet = perusteService.findJulkinenBy(PageRequest.of(0, 10), pquery);
         assertThat(perusteet.getTotalElements()).isEqualTo(0);
-        PerusteKaikkiDto amosaaYhteinen = perusteService.getAmosaaYhteinenPohja();
+        PerusteKaikkiDto amosaaYhteinen = perusteService.getAmosaaYhteisetPohjat().get(0);
         assertThat(amosaaYhteinen)
                 .isNotNull()
                 .hasFieldOrPropertyWithValue("id", perusteDto.getId());

@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.olt;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.oto;
+import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -65,7 +66,7 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
     public void testAddUpdate() throws IOException {
 
         VuosiluokkaKokonaisuusDto dto = new VuosiluokkaKokonaisuusDto();
-        dto.setNimi(olt("Nimi"));
+        dto.setNimi(lt("Nimi"));
         dto.setTehtava(oto("Otsikko","Nimi"));
         dto.setSiirtymaEdellisesta(oto("Otsikko","Nimi"));
         dto.setSiirtymaSeuraavaan(oto("Otsikko","Nimi"));
@@ -81,14 +82,14 @@ public class VuosiluokkaKokonaisuusServiceIT extends AbstractIntegrationTest {
 
         assertEquals(1, dto.getLaajaalaisetOsaamiset().size());
         assertEquals(osaaminen, dto.getLaajaalaisetOsaamiset().iterator().next().getLaajaalainenOsaaminen().get());
-        dto.setNimi(olt("Nimi2"));
+        dto.setNimi(lt("Nimi2"));
         dto.getLaajaalaisetOsaamiset().add(vlo);
         final VuosiluokkaKokonaisuusContext ctx = VuosiluokkaKokonaisuusContext.of(perusteId, dto.getId());
 
         lockService.lock(ctx);
 //        versionDto = perusteService.getPerusteVersion(perusteId);
         dto = service.updateVuosiluokkaKokonaisuus(perusteId, new UpdateDto<>(dto));
-        assertThat(dto.getNimi().get().get(Kieli.FI)).isEqualTo("Nimi2");
+        assertThat(dto.getNimi().get(Kieli.FI)).isEqualTo("Nimi2");
 //        assertNotEquals(perusteService.getPerusteVersion(perusteId).getAikaleima(), versionDto.getAikaleima());
         lockService.unlock(ctx);
 

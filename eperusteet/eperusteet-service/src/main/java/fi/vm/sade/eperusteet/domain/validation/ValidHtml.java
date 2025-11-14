@@ -45,8 +45,10 @@ public @interface ValidHtml {
         private static Safelist getNormalWhiteList() {
             return Safelist.none()
                     .addTags("p", "span", "strong", "em", "i", "s", "ol", "li", "ul", "blockquote", "table", "caption",
-                            "tbody", "tr", "td", "hr", "pre", "th", "thead", "a", "abbr", "comment", "figcaption", "br")
+                            "tbody", "tr", "td", "hr", "pre", "th", "thead", "a", "abbr", "comment", "figcaption", "br",
+                            "colgroup", "col")
                     .addAttributes("table", "align", "border", "cellpadding", "cellspacing", "style", "summary")
+                    .addAttributes("col", "style")
                     .addAttributes("th", "scope", "colspan", "rowspan", "style")
                     .addAttributes("td", "colspan", "rowspan", "style", "data-colwidth")
                     .addAttributes("a", "href", "target", "rel", "routenode")

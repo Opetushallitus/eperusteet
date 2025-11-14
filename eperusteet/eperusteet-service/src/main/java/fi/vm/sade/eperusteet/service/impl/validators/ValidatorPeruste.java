@@ -68,15 +68,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -475,7 +467,7 @@ public class ValidatorPeruste implements Validator {
                         tosa.getAmmattitaitovaatimukset(), vaaditutKielet, virheellisetKielet);
                 tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-kuvaus", tosa.getKuvaus(),
                         vaaditutKielet, virheellisetKielet);
-                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", TekstiPalanen.of(tosaDto.getNimi().getTekstit()),
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", TekstiPalanen.of(Optional.ofNullable(tosaDto.getNimi()).map(LokalisoituTekstiDto::getTekstit).orElse(null)),
                         vaaditutKielet, virheellisetKielet, true);
 
                 for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {

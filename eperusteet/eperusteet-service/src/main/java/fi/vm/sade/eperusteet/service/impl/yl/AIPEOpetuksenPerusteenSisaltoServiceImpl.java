@@ -153,7 +153,11 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOppiaine oppimaara = mapper.map(oppiaineDto, AIPEOppiaine.class);
         oppimaara = oppiaineRepository.save(oppimaara);
         parent.getOppimaarat().add(oppimaara);
-        perusteenMuokkaustietoService.addMuokkaustieto(perusteId, oppimaara, MuokkausTapahtuma.LUONTI);
+        perusteenMuokkaustietoService.addMuokkaustieto(
+                perusteId,
+                oppimaara,
+                MuokkausTapahtuma.LUONTI,
+                Sets.newHashSet(new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)));
         return mapper.map(oppimaara, AIPEOppiaineDto.class);
     }
 
