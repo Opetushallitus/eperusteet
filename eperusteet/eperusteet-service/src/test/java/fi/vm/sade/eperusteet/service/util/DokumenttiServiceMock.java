@@ -5,6 +5,7 @@ import fi.vm.sade.eperusteet.domain.GeneratorVersion;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.pdf.PdfData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.service.dokumentti.DokumenttiService;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
@@ -35,7 +36,12 @@ public class DokumenttiServiceMock implements DokumenttiService {
     }
 
     @Override
-    public byte[] get(Long id) {
+    public byte[] getData(Long id) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] getHtml(Long id) {
         return new byte[0];
     }
 
@@ -65,7 +71,7 @@ public class DokumenttiServiceMock implements DokumenttiService {
     }
 
     @Override
-    public void updateDokumenttiPdfData(byte[] pdfData, Long dokumenttiId) {
+    public void updateDokumenttiPdfData(PdfData pdfData, Long dokumenttiId) {
 
     }
 

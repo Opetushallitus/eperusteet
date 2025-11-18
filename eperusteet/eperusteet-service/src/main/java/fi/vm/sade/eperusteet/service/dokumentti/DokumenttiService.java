@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.dokumentti;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.dto.DokumenttiDto;
+import fi.vm.sade.eperusteet.dto.pdf.PdfData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.service.exception.DokumenttiException;
 import org.springframework.security.core.parameters.P;
@@ -27,7 +28,10 @@ public interface DokumenttiService {
     );
 
     @PreAuthorize("permitAll()")
-    byte[] get(Long id);
+    byte[] getData(Long id);
+
+    @PreAuthorize("permitAll()")
+    byte[] getHtml(Long id);
 
     @PreAuthorize("permitAll()")
     Long getDokumenttiId(Long perusteId, Kieli kieli, Suoritustapakoodi suoritustapakoodi, GeneratorVersion generatorVersion);
@@ -44,7 +48,7 @@ public interface DokumenttiService {
     @PreAuthorize("permitAll()")
     DokumenttiDto getJulkaistuDokumentti(Long perusteId, Kieli kieli, Integer revision);
 
-    void updateDokumenttiPdfData(byte[] pdfData, Long dokumenttiId);
+    void updateDokumenttiPdfData(PdfData pdfData, Long dokumenttiId);
 
     void updateDokumenttiTila(DokumenttiTila tila, Long dokumenttiId);
 
