@@ -8,7 +8,8 @@ public enum PerusteTyyppi {
     OPAS("opas"),
     AMOSAA_YHTEINEN("amosaayhteinen"),
     POHJA("pohja"),
-    DIGITAALINEN_OSAAMINEN("digitaalinen_osaaminen");
+    DIGITAALINEN_OSAAMINEN("digitaalinen_osaaminen"),
+    KIELI_KAANTAJA_TUTKINTO("kieli_kaantaja_tutkinto");
 
     private final String tila;
 

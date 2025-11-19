@@ -13,6 +13,8 @@ import fi.vm.sade.eperusteet.utils.client.RestClientFactory;
 import fi.vm.sade.javautils.http.OphHttpClient;
 import fi.vm.sade.javautils.http.OphHttpEntity;
 import fi.vm.sade.javautils.http.OphHttpRequest;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.http.entity.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,6 +34,7 @@ import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static jakarta.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 @Service
+@Slf4j
 public class ExternalPdfServiceImpl implements ExternalPdfService {
 
     @Value("${fi.vm.sade.eperusteet.eperusteet.pdf-service:''}")
@@ -79,6 +82,7 @@ public class ExternalPdfServiceImpl implements ExternalPdfService {
                 .orElse(null);
 
         if (!ObjectUtils.isEmpty(result)) {
+            log.error("Virhe pdf-palvelun kutsussa: {}", result);
             throw new RuntimeException("Virhe pdf-palvelun kutsussa");
         }
     }

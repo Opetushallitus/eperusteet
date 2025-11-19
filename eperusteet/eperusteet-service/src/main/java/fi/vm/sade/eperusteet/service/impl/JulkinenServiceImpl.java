@@ -98,7 +98,7 @@ public class JulkinenServiceImpl implements JulkinenService {
                 .filter(peruste -> peruste.getTila().equals(PerusteTila.VALMIS))
                 .map(peruste -> mapper.map(peruste, TietoaPalvelustaDto.class))
                 .findFirst()
-                .orElseThrow(NotExistsException::new);
+                .orElse(null);
     }
 
     private List<JulkiEtusivuDto> getPerusteet() {
@@ -113,6 +113,10 @@ public class JulkinenServiceImpl implements JulkinenService {
 
             if (PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
                 dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.DIGITAALINEN_OSAAMINEN);
+            }
+
+            if (PerusteTyyppi.of(peruste.getTyyppi()).equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
+                dto.setEtusivuTyyppi(JulkiEtusivuTyyppi.KIELI_KAANTAJA_TUTKINTO);
             }
 
             return dto;

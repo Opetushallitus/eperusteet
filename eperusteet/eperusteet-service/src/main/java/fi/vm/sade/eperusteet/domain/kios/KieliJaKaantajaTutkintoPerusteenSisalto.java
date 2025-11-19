@@ -1,26 +1,20 @@
-package fi.vm.sade.eperusteet.domain.yl;
+package fi.vm.sade.eperusteet.domain.kios;
 
 import fi.vm.sade.eperusteet.domain.AbstractAuditedReferenceableEntity;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 import fi.vm.sade.eperusteet.domain.PerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-
 @Entity
 @Audited
-@Table(name = "digitaalinenosaaminen_perusteen_sisalto")
-public class DigitaalisenOsaamisenPerusteenSisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
+@Table(name = "kielijakaantajatutkinto_perusteen_sisalto")
+public class KieliJaKaantajaTutkintoPerusteenSisalto extends AbstractAuditedReferenceableEntity implements PerusteenSisalto {
 
     @RelatesToPeruste
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -36,14 +30,15 @@ public class DigitaalisenOsaamisenPerusteenSisalto extends AbstractAuditedRefere
     @JoinColumn
     private PerusteenOsaViite sisalto = new PerusteenOsaViite(this);
 
-    public DigitaalisenOsaamisenPerusteenSisalto kloonaa(Peruste peruste) {
-        DigitaalisenOsaamisenPerusteenSisalto eps = new DigitaalisenOsaamisenPerusteenSisalto();
-        eps.setPeruste(peruste);
-        eps.setSisalto(sisalto.copy());
-        return eps;
+    public KieliJaKaantajaTutkintoPerusteenSisalto kloonaa(Peruste peruste) {
+        KieliJaKaantajaTutkintoPerusteenSisalto kieliKaantajasisalto = new KieliJaKaantajaTutkintoPerusteenSisalto();
+        kieliKaantajasisalto.setPeruste(peruste);
+        kieliKaantajasisalto.setSisalto(sisalto.copy());
+        return kieliKaantajasisalto;
     }
 
     public boolean containsViite(PerusteenOsaViite viite) {
         return viite != null && sisalto.getId().equals(viite.getRoot().getId());
     }
 }
+
