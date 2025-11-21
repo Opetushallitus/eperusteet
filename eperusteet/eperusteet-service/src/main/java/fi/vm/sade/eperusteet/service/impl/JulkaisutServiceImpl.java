@@ -313,11 +313,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             JulkaistuPeruste julkaisu = new JulkaistuPeruste();
             julkaisu.setRevision(seuraavaVapaaJulkaisuNumero(peruste.getId()));
-            julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
             julkaisu.setLuoja(username);
             julkaisu.setLuotu(julkaisuaika);
             julkaisu.setPeruste(peruste);
             julkaisu.setJulkinen(true);
+
+            if (julkaisuBaseDto.getTiedote() != null) {
+                julkaisu.setTiedote(TekstiPalanen.of(julkaisuBaseDto.getTiedote().getTekstit()));
+            }
 
             if (julkaisuBaseDto.getJulkinenTiedote() != null) {
                 julkaisu.setJulkinenTiedote(TekstiPalanen.of(julkaisuBaseDto.getJulkinenTiedote().getTekstit()));
