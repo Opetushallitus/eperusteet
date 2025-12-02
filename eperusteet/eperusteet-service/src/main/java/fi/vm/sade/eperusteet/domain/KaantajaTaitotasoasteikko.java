@@ -1,8 +1,10 @@
 package fi.vm.sade.eperusteet.domain;
 
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -29,7 +31,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 @Audited
 @Getter
 @Setter
-public class KaantajaTaitotasoasteikko extends PerusteenOsa {
+public class KaantajaTaitotasoasteikko extends PerusteenOsa implements Liitteellinen {
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -40,6 +42,11 @@ public class KaantajaTaitotasoasteikko extends PerusteenOsa {
     @NotAudited
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTaitotasoasteikko", orphanRemoval = true)
     private List<TaitotasoasteikkoKategoria> taitotasoasteikkoKategoriat = new ArrayList<>();
+
+    @Getter
+    @Setter
+    @NotNull
+    private boolean liite = false;
 
     public KaantajaTaitotasoasteikko() {
     }
@@ -71,6 +78,7 @@ public class KaantajaTaitotasoasteikko extends PerusteenOsa {
             KaantajaTaitotasoasteikko other = (KaantajaTaitotasoasteikko) perusteenOsa;
             setNimi(other.getNimi());
             setKuvaus(other.getKuvaus());
+            setLiite(other.isLiite());
 
             this.taitotasoasteikkoKategoriat.clear();
             for (TaitotasoasteikkoKategoria kategoria : other.getTaitotasoasteikkoKategoriat()) {
