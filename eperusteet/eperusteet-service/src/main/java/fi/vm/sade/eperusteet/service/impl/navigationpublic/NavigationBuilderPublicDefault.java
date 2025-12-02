@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.impl.navigationpublic;
 
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -60,7 +61,7 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
             return type;
         }
 
-        if (isTekstikappaleLiite(po)) {
+        if (isLiite(po)) {
             return NavigationType.liite;
         }
 
@@ -84,8 +85,8 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         return type;
     }
 
-    private boolean isTekstikappaleLiite(PerusteenOsaDto.Laaja po) {
-        return po instanceof TekstiKappaleDto && ((TekstiKappaleDto) po).getLiite() != null && ((TekstiKappaleDto) po).getLiite();
+    private boolean isLiite(PerusteenOsaDto.Laaja po) {
+        return po instanceof Liitteellinen && ((Liitteellinen) po).isLiite();
     }
 
     /**

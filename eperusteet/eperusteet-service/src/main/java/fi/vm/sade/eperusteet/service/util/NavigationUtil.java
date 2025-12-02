@@ -21,10 +21,16 @@ public class NavigationUtil {
             NavigationType.koulutuksenosa,
             NavigationType.koto_laajaalainenosaaminen,
             NavigationType.koto_kielitaitotaso,
-            NavigationType.koto_opinto);
+            NavigationType.koto_opinto,
+            NavigationType.kaantajataito,
+            NavigationType.kaantajataitotasoasteikko);
+
+    private static final Set<PerusteTyyppi> NUMEROITAVAT_PERUSTE_TYYPIT = Set.of(
+            PerusteTyyppi.NORMAALI,
+            PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO);
 
     public static NavigationNodeDto asetaNumerointi(Peruste peruste, NavigationNodeDto node) {
-        if (!peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN) && peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI)) {
+        if (!peruste.getToteutus().equals(KoulutustyyppiToteutus.AMMATILLINEN) && NUMEROITAVAT_PERUSTE_TYYPIT.contains(peruste.getTyyppi())) {
             asetaNumerointi(node.getChildren(), "");
         }
         return node;

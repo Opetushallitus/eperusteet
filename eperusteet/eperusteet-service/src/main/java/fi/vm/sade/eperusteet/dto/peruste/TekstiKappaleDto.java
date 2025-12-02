@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import java.util.List;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("tekstikappale")
-public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
+public class TekstiKappaleDto extends PerusteenOsaDto.Laaja implements Liitteellinen {
     private LokalisoituTekstiDto teksti;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto osaamisala;
@@ -52,5 +53,10 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja {
         }
 
         return super.getNimi();
+    }
+
+    @Override
+    public boolean isLiite() {
+        return liite != null && liite;
     }
 }
