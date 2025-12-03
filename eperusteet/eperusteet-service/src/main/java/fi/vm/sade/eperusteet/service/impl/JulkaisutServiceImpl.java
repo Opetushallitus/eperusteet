@@ -412,7 +412,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Override
     public Set<Long> generoiJulkaisuPdf(PerusteKaikkiDto perusteDto) {
 
-        if ((!perusteDto.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !perusteDto.getTyyppi().equals(PerusteTyyppi.OPAS)) || OpasTyyppi.TIETOAPALVELUSTA.equals(perusteDto.getOpasTyyppi())) {
+        if ((!perusteDto.getTyyppi().equals(PerusteTyyppi.NORMAALI) && !perusteDto.getTyyppi().equals(PerusteTyyppi.OPAS) && !perusteDto.getTyyppi().equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO))
+                || OpasTyyppi.TIETOAPALVELUSTA.equals(perusteDto.getOpasTyyppi())) {
             return Collections.emptySet();
         }
 
