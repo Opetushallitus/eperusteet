@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
@@ -79,11 +80,11 @@ public interface PerusteprojektiService {
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
-    List<PerusteprojektiListausDto> getOmatProjektit();
+    List<PerusteprojektiListausDto> getOmatProjektit(List<PerusteTyyppi> tyypit);
 
     @PreAuthorize("isAuthenticated()")
     @PostFilter("hasPermission(filterObject.id,'perusteprojekti','LUKU')")
-    List<PerusteprojektiListausDto> getOmatJulkaistut();
+    List<PerusteprojektiListausDto> getOmatJulkaistut(List<PerusteTyyppi> tyypit);
 
     @PreAuthorize("hasPermission(#id, 'perusteprojekti', 'LUKU')")
     List<TyoryhmaHenkiloDto> getTyoryhmaHenkilot(@P("id") Long perusteProjektiId);

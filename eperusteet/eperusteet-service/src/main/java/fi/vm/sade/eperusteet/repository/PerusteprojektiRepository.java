@@ -33,22 +33,23 @@ public interface PerusteprojektiRepository extends JpaRepository<Perusteprojekti
 
     List<Perusteprojekti> findAllByTilaAndPerusteTyyppi(ProjektiTila tila, PerusteTyyppi tyyppi);
 
-    @Query("SELECT p from Perusteprojekti p WHERE p.tila <> 'POISTETTU' AND p.tila <> 'JULKAISTU' AND (p.luoja = ?1 OR p.ryhmaOid IN (?2)) AND p.peruste.tyyppi != 'Opas'")
-    List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs);
+    @Query("""
+            SELECT p
+            from Perusteprojekti p
+            WHERE p.tila <> 'POISTETTU'
+            AND p.tila <> 'JULKAISTU'
+            AND (p.luoja = :userOid OR p.ryhmaOid IN (:orgs))
+            AND p.peruste.tyyppi IN (:tyypit)
+            """)
+    List<Perusteprojekti> findOmatPerusteprojektit(String userOid, Set<String> orgs, List<PerusteTyyppi> tyypit);
 
-    @Query("SELECT p from Perusteprojekti p " +
-            "WHERE p.tila <> 'POISTETTU' AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0) " +
-            "AND (p.luoja = ?1 OR p.ryhmaOid IN (?2)) AND p.peruste.tyyppi != 'Opas'")
-    List<Perusteprojekti> findOmatJulkaistutPerusteprojektit(String userOid, Set<String> orgs);
-
-    @Query("SELECT new fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto(" +
-            " p.id, " +
-            " p.nimi, " +
-            " p.peruste.diaarinumero, " +
-            " p.diaarinumero, " +
-            " p.peruste.koulutustyyppi, " +
-            " p.peruste.tyyppi, " +
-            " p.tila" +
-            ") FROM Perusteprojekti p WHERE p.peruste.tyyppi != 'Opas'")
-    List<PerusteprojektiKevytDto> findAllKevyt();
+    @Query("""
+            SELECT p
+            from Perusteprojekti p
+            WHERE p.tila <> 'POISTETTU'
+            AND (p.tila = 'JULKAISTU' OR (SELECT COUNT(julkaisu) FROM JulkaistuPeruste julkaisu WHERE julkaisu.peruste.id = p.peruste.id) > 0)
+            AND (p.luoja = :userOid OR p.ryhmaOid IN (:orgs))
+            AND p.peruste.tyyppi IN (:tyypit)
+            """)
+    List<Perusteprojekti> findOmatJulkaistutPerusteprojektit(String userOid, Set<String> orgs, List<PerusteTyyppi> tyypit);
 }
