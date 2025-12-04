@@ -285,19 +285,19 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
-    public List<PerusteprojektiListausDto> getOmatProjektit() {
+    public List<PerusteprojektiListausDto> getOmatProjektit(List<PerusteTyyppi> tyypit) {
         Set<String> orgs = permissionManager.kayttajanOrganisaatiot();
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        return mapper.mapAsList(repository.findOmatPerusteprojektit(user, orgs), PerusteprojektiListausDto.class);
+        return mapper.mapAsList(repository.findOmatPerusteprojektit(user, orgs, tyypit), PerusteprojektiListausDto.class);
     }
 
     @Override
     @Transactional(readOnly = true)
     @PreAuthorize("isAuthenticated()")
-    public List<PerusteprojektiListausDto> getOmatJulkaistut() {
+    public List<PerusteprojektiListausDto> getOmatJulkaistut(List<PerusteTyyppi> tyypit) {
         Set<String> orgs = permissionManager.kayttajanOrganisaatiot();
         String user = SecurityContextHolder.getContext().getAuthentication().getName();
-        return mapper.mapAsList(repository.findOmatJulkaistutPerusteprojektit(user, orgs), PerusteprojektiListausDto.class);
+        return mapper.mapAsList(repository.findOmatJulkaistutPerusteprojektit(user, orgs, tyypit), PerusteprojektiListausDto.class);
     }
 
     @Override

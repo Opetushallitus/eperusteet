@@ -523,7 +523,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         List<PerusteprojektiInfoDto> info = service.getBasicInfo();
         Assert.assertEquals(3, info.size());
 
-        List<PerusteprojektiListausDto> infoOmat = service.getOmatProjektit();
+        List<PerusteprojektiListausDto> infoOmat = service.getOmatProjektit(List.of(PerusteTyyppi.NORMAALI, PerusteTyyppi.POHJA));
         Assert.assertEquals(3, infoOmat.size());
 
         PerusteprojektiDto ppdto = service.get(tpp.getId());

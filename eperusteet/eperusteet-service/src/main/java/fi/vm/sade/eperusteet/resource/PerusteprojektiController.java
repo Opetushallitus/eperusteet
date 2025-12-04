@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.domain.Diaarinumero;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.dto.OmistajaDto;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
@@ -79,14 +80,18 @@ public class PerusteprojektiController {
 
     @RequestMapping(value = "/omat", method = GET)
     @ResponseBody
-    public ResponseEntity<List<PerusteprojektiListausDto>> getOmatPerusteprojektit() {
-        return new ResponseEntity<>(service.getOmatProjektit(), HttpStatus.OK);
+    public ResponseEntity<List<PerusteprojektiListausDto>> getOmatPerusteprojektit(
+            @RequestParam(value = "perustetyyppi") final List<PerusteTyyppi> tyypit
+    ) {
+        return new ResponseEntity<>(service.getOmatProjektit(tyypit), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/omat/julkaistut", method = GET)
     @ResponseBody
-    public ResponseEntity<List<PerusteprojektiListausDto>> getOmatJulkaistutPerusteprojektit() {
-        return new ResponseEntity<>(service.getOmatJulkaistut(), HttpStatus.OK);
+    public ResponseEntity<List<PerusteprojektiListausDto>> getOmatJulkaistutPerusteprojektit(
+            @RequestParam(value = "perustetyyppi") final List<PerusteTyyppi> tyypit
+    ) {
+        return new ResponseEntity<>(service.getOmatJulkaistut(tyypit), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = GET)
