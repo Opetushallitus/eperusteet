@@ -41,7 +41,7 @@ repot=(
 )
 
 for repo in "${repot[@]}"; do
-  trivy repo "github.com/Opetushallitus/${repo}" --scanners vuln --severity ${vakavuudet} --output "results/${repo}_$(date '+%Y-%m-%d').txt" &
+  trivy repo "github.com/Opetushallitus/${repo}" --scanners vuln --cache-backend memory --severity ${vakavuudet} --output "results/${repo}_$(date '+%Y-%m-%d').txt" &
 done
 
 printf "\nOdotetaan taustatehtävien valmistumista...\n"
