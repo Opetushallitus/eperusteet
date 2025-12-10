@@ -47,6 +47,11 @@ public class LampiConfigurationLocal {
             }
 
             @Override
+            public S3TransferManager.Builder transferDirectoryMaxConcurrency(Integer integer) {
+                return null;
+            }
+
+            @Override
             public S3TransferManager build() {
                 return mockedTransferManager();
             }
