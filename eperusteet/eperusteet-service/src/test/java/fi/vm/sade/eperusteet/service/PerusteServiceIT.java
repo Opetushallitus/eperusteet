@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.impl.validators.ValidatorPeruste;
+import fi.vm.sade.eperusteet.service.impl.validators.ValidatorPerusteTiedot;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
@@ -200,7 +201,7 @@ public class PerusteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testDiaarinumeroValidi() {
-        ValidatorPeruste validator = new ValidatorPeruste();
+        ValidatorPerusteTiedot validator = new ValidatorPerusteTiedot();
 
         assertFalse(validator.isDiaariValid(new Diaarinumero("diaari")));
         assertFalse(validator.isDiaariValid(new Diaarinumero("1-234/567/8910, päivitetty")));
