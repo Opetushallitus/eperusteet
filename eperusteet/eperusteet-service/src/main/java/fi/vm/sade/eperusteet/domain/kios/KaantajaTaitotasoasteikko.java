@@ -1,5 +1,8 @@
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.domain.kios;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TaitotasoasteikkoKategoria;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;

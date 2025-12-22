@@ -1,8 +1,12 @@
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.domain.kios;
 
+import fi.vm.sade.eperusteet.domain.PerusteenOsa;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
@@ -12,8 +16,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
@@ -27,38 +29,38 @@ import java.util.stream.Collectors;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @Entity
-@Table(name = "kaantaja_taito")
+@Table(name = "kaantaja_taitotasokuvaus")
 @Audited
 @Getter
 @Setter
-public class KaantajaTaito extends PerusteenOsa {
+public class KaantajaTaitotasokuvaus extends PerusteenOsa implements Liitteellinen {
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private TekstiPalanen kuvaus;
 
-    @ValidHtml
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen valiotsikko;
-
     @OrderColumn
     @NotAudited
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTaito", orphanRemoval = true)
-    private List<KaantajaTaitoKohdealue> kohdealueet = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTaitotasokuvaus", orphanRemoval = true)
+    private List<KaantajaTaitotasoTutkintotaso> tutkintotasot = new ArrayList<>();
 
-    public KaantajaTaito() {
+    @Getter
+    @Setter
+    @NotNull
+    private boolean liite = false;
+
+    public KaantajaTaitotasokuvaus() {
     }
 
-    public KaantajaTaito(KaantajaTaito other) {
+    public KaantajaTaitotasokuvaus(KaantajaTaitotasokuvaus other) {
         super(other);
         copyState(other);
     }
 
     @Override
-    public KaantajaTaito copy() {
-        return new KaantajaTaito(this);
+    public KaantajaTaitotasokuvaus copy() {
+        return new KaantajaTaitotasokuvaus(this);
     }
 
     @Override
@@ -68,23 +70,23 @@ public class KaantajaTaito extends PerusteenOsa {
 
     @Override
     public NavigationType getNavigationType() {
-        return NavigationType.kaantajataito;
+        return NavigationType.kaantajataitotasokuvaus;
     }
 
     @Override
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
-        if (perusteenOsa instanceof KaantajaTaito) {
-            KaantajaTaito other = (KaantajaTaito) perusteenOsa;
+        if (perusteenOsa instanceof KaantajaTaitotasokuvaus) {
+            KaantajaTaitotasokuvaus other = (KaantajaTaitotasokuvaus) perusteenOsa;
             setNimi(other.getNimi());
             setKuvaus(other.getKuvaus());
-            setValiotsikko(other.getValiotsikko());
+            setLiite(other.isLiite());
 
-            this.kohdealueet.clear();
-            for (KaantajaTaitoKohdealue kohdealue : other.getKohdealueet()) {
-                KaantajaTaitoKohdealue newKohdealue = new KaantajaTaitoKohdealue(kohdealue);
-                newKohdealue.setKaantajaTaito(this);
-                this.kohdealueet.add(newKohdealue);
+            this.tutkintotasot.clear();
+            for (KaantajaTaitotasoTutkintotaso tutkintotaso : other.getTutkintotasot()) {
+                KaantajaTaitotasoTutkintotaso newTutkintotaso = new KaantajaTaitotasoTutkintotaso(tutkintotaso);
+                newTutkintotaso.setKaantajaTaitotasokuvaus(this);
+                this.tutkintotasot.add(newTutkintotaso);
             }
         }
     }
@@ -92,15 +94,14 @@ public class KaantajaTaito extends PerusteenOsa {
     @Override
     public boolean structureEquals(PerusteenOsa updated) {
         boolean result = false;
-        if (updated instanceof KaantajaTaito) {
-            KaantajaTaito that = (KaantajaTaito) updated;
+        if (updated instanceof KaantajaTaitotasokuvaus) {
+            KaantajaTaitotasokuvaus that = (KaantajaTaitotasokuvaus) updated;
             result = super.structureEquals(that);
             result &= getKuvaus() == null || refXnor(getKuvaus(), that.getKuvaus());
-            result &= getValiotsikko() == null || refXnor(getValiotsikko(), that.getValiotsikko());
 
-            if (result && getKohdealueet() != null) {
-                Iterator<KaantajaTaitoKohdealue> i = getKohdealueet().iterator();
-                Iterator<KaantajaTaitoKohdealue> j = that.getKohdealueet().iterator();
+            if (result && getTutkintotasot() != null) {
+                Iterator<KaantajaTaitotasoTutkintotaso> i = getTutkintotasot().iterator();
+                Iterator<KaantajaTaitotasoTutkintotaso> j = that.getTutkintotasot().iterator();
                 while (result && i.hasNext() && j.hasNext()) {
                     result &= Objects.equals(i.next(), j.next());
                 }
@@ -111,16 +112,15 @@ public class KaantajaTaito extends PerusteenOsa {
         return result;
     }
 
-    private void copyState(KaantajaTaito other) {
+    private void copyState(KaantajaTaitotasokuvaus other) {
         if (other == null) {
             return;
         }
 
         this.kuvaus = other.getKuvaus();
-        this.valiotsikko = other.getValiotsikko();
-        this.kohdealueet = other.getKohdealueet().stream()
-                .map(KaantajaTaitoKohdealue::new)
-                .peek(kohdealue -> kohdealue.setKaantajaTaito(this))
+        this.tutkintotasot = other.getTutkintotasot().stream()
+                .map(KaantajaTaitotasoTutkintotaso::new)
+                .peek(tutkintotaso -> tutkintotaso.setKaantajaTaitotasokuvaus(this))
                 .collect(Collectors.toList());
     }
 }

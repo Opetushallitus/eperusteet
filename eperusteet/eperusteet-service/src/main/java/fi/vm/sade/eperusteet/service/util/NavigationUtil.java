@@ -23,7 +23,11 @@ public class NavigationUtil {
             NavigationType.koto_kielitaitotaso,
             NavigationType.koto_opinto,
             NavigationType.kaantajataito,
-            NavigationType.kaantajataitotasoasteikko);
+            NavigationType.kaantajataitotasoasteikko,
+            NavigationType.kaantajakielitaito,
+            NavigationType.kaantajataitotasokuvaus,
+            NavigationType.kaantajaaihealue,
+            NavigationType.kaantajatodistusmalli);
 
     private static final Set<PerusteTyyppi> NUMEROITAVAT_PERUSTE_TYYPIT = Set.of(
             PerusteTyyppi.NORMAALI,

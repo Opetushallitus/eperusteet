@@ -12,6 +12,10 @@ import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.kios.KaantajaTaitoDto;
 import fi.vm.sade.eperusteet.dto.kios.KaantajaTaitotasoasteikkoDto;
+import fi.vm.sade.eperusteet.dto.kios.KaantajaKielitaitoDto;
+import fi.vm.sade.eperusteet.dto.kios.KaantajaTaitotasokuvausDto;
+import fi.vm.sade.eperusteet.dto.kios.KaantajaAihealueDto;
+import fi.vm.sade.eperusteet.dto.kios.KaantajaTodistusmalliDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
@@ -75,7 +79,11 @@ public abstract class PerusteenOsaDto implements ReferenceableDto {
             @JsonSubTypes.Type(value = OsaamiskokonaisuusDto.class),
             @JsonSubTypes.Type(value = OsaamiskokonaisuusPaaAlueDto.class),
             @JsonSubTypes.Type(value = KaantajaTaitoDto.class),
-            @JsonSubTypes.Type(value = KaantajaTaitotasoasteikkoDto.class)
+            @JsonSubTypes.Type(value = KaantajaTaitotasoasteikkoDto.class),
+            @JsonSubTypes.Type(value = KaantajaKielitaitoDto.class),
+            @JsonSubTypes.Type(value = KaantajaTaitotasokuvausDto.class),
+            @JsonSubTypes.Type(value = KaantajaAihealueDto.class),
+            @JsonSubTypes.Type(value = KaantajaTodistusmalliDto.class)
     })
     public static abstract class Laaja extends PerusteenOsaDto implements Navigable {
         public abstract String getOsanTyyppi();

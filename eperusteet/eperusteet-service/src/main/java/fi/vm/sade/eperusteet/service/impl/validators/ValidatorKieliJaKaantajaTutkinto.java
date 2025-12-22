@@ -1,6 +1,8 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.kios.KaantajaTaito;
+import fi.vm.sade.eperusteet.domain.kios.KaantajaTaitotasoasteikko;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
