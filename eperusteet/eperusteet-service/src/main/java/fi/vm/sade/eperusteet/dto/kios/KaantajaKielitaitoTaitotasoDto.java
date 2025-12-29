@@ -17,4 +17,3 @@ public class KaantajaKielitaitoTaitotasoDto {
     private LokalisoituTekstiDto kuvaus;
     private KoodiDto taitotaso;
 }
-

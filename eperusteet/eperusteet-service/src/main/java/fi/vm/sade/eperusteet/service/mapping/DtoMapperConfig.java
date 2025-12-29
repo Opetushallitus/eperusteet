@@ -20,6 +20,7 @@ import fi.vm.sade.eperusteet.domain.TutkintonimikeKoodi;
 import fi.vm.sade.eperusteet.domain.arviointi.ArvioinninKohde;
 import fi.vm.sade.eperusteet.domain.digi.Osaamiskokonaisuus;
 import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusPaaAlue;
+import fi.vm.sade.eperusteet.domain.kios.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
@@ -37,8 +38,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.tuva.TuvaLaajaAlainenOsaaminen;
-import fi.vm.sade.eperusteet.domain.kios.KaantajaTaito;
-import fi.vm.sade.eperusteet.domain.kios.KaantajaTaitotasoasteikko;
 import fi.vm.sade.eperusteet.domain.vst.KotoKielitaitotaso;
 import fi.vm.sade.eperusteet.domain.vst.KotoLaajaAlainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.vst.KotoOpinto;
@@ -66,6 +65,7 @@ import fi.vm.sade.eperusteet.dto.fakes.RefererDto;
 import fi.vm.sade.eperusteet.dto.julkinen.JulkiEtusivuDto;
 import fi.vm.sade.eperusteet.dto.julkinen.OpetussuunnitelmaEtusivuDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
+import fi.vm.sade.eperusteet.dto.kios.*;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
@@ -104,8 +104,6 @@ import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.tuva.TuvaLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import fi.vm.sade.eperusteet.dto.kios.KaantajaTaitoDto;
-import fi.vm.sade.eperusteet.dto.kios.KaantajaTaitotasoasteikkoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoKielitaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoLaajaAlainenOsaaminenDto;
 import fi.vm.sade.eperusteet.dto.vst.KotoOpintoDto;
@@ -762,6 +760,26 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(KaantajaTaitotasoasteikkoDto.class, KaantajaTaitotasoasteikko.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KaantajaKielitaitoDto.class, KaantajaKielitaito.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KaantajaTaitotasokuvausDto.class, KaantajaTaitotasokuvaus.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KaantajaAihealueDto.class, KaantajaAihealue.class)
+                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(KaantajaTodistusmalliDto.class, KaantajaTodistusmalli.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();

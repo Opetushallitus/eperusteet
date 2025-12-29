@@ -1,8 +1,12 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.kios.KaantajaAihealue;
+import fi.vm.sade.eperusteet.domain.kios.KaantajaKielitaito;
 import fi.vm.sade.eperusteet.domain.kios.KaantajaTaito;
+import fi.vm.sade.eperusteet.domain.kios.KaantajaTaitotasokuvaus;
 import fi.vm.sade.eperusteet.domain.kios.KaantajaTaitotasoasteikko;
+import fi.vm.sade.eperusteet.domain.kios.KaantajaTodistusmalli;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
@@ -94,7 +98,7 @@ public class ValidatorKieliJaKaantajaTutkinto extends ValidatorPeruste {
             }
         }
 
-        if (perusteenOsa instanceof KaantajaTaito kaantajaTaito && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
+        if (perusteenOsa instanceof KaantajaTaito kaantajaTaito) {
             Map<String, String> virheellisetKielet = new HashMap<>();
             tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-nimi", kaantajaTaito.getNimi(), pakolliset, virheellisetKielet, true);
 
@@ -119,7 +123,7 @@ public class ValidatorKieliJaKaantajaTutkinto extends ValidatorPeruste {
             }
         }
 
-        if (perusteenOsa instanceof KaantajaTaitotasoasteikko taitotasoasteikko && (perusteenOsa.getTunniste() == PerusteenOsaTunniste.NORMAALI || perusteenOsa.getTunniste() == null)) {
+        if (perusteenOsa instanceof KaantajaTaitotasoasteikko taitotasoasteikko) {
             Map<String, String> virheellisetKielet = new HashMap<>();
             tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotaso-asteikko-nimi", taitotasoasteikko.getNimi(), pakolliset, virheellisetKielet, true);
 
@@ -138,6 +142,124 @@ public class ValidatorKieliJaKaantajaTutkinto extends ValidatorPeruste {
 
             for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
                 validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(taitotasoasteikko).getNavigationNode());
+            }
+        }
+
+        if (perusteenOsa instanceof KaantajaAihealue kaantajaAihealue) {
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-nimi", kaantajaAihealue.getNimi(), pakolliset, virheellisetKielet, true);
+
+            if (kaantajaAihealue.getKuvaus() != null) {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-kuvaus", kaantajaAihealue.getKuvaus(), pakolliset, virheellisetKielet, true);
+            }
+
+            kaantajaAihealue.getKategoriat().forEach(kategoria -> {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-sisalto", kategoria.getNimi(), pakolliset, virheellisetKielet, true);
+                if (kategoria.getKuvaus() != null) {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-sisalto", kategoria.getKuvaus(), pakolliset, virheellisetKielet, true);
+                }
+                if (kategoria.getPerustaso() != null) {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-sisalto", kategoria.getPerustaso(), pakolliset, virheellisetKielet, true);
+                }
+                if (kategoria.getKeskitaso() != null) {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-sisalto", kategoria.getKeskitaso(), pakolliset, virheellisetKielet, true);
+                }
+                if (kategoria.getYlintaso() != null) {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-aihealue-sisalto", kategoria.getYlintaso(), pakolliset, virheellisetKielet, true);
+                }
+            });
+
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(kaantajaAihealue).getNavigationNode());
+            }
+        }
+
+        if (perusteenOsa instanceof KaantajaKielitaito kaantajaKielitaito) {
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-kielitaito-nimi", kaantajaKielitaito.getNimi(), pakolliset, virheellisetKielet, true);
+
+            if (kaantajaKielitaito.getKuvaus() != null) {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-kielitaito-kuvaus", kaantajaKielitaito.getKuvaus(), pakolliset, virheellisetKielet, true);
+            }
+
+            kaantajaKielitaito.getTaitotasot().forEach(taitotaso -> {
+                if (taitotaso.getKuvaus() != null) {
+                    tarkistaTekstipalanen("peruste-validointi-kaantaja-kielitaito-sisalto", taitotaso.getKuvaus(), pakolliset, virheellisetKielet, true);
+                }
+            });
+
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(kaantajaKielitaito).getNavigationNode());
+            }
+        }
+
+        if (perusteenOsa instanceof KaantajaTaitotasokuvaus kaantajaTaitotasokuvaus) {
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotasokuvaus-nimi", kaantajaTaitotasokuvaus.getNimi(), pakolliset, virheellisetKielet, true);
+
+            if (kaantajaTaitotasokuvaus.getKuvaus() != null) {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotasokuvaus-kuvaus", kaantajaTaitotasokuvaus.getKuvaus(), pakolliset, virheellisetKielet, true);
+            }
+
+            kaantajaTaitotasokuvaus.getTutkintotasot().forEach(tutkintotaso -> {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotasokuvaus-sisalto", tutkintotaso.getNimi(), pakolliset, virheellisetKielet, true);
+                tutkintotaso.getOsat().forEach(osa -> {
+                    osa.getTaitotasot().forEach(taitotaso -> {
+                        if (taitotaso.getKuvaus() != null) {
+                            tarkistaTekstipalanen("peruste-validointi-kaantaja-taitotasokuvaus-sisalto", taitotaso.getKuvaus(), pakolliset, virheellisetKielet, true);
+                        }
+                    });
+                });
+            });
+
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(kaantajaTaitotasokuvaus).getNavigationNode());
+            }
+        }
+
+        if (perusteenOsa instanceof KaantajaTodistusmalli kaantajaTodistusmalli) {
+            Map<String, String> virheellisetKielet = new HashMap<>();
+            tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-nimi", kaantajaTodistusmalli.getNimi(), pakolliset, virheellisetKielet, true);
+
+            if (kaantajaTodistusmalli.getKuvaus() != null) {
+                tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-kuvaus", kaantajaTodistusmalli.getKuvaus(), pakolliset, virheellisetKielet, true);
+            }
+
+            if (kaantajaTodistusmalli.getYlintaso() != null) {
+                kaantajaTodistusmalli.getYlintaso().getTaitotasot().forEach(taitotaso -> {
+                    if (taitotaso.getAsteikko() != null) {
+                        tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-sisalto", taitotaso.getAsteikko(), pakolliset, virheellisetKielet, true);
+                    }
+                    if (taitotaso.getKuvaus() != null) {
+                        tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-sisalto", taitotaso.getKuvaus(), pakolliset, virheellisetKielet, true);
+                    }
+                });
+            }
+
+            if (kaantajaTodistusmalli.getKeskitaso() != null) {
+                kaantajaTodistusmalli.getKeskitaso().getTaitotasot().forEach(taitotaso -> {
+                    if (taitotaso.getAsteikko() != null) {
+                        tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-sisalto", taitotaso.getAsteikko(), pakolliset, virheellisetKielet, true);
+                    }
+                    if (taitotaso.getKuvaus() != null) {
+                        tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-sisalto", taitotaso.getKuvaus(), pakolliset, virheellisetKielet, true);
+                    }
+                });
+            }
+
+            if (kaantajaTodistusmalli.getPerustaso() != null) {
+                kaantajaTodistusmalli.getPerustaso().getTaitotasot().forEach(taitotaso -> {
+                    if (taitotaso.getAsteikko() != null) {
+                        tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-sisalto", taitotaso.getAsteikko(), pakolliset, virheellisetKielet, true);
+                    }
+                    if (taitotaso.getKuvaus() != null) {
+                        tarkistaTekstipalanen("peruste-validointi-kaantaja-todistusmalli-sisalto", taitotaso.getKuvaus(), pakolliset, virheellisetKielet, true);
+                    }
+                });
+            }
+
+            for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+                validointi.virhe(entry.getKey(), new NavigableLokalisoituTekstiDto(kaantajaTodistusmalli).getNavigationNode());
             }
         }
 
