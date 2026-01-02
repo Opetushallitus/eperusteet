@@ -803,6 +803,12 @@ public class PerusteServiceImpl implements PerusteService{
     @Override
     @Transactional(readOnly = true)
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
+        queryList.forEach(query -> {
+            if (!query.matches("[a-zA-Z0-9_]+")) {
+                throw new NotExistsException("");
+            }
+        });
+
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
         if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
@@ -818,9 +824,9 @@ public class PerusteServiceImpl implements PerusteService{
 
         try {
             return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
-            return null;
+            throw new NotExistsException("");
         }
     }
 
