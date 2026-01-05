@@ -1,5 +1,7 @@
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.domain.kios;
 
+import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

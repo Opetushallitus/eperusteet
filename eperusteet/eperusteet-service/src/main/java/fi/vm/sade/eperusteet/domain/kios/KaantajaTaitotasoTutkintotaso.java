@@ -1,6 +1,7 @@
-package fi.vm.sade.eperusteet.domain;
+package fi.vm.sade.eperusteet.domain.kios;
 
-import fi.vm.sade.eperusteet.domain.kios.KaantajaTaitotasoasteikko;
+import fi.vm.sade.eperusteet.domain.AbstractAuditedEntity;
+import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +25,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "taitotasoasteikko_kategoria")
+@Table(name = "kaantaja_taitotaso_tutkintotaso")
 @Audited
 @Getter
 @Setter
 @NoArgsConstructor
-public class TaitotasoasteikkoKategoria extends AbstractAuditedEntity {
+public class KaantajaTaitotasoTutkintotaso extends AbstractAuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -38,22 +39,22 @@ public class TaitotasoasteikkoKategoria extends AbstractAuditedEntity {
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    private TekstiPalanen otsikko;
+    private TekstiPalanen nimi;
 
     @OrderColumn
     @NotAudited
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "taitotasoasteikkoKategoria", orphanRemoval = true)
-    private List<TaitotasoasteikkoKategoriaTaitotaso> taitotasoasteikkoKategoriaTaitotasot = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTaitotasoTutkintotaso", orphanRemoval = true)
+    private List<KaantajaTaitotasoTutkintotasoOsa> osat = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private KaantajaTaitotasoasteikko kaantajaTaitotasoasteikko;
+    private KaantajaTaitotasokuvaus kaantajaTaitotasokuvaus;
 
-    public TaitotasoasteikkoKategoria(TaitotasoasteikkoKategoria other) {
+    public KaantajaTaitotasoTutkintotaso(KaantajaTaitotasoTutkintotaso other) {
         if (other != null) {
-            this.otsikko = other.getOtsikko();
-            this.taitotasoasteikkoKategoriaTaitotasot = other.getTaitotasoasteikkoKategoriaTaitotasot().stream()
-                    .map(TaitotasoasteikkoKategoriaTaitotaso::new)
-                    .peek(taitotaso -> taitotaso.setTaitotasoasteikkoKategoria(this))
+            this.nimi = other.getNimi();
+            this.osat = other.getOsat().stream()
+                    .map(KaantajaTaitotasoTutkintotasoOsa::new)
+                    .peek(osa -> osa.setKaantajaTaitotasoTutkintotaso(this))
                     .collect(Collectors.toList());
         }
     }
