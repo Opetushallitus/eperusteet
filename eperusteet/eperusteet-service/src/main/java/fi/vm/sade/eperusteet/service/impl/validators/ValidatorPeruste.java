@@ -507,10 +507,6 @@ public class ValidatorPeruste implements Validator {
         Set<String> tutkinnonOsienKoodit = new HashSet<>();
         Peruste peruste = projekti.getPeruste();
 
-//        if (!isDiaariValid(peruste.getDiaarinumero())) {
-//            perusteValidointi.virhe("diaarinumero-ei-validi", NavigationNodeDto.of(NavigationType.tiedot));
-//        }
-
         boolean isValmisPohja = PerusteTyyppi.POHJA == peruste.getTyyppi() && (VALMIS == projekti.getTila() || PerusteTila.VALMIS == peruste.getTila());
 
         // Perusteen validointi
