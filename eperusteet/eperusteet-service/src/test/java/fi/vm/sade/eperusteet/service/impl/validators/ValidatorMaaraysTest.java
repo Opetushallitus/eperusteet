@@ -57,7 +57,7 @@ public class ValidatorMaaraysTest {
     private MaaraysService maaraysService;
 
     @InjectMocks
-    ValidatorPeruste validatorPeruste = new ValidatorPeruste();
+    ValidatorPerusteTiedot validatorPeruste = new ValidatorPerusteTiedot();
 
     @Before
     public void setup() {

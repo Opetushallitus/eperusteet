@@ -4,3 +4,4 @@ nbactions.xml
 *.iml
 manifest.json
 peruste.csv
+.vscode/
