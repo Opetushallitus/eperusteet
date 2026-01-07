@@ -789,19 +789,6 @@ public class ValidatorPeruste implements Validator {
 //        return validointi;
 //    }
 
-//    @Override
-//    public boolean isDiaariValid(Diaarinumero diaari) {
-//        if (diaari == null) {
-//            return true;
-//        }
-//        String diaarinumero = diaari.getDiaarinumero();
-//        return diaarinumero == null
-//                || "".equals(diaarinumero)
-//                || "amosaa/yhteiset".equals(diaarinumero)
-//                || Pattern.matches("^\\d{1,3}/\\d{3}/\\d{4}$", diaarinumero)
-//                || Pattern.matches("^OPH-\\d{1,5}-\\d{4}$", diaarinumero);
-//    }
-
     @Override
     public boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi) {
         return true;
