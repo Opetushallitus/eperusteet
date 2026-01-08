@@ -8,13 +8,11 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +30,8 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
     @Override
     public List<LokalisoituTekstiHakuDto> findLokalisoitavatTekstit(Set<Long> tekstiPalanenIds) {
         // Make sure PostgreSQL's max parameter size 34464 won't affect us:
-//        return Lists.partition(new ArrayList<Long>(tekstiPalanenIds), 34460).stream()
-//                .map(this::getTekstipalaset).flatMap(Collection::stream).collect(toList());
-        return Collections.emptyList();
+        return Lists.partition(new ArrayList<Long>(tekstiPalanenIds), 34460).stream()
+                .map(this::getTekstipalaset).flatMap(Collection::stream).collect(toList());
     }
 
     private List<LokalisoituTekstiHakuDto> getTekstipalaset(List<Long> tekstiPalanenIds) {
@@ -54,7 +51,7 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
             params.put("ids_"+i, ids);
             ++i;
         }
-        Query q =session.createNativeQuery("SELECT " +
+        Query q = session.createNativeQuery("SELECT " +
                 "   t.tekstipalanen_id as id, " +
                 "   t.kieli as kieli, " +
                 "   t.teksti as teksti " +
@@ -62,17 +59,25 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
                 " WHERE (" + or + ") ORDER BY t.tekstipalanen_id, t.kieli")
                 .addScalar("id", StandardBasicTypes.LONG)
                 .addScalar("kieli", StandardBasicTypes.STRING)
-                .addScalar("teksti", StandardBasicTypes.STRING)
-                .setResultTransformer(new AliasToBeanResultTransformer(LokalisoituTekstiHakuDto.class));
+                .addScalar("teksti", StandardBasicTypes.STRING);
         for (Map.Entry<String,List<Long>> p : params.entrySet()) {
             q.setParameter(p.getKey(), p.getValue());
         }
-        return list(q);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected<T> List<T> list(Query q) {
-        return q.getResultList();
+        
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = q.getResultList();
+        List<LokalisoituTekstiHakuDto> dtos = new ArrayList<>();
+        for (Object[] row : results) {
+            Long id = (Long) row[0];
+            String kieliheliString = (String) row[1];
+            String teksti = (String) row[2];
+            LokalisoituTekstiHakuDto dto = new LokalisoituTekstiHakuDto();
+            dto.setId(id);
+            dto.setKieli(kieliheliString);
+            dto.setTeksti(teksti);
+            dtos.add(dto);
+        }
+        return dtos;
     }
 
 //    protected<E extends Enum<E>> Type enumType(Session session, Class<E> e) {
