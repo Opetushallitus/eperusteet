@@ -18,7 +18,7 @@
         <springdoc.output.file.name>eperusteet.spec.json</springdoc.output.file.name>
         <springdoc.api.docs.url.external>http://localhost:8080/eperusteet-service/api-docs/external</springdoc.api.docs.url.external>
         <springdoc.output.file.name.external>eperusteet-ext.spec.json</springdoc.output.file.name.external>
-        <aws.java.sdk.version>2.33.13</aws.java.sdk.version>
+        <aws.java.sdk.version>2.40.13</aws.java.sdk.version>
         <opencsv.version>5.12.0</opencsv.version>
     </properties>
 
