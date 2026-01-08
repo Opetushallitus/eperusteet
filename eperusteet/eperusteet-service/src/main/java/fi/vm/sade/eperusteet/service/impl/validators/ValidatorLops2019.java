@@ -2,12 +2,19 @@ package fi.vm.sade.eperusteet.service.impl.validators;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.lops2019.Koodillinen;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Arviointi;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019OppiaineLaajaAlainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019OppiaineTavoitealue;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019OppiaineTavoitteet;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Tehtava;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
+import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019ModuuliTavoite;
 import fi.vm.sade.eperusteet.domain.yl.Nimetty;
 import fi.vm.sade.eperusteet.dto.ValidointiKategoria;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
@@ -25,10 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Stream;
+
+import static fi.vm.sade.eperusteet.domain.TekstiPalanen.tarkistaTekstipalanen;
 
 @Component
 @Slf4j
@@ -83,6 +93,7 @@ public class ValidatorLops2019 implements Validator {
         List<Validointi> validoinnit = new ArrayList<>();
 
         Validointi lukioValidointi = new Validointi(ValidointiKategoria.RAKENNE);
+        Validointi kieliValidointi = new Validointi(ValidointiKategoria.KIELISISALTO);
         Perusteprojekti projekti = repository.findById(perusteprojektiId).orElse(null);
 
         if (projekti == null) {
@@ -96,10 +107,14 @@ public class ValidatorLops2019 implements Validator {
                 .map(oa -> Stream.concat(Stream.of(oa), oa.getOppimaarat().stream()))
                 .flatMap(x -> x)
                 .forEach(oa -> {
+                    validateOppiaineSisalto(oa, projekti.getPeruste().getKielet(), kieliValidointi);
+
                     oppiaineHelper.add(oa, oppiaineNavigationNodeDto(oa));
                     validators.validKoodi(oa, lukioValidointi, oppiaineNavigationNodeDto(oa),"oppiaine", "oppiaineetjaoppimaaratlops2021");
                     oa.getModuulit()
                             .forEach(moduuli -> {
+                                validateModuuliSisalto(moduuli, projekti.getPeruste().getKielet(), kieliValidointi);
+
                                 moduuliHelper.add(moduuli, moduuliNavigationNodeDto(moduuli));
                                 validators.validKoodi(moduuli, lukioValidointi, moduuliNavigationNodeDto(moduuli),  "moduuli", "moduulikoodistolops2021");
                                 BigDecimal laajuus = moduuli.getLaajuus();
@@ -112,7 +127,76 @@ public class ValidatorLops2019 implements Validator {
                             });
                 });
 
-        return validoinnit;
+       validoinnit.add(lukioValidointi);
+       validoinnit.add(kieliValidointi);
+       return validoinnit;
+    }
+
+    private void validateOppiaineSisalto(Lops2019Oppiaine oppiaine, Set<Kieli> vaaditutKielet, Validointi validointi) {
+        Map<String, String> virheellisetKielet = new HashMap<>();
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                Optional.ofNullable(oppiaine).map(Lops2019Oppiaine::getTehtava).map(Lops2019Tehtava::getKuvaus).orElse(null), vaaditutKielet, virheellisetKielet);
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                Optional.ofNullable(oppiaine).map(Lops2019Oppiaine::getArviointi).map(Lops2019Arviointi::getKuvaus).orElse(null), vaaditutKielet, virheellisetKielet);
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                Optional.ofNullable(oppiaine).map(Lops2019Oppiaine::getTavoitteet).map(Lops2019OppiaineTavoitteet::getKuvaus).orElse(null), vaaditutKielet, virheellisetKielet);
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                Optional.ofNullable(oppiaine).map(Lops2019Oppiaine::getLaajaAlaisetOsaamiset).map(Lops2019OppiaineLaajaAlainenOsaaminen::getKuvaus).orElse(null), vaaditutKielet, virheellisetKielet);
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                oppiaine.getPakollisetModuulitKuvaus(), vaaditutKielet, virheellisetKielet);
+        tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                oppiaine.getValinnaisetModuulitKuvaus(), vaaditutKielet, virheellisetKielet);
+
+        if (!ObjectUtils.isEmpty(oppiaine.getTavoitteet())) {
+          oppiaine.getTavoitteet().getTavoitealueet().forEach(ta -> {
+              tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                      ta.getNimi(), vaaditutKielet, virheellisetKielet);
+              tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                      ta.getKohde(), vaaditutKielet, virheellisetKielet);
+              Optional.ofNullable(ta).map(Lops2019OppiaineTavoitealue::getTavoitteet).orElse(null).forEach(tavoite -> {
+                  tarkistaTekstipalanen("peruste-validointi-oppiaine-sisalto",
+                          tavoite, vaaditutKielet, virheellisetKielet);
+              });
+          });    
+        }
+
+        for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+            validointi.virhe(entry.getKey(), oppiaineNavigationNodeDto(oppiaine));
+        }
+    }
+
+    private void validateModuuliSisalto(Lops2019Moduuli moduuli, Set<Kieli> vaaditutKielet, Validointi validointi) {
+        Map<String, String> virheellisetKielet = new HashMap<>();
+        tarkistaTekstipalanen("peruste-validointi-moduuli-sisalto",
+                moduuli.getKuvaus(), vaaditutKielet, virheellisetKielet);
+
+        tarkistaTekstipalanen("peruste-validointi-moduuli-sisalto",
+                Optional.ofNullable(moduuli).map(Lops2019Moduuli::getTavoitteet).map(Lops2019ModuuliTavoite::getKohde).orElse(null), vaaditutKielet, virheellisetKielet);
+        if (!ObjectUtils.isEmpty(moduuli.getTavoitteet().getTavoitteet())) {
+            moduuli.getTavoitteet().getTavoitteet().forEach(tavoite -> {
+                tarkistaTekstipalanen("peruste-validointi-moduuli-sisalto",
+                        tavoite, vaaditutKielet, virheellisetKielet);
+            });
+        }
+
+        if (!ObjectUtils.isEmpty(moduuli.getSisallot())) {
+            moduuli.getSisallot().forEach(sisalto -> {
+                tarkistaTekstipalanen("peruste-validointi-moduuli-sisalto",
+                        sisalto.getKohde(), vaaditutKielet, virheellisetKielet);
+
+                if (!ObjectUtils.isEmpty(sisalto.getSisallot())) {
+                    sisalto.getSisallot().forEach(alaSisalto -> {
+                        tarkistaTekstipalanen("peruste-validointi-moduuli-sisalto",
+                                alaSisalto, vaaditutKielet, virheellisetKielet);
+                    });
+                }
+            });
+        }
+
+
+        for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
+            validointi.virhe(entry.getKey(), moduuliNavigationNodeDto(moduuli));
+        }
     }
 
     private NavigationNodeDto oppiaineNavigationNodeDto(Lops2019Oppiaine oa) {
