@@ -333,7 +333,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             julkaisu.setLiitteet(addLiitteet(julkaisu, julkaisuBaseDto.getLiitteet()));
             julkaisu.setData(new JulkaistuPerusteData(perusteDataJson));
 
-            lisaaMaaraysKokoelmaan(julkaisuBaseDto, peruste, julkaisu);
+            if (peruste.getTyyppi() != PerusteTyyppi.AMOSAA_YHTEINEN) {
+                lisaaMaaraysKokoelmaan(julkaisuBaseDto, peruste, julkaisu);
+            }
 
             julkaisutRepository.saveAndFlush(julkaisu);
             julkaistuPerusteDataStoreRepository.syncPeruste(peruste.getId());
