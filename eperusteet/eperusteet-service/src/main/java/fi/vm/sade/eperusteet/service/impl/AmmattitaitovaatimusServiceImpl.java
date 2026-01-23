@@ -375,68 +375,31 @@ public class AmmattitaitovaatimusServiceImpl implements AmmattitaitovaatimusServ
             return koodit;
         }
 
-        List<KoodistoKoodiDto> ammattitaitovaatimukset = koodistoClient.getAll(koodisto);
-        Map<Long, KoodistoKoodiDto> olemassaOlevatKoodit = new LinkedHashMap<>();
+        List<Ammattitaitovaatimus2019> uudetVaatimukset = vaatimukset.stream().filter(vaatimus -> vaatimus.getKoodi() == null).toList();
+        Stack<Long> uudetKoodiArvot = new Stack<>();
+        uudetKoodiArvot.addAll(koodistoClient.nextKoodiId(koodisto, uudetVaatimukset.size()));
 
-        Map<Map<Kieli, String>, List<Ammattitaitovaatimus2019>> uniqueVaatimukset = new LinkedHashMap<>();
-        vaatimukset.forEach(vaatimus -> {
-            Kieli vaatimusKieli = vaatimus.getVaatimus().getTeksti().keySet().stream().findFirst().get();
-            Optional<KoodistoKoodiDto> olemassaolevaKoodi = ammattitaitovaatimukset.stream()
-                    .filter(amv -> amv.getMetadataName(vaatimusKieli.toString()) != null
-                            && amv.getMetadataName(vaatimusKieli.toString()).getNimi().equals(vaatimus.getVaatimus().getTeksti().get(vaatimusKieli)))
-                    .findFirst();
-            if (olemassaolevaKoodi.isPresent()) {
-                olemassaOlevatKoodit.put(vaatimus.getId(), olemassaolevaKoodi.get());
-            } else {
-                if (uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()) == null) {
-                    uniqueVaatimukset.put(vaatimus.getVaatimus().getTeksti(), new ArrayList<>());
-                }
-
-                uniqueVaatimukset.get(vaatimus.getVaatimus().getTeksti()).add(vaatimus);
-            }
-
-        });
-
-        Stack<Long> koodiStack = new Stack<>();
-        koodiStack.addAll(koodistoClient.nextKoodiId(koodisto, uniqueVaatimukset.keySet().size()));
-
-        for (Map<Kieli, String> teksti : uniqueVaatimukset.keySet()) {
-
-            LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, teksti);
-            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(koodisto, lokalisoituTekstiDto, koodiStack.pop());
+        uudetVaatimukset.forEach(vaatimus -> {
+            LokalisoituTekstiDto lokalisoituTekstiDto = new LokalisoituTekstiDto(null, vaatimus.getVaatimus().getTeksti());
+            Long uusiArvo = uudetKoodiArvot.pop();
+            KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(koodisto, lokalisoituTekstiDto, uusiArvo);
 
             if (lisattyKoodi == null) {
                 log.error("Koodin lisääminen epäonnistui {} {}", lokalisoituTekstiDto, lisattyKoodi);
-                continue;
+            } else {
+                Koodi koodi = new Koodi();
+                koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
+                koodi.setUri(lisattyKoodi.getKoodiUri());
+                koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
+
+                if (lisattyKoodi.getKoodiArvo().equals(uusiArvo.toString())) {
+                    koodit.add(mapper.map(koodi, KoodiDto.class));
+                }
+
+                vaatimus.setKoodi(koodi);
+                ammattitaitovaatimusRepository.save(vaatimus);
             }
-
-            Koodi koodi = new Koodi();
-            koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
-            koodi.setUri(lisattyKoodi.getKoodiUri());
-            koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
-            koodit.add(mapper.map(koodi, KoodiDto.class));
-
-            uniqueVaatimukset.get(teksti).forEach(ammattitaitovaatimus2019 -> {
-                ammattitaitovaatimus2019.setKoodi(koodi);
-                ammattitaitovaatimusRepository.save(ammattitaitovaatimus2019);
-            });
-        }
-
-        for (Long ammattitaitovaatimus2019Id : olemassaOlevatKoodit.keySet()) {
-
-            Ammattitaitovaatimus2019 ammattitaitovaatimus2019 = vaatimukset.stream()
-                    .filter(vaatimus -> vaatimus.getId().equals(ammattitaitovaatimus2019Id))
-                    .findFirst().get();
-            KoodistoKoodiDto koodistoKoodi = olemassaOlevatKoodit.get(ammattitaitovaatimus2019Id);
-
-            Koodi koodi = new Koodi();
-            koodi.setKoodisto(koodisto);
-            koodi.setUri(koodistoKoodi.getKoodiUri());
-            koodi.setVersio(koodistoKoodi.getVersio() != null ? Long.valueOf(koodistoKoodi.getVersio()) : null);
-
-            ammattitaitovaatimus2019.setKoodi(koodi);
-            ammattitaitovaatimusRepository.save(ammattitaitovaatimus2019);
-        }
+        });
 
         return koodit;
     }
