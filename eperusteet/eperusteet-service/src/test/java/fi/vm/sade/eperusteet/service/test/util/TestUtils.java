@@ -21,6 +21,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
@@ -432,17 +433,23 @@ public abstract class TestUtils {
     public static Map<String, List<KoodistoKoodiDto>> createMockAmmattitaitovaatimuksetKoodistoKoodit() {
         Map<String, List<KoodistoKoodiDto>> koodistoMap = new HashMap<>();
         koodistoMap.put("ammattitaitovaatimukset", Arrays.asList(KoodistoKoodiLaajaDto.builder()
-                        .koodiUri("ammattitaitovaatimukset_on")
+                        .koodiUri("ammattitaitovaatimukset_100")
                         .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tekstiOn", "fi", "")})
+                        .koodisto(KoodistoDto.of("ammattitaitovaatimukset"))
+                        .koodiArvo("100")
                         .build(),
                 KoodistoKoodiLaajaDto.builder()
-                        .koodiUri("ammattitaitovaatimukset_on2")
+                        .koodiUri("ammattitaitovaatimukset_200")
                         .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tekstiOn2", "fi", "")})
+                        .koodisto(KoodistoDto.of("ammattitaitovaatimukset"))
+                        .koodiArvo("200")
                         .build()));
 
         koodistoMap.put("osaamistavoitteet", Arrays.asList(KoodistoKoodiLaajaDto.builder()
-                .koodiUri("osaamistavoitteet_on")
+                .koodiUri("osaamistavoitteet_100")
                 .metadata(new KoodistoMetadataDto[]{KoodistoMetadataDto.of("tavoite1on", "fi", "")})
+                .koodisto(KoodistoDto.of("osaamistavoitteet"))
+                .koodiArvo("100")
                 .build()));
 
         return koodistoMap;

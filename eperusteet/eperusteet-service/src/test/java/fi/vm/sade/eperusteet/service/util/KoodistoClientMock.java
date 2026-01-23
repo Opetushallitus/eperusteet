@@ -1,23 +1,21 @@
 package fi.vm.sade.eperusteet.service.util;
 
+import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
 import fi.vm.sade.eperusteet.dto.koodisto.*;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
 import fi.vm.sade.eperusteet.utils.client.OphClientHelper;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
-import java.util.List;
+import org.springframework.util.ObjectUtils;
 
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.createMockAmmattitaitovaatimuksetKoodistoKoodit;
 import static fi.vm.sade.eperusteet.service.test.util.TestUtils.lt;
@@ -161,9 +159,13 @@ public class KoodistoClientMock implements KoodistoClient {
 
     @Override
     public KoodistoKoodiDto addKoodiNimella(String koodistonimi, LokalisoituTekstiDto koodinimi, long seuraavaKoodi) {
+        KoodistoKoodiDto olemassaoleva = haeOlemassaOlevaKoodinArvoNimella(koodistonimi, koodinimi);
+        if (olemassaoleva != null) return olemassaoleva;
+
         return KoodistoKoodiDto.builder()
                 .koodisto(KoodistoDto.of(koodistonimi))
                 .koodiUri(koodistonimi + "_" + seuraavaKoodi)
+                .koodiArvo(seuraavaKoodi + "")
                 .build();
     }
 
@@ -198,5 +200,33 @@ public class KoodistoClientMock implements KoodistoClient {
     public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
         log.debug("koodistorelaatio" + parentKoodi + lapsiKoodi);
         mockedOphClientHelper.post("", "koodistorelaatio" + parentKoodi + lapsiKoodi);
+    }
+
+    private KoodistoKoodiDto haeOlemassaOlevaKoodinArvoNimella(String koodistonimi, LokalisoituTekstiDto koodinimi) {
+        List<KoodistoKoodiDto> koodit = getAll(koodistonimi);
+        KoodistoKoodiDto olemassaoleva = koodit.stream()
+                .filter(koodi -> !ObjectUtils.isEmpty(koodi.getMetadata()))
+                .filter(koodi -> {
+                    Map<String, String> nimet = metadataToLocalized(koodi);
+                    return nimet.entrySet().stream()
+                            .allMatch(entry -> {
+                                String kieli = entry.getKey();
+                                String nimi = entry.getValue();
+                                String uusiNimi = koodinimi.getTekstit().get(Kieli.of(kieli));
+                                return uusiNimi != null && uusiNimi.equals(nimi);
+                            });
+                })
+                .findFirst()
+                .orElse(null);
+
+        if (olemassaoleva != null) {
+            return olemassaoleva;
+        }
+        return null;
+    }
+
+    private Map<String, String> metadataToLocalized(KoodistoKoodiDto koodistoKoodi) {
+        return Arrays.stream(koodistoKoodi.getMetadata())
+                .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), KoodistoMetadataDto::getNimi));
     }
 }

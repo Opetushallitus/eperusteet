@@ -220,7 +220,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
         });
         PerusteDto aPeruste = ppTestUtils.initPeruste(aProjekti.getPeruste().getIdLong());
 
-        Ammattitaitovaatimukset2019 vaatimukset = ammattitaitovaatimukset2019("teksti1", "teksti1", "teksti2", "teksti2", "teksti3", "tekstiOn", "tekstiOn2");
+        Ammattitaitovaatimukset2019 vaatimukset = ammattitaitovaatimukset2019("teksti1", "teksti2", "teksti3", "tekstiOn", "tekstiOn2");
 
         Peruste peruste = perusteRepository.findOne(aPeruste.getId());
         TutkinnonOsaViiteDto tosa = ppTestUtils.addTutkinnonOsa(peruste.getId());
@@ -231,23 +231,21 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
 
         List<KoodiDto> lisatytKoodit = ammattitaitovaatimusService.addAmmattitaitovaatimuskooditToKoodisto(peruste.getId());
         assertThat(lisatytKoodit).hasSize(3);
-        assertThat(lisatytKoodit).extracting("uri").containsExactlyInAnyOrder(
-                "ammattitaitovaatimukset_0",
-                "ammattitaitovaatimukset_1",
-                "ammattitaitovaatimukset_2");
+        assertThat(lisatytKoodit).extracting("uri").contains(
+                "ammattitaitovaatimukset_2",
+                "ammattitaitovaatimukset_3",
+                "ammattitaitovaatimukset_4");
 
         List<Ammattitaitovaatimus2019> tallennetutVaatimukset = tutkinnonosienAmmattitaitovaatimukset(tovRepository.findOne(tosa.getId()).getTutkinnonOsa());
 
-        assertThat(tallennetutVaatimukset).hasSize(7);
+        assertThat(tallennetutVaatimukset).hasSize(5);
         assertThat(tallennetutVaatimukset).extracting("koodi.uri")
                 .containsExactlyInAnyOrder(
-                        "ammattitaitovaatimukset_0",
-                        "ammattitaitovaatimukset_1",
-                        "ammattitaitovaatimukset_1",
                         "ammattitaitovaatimukset_2",
-                        "ammattitaitovaatimukset_2",
-                        "ammattitaitovaatimukset_on",
-                        "ammattitaitovaatimukset_on2");
+                        "ammattitaitovaatimukset_3",
+                        "ammattitaitovaatimukset_4",
+                        "ammattitaitovaatimukset_100",
+                        "ammattitaitovaatimukset_200");
     }
 
     @Test
@@ -281,7 +279,7 @@ public class AmmattitaitovaatimusTestIT extends AbstractPerusteprojektiTest {
                         "osaamistavoitteet_0",
                         "osaamistavoitteet_1",
                         "osaamistavoitteet_2",
-                        "osaamistavoitteet_on");
+                        "osaamistavoitteet_100");
     }
 
     private List<Ammattitaitovaatimus2019> osaAlueidenAmmattitaitovaatimukset(List<OsaAlue> osaAlueet) {
