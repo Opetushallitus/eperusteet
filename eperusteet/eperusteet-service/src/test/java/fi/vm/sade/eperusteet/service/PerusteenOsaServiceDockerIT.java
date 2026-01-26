@@ -21,6 +21,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext
@@ -52,10 +55,21 @@ public class PerusteenOsaServiceDockerIT extends AbstractDockerIntegrationTest {
 
     @Test
     public void testSamaTekstikappaleUseammassaPerusteessaKopiointiTallennettaessa() {
+        BiFunction<Long, Long, Boolean> idsEquals = Long::equals;
+        testKopiointi(KoulutusTyyppi.VARHAISKASVATUS, idsEquals);
+    }
+
+    @Test
+    public void testSamaTekstikappaleUseammassaPerusteessaKopiointiTallennettaessa_ammatillinen() {
+        BiFunction<Long, Long, Boolean> idsNotEquals = (id1, id2) -> !id1.equals(id2);
+        testKopiointi(KoulutusTyyppi.PERUSTUTKINTO, idsNotEquals);
+    }
+
+    private void testKopiointi(KoulutusTyyppi koulutusTyyppi, BiFunction<Long, Long, Boolean> testFunction) {
         startNewTransaction();
 
         PerusteprojektiDto projekti1 = ppTestUtils.createPerusteprojekti(ppl -> {
-            ppl.setKoulutustyyppi(KoulutusTyyppi.VARHAISKASVATUS.toString());
+            ppl.setKoulutustyyppi(koulutusTyyppi.toString());
             ppl.setTyyppi(PerusteTyyppi.NORMAALI);
         });
 
@@ -66,7 +80,7 @@ public class PerusteenOsaServiceDockerIT extends AbstractDockerIntegrationTest {
         PerusteenOsaViite viite1 = perusteenOsaViiteRepository.findOne(perusteenOsaViiteDto1.getId());
 
         PerusteprojektiDto projekti2 = ppTestUtils.createPerusteprojekti(ppl -> {
-            ppl.setKoulutustyyppi(KoulutusTyyppi.VARHAISKASVATUS.toString());
+            ppl.setKoulutustyyppi(koulutusTyyppi.toString());
             ppl.setTyyppi(PerusteTyyppi.NORMAALI);
         });
 
@@ -100,6 +114,6 @@ public class PerusteenOsaServiceDockerIT extends AbstractDockerIntegrationTest {
         perusteenOsaService.update(projekti2.getPeruste().getIdLong(), perusteenOsaViiteDto2.getId(), new UpdateDto<>(perusteenOsaViiteDto2.getPerusteenOsa()));
 
         perusteenOsaViiteDto2 =  perusteenOsaViiteService.getSisalto(projekti2.getPeruste().getIdLong(), viite2.getId(), PerusteenOsaViiteDto.Matala.class);
-        assertThat(perusteenOsaViiteDto1.getPerusteenOsa().getId()).isNotEqualTo(perusteenOsaViiteDto2.getPerusteenOsa().getId());
+        assertThat(testFunction.apply(perusteenOsaViiteDto1.getPerusteenOsa().getId(), perusteenOsaViiteDto2.getPerusteenOsa().getId())).isTrue();
     }
 }
