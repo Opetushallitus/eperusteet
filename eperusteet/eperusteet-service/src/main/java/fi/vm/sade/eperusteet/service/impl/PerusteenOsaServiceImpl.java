@@ -239,12 +239,14 @@ public class PerusteenOsaServiceImpl implements PerusteenOsaService {
     @Override
     @Transactional(readOnly = false)
     public <T extends PerusteenOsaDto.Laaja> T update(Long perusteId, Long viiteId, UpdateDto<T> perusteenOsaDto) {
+        Peruste peruste = perusteet.findOne(perusteId);
 
-        if (perusteenOsaDto.getDto().getClass().equals(TekstiKappaleDto.class)) {
+        if (perusteenOsaDto.getDto().getClass().equals(TekstiKappaleDto.class)
+                && peruste.getKoulutustyyppi() != null
+                && (KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isAmmatillinen() || KoulutusTyyppi.of(peruste.getKoulutustyyppi()).isValmaTelma())) {
             PerusteenOsa perusteenOsa = perusteenOsaRepo.findOne(perusteenOsaDto.getDto().getId());
 
             Set<PerusteenosanProjekti> perusteenosanProjektit = perusteprojektiPermissionRepository.findAllByPerusteenosa(perusteenOsa.getId());
-            Peruste peruste = perusteet.findOne(perusteId);
             boolean tekstikappaleKopioitava = perusteenosanProjektit.stream()
                     .filter(pop -> !pop.getPerusteProjektiId().equals(peruste.getPerusteprojekti().getId()))
                     .anyMatch(projekti -> !projekti.getTila().equals(ProjektiTila.POISTETTU));
