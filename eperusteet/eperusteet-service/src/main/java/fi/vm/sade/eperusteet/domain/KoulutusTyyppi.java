@@ -25,6 +25,7 @@ public enum KoulutusTyyppi {
     MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS("koulutustyyppi_30"),
     VAPAASIVISTYSTYOLUKUTAITO("koulutustyyppi_35"),
     TUTKINTOONVALMENTAVA("koulutustyyppi_40"),
+    KIELIKAANTAJATUTKINTO("koulutustyyppi_500"),
     MUU_KOULUTUS("koulutustyyppi_muu");
 
     private final String tyyppi;

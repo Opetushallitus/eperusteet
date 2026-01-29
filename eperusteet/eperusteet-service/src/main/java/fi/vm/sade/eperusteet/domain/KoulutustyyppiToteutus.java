@@ -14,7 +14,9 @@ public enum KoulutustyyppiToteutus {
     LOPS2019("lops2019"),
     VAPAASIVISTYSTYO("vapaasivistystyo"),
     TUTKINTOONVALMENTAVA("tutkintoonvalmentava"),
-    KOTOUTUMISKOULUTUS("kotoutumiskoulutus");
+    KOTOUTUMISKOULUTUS("kotoutumiskoulutus"),
+    KIELITUTKINTO("kielitutkinto"),
+    KAANTAJATUTKINTO("kaantajatutkinto");
 
     private final String tyyppi;
 

@@ -622,18 +622,7 @@ public class PerusteprojektiServiceImpl implements PerusteprojektiService {
             return new TilaUpdateStatus();
         }
 
-        TilaUpdateStatus updateStatus;
-
-        if (projekti.getTila().equals(ProjektiTila.POISTETTU)) {
-            updateStatus = new TilaUpdateStatus();
-        } else {
-            updateStatus = new TilaUpdateStatus(validoiProjekti(id, tila));
-        }
-
-        // Perusteen tilan muutos
-        if (!updateStatus.isVaihtoOk()) {
-            return updateStatus;
-        }
+        TilaUpdateStatus updateStatus = new TilaUpdateStatus();
 
         // Tarkistetaan mahdolliset tilat
         if (!projekti.getTila().mahdollisetTilat(projekti.getPeruste().getTyyppi()).contains(tila)) {
