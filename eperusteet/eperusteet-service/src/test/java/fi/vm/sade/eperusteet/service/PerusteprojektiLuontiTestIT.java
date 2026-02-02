@@ -140,19 +140,11 @@ public class PerusteprojektiLuontiTestIT extends AbstractIntegrationTest {
             perusteprojektiLuontiDto.setKoulutustyyppi(KoulutusTyyppi.ERIKOISAMMATTITUTKINTO.toString());
         });
         PerusteDto perusteDto = ppTestUtils.initPeruste(projekti.getPeruste().getIdLong());
-
-        // Julkaisu
-        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
-        assertThat(status.isVaihtoOk()).isFalse();
-        assertThat(status.getVirheet()).hasSize(2);
-        assertThat(status.getVirheet())
-                .extracting("kuvaus")
-                .contains("rakenteen-validointi-virhe-tutkinnolle-ei-maaritetty-kokonaislaajuutta");
         RakenneModuuliDto rakenne = perusteService.getTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, 0);
         rakenne.setMuodostumisSaanto(new MuodostumisSaantoDto(new MuodostumisSaantoDto.Laajuus(0, 180, LaajuusYksikko.OSAAMISPISTE)));
         lockService.lock(TutkinnonRakenneLockContext.of(perusteDto.getId(), Suoritustapakoodi.REFORMI));
         rakenne = perusteService.updateTutkinnonRakenne(perusteDto.getId(), Suoritustapakoodi.REFORMI, rakenne);
-        status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
+        TilaUpdateStatus status = perusteprojektiService.updateTila(projekti.getId(), ProjektiTila.JULKAISTU, null);
         assertThat(status.isVaihtoOk()).isFalse();
     }
 

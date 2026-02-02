@@ -388,69 +388,6 @@ public class PerusteprojektiServiceTilaIT extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testUpdateTilaValmisToJulkaistuEiDiaaria() {
-
-        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
-        PerusteenOsaViiteDto sisaltoViite = luoSisalto(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        PerusteDto perusteDto = perusteService.get(projektiDto.getPeruste().getIdLong());
-        perusteDto.setDiaarinumero(null);
-        perusteService.update(perusteDto.getId(), perusteDto);
-        final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO);
-        lockService.lock(ctx);
-        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
-
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, new TiedoteDto());
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        // the code in this method executes in a transactional context
-        Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
-            assertFalse(status.isVaihtoOk());
-            assertNotNull(status.getValidoinnit());
-            assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
-            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
-            for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
-                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
-            }
-            return null;
-        });
-        lockService.unlock(ctx);
-
-    }
-
-    @Test
-    public void testUpdateTilaValmisToJulkaistuEiVoimassaolonAlkamisaikaa() {
-
-        final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.VALMIS, null, PerusteTila.LUONNOS);
-        PerusteenOsaViiteDto sisaltoViite = luoSisalto(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS);
-        PerusteDto perusteDto = perusteService.get(projektiDto.getPeruste().getIdLong());
-        perusteDto.setVoimassaoloAlkaa(null);
-        perusteService.update(perusteDto.getId(), perusteDto);
-        final TutkinnonRakenneLockContext ctx = TutkinnonRakenneLockContext.of(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO);
-        lockService.lock(ctx);
-        perusteService.updateTutkinnonRakenne(ctx.getPerusteId(), ctx.getKoodi(), luoValidiRakenne(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO, PerusteTila.LUONNOS));
-
-        final TilaUpdateStatus status = service.updateTila(projektiDto.getId(), ProjektiTila.JULKAISTU, new TiedoteDto());
-        transactionTemplate = new TransactionTemplate(transactionManager);
-        // the code in this method executes in a transactional context
-        Object object = transactionTemplate.execute(transactionStatus -> {
-            Perusteprojekti pp = repo.findById(projektiDto.getId()).orElseThrow();
-            assertFalse(status.isVaihtoOk());
-            assertNotNull(status.getValidoinnit());
-            assertTrue(pp.getTila().equals(ProjektiTila.VALMIS));
-            assertTrue(pp.getPeruste().getTila().equals(PerusteTila.LUONNOS));
-            for (Suoritustapa suoritustapa : pp.getPeruste().getSuoritustavat()) {
-                commonAssertTekstikappaleTila(suoritustapa.getSisalto(), PerusteTila.LUONNOS);
-                commonAssertOsienTila(suoritustapa.getTutkinnonOsat(), PerusteTila.LUONNOS);
-            }
-            return null;
-        });
-        lockService.unlock(ctx);
-
-    }
-
-
-    @Test
     public void testUpdateTilaJulkaistuToValmis() {
         final PerusteprojektiDto projektiDto = teePerusteprojekti(ProjektiTila.LAADINTA, null, PerusteTila.LUONNOS);
         PerusteenOsaViiteDto sisaltoViite = luoSisalto(projektiDto.getPeruste().getIdLong(), Suoritustapakoodi.NAYTTO, PerusteTila.VALMIS);

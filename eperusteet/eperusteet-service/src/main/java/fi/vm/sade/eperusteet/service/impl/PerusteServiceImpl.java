@@ -2240,7 +2240,7 @@ public class PerusteServiceImpl implements PerusteService{
             PerusteTyyppi tyyppi,
             boolean isReforminMukainen
     ) {
-        if (koulutustyyppi == null && !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN) && !tyyppi.equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
+        if (koulutustyyppi == null && !tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             throw new BusinessRuleViolationException("Koulutustyyppiä ei ole asetettu");
         }
 
@@ -2259,6 +2259,7 @@ public class PerusteServiceImpl implements PerusteService{
         if (tyyppi.equals(PerusteTyyppi.DIGITAALINEN_OSAAMINEN)) {
             peruste.setSisalto(new DigitaalisenOsaamisenPerusteenSisalto());
         } else if (tyyppi.equals(PerusteTyyppi.KIELI_KAANTAJA_TUTKINTO)) {
+            peruste.setToteutus(toteutus);
             peruste.setSisalto(new KieliJaKaantajaTutkintoPerusteenSisalto());
         } else if (isReforminMukainen) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.REFORMI, LaajuusYksikko.OSAAMISPISTE);
@@ -2388,6 +2389,7 @@ public class PerusteServiceImpl implements PerusteService{
             KieliJaKaantajaTutkintoPerusteenSisalto uusiSisalto = vanha.getKieliJaKaantajaTutkintoPerusteenSisalto().kloonaa(peruste);
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
+            peruste.setToteutus(vanha.getToteutus());
             peruste = perusteRepository.save(peruste);
         }
         else if (vanha.getToteutus().equals(KoulutustyyppiToteutus.VAPAASIVISTYSTYO) || vanha.getToteutus().equals(KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS)) {

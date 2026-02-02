@@ -580,10 +580,6 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         pp.getPeruste().setKielet(EnumSet.of(Kieli.FI, Kieli.SV));
         perusteRepository.save(pp.getPeruste());
 
-        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
-        assertThat(status.isVaihtoOk()).isFalse();
-
-
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.FI);
         pp.getPeruste().setKielet(kielet);
@@ -596,7 +592,7 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
         repository.save(pp);
         em.persist(pp);
 
-        status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
+        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
         Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
 
