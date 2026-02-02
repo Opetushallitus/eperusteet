@@ -105,7 +105,6 @@ public class ValidatorKieliJaKaantajaTutkinto extends ValidatorPeruste {
             if (kaantajaTaito.getKuvaus() != null) {
                 tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-kuvaus", kaantajaTaito.getKuvaus(), pakolliset, virheellisetKielet, true);
             }
-            tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-sisalto", kaantajaTaito.getValiotsikko(), pakolliset, virheellisetKielet, true);
 
             kaantajaTaito.getKohdealueet().forEach(kohdealue -> {
                 tarkistaTekstipalanen("peruste-validointi-kaantaja-taito-sisalto", kohdealue.getKohdealueOtsikko(), pakolliset, virheellisetKielet, true);
