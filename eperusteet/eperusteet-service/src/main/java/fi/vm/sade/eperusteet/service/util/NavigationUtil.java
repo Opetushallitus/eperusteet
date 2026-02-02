@@ -43,7 +43,7 @@ public class NavigationUtil {
     public static void asetaNumerointi(List<NavigationNodeDto> nodes, String taso) {
         AtomicInteger nro = new AtomicInteger(0);
         nodes.stream()
-                .filter(node -> NUMEROITAVAT_TYYPIT.contains(node.getType()))
+                .filter(node -> NUMEROITAVAT_TYYPIT.contains(node.getType()) && !node.isLiite())
                 .forEach(node -> {
                     node.meta("numerointi", taso + nro.incrementAndGet());
                     asetaNumerointi(node.getChildren(), taso + nro.get() + ".");

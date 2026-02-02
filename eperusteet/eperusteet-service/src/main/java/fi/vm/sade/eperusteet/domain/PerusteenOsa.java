@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.domain;
 
 import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
+import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
@@ -131,5 +132,8 @@ public abstract class PerusteenOsa
         return null;
     }
 
+    public boolean isLiite() {
+        return this instanceof Liitteellinen && ((Liitteellinen) this).isLiite();
+    }
 }
 

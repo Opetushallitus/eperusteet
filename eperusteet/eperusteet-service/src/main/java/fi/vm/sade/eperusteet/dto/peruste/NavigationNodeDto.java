@@ -75,4 +75,9 @@ public class NavigationNodeDto implements KoodillinenDto {
         return this;
     }
 
+    public boolean isLiite() {
+        Object liite = this.meta.get("liite");
+        return liite instanceof Boolean && (Boolean) liite;
+    }
+
 }

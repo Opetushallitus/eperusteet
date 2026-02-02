@@ -268,7 +268,7 @@ public class PerusteNavigationIT {
         assertThat(laajuusNode.getId()).isEqualTo(32L);
 
         NavigationNodeDto kuvausasteikkoLiiteNode = lapset.get(3);
-        assertThat(kuvausasteikkoLiiteNode.getType()).isEqualTo(NavigationType.liite);
+        assertThat(kuvausasteikkoLiiteNode.isLiite()).isTrue();
         assertThat(kuvausasteikkoLiiteNode.getId()).isEqualTo(50L);
     }
 

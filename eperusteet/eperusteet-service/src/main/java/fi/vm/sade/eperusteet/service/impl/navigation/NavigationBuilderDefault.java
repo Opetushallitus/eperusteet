@@ -39,10 +39,7 @@ public class NavigationBuilderDefault implements NavigationBuilder {
         NavigationType type = NavigationType.viite;
         PerusteenOsa po = sisalto.getPerusteenOsa();
         if (po != null) {
-            if (po instanceof Liitteellinen && ((Liitteellinen) po).isLiite()) {
-                type = NavigationType.liite;
-            } else if (po instanceof TekstiKappale) {
-                TekstiKappale tk = (TekstiKappale) po;
+            if (po instanceof TekstiKappale tk) {
                 if (PerusteenOsaTunniste.RAKENNE.equals(tk.getTunniste())) {
                     type = NavigationType.muodostuminen;
                 }
@@ -60,6 +57,7 @@ public class NavigationBuilderDefault implements NavigationBuilder {
         NavigationNodeDto result = NavigationNodeDto
                 .of(type, getPerusteenOsaNimi(mapper, sisalto.getPerusteenOsa()),
                         sisalto.getId())
+                .meta("liite", po != null && po.isLiite())
                 .addAll(sisalto.getLapset().stream()
                         .map(this::constructNavigation)
                         .filter(Objects::nonNull)
