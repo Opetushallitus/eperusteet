@@ -2761,12 +2761,12 @@ public class PerusteServiceImpl implements PerusteService{
 
             // Kerätään liitteet talteen
             liitteet.addAll(head.getChildren().stream()
-                    .filter(child -> Objects.equals(child.getType(), NavigationType.liite))
-                    .collect(Collectors.toList()));
+                    .filter(NavigationNodeDto::isLiite)
+                    .toList());
 
             // Poistetaan liitteet
             head.setChildren(head.getChildren().stream()
-                .filter(child -> !Objects.equals(child.getType(), NavigationType.liite))
+                .filter(child -> !child.isLiite())
                 .collect(Collectors.toList()));
 
             // Käydään lävitse myös lapset
@@ -2794,8 +2794,8 @@ public class PerusteServiceImpl implements PerusteService{
     public NavigationNodeDto buildNavigationPublic(Long perusteId, String kieli, boolean esikatselu, Integer julkaisuRevisio) {
         NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilderPublic.class)
                 .buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
-        NavigationUtil.asetaNumerointi(getPeruste(perusteId), navigationNodeDto);
-        return siirraLiitteetLoppuun(navigationNodeDto);
+        siirraLiitteetLoppuun(navigationNodeDto);
+        return NavigationUtil.asetaNumerointi(getPeruste(perusteId), navigationNodeDto);
     }
 
     @Override

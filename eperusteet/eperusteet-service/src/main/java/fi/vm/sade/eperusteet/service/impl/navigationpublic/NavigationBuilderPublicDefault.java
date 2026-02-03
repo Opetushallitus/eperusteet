@@ -47,6 +47,7 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
 
         NavigationNodeDto result = NavigationNodeDto
                 .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId()).meta("koodi", getPerusteenosaMetaKoodi(sisalto.getPerusteenOsa()))
+                .meta("liite", isLiite(po))
                 .addAll(sisalto.getLapset().stream()
                         .map(this::constructNavigation)
                         .filter(Objects::nonNull)
@@ -59,10 +60,6 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         NavigationType type = NavigationType.viite;
         if (po == null) {
             return type;
-        }
-
-        if (isLiite(po)) {
-            return NavigationType.liite;
         }
 
         if (lapset.stream().anyMatch(this::isLinkkisivuType)) {

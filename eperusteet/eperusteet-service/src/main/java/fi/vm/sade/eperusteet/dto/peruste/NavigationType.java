@@ -4,7 +4,7 @@ public enum NavigationType {
     root,
     tiedot,
     viite,
-    liitteet, liite, kvliite,
+    liitteet, kvliite,
     laajaalaiset, laajaalainen,
     oppiaineet, oppimaarat, oppiaine, oppimaara,
     lukiooppiaineet_2015, lukiooppimaarat_2015, lukiooppiaine_2015, lukiokurssit, lukiokurssi,
