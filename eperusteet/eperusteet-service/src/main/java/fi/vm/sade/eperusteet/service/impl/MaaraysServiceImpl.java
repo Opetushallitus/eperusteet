@@ -96,6 +96,7 @@ public class MaaraysServiceImpl implements MaaraysService {
                 query.getTyyppi(),
                 query.getKoulutustyypit(),
                 query.getTila(),
+                query.getMaaraysId(),
                 query.isTuleva(),
                 query.isVoimassa(),
                 query.isPaattynyt(),
