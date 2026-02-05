@@ -54,6 +54,7 @@ public class MaaraysController {
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) String kieli,
             @RequestParam(value = "tyyppi", required = false) final MaaraysTyyppi tyyppi,
             @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyypit,
+            @RequestParam(value = "maaraysId", required = false) Long maaraysId,
             @RequestParam(value = "tuleva", required = false) boolean tuleva,
             @RequestParam(value = "voimassa", required = false) boolean voimassa,
             @RequestParam(value = "paattynyt", required = false) boolean paattynyt,
@@ -68,6 +69,7 @@ public class MaaraysController {
                         .kieli(Kieli.of(kieli))
                         .tyyppi(tyyppi)
                         .koulutustyypit(koulutustyypit)
+                        .maaraysId(maaraysId)
                         .tuleva(tuleva)
                         .voimassa(voimassa)
                         .paattynyt(paattynyt)

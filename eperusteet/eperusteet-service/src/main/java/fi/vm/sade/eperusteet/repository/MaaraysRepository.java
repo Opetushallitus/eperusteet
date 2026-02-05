@@ -25,6 +25,7 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
             "LEFT JOIN m.asiasanat ast " +
             "LEFT JOIN ast.asiasana asiasana " +
             "WHERE 1 = 1 " +
+            "AND (:maaraysId is null OR m.id = :maaraysId) " +
             "AND teksti.kieli = :kieli " +
             "AND KEY(ast) = :kieli " +
             "AND (:koulutustyypit IS NULL OR kt in (:koulutustyypit)) " +
@@ -43,6 +44,7 @@ public interface MaaraysRepository extends JpaRepository<Maarays, Long> {
             @Param("tyyppi") MaaraysTyyppi tyyppi,
             @Param("koulutustyypit") List<String> koulutustyypit,
             @Param("tila") MaaraysTila tila,
+            @Param("maaraysId") Long maaraysId,
             @Param("tuleva") boolean tuleva,
             @Param("voimassa") boolean voimassa,
             @Param("paattynyt") boolean paattynyt,

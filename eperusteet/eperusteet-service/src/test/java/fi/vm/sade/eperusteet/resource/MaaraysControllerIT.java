@@ -13,14 +13,12 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
-import fi.vm.sade.eperusteet.resource.julkinen.ExternalController;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.PerusteprojektiService;
 import fi.vm.sade.eperusteet.service.test.AbstractDockerIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,6 +34,8 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DirtiesContext
 @ActiveProfiles(profiles = {"docker"})
@@ -84,11 +84,23 @@ public class MaaraysControllerIT extends AbstractDockerIntegrationTest {
                     .build());
         });
 
-        Page<MaaraysDto> maaraysDtos = maaraysController.getMaaraykset(
+        Page<MaaraysDto> maaraysDtos = fetchMaarayksetById(null);
+        assertThat(maaraysDtos).isNotNull();
+        assertThat(maaraysDtos.getContent()).hasSize(1);
+        assertThat(maaraysDtos.getContent().get(0).getPeruste().getId()).isEqualTo(peruste1.getId());
+
+        assertThat(fetchMaarayksetById(maaraysDtos.getContent().get(0).getId()).getContent()).hasSize(1);
+        assertThat(fetchMaarayksetById(1337L).getContent()).hasSize(0);
+
+    }
+
+    private Page<MaaraysDto> fetchMaarayksetById(Long id) {
+        return  maaraysController.getMaaraykset(
                 "",
                 "fi",
                 null,
                 null,
+                id,
                 false,
                 false,
                 false,
@@ -98,9 +110,6 @@ public class MaaraysControllerIT extends AbstractDockerIntegrationTest {
                 10,
                 "nimi",
                 "ASC");
-        Assertions.assertThat(maaraysDtos).isNotNull();
-        Assertions.assertThat(maaraysDtos.getContent()).hasSize(1);
-        Assertions.assertThat(maaraysDtos.getContent().get(0).getPeruste().getId()).isEqualTo(peruste1.getId());
     }
 
     private PerusteDto creatPerusteJaJulkaise(String nimi, Consumer<PerusteprojektiLuontiDto> withPerusteprojekti) throws ExecutionException, InterruptedException {
