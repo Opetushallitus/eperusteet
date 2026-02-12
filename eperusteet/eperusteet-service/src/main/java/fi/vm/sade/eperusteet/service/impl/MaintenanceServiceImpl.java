@@ -314,10 +314,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         Peruste peruste = perusteRepository.findOne(perusteId);
 
         peruste.getKielet().forEach(kieli -> {
-            cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI ).evictIfPresent(perusteId + kieli.toString());
+            cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI).evictIfPresent(perusteId + kieli.toString());
         });
 
-        cacheManager.getCache(CacheArvot.PERUSTE_JULKAISU ).evictIfPresent(perusteId);
+        cacheManager.getCache(CacheArvot.PERUSTE_JULKAISU).evictIfPresent(perusteId);
     }
 
     private Maarays perusteMaarays(Peruste peruste) {
