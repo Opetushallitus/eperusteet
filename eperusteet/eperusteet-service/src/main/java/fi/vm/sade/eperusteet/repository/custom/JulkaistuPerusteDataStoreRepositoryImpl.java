@@ -1,7 +1,13 @@
 package fi.vm.sade.eperusteet.repository.custom;
 
+import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.PerusteTila;
+import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.MaintenanceService;
+import fi.vm.sade.eperusteet.service.YlopsClient;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +33,28 @@ public class JulkaistuPerusteDataStoreRepositoryImpl implements JulkaistuPeruste
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private YlopsClient ylopsClient;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
+
     @Override
     public void syncPeruste(Long perusteId) {
         deleteFromJulkaisu(perusteId);
         createJulkaisu(perusteId);
         maintenanceService.clearPerusteCaches(perusteId);
+        Peruste peruste = perusteRepository.findOne(perusteId);
+
+        if (peruste.getTyyppi().equals(PerusteTyyppi.NORMAALI) &&
+                peruste.getKoulutustyyppi() != null &&
+                KoulutusTyyppi.ylopsAppKoulutustyypit().contains(KoulutusTyyppi.of(peruste.getKoulutustyyppi()))) {
+            if (peruste.getTila().equals(PerusteTila.POISTETTU)) {
+                ylopsClient.arkistoiPeruste(perusteId);
+            } else {
+                ylopsClient.poistaArkistointi(perusteId);
+            }
+        }
     }
 
     @Override

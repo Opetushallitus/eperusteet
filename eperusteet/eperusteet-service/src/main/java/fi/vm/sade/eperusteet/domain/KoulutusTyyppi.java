@@ -95,4 +95,19 @@ public enum KoulutusTyyppi {
                 TUTKINTOONVALMENTAVA.toString()
         );
     }
+
+    public static List<KoulutusTyyppi> ylopsAppKoulutustyypit() {
+        return Arrays.asList(
+                LUKIOKOULUTUS,
+                LISAOPETUS,
+                AIKUISTENLUKIOKOULUTUS,
+                ESIOPETUS,
+                PERUSOPETUS,
+                AIKUISTENPERUSOPETUS,
+                VARHAISKASVATUS,
+                PERUSOPETUSVALMISTAVA,
+                LUKIOVALMISTAVAKOULUTUS,
+                TPO
+        );
+    }
 }
