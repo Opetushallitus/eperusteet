@@ -61,8 +61,8 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
     private List<NavigationNodeDto> vuosiluokanOppiaineet(PerusteKaikkiDto peruste, Long vlkId, String kieli) {
         return peruste.getPerusopetuksenPerusteenSisalto().getOppiaineet().stream()
                 .filter(oppiaine -> oppiaineJaOppimaaraVuosiluokkakokonaisuusIdt(oppiaine).contains(vlkId))
-                .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
-                .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
+                .sorted(Comparator.comparingLong((OppiaineLaajaDto o) -> o.getJnroOrDefault(Long.MAX_VALUE))
+                  .thenComparing((OppiaineLaajaDto o) -> o.getNimiOrEmpty(kieli)))
                 .map(oppiaine ->{
                     Set<OppiaineDto> oppimaarat = Optional.ofNullable(oppiaine.getOppimaarat())
                             .orElse(Collections.emptySet())
@@ -94,9 +94,9 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
 
         return NavigationNodeDto.of(NavigationType.perusopetusoppiaineet)
                 .addAll(peruste.getPerusopetuksenPerusteenSisalto().getOppiaineet().stream()
-                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
-                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
-                        .map(oppiaine ->
+                .sorted(Comparator.comparingLong((OppiaineLaajaDto o) -> o.getJnroOrDefault(Long.MAX_VALUE))
+                  .thenComparing((OppiaineLaajaDto o) -> o.getNimiOrEmpty(kieli)))
+                .map(oppiaine ->
                         NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimi(), oppiaine.getId())
                                 .add(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), null, kieli) : null)
                 ).collect(Collectors.toList()));
@@ -106,8 +106,8 @@ public class NavigationBuilderPublicPerusopetus implements NavigationBuilderPubl
         return NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)
                 .addAll(
                         oppimaarat.stream()
-                                .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
-                                .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
+                                .sorted(Comparator.comparingLong((OppiaineDto o) -> o.getJnroOrDefault(Long.MAX_VALUE))
+                                  .thenComparing((OppiaineDto o) -> o.getNimiOrEmpty(kieli)))
                                 .map(oppimaara -> {
                                     NavigationNodeDto node = NavigationNodeDto
                                             .of(NavigationType.perusopetusoppiaine, oppimaara.getNimi(), oppimaara.getId());

@@ -89,8 +89,8 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
     private NavigationNodeDto oppiaineet(Long perusteId, String kieli) {
         return NavigationNodeDto.of(NavigationType.perusopetusoppiaineet)
                 .addAll(sisallot.getOppiaineet(perusteId, OppiaineSuppeaDto.class).stream()
-                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
-                        .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99L)))
+                        .sorted(Comparator.comparingLong((OppiaineSuppeaDto o) -> o.getJnroOrDefault(Long.MAX_VALUE))
+                                .thenComparing((OppiaineSuppeaDto o) -> o.getNimiOrEmpty(kieli)))
                         .map(oppiaine ->
                         NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppiaine.getNimi(), oppiaine.getId())
                                 .addAll(!ObjectUtils.isEmpty(oppiaine.getOppimaarat()) ? oppimaarat(oppiaine.getOppimaarat(), kieli) : null)
@@ -101,8 +101,8 @@ public class NavigationBuilderPerusopetus implements NavigationBuilder {
         return Stream.concat(
                     Stream.of(NavigationNodeDto.of(NavigationType.oppimaarat).meta("navigation-subtype", true)),
                     oppimaarat.stream()
-                            .sorted(Comparator.comparing(oppiaine -> oppiaine.getNimiOrEmpty(kieli)))
-                            .sorted(Comparator.comparing(oppiaine -> oppiaine.getJnroOrDefault(99l)))
+                            .sorted(Comparator.comparingLong((OppiaineSuppeaDto o) -> o.getJnroOrDefault(Long.MAX_VALUE))
+                                    .thenComparing((OppiaineSuppeaDto o) -> o.getNimiOrEmpty(kieli)))
                             .map(oppimaara -> NavigationNodeDto.of(NavigationType.perusopetusoppiaine, oppimaara.getNimi(), oppimaara.getId()).meta("oppimaara", true)));
     }
 
