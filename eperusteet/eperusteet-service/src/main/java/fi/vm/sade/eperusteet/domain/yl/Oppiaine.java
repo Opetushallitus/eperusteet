@@ -34,8 +34,6 @@ import org.hibernate.envers.RelationTargetAuditMode;
 @Table(name = "yl_oppiaine")
 public class Oppiaine extends AbstractAuditedReferenceableEntity implements NimettyKoodillinen, HistoriaTapahtuma {
 
-
-
     public enum OsaTyyppi {
         tehtava(Oppiaine::getTehtava),
         tavoitteet(Oppiaine::getTavoitteet),
