@@ -184,10 +184,10 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
-            map.put("syy", ex.getLocalizedMessage());
+            map.put("syy", "jarjestelmavirhe-ohje");
         } else if (ex instanceof IllegalArgumentException) {
             suppresstrace = true;
-            map.put("syy", ex.getLocalizedMessage());
+            map.put("syy", "jarjestelmavirhe-ohje");
         } else if (ex instanceof IOException) {
             if (StringUtils.containsIgnoreCase(ExceptionUtils.getRootCauseMessage(ex), "Broken pipe")) {
                 suppresstrace = true;
@@ -196,7 +196,7 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
             }
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
-            map.put("syy", "Sovelluspalvelimessa tapahtui odottamaton virhe");
+            map.put("syy", "jarjestelmavirhe-ohje");
             map.put("avain", "server-odottamaton-virhe");
             map.put("koodi", status);
         }
