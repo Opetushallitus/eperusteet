@@ -4,6 +4,9 @@ import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.http.auth.CasAuthenticator;
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
+
+import java.util.List;
+
 import org.apereo.cas.client.session.SingleSignOutFilter;
 import org.apereo.cas.client.validation.Cas20ProxyTicketValidator;
 import org.apereo.cas.client.validation.TicketValidator;
@@ -26,6 +29,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
@@ -158,5 +162,19 @@ public class WebSecurityConfiguration {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authenticationManagerBuilder.authenticationProvider(casAuthenticationProvider());
         return authenticationManagerBuilder.build();
+    }
+
+    @Bean
+    public StrictHttpFirewall httpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowedHostnames(hostname -> 
+            List.of(
+              "virkailija.opintopolku.fi", 
+              "virkailija.testiopintopolku.fi", 
+              "virkailija.untuvaopintopolku.fi",
+              "virkailija.hahtuvaopintopolku.fi"
+            )
+            .contains(hostname));
+        return firewall;
     }
 }
