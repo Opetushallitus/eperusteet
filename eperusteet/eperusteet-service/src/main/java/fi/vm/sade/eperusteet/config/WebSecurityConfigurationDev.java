@@ -149,15 +149,4 @@ public class WebSecurityConfigurationDev {
         affirmativeBased.setAllowIfAllAbstainDecisions(true);
         return affirmativeBased;
     }
-
-    @Bean
-    public StrictHttpFirewall httpFirewall() {
-        StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowedHostnames(hostname -> 
-            List.of(
-              "localhost"
-            )
-            .contains(hostname));
-        return firewall;
-    }
 }
