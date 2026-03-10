@@ -819,7 +819,7 @@ public class PerusteServiceImpl implements PerusteService{
             if (NumberUtils.isCreatable(element)) {
                 return subquery + String.format("?(@.id==%s)", element);
             }
-            return subquery + "." + element;
+            return subquery + "." + element.toLowerCase();
         });
 
         try {
