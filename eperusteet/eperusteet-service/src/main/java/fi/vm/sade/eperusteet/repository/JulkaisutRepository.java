@@ -174,7 +174,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     @Query(nativeQuery = true,
             value = """
-                    SELECT CAST(jsonb_path_query(jpd.data, CAST(:query AS jsonpath)) AS text)
+                    SELECT CAST(jsonb_path_query(jsonb_lower_keys(jpd.data), CAST(:query AS jsonpath)) AS text)
                     FROM julkaistu_peruste jp
                     INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id
                     WHERE jp.peruste_id = :perusteId
