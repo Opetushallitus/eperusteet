@@ -19,14 +19,16 @@ gen_openapi_ext() {
 
 # Dispatch based on argument
 case "${1:-}" in
-  openapi)
-    gen_openapi
-    ;;
-  openapi_ext)
+  ext)
     gen_openapi_ext
     ;;
+  "")
+    gen_openapi
+    ;;
   *)
-    echo "Usage: $0 {gen_openapi|gen_openapi_ext}"
+    echo "Usage: $0 [ext]"
+    echo "  (no args)  - generate standard OpenAPI spec"
+    echo "  ext       - generate extended/public OpenAPI spec"
     exit 1
     ;;
 esac
