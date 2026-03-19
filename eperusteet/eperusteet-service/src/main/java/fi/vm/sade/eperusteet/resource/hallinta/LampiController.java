@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,11 +47,11 @@ public class LampiController {
                 .body(data);
     }
 
-    @GetMapping("/download/csv")
-    public ResponseEntity<byte[]> downloadCsv() throws IOException {
-        byte[] data = lampiExportService.downloadCsv();
+    @GetMapping("/download/csv/{csvFileName}")
+    public ResponseEntity<byte[]> downloadCsv(@PathVariable String csvFileName) throws IOException {
+        byte[] data = lampiExportService.downloadCsv(csvFileName);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=perusteet.csv")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + csvFileName)
                 .contentType(MediaType.parseMediaType("text/csv"))
                 .body(data);
     }
