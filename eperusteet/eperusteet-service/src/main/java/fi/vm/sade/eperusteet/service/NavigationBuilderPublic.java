@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
+import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import org.springframework.security.core.parameters.P;
@@ -21,6 +22,11 @@ public interface NavigationBuilderPublic extends NavigationBuilder {
     }
 
     default KoodiDto getPerusteenosaMetaKoodi(PerusteenOsaDto perusteenOsaDto) {
+        if (perusteenOsaDto != null && perusteenOsaDto instanceof TekstiKappaleDto) {
+            TekstiKappaleDto tekstiKappaleDto = (TekstiKappaleDto) perusteenOsaDto;
+            return tekstiKappaleDto.getKoodi();
+        }
+
         return null;
     }
 }

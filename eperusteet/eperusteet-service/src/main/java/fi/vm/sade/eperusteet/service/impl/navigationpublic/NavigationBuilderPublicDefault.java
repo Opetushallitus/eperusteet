@@ -46,7 +46,8 @@ public class NavigationBuilderPublicDefault implements NavigationBuilderPublic {
         NavigationType type = getNavigationType(po, sisalto.getLapset());
 
         NavigationNodeDto result = NavigationNodeDto
-                .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId()).meta("koodi", getPerusteenosaMetaKoodi(sisalto.getPerusteenOsa()))
+                .of(type, getPerusteenOsaNimi(sisalto.getPerusteenOsa()), sisalto.getId())
+                .meta("koodi", getPerusteenosaMetaKoodi(sisalto.getPerusteenOsa()))
                 .meta("liite", isLiite(po))
                 .addAll(sisalto.getLapset().stream()
                         .map(this::constructNavigation)

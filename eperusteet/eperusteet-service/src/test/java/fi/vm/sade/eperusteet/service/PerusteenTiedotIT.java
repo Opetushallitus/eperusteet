@@ -73,7 +73,7 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
 
         perusteDto.setOsaamisalat(new HashSet<>(Collections.singletonList(osaamisala)));
         PerusteDto updated = perusteService.update(this.peruste.getId(), perusteDto);
-        this.uusiTekstiKappale(LokalisoituTekstiDto.of("oa nimi"), LokalisoituTekstiDto.of("oa teksti"), osaamisala, Arrays.asList(tutkinnonosat, osaamisala));
+        this.uusiTekstiKappale(LokalisoituTekstiDto.of("oa nimi"), LokalisoituTekstiDto.of("oa teksti"), osaamisala, tutkinnonosat);
 
         Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>> kuvaukset = perusteService.getOsaamisalaKuvaukset(this.peruste.getId());
         TekstiKappaleDto tk = kuvaukset.values().iterator().next().values().iterator().next().get(0);
@@ -86,7 +86,7 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
                 .containsExactly(
                         osaamisala.getUri(),
                         osaamisala.getKoodisto());
-        assertThat(tk.getKoodit()).extracting("uri").containsExactlyInAnyOrder("tutkinnonosat_1234", "osaamisala_1234");
+        assertThat(tk.getKoodi().getUri()).isEqualTo("tutkinnonosat_1234");
     }
 
     @Test
@@ -98,14 +98,13 @@ public class PerusteenTiedotIT extends AbstractPerusteprojektiTest {
         TekstiKappale tekstikappale = (TekstiKappale) peruste.getSuoritustavat().iterator().next().getSisalto().getLapset().get(1).getPerusteenOsa();
         TekstiKappaleDto tk = mapper.map(tekstikappale, TekstiKappaleDto.class);
 
-        assertThat(tk.getKoodit()).isNull();
+        assertThat(tk.getKoodi()).isNull();
 
         KoodiDto tutkinnonosat = KoodiDto.of("tutkinnonosat", "1234");
-        KoodiDto osaamisala = KoodiDto.of("osaamisala", "1234");
-        tk.setKoodit(Arrays.asList(tutkinnonosat, osaamisala));
+        tk.setKoodi(tutkinnonosat);
 
         tk = perusteenOsaService.update(tk);
-        assertThat(tk.getKoodit()).extracting("uri").containsExactlyInAnyOrder("tutkinnonosat_1234", "osaamisala_1234");
+        assertThat(tk.getKoodi().getUri()).isEqualTo("tutkinnonosat_1234");
     }
 
     private Koodi getFirstAmmattitaitovaatimuskoodi() {
