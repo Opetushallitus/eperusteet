@@ -2800,7 +2800,7 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     public List<PerusteTekstikappaleillaDto> findByTekstikappaleKoodi(String koodi) {
-        List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByKooditUri(koodi);
+        List<TekstiKappale> tekstiKappales = tekstikappaleRepository.findByKoodiUri(koodi);
         return tekstikappaleidenPerusteet(tekstiKappales);
     }
 

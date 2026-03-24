@@ -4,16 +4,11 @@ import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.dto.Reference;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
-import org.springframework.util.ObjectUtils;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -43,15 +38,12 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi tutkintonimike;
 
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable(name = "tekstikappale_koodi",
-            joinColumns = @JoinColumn(name = "tekstikappale_id"),
-            inverseJoinColumns = @JoinColumn(name = "koodi_id"))
-    @Column(name = "koodi_id")
-    private List<Koodi> koodit;
+    @JoinColumn(name = "koodi_id")
+    private Koodi koodi;
 
     @Getter
     @Setter
@@ -100,6 +92,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
             result = super.structureEquals(that);
             result &= getOsaamisala() == null || Objects.equals(getOsaamisala(), that.getOsaamisala());
             result &= getTutkintonimike() == null || Objects.equals(getTutkintonimike(), that.getTutkintonimike());
+            result &= getKoodi() == null || Objects.equals(getKoodi(), that.getKoodi());
             // Sallitaan liitetiedon muutos julkaistulle perusteelle
             // result &= Objects.equals(isLiite(), that.isLiite());
             result &= getTeksti() == null || refXnor(getTeksti(), that.getTeksti());
@@ -111,15 +104,7 @@ import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
         this.setTeksti(other.getTeksti());
         this.setOsaamisala(other.getOsaamisala());
         this.setTutkintonimike(other.getTutkintonimike());
-        List<Koodi> oKoodit = other.getKoodit();
-        if (!ObjectUtils.isEmpty(oKoodit)) {
-            ArrayList<Koodi> koodit = new ArrayList<>();
-            for (Koodi oKoodi : oKoodit) {
-                Koodi koodi = new Koodi(oKoodi.getUri(), oKoodi.getKoodisto());
-                koodit.add(koodi);
-            }
-            this.setKoodit(koodit);
-        }
+        this.setKoodi(other.getKoodi());
         this.setLiite(other.isLiite());
     }
 

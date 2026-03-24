@@ -287,17 +287,10 @@ public class OpasServiceIT extends AbstractPerusteprojektiTest {
         assertThat(perusteDto.getOppaanSisalto().getOppaanKiinnitetytKoodit())
                 .extracting("kiinnitettyKoodiTyyppi")
                 .containsExactlyInAnyOrder(KiinnitettyKoodiTyyppi.TUTKINNONOSA, KiinnitettyKoodiTyyppi.OSAAMISALA, KiinnitettyKoodiTyyppi.OPINTOKOKONAISUUS);
-
-        oppaanKiinnitettyKoodiRepository.findAll().forEach(op -> {
-            System.out.println(op.getKiinnitettyKoodiTyyppi() + " " + op.getKoodi().getUri());
-        });
-
         assertThat(oppaanKiinnitettyKoodiRepository.findAll()).hasSize(3);
-
         assertThat(perusteService.getOpasKiinnitettyKoodi("osaamisala_3333")).hasSize(0);
         julkaisePeruste(perusteDto.getId());
         assertThat(perusteService.getOpasKiinnitettyKoodi("osaamisala_3333")).hasSize(1);
-
         assertThat(perusteService.getOpasKiinnitettyKoodi("osaamisala_XXXX")).hasSize(0);
     }
 }

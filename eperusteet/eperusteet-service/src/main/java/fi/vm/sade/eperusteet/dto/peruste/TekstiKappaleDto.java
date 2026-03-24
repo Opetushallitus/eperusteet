@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.dto.peruste;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
@@ -7,10 +8,8 @@ import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.liite.Liitteellinen;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,13 +19,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeName("tekstikappale")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TekstiKappaleDto extends PerusteenOsaDto.Laaja implements Liitteellinen {
     private LokalisoituTekstiDto teksti;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto osaamisala;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private KoodiDto tutkintonimike;
-    private List<KoodiDto> koodit;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private KoodiDto koodi;
     private Boolean liite;
 
     public TekstiKappaleDto(LokalisoituTekstiDto nimi, PerusteTila tila, PerusteenOsaTunniste tunniste) {
@@ -50,6 +51,10 @@ public class TekstiKappaleDto extends PerusteenOsaDto.Laaja implements Liitteell
 
         if (tutkintonimike != null && tutkintonimike.getNimi() != null) {
             return tutkintonimike.getNimi();
+        }
+
+        if (koodi != null && koodi.getNimi() != null) {
+            return koodi.getNimi();
         }
 
         return super.getNimi();

@@ -142,7 +142,7 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         return uusiTekstiKappale(nimi, teksti, osaamisala, null);
     }
 
-    protected PerusteenOsaViiteDto.Matala uusiTekstiKappale(LokalisoituTekstiDto nimi, LokalisoituTekstiDto teksti, KoodiDto osaamisala, List<KoodiDto> koodit) {
+    protected PerusteenOsaViiteDto.Matala uusiTekstiKappale(LokalisoituTekstiDto nimi, LokalisoituTekstiDto teksti, KoodiDto osaamisala, KoodiDto koodi) {
         PerusteenOsaViiteDto.Matala pov = new PerusteenOsaViiteDto.Matala();
         TekstiKappaleDto tk = new TekstiKappaleDto();
         pov.setPerusteenOsa(tk);
@@ -152,7 +152,7 @@ abstract public class AbstractPerusteprojektiTest extends AbstractIntegrationTes
         tk.setNimi(nimi);
         tk.setTeksti(teksti);
         tk.setOsaamisala(osaamisala);
-        tk.setKoodit(koodit);
+        tk.setKoodi(koodi);
 
         perusteenOsaService.lock(tk.getId());
         perusteenOsaService.update(tk);

@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TekstikappaleRepository extends JpaWithVersioningRepository<TekstiKappale, Long> {
 
-    List<TekstiKappale> findByKooditUri(String koodi);
+    List<TekstiKappale> findByKoodiUri(String koodi);
 }
