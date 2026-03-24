@@ -33,7 +33,7 @@ public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
     private AIPEVaiheSuppeaDto vaihe;
 
     public PerusteRakenneOsa getPerusteenOsa() {
-        return new PerusteRakenneOsa("aipe_oppiaine", getNimi().get());
+        return new PerusteRakenneOsa("aipe_oppiaine", getNimi() != null ? getNimi().get() : null);
     }
 
     public void setVaihe(AIPEVaiheSuppeaDto vaihe) {
