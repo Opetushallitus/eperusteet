@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service;
 
 import fi.vm.sade.eperusteet.domain.KoodiRelaatioTyyppi;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -83,4 +84,7 @@ public interface KoodistoClient {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi);
+
+    @PreAuthorize("permitAll()")
+    KoodistoDto getKoodisto(String koodistoUri);
 }

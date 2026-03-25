@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KoodistoVersioDto {
-
     private String versio;
+    private KoodistoMetadataDto[] metadata;
 }

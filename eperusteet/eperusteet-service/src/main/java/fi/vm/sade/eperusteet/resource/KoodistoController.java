@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.resource;
 
 import fi.vm.sade.eperusteet.config.InternalApi;
+import fi.vm.sade.eperusteet.dto.koodisto.KoodistoDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoPageDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
@@ -76,6 +77,12 @@ public class KoodistoController {
             @PathVariable("koodisto") final String koodisto,
             @RequestBody LokalisoituTekstiDto koodinimi) {
         return new ResponseEntity<>(service.addKoodiNimella(koodisto, koodinimi), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{koodisto}/tiedot", method = GET)
+    public ResponseEntity<KoodistoDto> getKoodistoTiedot(
+            @PathVariable("koodisto") final String koodisto) {
+        return new ResponseEntity<>(service.getKoodisto(koodisto), HttpStatus.OK);
     }
 
 }

@@ -10,7 +10,6 @@ import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoKoodiLaajaDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoMetadataDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoSuhteillaDto;
-import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -417,7 +416,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addKoodirelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
 
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+        UriComponents uri = UriComponentsBuilder.fromUriString(koodistoServiceUrl)
                 .path(ADD_CODE_ELEMENT_RELATION)
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
@@ -440,7 +439,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addKoodirelaatiot(String parentKoodi, List<String> lapsiKoodit, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
 
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+        UriComponents uri = UriComponentsBuilder.fromUriString(koodistoServiceUrl)
                 .path(ADD_CODE_ELEMENT_RELATIONS).build();
 
         KoodiRelaatioMassaDto dto = KoodiRelaatioMassaDto.builder()
@@ -463,7 +462,7 @@ public class KoodistoClientImpl implements KoodistoClient {
     @Override
     public void addKoodistoRelaatio(String parentKoodi, String lapsiKoodi, KoodiRelaatioTyyppi koodiRelaatioTyyppi) {
 
-        UriComponents uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+        UriComponents uri = UriComponentsBuilder.fromUriString(koodistoServiceUrl)
                 .path(GET_CODES_WITH_URI)
                 .buildAndExpand(parentKoodi);
 
@@ -474,7 +473,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             throw new BusinessRuleViolationException("koodistoa " + parentKoodi + " ei loydy.");
         }
 
-        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+        uri = UriComponentsBuilder.fromUriString(koodistoServiceUrl)
                 .path(GET_CODES_WITH_URI_AND_VERSION)
                 .buildAndExpand(parentKoodi, koodistoDto.getLatestKoodistoVersio().getVersio());
         KoodistoSuhteillaDto koodistoSuhteillaDto = ophClientHelper.get(koodistoServiceUrl, uri.toString(), KoodistoSuhteillaDto.class);
@@ -486,7 +485,7 @@ public class KoodistoClientImpl implements KoodistoClient {
             return;
         }
 
-        uri = UriComponentsBuilder.fromHttpUrl(koodistoServiceUrl)
+        uri = UriComponentsBuilder.fromUriString(koodistoServiceUrl)
                 .path(ADD_CODE_RELATION)
                 .buildAndExpand(parentKoodi, lapsiKoodi, koodiRelaatioTyyppi.name());
 
@@ -497,5 +496,13 @@ public class KoodistoClientImpl implements KoodistoClient {
             log.error("Error with addKoodiRelaatio: {} <- {}", parentKoodi, lapsiKoodi);
             log.error(e.getMessage());
         }
+    }
+
+    @Override
+    public KoodistoDto getKoodisto(String koodistoUri) {
+      UriComponents uri = UriComponentsBuilder.fromUriString(koodistoServiceUrl)
+                .path(GET_CODES_WITH_URI)
+                .buildAndExpand(koodistoUri);
+        return ophClientHelper.get(koodistoServiceUrl, uri.toString(), KoodistoDto.class);
     }
 }
