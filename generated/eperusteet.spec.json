@@ -13632,6 +13632,32 @@
         }
       }
     },
+    "/api/koodisto/{koodisto}/tiedot" : {
+      "get" : {
+        "tags" : [ "Koodisto" ],
+        "operationId" : "getKoodistoTiedot",
+        "parameters" : [ {
+          "name" : "koodisto",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/KoodistoDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/koodisto/sivutettu/{koodisto}" : {
       "get" : {
         "tags" : [ "Koodisto" ],
@@ -21252,6 +21278,12 @@
           },
           "latestKoodistoVersio" : {
             "$ref" : "#/components/schemas/KoodistoVersioDto"
+          },
+          "nimi" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -21308,6 +21340,12 @@
         "properties" : {
           "versio" : {
             "type" : "string"
+          },
+          "metadata" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KoodistoMetadataDto"
+            }
           }
         }
       },
@@ -21502,19 +21540,19 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
+          "unpaged" : {
+            "type" : "boolean"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
           "paged" : {
             "type" : "boolean"
           },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
-          },
-          "pageSize" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "unpaged" : {
-            "type" : "boolean"
           }
         }
       },
@@ -24155,12 +24193,12 @@
       "KoulutustyyppiLukumaara" : {
         "type" : "object",
         "properties" : {
-          "koulutustyyppi" : {
-            "type" : "string"
-          },
           "lukumaara" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "koulutustyyppi" : {
+            "type" : "string"
           }
         }
       },

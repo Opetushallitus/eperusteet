@@ -229,4 +229,9 @@ public class KoodistoClientMock implements KoodistoClient {
         return Arrays.stream(koodistoKoodi.getMetadata())
                 .collect(Collectors.toMap(k -> k.getKieli().toLowerCase(), KoodistoMetadataDto::getNimi));
     }
+
+    @Override
+    public KoodistoDto getKoodisto(String koodistoUri) {
+      return null;
+    }
 }
