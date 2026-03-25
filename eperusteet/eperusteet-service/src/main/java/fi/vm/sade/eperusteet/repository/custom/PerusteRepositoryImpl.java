@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.repository.custom;
 
 import fi.vm.sade.eperusteet.domain.*;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa_;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite_;
@@ -331,6 +332,45 @@ public class PerusteRepositoryImpl implements PerusteRepositoryCustom {
         }
 
         return pred;
+    }
+
+    @Override
+    public Peruste findPerusteWithTutkinnonOsatForNavigation(Long perusteId) {
+        TypedQuery<Peruste> q = em.createQuery(
+                "SELECT DISTINCT p FROM Peruste p "
+                        + "LEFT JOIN FETCH p.suoritustavat s "
+                        + "LEFT JOIN FETCH s.tutkinnonOsat tov "
+                        + "LEFT JOIN FETCH tov.tutkinnonOsa tos "
+                        + "LEFT JOIN FETCH tos.nimi nimi "
+                        + "WHERE p.id = :id",
+                Peruste.class);
+        q.setParameter("id", perusteId);
+        List<Peruste> list = q.getResultList();
+        if (list.isEmpty()) {
+            return null;
+        }
+        Peruste peruste = list.get(0);
+
+        Set<Long> tutkinnonOsaIdsRequiringOsaAlueet = new HashSet<>();
+        for (Suoritustapa st : peruste.getSuoritustavat()) {
+            for (TutkinnonOsaViite viite : st.getTutkinnonOsat()) {
+                TutkinnonOsa tutkinnonOsa = viite.getTutkinnonOsa();
+                if (tutkinnonOsa != null && tutkinnonOsa.getTyyppi() != TutkinnonOsaTyyppi.NORMAALI) {
+                    tutkinnonOsaIdsRequiringOsaAlueet.add(tutkinnonOsa.getId());
+                }
+            }
+        }
+        if (!tutkinnonOsaIdsRequiringOsaAlueet.isEmpty()) {
+            em.createQuery(
+                    "SELECT DISTINCT tos FROM TutkinnonOsa tos "
+                            + "LEFT JOIN FETCH tos.osaAlueet oa "
+                            + "LEFT JOIN FETCH oa.nimi nm "
+                            + "WHERE tos.id IN :ids",
+                    TutkinnonOsa.class)
+                    .setParameter("ids", tutkinnonOsaIdsRequiringOsaAlueet)
+                    .getResultList();
+        }
+        return peruste;
     }
 
 }

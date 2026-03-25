@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,7 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
         NavigationNodeDto tekstit = dispatcher.get(NavigationBuilder.class).buildNavigation(perusteId, kieli);
-        NavigationNodeDto node =  NavigationNodeDto.of(NavigationType.root)
+        NavigationNodeDto node = NavigationNodeDto.of(NavigationType.root)
                 .add(tutkinnonOsat(perusteId))
                 .addAll(tekstit.getChildren());
         node.setChildren(node.getChildren().stream()
@@ -84,7 +85,10 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     }
 
     private NavigationNodeDto tutkinnonOsat(Long perusteId) {
-        Peruste peruste = perusteRepository.findOne(perusteId);
+        Peruste peruste = perusteRepository.findPerusteWithTutkinnonOsatForNavigation(perusteId);
+        if (peruste == null) {
+            return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, perusteId);
+        }
         return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, perusteId)
                 .addAll(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getTutkinnonOsat)

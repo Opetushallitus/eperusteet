@@ -50,7 +50,6 @@ jobs:
           echo "----------eperusteet-ui:n viimeisimman commitin sha----------"
           git rev-parse HEAD
           yarn build
-          ls -latr
       - name: Upload eperusteet-ui
         uses: actions/upload-artifact@v6
         with:
@@ -65,7 +64,7 @@ jobs:
         uses: actions/checkout@v6
         
       - name: Download eperusteet-ui
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: eperusteet-ui
           path: eperusteet/eperusteet-service/src/main/resources/static/ui
@@ -111,7 +110,7 @@ jobs:
         uses: actions/checkout@v6
         
       - name: Download eperusteet-service-jar
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: eperusteet-service-jar
           

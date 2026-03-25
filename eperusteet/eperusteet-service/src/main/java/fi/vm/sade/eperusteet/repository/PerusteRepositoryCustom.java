@@ -11,4 +11,10 @@ import org.springframework.data.repository.NoRepositoryBean;
 public interface PerusteRepositoryCustom {
     Page<Peruste> findBy(PageRequest page, PerusteQuery pquery);
     Page<Peruste> findBy(PageRequest page, PerusteQuery pquery, Set<Long> koodistostaHaetut);
+
+    /**
+     * Lataa perusteen tutkinnon osat navigointia varten: suoritustavat, viitteet, tutkinnon osat ja nimet,
+     * sekä erillisellä kyselyllä osa-alueet niille tutkinnon osille joilla tyyppi ei ole NORMAALI.
+     */
+    Peruste findPerusteWithTutkinnonOsatForNavigation(Long perusteId);
 }
