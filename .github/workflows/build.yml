@@ -50,7 +50,6 @@ jobs:
           echo "----------eperusteet-ui:n viimeisimman commitin sha----------"
           git rev-parse HEAD
           yarn build
-          ls -latr
       - name: Upload eperusteet-ui
         uses: actions/upload-artifact@v6
         with:

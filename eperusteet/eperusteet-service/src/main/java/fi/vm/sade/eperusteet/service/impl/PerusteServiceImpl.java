@@ -2743,13 +2743,6 @@ public class PerusteServiceImpl implements PerusteService{
         return viiteDto;
     }
 
-    @Override
-    public NavigationNodeDto buildNavigationWithDate(Long perusteId, Date pvm, String kieli) {
-        NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class)
-                .buildNavigation(perusteId, kieli);
-        return siirraLiitteetLoppuun(navigationNodeDto);
-    }
-
     private NavigationNodeDto siirraLiitteetLoppuun(NavigationNodeDto navigationNodeDto) {
         Stack<NavigationNodeDto> stack = new Stack<>();
         stack.push(navigationNodeDto);
@@ -2781,8 +2774,8 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
-        Peruste peruste = getPeruste(perusteId);
-        return self.buildNavigationWithDate(perusteId, peruste.getGlobalVersion().getAikaleima(), kieli);
+      NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class).buildNavigation(perusteId, kieli);
+        return siirraLiitteetLoppuun(navigationNodeDto);
     }
 
     @Override

@@ -104,9 +104,6 @@ public interface PerusteService {
     @Transactional(readOnly = true)
     PerusteKaikkiDto getKaikkiSisalto(final Long id);
 
-//    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-//    PerusteDto getByIdAndSuoritustapa(@P("perusteId") final Long id, Suoritustapakoodi suoritustapakoodi);
-
     @PreAuthorize("permitAll()")
     Page<PerusteHakuDto> getAll(PageRequest page, String kieli);
 
@@ -280,9 +277,6 @@ public interface PerusteService {
 
     @PreAuthorize("hasPermission(null, 'perusteprojekti', 'LUONTI')")
     void importPeruste(MultipartHttpServletRequest request) throws IOException;
-
-    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
-    NavigationNodeDto buildNavigationWithDate(@P("perusteId") Long perusteId, Date pvm, String kieli);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     NavigationNodeDto buildNavigation(@P("perusteId") Long perusteId, String kieli);
