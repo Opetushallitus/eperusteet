@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl.navigation;
 
 import com.google.common.collect.Sets;
+
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
@@ -9,7 +10,6 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
@@ -18,7 +18,6 @@ import fi.vm.sade.eperusteet.service.PerusteDispatcher;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,7 +60,7 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViite tosa) {
         NavigationNodeDto result = NavigationNodeDto.of(
                 NavigationType.tutkinnonosaviite,
-                mapper.map(tosa.getTutkinnonOsa(), TutkinnonOsaDto.class).getNimi(),
+                mapper.map(tosa.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class),
                 tosa.getId())
                 .meta("koodi", mapper.map(tosa.getTutkinnonOsa().getKoodi(), KoodiDto.class))
                 .meta("laajuus", tosa.getLaajuus());

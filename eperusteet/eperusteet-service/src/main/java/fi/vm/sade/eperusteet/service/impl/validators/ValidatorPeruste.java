@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service.impl.validators;
 
-import fi.vm.sade.eperusteet.domain.Diaarinumero;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.Koodi;
 import fi.vm.sade.eperusteet.domain.Koulutus;
@@ -17,9 +16,6 @@ import fi.vm.sade.eperusteet.domain.ProjektiTila;
 import fi.vm.sade.eperusteet.domain.Suoritustapa;
 import fi.vm.sade.eperusteet.domain.TekstiKappale;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.maarays.Maarays;
-import fi.vm.sade.eperusteet.domain.maarays.MaaraysLiiteTyyppi;
-import fi.vm.sade.eperusteet.domain.maarays.MaaraysTyyppi;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.OsaAlue;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -45,14 +41,12 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.util.NavigableLokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.repository.PerusteprojektiRepository;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
-import fi.vm.sade.eperusteet.service.MaaraysService;
 import fi.vm.sade.eperusteet.service.TutkintonimikeKoodiService;
 import fi.vm.sade.eperusteet.service.Validator;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -62,14 +56,12 @@ import fi.vm.sade.eperusteet.service.util.PerusteenRakenne;
 import fi.vm.sade.eperusteet.service.util.ValidatorUtil;
 import fi.vm.sade.eperusteet.service.util.Validointi;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static fi.vm.sade.eperusteet.domain.ProjektiTila.KOMMENTOINTI;
@@ -137,8 +129,7 @@ public class ValidatorPeruste implements Validator {
 
         if (suoritustapa.getTutkinnonOsat() != null) {
             for (TutkinnonOsaViite viite : getViitteet(suoritustapa)) {
-                TutkinnonOsaDto osaDto = mapper.map(viite.getTutkinnonOsa(), TutkinnonOsaDto.class);
-                if (osaDto.getKoodi() == null && StringUtils.isEmpty(osaDto.getKoodiUri())) {
+                if (Optional.ofNullable(viite.getTutkinnonOsa().getKoodi()).map(Koodi::getUri).orElse(null) == null) {
                     koodittomatTutkinnonOsat.add(viite);
                 }
             }
@@ -456,7 +447,7 @@ public class ValidatorPeruste implements Validator {
 
             for (TutkinnonOsaViite tov : st.getTutkinnonOsat()) {
                 TutkinnonOsa tosa = tov.getTutkinnonOsa();
-                TutkinnonOsaDto tosaDto = mapper.map(tosa, TutkinnonOsaDto.class);
+                LokalisoituTekstiDto nimi = mapper.map(tosa.getNimi(), LokalisoituTekstiDto.class);
                 Map<String, String> virheellisetKielet = new HashMap<>();
                 tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-ammattitaidon-osoittamistavat",
                         tosa.getAmmattitaidonOsoittamistavat(), vaaditutKielet, virheellisetKielet);
@@ -464,11 +455,11 @@ public class ValidatorPeruste implements Validator {
                         tosa.getAmmattitaitovaatimukset(), vaaditutKielet, virheellisetKielet);
                 tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-kuvaus", tosa.getKuvaus(),
                         vaaditutKielet, virheellisetKielet);
-                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", TekstiPalanen.of(Optional.ofNullable(tosaDto.getNimi()).map(LokalisoituTekstiDto::getTekstit).orElse(null)),
+                tarkistaTekstipalanen("peruste-validointi-tutkinnonosa-nimi", TekstiPalanen.of(Optional.ofNullable(nimi).map(LokalisoituTekstiDto::getTekstit).orElse(null)),
                         vaaditutKielet, virheellisetKielet, true);
 
                 for (Map.Entry<String, String> entry : virheellisetKielet.entrySet()) {
-                    validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.tutkinnonosaviite, mapper.map(tosa, TutkinnonOsaDto.class).getNimi(), tov.getId()));
+                    validointi.virhe(entry.getKey(), NavigationNodeDto.of(NavigationType.tutkinnonosaviite, nimi, tov.getId()));
                 }
             }
         }
@@ -655,10 +646,9 @@ public class ValidatorPeruste implements Validator {
                     Set<String> uniikitKoodit = new HashSet<>();
                     for (TutkinnonOsaViite tov : getViitteet(suoritustapa)) {
                         TutkinnonOsa tosa = tov.getTutkinnonOsa();
-                        TutkinnonOsaDto osaDto = mapper.map(tosa, TutkinnonOsaDto.class);
-
-                        String uri = osaDto.getKoodiUri();
-                        String arvo = osaDto.getKoodiArvo();
+                        KoodiDto tosakoodiDto = mapper.map(tosa.getKoodi(), KoodiDto.class);
+                        String uri = Optional.ofNullable(tosakoodiDto).map(KoodiDto::getUri).orElse(null);
+                        String arvo = Optional.ofNullable(tosakoodiDto).map(KoodiDto::getArvo).orElse(null);
 
                         // Tarkistetaan onko sama koodi useammassa tutkinnon osassa
                         if (!ObjectUtils.isEmpty(uri)) {
@@ -680,7 +670,7 @@ public class ValidatorPeruste implements Validator {
                             }
 
                             if (koodi != null && koodi.getKoodiUri().equals(uri)) {
-                                tutkinnonOsienKoodit.add(osaDto.getKoodiArvo());
+                                tutkinnonOsienKoodit.add(arvo);
                             } else {
                                 virheellisetKoodistonimet.add(new NavigableLokalisoituTekstiDto(tov));
                             }
