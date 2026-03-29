@@ -164,6 +164,15 @@ public class TutkinnonRakenneController {
         return CacheableResponse.create(perusteService.getPerusteVersion(id), 1, () -> perusteService.getTutkinnonOsat(id, suoritustapakoodi));
     }
 
+    @RequestMapping(value = "/tutkinnonosat/kevyt", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<TutkinnonOsaViiteDto>> getPerusteenTutkinnonOsatKevyt(
+        @PathVariable("perusteId") final Long id,
+        @PathVariable final Suoritustapakoodi suoritustapakoodi
+    ) {
+        return ResponseEntity.ok(perusteService.getTutkinnonOsatKevyt(id, suoritustapakoodi));
+    }
+
     /**
      * Järjestää tutkinnon suoritustavan tutkinnon osat
      *

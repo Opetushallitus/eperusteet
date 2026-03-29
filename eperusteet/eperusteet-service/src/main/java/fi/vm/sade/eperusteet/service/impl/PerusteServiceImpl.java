@@ -67,6 +67,7 @@ import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiKevytDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKevytDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaTilaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.AbstractRakenneOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
@@ -1488,6 +1489,19 @@ public class PerusteServiceImpl implements PerusteService{
             viiteDto.setTutkinnonOsaDto(mapper.map(tosaViite.getTutkinnonOsa(), TutkinnonOsaDto.class));
             return viiteDto;
         }).collect(Collectors.toSet()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TutkinnonOsaViiteDto> getTutkinnonOsatKevyt(Long perusteid, Suoritustapakoodi suoritustapakoodi) {
+        Peruste peruste = perusteRepository.findOne(perusteid);
+        Suoritustapa suoritustapa = peruste.getSuoritustapa(suoritustapakoodi);
+        return new ArrayList<>(suoritustapa.getTutkinnonOsat().stream().map(tosaViite -> {
+            TutkinnonOsaViiteDto viiteDto = mapper.map(tosaViite, TutkinnonOsaViiteDto.class);
+            TutkinnonOsaKevytDto kevytDto = mapper.map(tosaViite.getTutkinnonOsa(), TutkinnonOsaKevytDto.class);
+            viiteDto.setTutkinnonOsaDto(mapper.map(kevytDto, TutkinnonOsaDto.class));
+            return viiteDto;
+        }).collect(Collectors.toList()));
     }
 
     @Override

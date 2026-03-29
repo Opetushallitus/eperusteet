@@ -190,6 +190,9 @@ public interface PerusteService {
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
+    List<TutkinnonOsaViiteDto> getTutkinnonOsatKevyt(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi);
+
+    @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     List<TutkinnonOsaViiteDto> getTutkinnonOsat(@P("perusteId") Long perusteid, Suoritustapakoodi suoritustapakoodi, Integer revisio);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
