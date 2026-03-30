@@ -11,6 +11,7 @@ import fi.vm.sade.eperusteet.dto.arviointi.ArviointiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.KoodiOrNimiUtil;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -164,15 +165,7 @@ public class TutkinnonOsaKaikkiDto extends PerusteenOsaDto {
 
     @Override
     public LokalisoituTekstiDto getNimi() {
-        if (koodi != null && koodi.getNimi() != null && !org.springframework.util.CollectionUtils.isEmpty(koodi.getNimi().getTekstit())) {
-            Map<String, String> kielet = new HashMap<>();
-            kielet.computeIfAbsent("fi", val -> koodi.getNimi().getTekstit().getOrDefault(Kieli.FI, super.getNimi().get(Kieli.FI)));
-            kielet.computeIfAbsent("sv", val -> koodi.getNimi().getTekstit().getOrDefault(Kieli.SV, super.getNimi().get(Kieli.SV)));
-            kielet.computeIfAbsent("en", val -> koodi.getNimi().getTekstit().getOrDefault(Kieli.EN, super.getNimi().get(Kieli.EN)));
-            return new LokalisoituTekstiDto(kielet);
-        } else {
-            return super.getNimi();
-        }
+        return KoodiOrNimiUtil.getNimi(koodi, super.getNimi());
     }
 
     public PerusteRakenneOsa getPerusteenOsa() {

@@ -84,10 +84,7 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     }
 
     private NavigationNodeDto tutkinnonOsat(Long perusteId) {
-        Peruste peruste = perusteRepository.findPerusteWithTutkinnonOsatForNavigation(perusteId);
-        if (peruste == null) {
-            return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, perusteId);
-        }
+      Peruste peruste = perusteRepository.findOne(perusteId);
         return NavigationNodeDto.of(NavigationType.tutkinnonosat, null, perusteId)
                 .addAll(peruste.getSuoritustavat().stream()
                         .map(Suoritustapa::getTutkinnonOsat)
