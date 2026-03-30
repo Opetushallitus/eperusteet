@@ -1,7 +1,6 @@
 package fi.vm.sade.eperusteet.dto.tutkinnonosa;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaTunniste;
 import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsaTyyppi;
@@ -13,9 +12,8 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.KoodiOrNimiUtil;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.HashMap;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +21,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
-
-import org.springframework.util.CollectionUtils;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -80,16 +75,7 @@ public class TutkinnonOsaDto extends PerusteenOsaDto.Laaja {
 
     @Override
     public LokalisoituTekstiDto getNimi() {
-        if (koodi != null && koodi.getNimi() != null && !CollectionUtils.isEmpty(koodi.getNimi().getTekstit())) {
-            Map<String, String> kielet = new HashMap<>();
-            Map<Kieli, String> tutkinnonOsaNimi = super.getNimi() != null ? super.getNimi().getTekstit() : new HashMap<>();
-            kielet.computeIfAbsent("fi", val -> koodi.getNimi().getTekstit().getOrDefault(Kieli.FI, tutkinnonOsaNimi.get(Kieli.FI)));
-            kielet.computeIfAbsent("sv", val -> koodi.getNimi().getTekstit().getOrDefault(Kieli.SV, tutkinnonOsaNimi.get(Kieli.SV)));
-            kielet.computeIfAbsent("en", val -> koodi.getNimi().getTekstit().getOrDefault(Kieli.EN, tutkinnonOsaNimi.get(Kieli.EN)));
-            return new LokalisoituTekstiDto(kielet);
-        } else {
-            return super.getNimi();
-        }
+        return KoodiOrNimiUtil.getNimi(koodi, super.getNimi());
     }
 
     @Override
