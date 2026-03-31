@@ -296,6 +296,9 @@ public interface PerusteService {
     @PreAuthorize("isAuthenticated()")
     List<PerusteKevytDto> getJulkaistutPerusteet();
 
+    @PreAuthorize("isAuthenticated()")
+    List<PerusteKevytDto> getJulkaistutVoimassaolevatPerusteetByTyyppi(PerusteTyyppi tyyppi);
+
     @PreAuthorize("permitAll()")
     List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(Kieli kieli);
 

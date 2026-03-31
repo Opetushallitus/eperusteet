@@ -490,6 +490,11 @@ public class PerusteServiceImpl implements PerusteService{
     }
 
     @Override
+    public List<PerusteKevytDto> getJulkaistutVoimassaolevatPerusteetByTyyppi(PerusteTyyppi tyyppi) {
+        return mapper.mapAsList(perusteRepository.findJulkaistutVoimassaolevatPerusteetByTyyppi(tyyppi), PerusteKevytDto.class);
+    }
+
+    @Override
     @Cacheable("julkaistutkoulutustyypit")
     public List<KoulutustyyppiLukumaara> getJulkaistutKoulutustyyppiLukumaarat(Kieli kieli) {
         Long currentMillis = DateTime.now().getMillis();
