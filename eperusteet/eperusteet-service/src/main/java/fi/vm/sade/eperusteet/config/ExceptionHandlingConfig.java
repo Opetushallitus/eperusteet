@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.config;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.google.common.base.Throwables;
 import fi.vm.sade.eperusteet.dto.LukkoDto;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.exception.ServiceException;
@@ -181,6 +182,9 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
                 map.put("lukko", lukko);
             }
         } else if (ex instanceof NotExistsException) {
+            suppresstrace = true;
+            map.put("syy", ex.getLocalizedMessage());
+        } else if (ex instanceof BusinessRuleViolationException) {
             suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
         } else if (ex instanceof ServiceException) {
