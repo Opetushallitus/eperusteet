@@ -612,6 +612,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                     KoodiDto koodiDto = mapper.map(koodi, KoodiDto.class);
                     KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella(koodi.getKoodisto(), koodiDto.getNimi());
 
+                    if (lisattyKoodi == null) {
+                        throw new BusinessRuleViolationException("koodin-lisaaminen-epaonnistui");
+                    }
+
                     koodi.setUri(lisattyKoodi.getKoodiUri());
                     koodi.setKoodisto(lisattyKoodi.getKoodisto().getKoodistoUri());
                     koodi.setVersio(lisattyKoodi.getVersio() != null ? Long.valueOf(lisattyKoodi.getVersio()) : null);
@@ -625,6 +629,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 Koodi tutkintonimike = koodiRepository.findFirstByUriOrderByVersioDesc(tutkintonimikeKoodiDto.getTutkintonimikeUri());
                 TutkintonimikeKoodi tutkintonimikeKoodi = mapper.map(tutkintonimikeKoodiDto, TutkintonimikeKoodi.class);
                 KoodistoKoodiDto lisattyKoodi = koodistoClient.addKoodiNimella("tutkintonimikkeet", tutkintonimikeKoodiDto.getNimi(), 5);
+
+                if (lisattyKoodi == null) {
+                    throw new BusinessRuleViolationException("tutkintonimiken-koodin-lisaaminen-epaonnistui");
+                }
 
                 if (tutkintonimike != null) {
                     tutkintonimike.setUri(lisattyKoodi.getKoodiUri());
@@ -656,6 +664,10 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                         TutkinnonOsa tutkinnonOsa = tutkinnonOsaRepository.findOne(tutkinnonOsaViite.getTutkinnonOsa().getIdLong());
                         tutkinnonOsa.setKoodi(koodi);
                         tutkinnonOsaRepository.save(tutkinnonOsa);
+                    }
+
+                    if (lisattyKoodi == null) {
+                        throw new BusinessRuleViolationException("tutkinnon-osan-koodin-lisaaminen-epaonnistui");
                     }
                 }
             });
