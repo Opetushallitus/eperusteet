@@ -184,10 +184,10 @@ public class PerusteController {
         return service.getJulkaistutPerusteet();
     }
 
-    @RequestMapping(value = "/internal/julkaistut/voimassaolevat", method = GET)
+    @RequestMapping(value = "/internal/julkaistut/voimassaolevatjatulevat", method = GET)
     @ResponseBody
-    public List<PerusteKevytDto> getJulkaistutVoimassaolevatPerusteetByTyyppi(@RequestParam(required = false) final PerusteTyyppi perusteTyyppi) {
-        return service.getJulkaistutVoimassaolevatPerusteetByTyyppi(perusteTyyppi);
+    public List<PerusteKevytDto> getJulkaistutVoimassaolevatJaTulevatPerusteetByTyyppi(@RequestParam(required = false) final PerusteTyyppi perusteTyyppi) {
+        return service.getJulkaistutVoimassaolevatJaTulevatPerusteetByTyyppi(perusteTyyppi);
     }
 
     @RequestMapping(value = "/{perusteId}", method = POST)
