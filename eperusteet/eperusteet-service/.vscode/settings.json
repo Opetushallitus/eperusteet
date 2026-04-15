@@ -1,4 +1,11 @@
 {
   "java.compile.nullAnalysis.mode": "disabled",
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.test.defaultConfig": "eperusteet-service",
+  "java.test.config": [
+    {
+      "name": "eperusteet-service",
+      "vmArgs": ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
+    }
+  ]
 }
