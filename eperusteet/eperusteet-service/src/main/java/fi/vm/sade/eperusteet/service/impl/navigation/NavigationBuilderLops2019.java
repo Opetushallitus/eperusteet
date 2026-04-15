@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.peruste.KoodillinenDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
+import fi.vm.sade.eperusteet.dto.util.KoodiOrNimiUtil;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019ModuuliRepository;
 import fi.vm.sade.eperusteet.repository.lops2019.Lops2019OppiaineRepository;
@@ -96,9 +97,11 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
             Lops2019Oppiaine oa,
             Map<Long, List<Lops2019Oppiaine>> oppimaaratMap,
             Map<Long, List<Lops2019Moduuli>> moduulitMap) {
-        LokalisoituTekstiDto nimi = oa.getKoodi() != null ? mapper.map(oa.getKoodi(), KoodiDto.class).getNimi() : mapper.map(oa.getNimi(), LokalisoituTekstiDto.class);
         NavigationNodeDto result = NavigationNodeDto
-                .of(NavigationType.oppiaine, nimi, oa.getId())
+                .of(
+                  NavigationType.oppiaine, 
+                  KoodiOrNimiUtil.getNimi(mapper.map(oa.getKoodi(), KoodiDto.class), mapper.map(oa.getNimi(), LokalisoituTekstiDto.class)), 
+                  oa.getId())
                 .koodi(mapper.map(oa.getKoodi(), KoodiDto.class))
                 .meta("koodi", mapper.map(oa.getKoodi(), KoodiDto.class));
 
@@ -114,7 +117,7 @@ public class NavigationBuilderLops2019 implements NavigationBuilder {
                     result.addAll(moduulit.stream()
                         .map(m -> NavigationNodeDto.of(
                             NavigationType.moduuli,
-                            mapper.map(m.getNimi(), LokalisoituTekstiDto.class),
+                            KoodiOrNimiUtil.getNimi(mapper.map(m.getKoodi(), KoodiDto.class), mapper.map(m.getNimi(), LokalisoituTekstiDto.class)),
                             m.getId())
                             .koodi(mapper.map(m.getKoodi(), fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto.class))
                             .meta("oppiaineId", m.getOppiaine() != null ? m.getOppiaine().getId() : null)

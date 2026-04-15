@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "eperusteet-service",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "fi.vm.sade.eperusteet.EperusteetApplication",
+      "projectName": "eperusteet-service",
+      "vmArgs": "-Dfile.encoding=UTF-8 -Dspring.profiles.active=default,local,qa --add-opens=java.base/java.lang=ALL-UNNAMED",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "eperusteet-service loqsql",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "fi.vm.sade.eperusteet.EperusteetApplication",
+      "projectName": "eperusteet-service",
+      "vmArgs": "-Dfile.encoding=UTF-8 -Dspring.profiles.active=default,local,qa,logsql --add-opens=java.base/java.lang=ALL-UNNAMED",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
