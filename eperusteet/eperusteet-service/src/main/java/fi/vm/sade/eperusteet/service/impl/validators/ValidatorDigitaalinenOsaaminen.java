@@ -66,7 +66,7 @@ public class ValidatorDigitaalinenOsaaminen implements Validator {
             perusteValidointi.virhe("peruste-ei-voimassaolon-alkamisaikaa", NavigationNodeDto.of(NavigationType.tiedot));
         }
 
-        List<Peruste> julkaistutDigitaaliset = perusteRepository.findJulkaistutVoimassaolevatPerusteetByTyyppi(PerusteTyyppi.DIGITAALINEN_OSAAMINEN);
+        List<Peruste> julkaistutDigitaaliset = perusteRepository.findJulkaistutVoimassaolevatJaTulevatPerusteetByTyyppi(PerusteTyyppi.DIGITAALINEN_OSAAMINEN);
         if (julkaistutDigitaaliset.size() > 0 && julkaistutDigitaaliset.stream().noneMatch(julkaistu -> julkaistu.getId().equals(projekti.getPeruste().getId()))) {
             perusteValidointi.virhe("digitaalinen-osaaminen-jo-julkaistu", NavigationNodeDto.of(NavigationType.tiedot));
         }

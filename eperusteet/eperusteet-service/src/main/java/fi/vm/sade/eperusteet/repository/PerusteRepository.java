@@ -138,9 +138,9 @@ public interface PerusteRepository extends JpaWithVersioningRepository<Peruste, 
             "WHERE p.tyyppi = :tyyppi " +
             "AND j.id IS NOT NULL " +
             "AND tila != 'POISTETTU' " +
-            "AND (p.voimassaoloAlkaa IS NULL OR p.voimassaoloAlkaa < CURRENT_TIMESTAMP) " +
+            "AND p.voimassaoloAlkaa IS NOT NULL " +
             "AND ((p.voimassaoloLoppuu IS NULL OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP) OR (p.siirtymaPaattyy IS NOT NULL AND p.siirtymaPaattyy > CURRENT_TIMESTAMP))")
-    List<Peruste> findJulkaistutVoimassaolevatPerusteetByTyyppi(@Param("tyyppi") PerusteTyyppi tyyppi);
+    List<Peruste> findJulkaistutVoimassaolevatJaTulevatPerusteetByTyyppi(@Param("tyyppi") PerusteTyyppi tyyppi);
 
     @Query("SELECT distinct p FROM Peruste p " +
             "LEFT JOIN p.julkaisut j " +

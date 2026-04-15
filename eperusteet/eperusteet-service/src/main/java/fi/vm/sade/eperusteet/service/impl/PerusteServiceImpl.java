@@ -490,8 +490,8 @@ public class PerusteServiceImpl implements PerusteService{
     }
 
     @Override
-    public List<PerusteKevytDto> getJulkaistutVoimassaolevatPerusteetByTyyppi(PerusteTyyppi tyyppi) {
-        return mapper.mapAsList(perusteRepository.findJulkaistutVoimassaolevatPerusteetByTyyppi(tyyppi), PerusteKevytDto.class);
+    public List<PerusteKevytDto> getJulkaistutVoimassaolevatJaTulevatPerusteetByTyyppi(PerusteTyyppi tyyppi) {
+        return mapper.mapAsList(perusteRepository.findJulkaistutVoimassaolevatJaTulevatPerusteetByTyyppi(tyyppi), PerusteKevytDto.class);
     }
 
     @Override
