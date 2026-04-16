@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.repository;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Repository
@@ -182,6 +184,14 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     """
     )
     String findJulkaisutByJsonPath(@Param("perusteId") Long perusteId, @Param("query") String query);
+
+    @Query("""
+            SELECT jpd.data FROM JulkaistuPeruste jp
+            JOIN jp.data jpd
+            WHERE jp.peruste.id = :perusteId
+            AND jp.luotu = (SELECT MAX(jp2.luotu) FROM JulkaistuPeruste jp2 WHERE jp2.peruste.id = :perusteId)
+            """)
+    Optional<ObjectNode> findLatestJulkaistuDataByPerusteId(@Param("perusteId") Long perusteId);
 
     List<JulkaistuPeruste> findAllByPerusteId(Long id);
 
