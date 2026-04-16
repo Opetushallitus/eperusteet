@@ -11,8 +11,8 @@ import java.util.Locale;
 /**
  * Mirrors external API dynamic path behaviour previously implemented with
  * {@code jsonb_path_query(jsonb_lower_keys(data), ...)}: object field names are matched
- * case-insensitively; numeric path segments select an array element whose {@code id}
- * matches (case-insensitive key name).
+ * case-insensitively; when the current node is an array, each path segment is used to
+ * select an array element whose {@code id} matches.
  */
 public final class JulkaistuSisaltoDynamicPathResolver {
 

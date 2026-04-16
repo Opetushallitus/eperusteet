@@ -176,20 +176,12 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
 
     @Query(nativeQuery = true,
             value = """
-                    SELECT CAST(jsonb_path_query(jsonb_lower_keys(jpd.data), CAST(:query AS jsonpath)) AS text)
+                    SELECT jpd.data 
                     FROM julkaistu_peruste jp
                     INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id
                     WHERE jp.peruste_id = :perusteId
-                    AND luotu = (SELECT MAX(luotu) FROM julkaistu_peruste WHERE peruste_id = jp.peruste_id)
-                    """
-    )
-    String findJulkaisutByJsonPath(@Param("perusteId") Long perusteId, @Param("query") String query);
-
-    @Query("""
-            SELECT jpd.data FROM JulkaistuPeruste jp
-            JOIN jp.data jpd
-            WHERE jp.peruste.id = :perusteId
-            AND jp.luotu = (SELECT MAX(jp2.luotu) FROM JulkaistuPeruste jp2 WHERE jp2.peruste.id = :perusteId)
+                    ORDER BY jp.luotu DESC
+                    LIMIT 1
             """)
     Optional<ObjectNode> findLatestJulkaistuDataByPerusteId(@Param("perusteId") Long perusteId);
 

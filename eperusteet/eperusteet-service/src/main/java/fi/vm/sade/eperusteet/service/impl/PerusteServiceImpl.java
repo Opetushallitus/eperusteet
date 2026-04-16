@@ -792,23 +792,6 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     @Transactional(readOnly = true)
-    public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query) {
-        Peruste peruste = perusteRepository.findById(id).orElse(null);
-
-        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
-            throw new NotExistsException("");
-        }
-
-        try {
-            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
-        } catch (JsonProcessingException e) {
-            log.error(Throwables.getStackTraceAsString(e));
-            return null;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
         List<String> segments = queryList.stream()
                 .map(String::trim)
