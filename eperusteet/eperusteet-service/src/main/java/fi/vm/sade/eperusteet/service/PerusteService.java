@@ -72,9 +72,6 @@ public interface PerusteService {
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id);
 
     @PreAuthorize("permitAll()")
-    Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query);
-
-    @PreAuthorize("permitAll()")
     Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList);
 
     @PreAuthorize("permitAll()")

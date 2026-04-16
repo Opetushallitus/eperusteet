@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Throwables;
@@ -120,6 +121,7 @@ import fi.vm.sade.eperusteet.service.internal.SuoritustapaService;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
+import fi.vm.sade.eperusteet.service.util.JulkaistuSisaltoDynamicPathResolver;
 import fi.vm.sade.eperusteet.service.util.NavigationUtil;
 import fi.vm.sade.eperusteet.service.yl.AihekokonaisuudetService;
 import fi.vm.sade.eperusteet.service.yl.Lops2019Service;
@@ -129,7 +131,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
 import org.joda.time.DateTime;
@@ -791,25 +792,12 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     @Transactional(readOnly = true)
-    public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, String query) {
-        Peruste peruste = perusteRepository.findById(id).orElse(null);
-
-        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU)) {
-            throw new NotExistsException("");
-        }
-
-        try {
-            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
-        } catch (JsonProcessingException e) {
-            log.error(Throwables.getStackTraceAsString(e));
-            return null;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Object getJulkaistuSisaltoObjectNode(@P("perusteId") final Long id, List<String> queryList) {
-        queryList.forEach(query -> {
+        List<String> segments = queryList.stream()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+        segments.forEach(query -> {
             if (!query.matches("[a-zA-Z0-9_]+")) {
                 throw new NotExistsException("");
             }
@@ -821,15 +809,17 @@ public class PerusteServiceImpl implements PerusteService{
             throw new NotExistsException("");
         }
 
-        String query = queryList.stream().reduce("$", (subquery, element) -> {
-            if (NumberUtils.isCreatable(element)) {
-                return subquery + String.format("?(@.id==%s)", element);
-            }
-            return subquery + "." + element.toLowerCase();
-        });
+        ObjectNode data = julkaisutRepository.findLatestJulkaistuDataByPerusteId(id).orElse(null);
+        if (data == null) {
+            return null;
+        }
 
         try {
-            return objectMapper.readValue(julkaisutRepository.findJulkaisutByJsonPath(id, query), Object.class);
+            JsonNode node = JulkaistuSisaltoDynamicPathResolver.resolve(data, segments);
+            if (node == null || node.isNull() || node.isMissingNode()) {
+                return null;
+            }
+            return objectMapper.treeToValue(node, Object.class);
         } catch (Exception e) {
             log.error(Throwables.getStackTraceAsString(e));
             throw new NotExistsException("");
