@@ -2784,7 +2784,8 @@ public class PerusteServiceImpl implements PerusteService{
     @Override
     public NavigationNodeDto buildNavigation(Long perusteId, String kieli) {
       NavigationNodeDto navigationNodeDto = dispatcher.get(perusteId, NavigationBuilder.class).buildNavigation(perusteId, kieli);
-        return siirraLiitteetLoppuun(navigationNodeDto);
+        siirraLiitteetLoppuun(navigationNodeDto);
+        return NavigationUtil.asetaNumerointi(getPeruste(perusteId), navigationNodeDto);
     }
 
     @Override
