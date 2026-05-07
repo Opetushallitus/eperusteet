@@ -139,6 +139,10 @@ public class OsaamismerkkiServiceImpl implements OsaamismerkkiService {
                 if (lisattyKoodi != null) {
                     osaamismerkki.setKoodiUri(lisattyKoodi.getKoodiUri());
                 }
+
+                if (lisattyKoodi == null) {
+                  throw new BusinessRuleViolationException("osaamismerkin-koodin-lisaaminen-epaonnistui");
+                }
             }
             else if (hasRelevantKoodiDataChanged(osaamismerkkiDto)) {
                 updateKoodistoKoodi(osaamismerkkiDto);
