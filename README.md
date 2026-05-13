@@ -7,7 +7,7 @@
 Opetushallituksen ePerusteet-palvelu tutkintojen ja yleissivistävän koulutuksen opetussuunnitelmien perusteiden laadintaan ja julkaisuun.
 
 ### Palvelukortti
-<https://wiki.eduuni.fi/display/ophpolku/ePerusteet+palvelukokonaisuus>
+<https://wiki.eduuni.fi/spaces/ophPPK/pages/450081297/ePerusteet>
 
 ## 2. Arkkitehtuuri
 
@@ -41,8 +41,6 @@ Asenna haluammallasi tavalla
 - luo [dev-settingsin](/dev-settings.md) mukaiset käyttäjäkohtaisten asetusten tiedostot annettuihin polkuihin ja täytä omilla tiedoilla
 
 **Huomioitavaa riippuvuuksista:**
-
-Käännösaikana tarvitaan pääsy OPH:n sisäiseen pakettien hallintaan, koska osa paketeista (esim. build-parent) ei ole julkisissa Maven-repoissa. Konfiguroi Maven settings.xml tiedosto dev-settings.md ohjeiden mukaisesti.
 
 Ajoaikana palvelu riippuu seuraavista OPH-palveluista:
 - **CAS** - keskitetty autentikaatio
@@ -138,7 +136,7 @@ Tämän jälkeen palvelun saa käyntiin seuraavilla komennoilla:
 
 ```bash
 cd eperusteet/eperusteet-service
-mvn spring-boot:run -Dspring-boot.run.profiles=default,dev
+mvn spring-boot:run -Dspring-boot.run.profiles=default,local,qa
 ```
 
 Palvelu käynnistyy oletuksena porttiin 8080. API on käytettävissä osoitteessa `http://localhost:8080/eperusteet-service/api`
@@ -149,12 +147,12 @@ Jos muutat tietomallia tai rajapintoja, generoi OpenAPI-dokumentaatio uudelleen.
 
 Päivitä OpenAPI-spesifikaatio:
 ```bash
-./generate-openapi.sh openapi
+./generate-openapi.sh
 ```
 
 ExternalController-rajapintojen muutoksien jälkeen:
 ```bash
-./generate-openapi.sh openapi_ext
+./generate-openapi.sh ext
 ```
 
 Generoitu dokumentaatio löytyy `generated/` kansiosta.
@@ -194,7 +192,7 @@ docker compose up -d
 ```
 
 **Maven build epäonnistuu:**
-- Varmista että Maven settings.xml on konfiguroitu oikein (dev-settings.md)
+- Varmista että override.properties on konfiguroitu oikein (dev-settings.md)
 - Tarkista internet-yhteys OPH:n repoihin
 - Tyhjennä Maven cache: `mvn dependency:purge-local-repository`
 
