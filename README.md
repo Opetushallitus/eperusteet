@@ -29,11 +29,13 @@ Javalla ja Spring Boot -viitekehyksellä toteutettu REST API -palvelu (`eperuste
 
 Tiedot tallennetaan PostgreSQL-tietokantaan.
 
+Tässä repossa palvelun lähdekoodi on hakemistossa `eperusteet/eperusteet-service`. Repon juuressa on muun muassa `generate-openapi.sh`, `tools/` ja kehitysasetuksiin liittyvä dokumentaatio.
+
 ## 3. Kehitysympäristö
 
 ### 3.1. Esivaatimukset
 
-Asenna haluammallasi tavalla
+Asenna haluamallasi tavalla
 
 - Amazon Corretto JDK 17 tai uudempi
 - Maven 3.8 tai uudempi
@@ -47,6 +49,8 @@ Ajoaikana palvelu riippuu seuraavista OPH-palveluista:
 - **Käyttäjähallinta** - käyttäjätietojen hallinta
 - **Organisaatiopalvelu** - organisaatiotietojen hallinta
 - **Koodistopalvelu** - koodistojen hallinta
+
+Lokaalissa ajossa profiilit (esim. `local`, `qa` käynnistysohjeessa) ja `dev-settings.md`-mukaiset asetukset määrittävät, mihin OPH-palveluihin kulloinkin yhdistetään.
 
 ### 3.2. Testien ajaminen
 
@@ -82,7 +86,7 @@ Migraatiohistoria tallennetaan `flyway_schema_history` -tauluun.
 
 #### 3.4.1. Tietokantojen käynnistys
 
-Tietokantojen lokaalia pyöritystä varten luo koneellesi projektin juureen docker-compose.yml tiedosto jonka sisältö on alla:
+Tietokantojen lokaalia pyöritystä varten luo koneellesi tämän repon juureen `docker-compose.yml`-tiedosto, jonka sisältö on alla:
 
 ```yaml
 version: "3.1"
@@ -145,6 +149,8 @@ Palvelu käynnistyy oletuksena porttiin 8080. API on käytettävissä osoitteess
 
 Jos muutat tietomallia tai rajapintoja, generoi OpenAPI-dokumentaatio uudelleen.
 
+Skripti `generate-openapi.sh` sijaitsee **repon juuressa**; aja komennot sieltä. Windowsissa käytä esimerkiksi Git Bashia tai WSL:ää.
+
 Päivitä OpenAPI-spesifikaatio:
 ```bash
 ./generate-openapi.sh
@@ -155,7 +161,7 @@ ExternalController-rajapintojen muutoksien jälkeen:
 ./generate-openapi.sh ext
 ```
 
-Generoitu dokumentaatio löytyy `generated/` kansiosta.
+Generoitu dokumentaatio löytyy repon juuren `generated/`-kansiosta.
 
 ### 3.5. IDE setup
 
@@ -227,7 +233,7 @@ Pushaaminen remoteen käynnistää:
 3. Kontti-imagen luonnin OPH:n deploytyökaluja varten
 4. Imagen pushaus AWS ECR:ään
 
-## ePerusteet-projektit
+## 5. ePerusteet-projektit
 
 |Projekti | Build status |
 |-----|-----|
@@ -243,9 +249,9 @@ Pushaaminen remoteen käynnistää:
 |[ePerusteet-pdf](https://github.com/Opetushallitus/eperusteet-pdf) | [![Build Status](https://github.com/Opetushallitus/eperusteet-pdf/actions/workflows/build.yml/badge.svg)](https://github.com/Opetushallitus/eperusteet-pdf/actions) |
 |[eperusteet-e2e-smoke-test](https://github.com/Opetushallitus/eperusteet-e2e-smoke-test) | [![Build Status](https://github.com/Opetushallitus/eperusteet-e2e-smoke-test/actions/workflows/playwright.yml/badge.svg)](https://github.com/Opetushallitus/eperusteet-e2e-smoke-test/actions)|
 
-## 5. Lisätiedot
+## 6. Lisätiedot
 
-### 5.1. Työkalut ja apuskriptit
+### 6.1. Työkalut ja apuskriptit
 
 Projektin `tools/` kansiosta löytyy useita hyödyllisiä työkaluja:
 
@@ -253,16 +259,16 @@ Projektin `tools/` kansiosta löytyy useita hyödyllisiä työkaluja:
 - **lokalisointi/** - Lokalisointityökaluja (käännösten hallinta)
 - **git-hooks/** - Git-hookit kehitykseen
 
-### 5.2. Dokumentaatio
+### 6.2. Dokumentaatio
 
 - [Swagger UI (testi)](https://virkailija.testiopintopolku.fi/eperusteet-service/swagger/index.html) - Interaktiivinen API-dokumentaatio
 - [External API docs](https://opetushallitus.github.io/eperusteet/api/eperusteet) - Ulkoinen API-dokumentaatio
-- [Palvelukortti](https://wiki.eduuni.fi/display/ophpolku/ePerusteet+palvelukokonaisuus) - Yleiskatsaus palveluun
+- [Palvelukortti](https://wiki.eduuni.fi/spaces/ophPPK/pages/450081297/ePerusteet) - Yleiskatsaus palveluun
 
-### 5.3. Lisenssi
+### 6.3. Lisenssi
 
 Katso [LICENSE.txt](LICENSE.txt)
 
-### 5.4. Yhteystiedot
+### 6.4. Yhteystiedot
 
 Opetushallitus / ePerusteet-tiimi
