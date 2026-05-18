@@ -50,17 +50,6 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     public Page<TiedoteDto> findBy(TiedoteQuery tquery) {
-        // Sisäiset tiedotteet vaativat kirjautumisen
-        if (!SecurityUtil.isAuthenticated()) {
-            if (ObjectUtils.isEmpty(tquery.getKoulutusTyyppi()) && ObjectUtils.isEmpty(tquery.getPerusteIds()) && ObjectUtils.isEmpty(tquery.getPerusteId())) {
-                if (ObjectUtils.isEmpty(tquery.getTiedoteJulkaisuPaikka())) {
-                    tquery.setJulkinen(true);
-                } else {
-                    tquery.setTiedoteJulkaisuPaikka(Arrays.asList(TiedoteJulkaisuPaikka.OPINTOPOLKU.toString(), TiedoteJulkaisuPaikka.OPINTOPOLKU_ETUSIVU.toString()));
-                }
-            }
-        }
-
         String jarjestys = "luotu";
         if (tquery.getJarjestys() != null && tquery.getJarjestys().equals("muokattu")) {
             jarjestys = "muokattu";
