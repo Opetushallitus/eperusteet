@@ -1,6 +1,7 @@
 package fi.vm.sade.eperusteet.dto.osaamismerkki;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,12 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OsaamismerkkiExternalDto extends OsaamismerkkiBaseDto{
+@Schema(description = "Julkaistun osaamismerkin tiedot julkisesta rajapinnasta (/api/external/osaamismerkit).")
+public class OsaamismerkkiExternalDto extends OsaamismerkkiBaseDto {
+
+    @Schema(description = "Osaamismerkin voimassaolon alkamispäivä.")
     private Date voimassaoloAlkaa;
+
+    @Schema(description = "Osaamismerkin voimassaolon päättymispäivä.")
     private Date voimassaoloLoppuu;
 }

@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.service.OsaamismerkkiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -76,28 +78,43 @@ public class ExternalController {
         return ResponseEntity.ok(peruste);
     }
 
-    @RequestMapping(method = GET, value = { "/perusteet", "/perusteet/" })
+    @GetMapping(value = { "/perusteet"})
     @ResponseBody
     @Operation(summary = "Perusteiden haku")
     public ResponseEntity<Page<PerusteenJulkaisuData>> getPerusteet(
+            @Parameter(description = "Koulutustyypin arvot. "
+                    + "Jos parametreja ei anneta, haetaan kaikista tunnetuista koulutustyypeistä. "
+                    + "Jos perusteen tyyppi on digitaalinen_osaaminen, koulutustyyppisuodatusta ei sovelleta.")
             @RequestParam(value = "koulutustyyppi", required = false) final List<String> koulutustyyppi,
+            @Parameter(description = "Osittainen tekstihaku perusteen nimeen sekä julkaisutietoihin tallennettuihin "
+                    + "osaamisalan, tutkintonimikkeen ja tutkinnon osan nimiin valitulla kielellä.")
             @RequestParam(value = "nimi", defaultValue = "", required = false) final String nimi,
+            @Parameter(description = "Kieli, jolla nimivertailu tehdään ja johon nimitieto näytetään tuloksissa (esim. fi, sv, en). Oletus fi.")
             @RequestParam(value = "kieli", defaultValue = "fi", required = false) final String kieli,
+            @Parameter(description = "Sisällytä perusteet, joiden voimaantuloajankohta on tulevaisuudessa suhteessa hakuhetkeen. Oletus true.")
             @RequestParam(value = "tulevat", defaultValue = "true", required = false) final boolean tulevat,
+            @Parameter(description = "Sisällytä voimassa olevat perusteet (voimaantulo mennyt ja voimassaolo ei ole päättynyt hakuhetkeen). Oletus true.")
             @RequestParam(value = "voimassa", defaultValue = "true", required = false) final boolean voimassa,
+            @Parameter(description = "Sisällytä perusteet, jotka ovat siirtymäajalla: virallinen voimassaolo on päättynyt mutta siirtymäpäättymispäivä ei ole vielä mennyt. Oletus true.")
             @RequestParam(value = "siirtyma", defaultValue = "true", required = false) final boolean siirtyma,
+            @Parameter(description = "Sisällytä perusteet, joiden voimassaolo ja siirtymäaika ovat päättyneet hakuhetkeen mennessä. Oletus false.")
             @RequestParam(value = "poistuneet", defaultValue = "false", required = false) final boolean poistuneet,
+            @Parameter(description = "Julkaistun perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen). Oletus normaali.")
             @RequestParam(value = "tyyppi", defaultValue = "normaali", required = false) final String tyyppi,
+            @Parameter(description = "Osittainen, kirjainkoosta riippumaton haku Opetushallituksen antamaan diaarinumeroon.")
             @RequestParam(value = "diaarinumero", defaultValue = "", required = false) final String diaarinumero,
+            @Parameter(description = "Rajaa tulokset annettuun koodiin (täsmäosuma perusteen julkaisudatassa oleviin kooditietoihin, esim. koulutus- tai muun koodin URI). Tyhjä arvo ei rajaa.")
             @RequestParam(value = "koodi", defaultValue = "", required = false) final String koodi,
+            @Parameter(description = "Sivutus: haettavan sivun numero (0-indeksoitu). Oletusarvo 0.")
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
+            @Parameter(description = "Sivutus: yhdellä sivulla palautettavien tulosten määrä. Oletusarvo 10. Maksimi 50.")
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
                 koulutustyyppi, nimi, "", kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
                 sivu, Math.min(sivukoko, 50)));
     }
 
-    @RequestMapping(value = "/peruste/{perusteId:\\d+}/perusteenosa/{perusteenOsaId}", method = GET)
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/perusteenosa/{perusteenOsaId}")
     @ResponseBody
     @Operation(summary = "Perusteen osan haku")
     public ResponseEntity<PerusteenOsaDto> getJulkaistuPerusteenOsa(
@@ -110,7 +127,7 @@ public class ExternalController {
         return ResponseEntity.ok(perusteenOsa);
     }
 
-    @RequestMapping(value = "/peruste/{perusteId:\\d+}/osaamisalakuvaukset", method = GET)
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/osaamisalakuvaukset")
     @ResponseBody
     @Operation(summary = "Perusteen osaamisalakuvauksien haku")
     public ResponseEntity<Map<Suoritustapakoodi, Map<String, List<TekstiKappaleDto>>>> getJulkaistutOsaamisalaKuvaukset(
@@ -118,7 +135,7 @@ public class ExternalController {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
     }
 
-    @RequestMapping(value = "/peruste/{perusteId:\\d+}/{custompath}", method = GET)
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/{custompath}")
     @ResponseBody
     @Operation(
             summary = "Perusteen tietojen haku tarkalla sisältörakenteella",
@@ -133,12 +150,12 @@ public class ExternalController {
 
     @Hidden
     // Springdoc ei generoi rajapintoja /** poluille, joten tämä on tehty erikseen
-    @RequestMapping(value = "/peruste/{perusteId:\\d+}/{custompath}/**", method = GET)
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/{custompath}/**")
     public ResponseEntity<Object> getPerusteDynamicQueryHidden(HttpServletRequest req, @PathVariable("perusteId") final long id) {
         return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
 
-    @RequestMapping(value = "/peruste/yto/**", method = GET)
+    @GetMapping(value = "/peruste/yto/**")
     @ResponseBody
     @Operation(summary = "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'")
     @ApiResponses(value = {
@@ -168,7 +185,7 @@ public class ExternalController {
         return getJulkaistuSisaltoObjectNodeWithQuery( amosaaPeruste.getContent().get(0).getId(), requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
 
-    @RequestMapping(value = "/peruste/koulutuskoodi/{koodi:\\d+}/**", method = GET)
+    @GetMapping(value = "/peruste/koulutuskoodi/{koodi:\\d+}/**")
     @ResponseBody
     @Operation(
             summary = "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
@@ -207,21 +224,21 @@ public class ExternalController {
         return getJulkaistuSisaltoObjectNodeWithQuery(peruste.getContent().get(0).getId(), requestToQueries(req, DEFAULT_PATH_SKIP_VALUE + 1));
     }
 
-    @RequestMapping(value = "/osaamismerkit", method = GET)
+    @GetMapping(value = "/osaamismerkit")
     @ResponseBody
     @Operation(summary = "Hae kaikki julkaistut osaamismerkit")
     public ResponseEntity<List<OsaamismerkkiExternalDto>> getOsaamismerkit() {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkit());
     }
 
-    @RequestMapping(value = "/osaamismerkki/koodi/{uri}", method = GET)
+    @GetMapping(value = "/osaamismerkki/koodi/{uri}")
     @ResponseBody
     @Operation(summary = "Hae julkaistu osaamismerkki koodiurilla")
     public ResponseEntity<OsaamismerkkiDto> getOsaamismerkkiByUri(@PathVariable("uri") final String uri) {
         return ResponseEntity.ok(osaamismerkkiService.getOsaamismerkkiByUri(uri));
     }
 
-    @RequestMapping(value = "/peruste/tutkinnonosa/{tutkinnonOsaKoodiUri}", method = GET)
+    @GetMapping(value = "/peruste/tutkinnonosa/{tutkinnonOsaKoodiUri}")
     @ResponseBody
     @Operation(
             summary = "Tutkinnon osan haku tutkinnon osan koodin URI:lla."
