@@ -38,66 +38,89 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Schema(description = "Julkaistun perusteen täydet sisältötiedot. "
+        + "Sisältää perusteen metatiedot sekä koulutustyypin mukaisen sisältörakenteen.")
 public class PerusteKaikkiDto extends PerusteBaseDto {
+
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Schema(description = "Ammatillisten perusteiden suoritustavat: tutkinnon muodostuminen, rakenne "
+            + "ja tutkinnon osaviitteet laajuuksineen.")
     Set<SuoritustapaLaajaDto> suoritustavat;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Schema(description = "Tutkinnon osien täydet tiedot. Laajuudet täydennetään suoritustapojen "
+            + "tutkinnon osaviitteistä vastauksessa.")
     List<TutkinnonOsaKaikkiDto> tutkinnonOsat;
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Schema(description = "Tutkintoon valmentavan koulutuksen (TUVA) koulutuksen osat.")
     List<KoulutuksenOsaDto> koulutuksenOsat;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("perusopetus")
+    @Schema(description = "Perusopetuksen perusteen sisältörakenne. "
+            + "Kenttä puuttuu, jos peruste ei ole perusopetuksen peruste.")
     private PerusopetuksenPerusteenSisaltoDto perusopetuksenPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("lukiokoulutus")
+    @Schema(description = "Vanhan lukion (LOPS) perusteen sisältörakenne. "
+            + "Kenttä puuttuu, jos peruste käyttää LOPS 2019 -rakennetta.")
     private LukiokoulutuksenPerusteenSisaltoDto lukiokoulutuksenPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("lops2019")
+    @Schema(description = "Uuden lukion (LOPS 2019) perusteen sisältörakenne.")
     private Lops2019SisaltoDto lops2019Sisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("esiopetus")
+    @Schema(description = "Esiopetuksen perusteen sisältörakenne.")
     private EsiopetuksenPerusteenSisaltoDto esiopetuksenPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("aipe")
+    @Schema(description = "Aikuisten perusopetuksen perusteen sisältörakenne.")
     private AIPEOpetuksenSisaltoDto aipeOpetuksenPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("tpo")
+    @Schema(description = "Taiteen perusopetuksen perusteen sisältörakenne.")
     private TPOOpetuksenSisaltoDto tpoOpetuksenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("vapaasivistystyo")
+    @Schema(description = "Vapaan sivistystyön perusteen sisältörakenne.")
     private VapaasivistystyoSisaltoDto vstSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("tutkintoonvalmentava")
+    @Schema(description = "Tutkintoon valmentavan koulutuksen perusteen sisältörakenne.")
     private TutkintoonvalmentavaSisaltoDto tuvasisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("opas")
+    @Schema(description = "Opas-perusteen sisältörakenne.")
     private OpasSisaltoDto oppaanSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("digitaalinenosaaminen")
+    @Schema(description = "Digitaalisen osaamisen perusteen sisältörakenne.")
     private DigitaalisenOsaamisenSisaltoDto digitaalinenOsaaminenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("kielijakaantajatutkinto")
+    @Schema(description = "Kieli- ja kääntäjätutkinnon perusteen sisältörakenne.")
     private KieliJaKaantajaTutkintoSisaltoDto kieliJaKaantajaTutkintoPerusteenSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Schema(description = "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä.")
+    @Schema(description = "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä. "
+            + "Kenttä puuttuu, jos perusteella ei ole voimassa olevaa muutosmääräystä.")
     private Date muutosmaarayksenVoimassaoloAlkaa;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Schema(description = "Perusteen kv-liite")
+    @Schema(description = "Perusteen kansainvälisen tutkinnon viitekehyksen (KV) liite. "
+            + "Kenttä puuttuu, jos perusteella ei ole KV-liitettä.")
     private KVLiiteJulkinenDto kvLiite;
 
     @JsonIgnore
