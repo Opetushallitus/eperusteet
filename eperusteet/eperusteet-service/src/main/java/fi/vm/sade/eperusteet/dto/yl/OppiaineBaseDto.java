@@ -53,4 +53,12 @@ public abstract class OppiaineBaseDto implements ReferenceableDto {
     public String getNimiOrEmpty(String kieli) {
         return getNimiOrDefault(kieli, "");
     }
+
+    public LokalisoituTekstiDto getAlkuperainenNimi() {
+        return nimi;
+    }
+
+    public void setAlkuperainenNimi(LokalisoituTekstiDto alkuperainenNimi) {
+        this.nimi = alkuperainenNimi;
+    }
 }

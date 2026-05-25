@@ -922,6 +922,9 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(OppiaineenVuosiluokkaKokonaisuus.class, OppiaineenVuosiluokkaKokonaisuusDto.class)
+                // oppiaine is read-only metadata on the DTO; mapping it back would overwrite parent changes (e.g. nimi)
+                .exclude("oppiaine")
+                .fieldAToB("oppiaine", "oppiaine")
                 .byDefault()
                 .customize(new CustomMapper<OppiaineenVuosiluokkaKokonaisuus, OppiaineenVuosiluokkaKokonaisuusDto>() {
                     @Override
