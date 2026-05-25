@@ -250,6 +250,50 @@ public class OppiaineServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testUpdateOppiaineNimiWithVuosiluokkakokonaisuudet() {
+        startNewTransaction();
+        VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
+        vk = vkrepo.save(vk);
+
+        OppiaineDto oppiaineDto = new OppiaineDto();
+        oppiaineDto.setNimi(lt("Alkuperainen nimi"));
+        oppiaineDto.setKoosteinen(Optional.of(false));
+
+        OppiaineenVuosiluokkaKokonaisuusDto vkDto = new OppiaineenVuosiluokkaKokonaisuusDto();
+        vkDto.setVuosiluokkaKokonaisuus(Optional.of(vk.getReference()));
+        oppiaineDto.setVuosiluokkakokonaisuudet(Sets.newHashSet(vkDto));
+
+        OppiaineDto oa = service.addOppiaine(perusteId, oppiaineDto, OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+
+        startNewTransaction();
+
+        OppiaineLockContext lc = OppiaineLockContext.of(
+                OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS, perusteId, oa.getId(), null);
+        lockService.lock(lc);
+
+        startNewTransaction();
+
+        oa = service.getOppiaine(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        OppiaineenVuosiluokkaKokonaisuusDto loadedVk = oa.getVuosiluokkakokonaisuudet().iterator().next();
+        assertNotNull(loadedVk.getOppiaine());
+        assertEquals("Alkuperainen nimi", loadedVk.getOppiaine().getNimi().get(Kieli.FI));
+
+        // UI changes only oppiaine nimi; nested oppiaine on vuosiluokkakokonaisuus stays stale
+        oa.setNimi(lt("Paivitetty nimi"));
+
+        startNewTransaction();
+        OppiaineDto updated = service.updateOppiaine(perusteId, new UpdateDto<>(oa), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        assertEquals("Paivitetty nimi", updated.getNimi().get(Kieli.FI));
+
+        startNewTransaction();
+        OppiaineDto refetched = service.getOppiaine(perusteId, oa.getId(), OppiaineOpetuksenSisaltoTyyppi.PERUSOPETUS);
+        assertEquals("Paivitetty nimi", refetched.getNimi().get(Kieli.FI));
+
+        lockService.unlock(lc);
+        endTransaction();
+    }
+
+    @Test
     public void testAddAndUpdateOppimaara() throws IOException {
         VuosiluokkaKokonaisuus vk = new VuosiluokkaKokonaisuus();
         vk = vkrepo.save(vk);
