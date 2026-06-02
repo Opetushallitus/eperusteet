@@ -40,8 +40,29 @@ repot=(
   'eperusteet-pdf'
 )
 
+haara='master'
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --branch)
+      if [[ -z "${2:-}" ]]; then
+        echo "Virhe: --branch vaatii haaran nimen" >&2
+        echo "Käyttö: $0 [--branch <haara>]" >&2
+        exit 1
+      fi
+      haara="$2"
+      shift 2
+      ;;
+    *)
+      echo "Tuntematon argumentti: $1" >&2
+      echo "Käyttö: $0 [--branch <haara>]" >&2
+      exit 1
+      ;;
+  esac
+done
+
 for repo in "${repot[@]}"; do
-  trivy repo "github.com/Opetushallitus/${repo}" --scanners vuln --cache-backend memory --severity ${vakavuudet} --output "results/${repo}_$(date '+%Y-%m-%d').txt" &
+  trivy repo --branch "${haara}" "github.com/Opetushallitus/${repo}" --scanners vuln --cache-backend memory --severity ${vakavuudet} --output "results/${repo}_${haara}_$(date '+%Y-%m-%d').txt" &
 done
 
 printf "\nOdotetaan taustatehtävien valmistumista...\n"
