@@ -38,6 +38,7 @@ repot=(
   'eperusteet-frontend-utils'
   'eperusteet-opintopolku'
   'eperusteet-pdf'
+  'eperusteet-e2e-smoke-test'
 )
 
 haara='master'
