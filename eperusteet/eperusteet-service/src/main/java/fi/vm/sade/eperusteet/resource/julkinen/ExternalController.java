@@ -94,7 +94,7 @@ public class ExternalController {
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
         return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
                 koulutustyyppi, nimi, "", kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
-                sivu, sivukoko));
+                sivu, Math.min(sivukoko, 50)));
     }
 
     @RequestMapping(value = "/peruste/{perusteId:\\d+}/perusteenosa/{perusteenOsaId}", method = GET)
