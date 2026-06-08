@@ -1,6 +1,8 @@
 package fi.vm.sade.eperusteet.dto.yl;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteRakenneOsa;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,7 @@ public class AIPEOppiaineLaajaDto extends AIPEOppiaineSuppeaDto {
     private List<AIPEKurssiDto> kurssit;
     private List<AIPEOppiaineLaajaDto> oppimaarat;
     private AIPEVaiheSuppeaDto vaihe;
+    private List<KevytTekstiKappaleDto> vapaatTekstit;
 
     public PerusteRakenneOsa getPerusteenOsa() {
         return new PerusteRakenneOsa("aipe_oppiaine", getNimi().get());
