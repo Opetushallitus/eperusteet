@@ -21,7 +21,7 @@ public class MappingModule extends SimpleModule {
         context.setMixInAnnotations(PageImpl.class, PageMixin.class);
     }
 
-    @JsonIgnoreProperties(value = {"numberOfElements", "firstPage", "lastPage", "sort", "first", "last"})
+    @JsonIgnoreProperties(value = {"numberOfElements", "firstPage", "lastPage", "sort", "first", "last", "pageable", "empty"})
     public static abstract class PageMixin {
 
         @JsonProperty("data")
