@@ -22,6 +22,7 @@
         "parameters" : [ {
           "name" : "koulutustyyppi",
           "in" : "query",
+          "description" : "Koulutustyypin arvot. Jos parametreja ei anneta, haetaan kaikista tunnetuista koulutustyypeistä. Jos perusteen tyyppi on digitaalinen_osaaminen, koulutustyyppisuodatusta ei sovelleta.",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -32,6 +33,7 @@
         }, {
           "name" : "nimi",
           "in" : "query",
+          "description" : "Osittainen tekstihaku perusteen nimeen sekä julkaisutietoihin tallennettuihin osaamisalan, tutkintonimikkeen ja tutkinnon osan nimiin valitulla kielellä.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -40,6 +42,7 @@
         }, {
           "name" : "kieli",
           "in" : "query",
+          "description" : "Kieli, jolla nimivertailu tehdään ja johon nimitieto näytetään tuloksissa (esim. fi, sv, en). Oletus fi.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -48,6 +51,7 @@
         }, {
           "name" : "tulevat",
           "in" : "query",
+          "description" : "Sisällytä perusteet, joiden voimaantuloajankohta on tulevaisuudessa suhteessa hakuhetkeen. Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -56,6 +60,7 @@
         }, {
           "name" : "voimassa",
           "in" : "query",
+          "description" : "Sisällytä voimassa olevat perusteet (voimaantulo mennyt ja voimassaolo ei ole päättynyt hakuhetkeen). Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -64,6 +69,7 @@
         }, {
           "name" : "siirtyma",
           "in" : "query",
+          "description" : "Sisällytä perusteet, jotka ovat siirtymäajalla: virallinen voimassaolo on päättynyt mutta siirtymäpäättymispäivä ei ole vielä mennyt. Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -72,6 +78,7 @@
         }, {
           "name" : "poistuneet",
           "in" : "query",
+          "description" : "Sisällytä perusteet, joiden voimassaolo ja siirtymäaika ovat päättyneet hakuhetkeen mennessä. Oletus false.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -80,6 +87,7 @@
         }, {
           "name" : "tyyppi",
           "in" : "query",
+          "description" : "Julkaistun perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen). Oletus normaali.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -88,6 +96,7 @@
         }, {
           "name" : "diaarinumero",
           "in" : "query",
+          "description" : "Osittainen, kirjainkoosta riippumaton haku Opetushallituksen antamaan diaarinumeroon.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -96,6 +105,7 @@
         }, {
           "name" : "koodi",
           "in" : "query",
+          "description" : "Rajaa tulokset annettuun koodiin (täsmäosuma perusteen julkaisudatassa oleviin kooditietoihin, esim. koulutus- tai muun koodin URI). Tyhjä arvo ei rajaa.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -104,6 +114,7 @@
         }, {
           "name" : "sivu",
           "in" : "query",
+          "description" : "Sivunumero sivutuksessa, nollapohjainen indeksi. Oletus 0.",
           "required" : false,
           "schema" : {
             "type" : "integer",
@@ -113,6 +124,7 @@
         }, {
           "name" : "sivukoko",
           "in" : "query",
+          "description" : "Sivun koko eli tulosten enimmäismäärä yhdellä sivulla. Oletus 10.",
           "required" : false,
           "schema" : {
             "type" : "integer",
@@ -142,6 +154,7 @@
         "parameters" : [ {
           "name" : "koulutustyyppi",
           "in" : "query",
+          "description" : "Koulutustyypin arvot. Jos parametreja ei anneta, haetaan kaikista tunnetuista koulutustyypeistä. Jos perusteen tyyppi on digitaalinen_osaaminen, koulutustyyppisuodatusta ei sovelleta.",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -152,6 +165,7 @@
         }, {
           "name" : "nimi",
           "in" : "query",
+          "description" : "Osittainen tekstihaku perusteen nimeen sekä julkaisutietoihin tallennettuihin osaamisalan, tutkintonimikkeen ja tutkinnon osan nimiin valitulla kielellä.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -160,6 +174,7 @@
         }, {
           "name" : "kieli",
           "in" : "query",
+          "description" : "Kieli, jolla nimivertailu tehdään ja johon nimitieto näytetään tuloksissa (esim. fi, sv, en). Oletus fi.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -168,6 +183,7 @@
         }, {
           "name" : "tulevat",
           "in" : "query",
+          "description" : "Sisällytä perusteet, joiden voimaantuloajankohta on tulevaisuudessa suhteessa hakuhetkeen. Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -176,6 +192,7 @@
         }, {
           "name" : "voimassa",
           "in" : "query",
+          "description" : "Sisällytä voimassa olevat perusteet (voimaantulo mennyt ja voimassaolo ei ole päättynyt hakuhetkeen). Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -184,6 +201,7 @@
         }, {
           "name" : "siirtyma",
           "in" : "query",
+          "description" : "Sisällytä perusteet, jotka ovat siirtymäajalla: virallinen voimassaolo on päättynyt mutta siirtymäpäättymispäivä ei ole vielä mennyt. Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -192,6 +210,7 @@
         }, {
           "name" : "poistuneet",
           "in" : "query",
+          "description" : "Sisällytä perusteet, joiden voimassaolo ja siirtymäaika ovat päättyneet hakuhetkeen mennessä. Oletus false.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -200,6 +219,7 @@
         }, {
           "name" : "tyyppi",
           "in" : "query",
+          "description" : "Julkaistun perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen). Oletus normaali.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -208,6 +228,7 @@
         }, {
           "name" : "diaarinumero",
           "in" : "query",
+          "description" : "Osittainen, kirjainkoosta riippumaton haku Opetushallituksen antamaan diaarinumeroon.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -216,6 +237,7 @@
         }, {
           "name" : "koodi",
           "in" : "query",
+          "description" : "Rajaa tulokset annettuun koodiin (täsmäosuma perusteen julkaisudatassa oleviin kooditietoihin, esim. koulutus- tai muun koodin URI). Tyhjä arvo ei rajaa.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -224,6 +246,7 @@
         }, {
           "name" : "sivu",
           "in" : "query",
+          "description" : "Sivunumero sivutuksessa, nollapohjainen indeksi. Oletus 0.",
           "required" : false,
           "schema" : {
             "type" : "integer",
@@ -233,6 +256,7 @@
         }, {
           "name" : "sivukoko",
           "in" : "query",
+          "description" : "Sivun koko eli tulosten enimmäismäärä yhdellä sivulla. Oletus 10.",
           "required" : false,
           "schema" : {
             "type" : "integer",
@@ -1149,19 +1173,19 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "pageNumber" : {
-            "type" : "integer",
-            "format" : "int32"
+          "unpaged" : {
+            "type" : "boolean"
           },
           "paged" : {
             "type" : "boolean"
           },
-          "pageSize" : {
+          "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "unpaged" : {
-            "type" : "boolean"
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -5279,11 +5303,8 @@
             "tutkintonimike" : {
               "$ref" : "#/components/schemas/KoodiDto"
             },
-            "koodit" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/components/schemas/KoodiDto"
-              }
+            "koodi" : {
+              "$ref" : "#/components/schemas/KoodiDto"
             },
             "liite" : {
               "type" : "boolean"
