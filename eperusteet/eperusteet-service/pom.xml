@@ -14,6 +14,7 @@
     <version>3.0.0</version>
 
     <properties>
+        <eperusteet.backend-utils.version>2.17-SNAPSHOT</eperusteet.backend-utils.version>
         <springdoc.api.docs.url>http://localhost:8080/eperusteet-service/api-docs</springdoc.api.docs.url>
         <springdoc.output.file.name>eperusteet.spec.json</springdoc.output.file.name>
         <springdoc.api.docs.url.external>http://localhost:8080/eperusteet-service/api-docs/external</springdoc.api.docs.url.external>

@@ -6,6 +6,7 @@ import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
+import fi.vm.sade.eperusteet.utils.dto.SivutettuTulosDto;
 import fi.vm.sade.eperusteet.dto.maarays.MaaraysDto;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
@@ -27,7 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +77,7 @@ public class ExternalControllerIT extends AbstractDockerIntegrationTest {
         PerusteDto peruste2 = creatPerusteJaJulkaise("peruste2");
         PerusteDto peruste3 = creatPerusteJaJulkaise("peruste3");
 
-        Page<PerusteenJulkaisuData> perusteet = externalController.getPerusteet(
+        SivutettuTulosDto<PerusteenJulkaisuData> perusteet = externalController.getPerusteet(
                 null,
                 "",
                 "fi",
@@ -89,11 +89,11 @@ public class ExternalControllerIT extends AbstractDockerIntegrationTest {
                 "",
                 "",
                 0,
-                3).getBody();
-        Assertions.assertThat(perusteet).isNotNull();
-        Assertions.assertThat(perusteet.getContent()).hasSize(3);
+                3);
+        Assertions.assertThat(perusteet.getData()).isNotNull();
+        Assertions.assertThat(perusteet.getData()).hasSize(3);
 
-        perusteet = externalController.getPerusteet(
+        SivutettuTulosDto<PerusteenJulkaisuData> perusteet2 = externalController.getPerusteet(
                 null,
                 "peruste1",
                 "fi",
@@ -105,9 +105,9 @@ public class ExternalControllerIT extends AbstractDockerIntegrationTest {
                 "",
                 "",
                 0,
-                1).getBody();
-        Assertions.assertThat(perusteet).isNotNull();
-        Assertions.assertThat(perusteet.getContent()).hasSize(1);
+                1);
+        Assertions.assertThat(perusteet2.getData()).isNotNull();
+        Assertions.assertThat(perusteet2.getData()).hasSize(1);
     }
 
     private PerusteDto creatPerusteJaJulkaise(String nimi) throws ExecutionException, InterruptedException {
