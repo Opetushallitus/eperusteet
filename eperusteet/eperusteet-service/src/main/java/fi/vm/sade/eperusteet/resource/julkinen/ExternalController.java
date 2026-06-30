@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
+import fi.vm.sade.eperusteet.utils.dto.SivutettuTulosDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiDto;
 import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiExternalDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -81,7 +82,7 @@ public class ExternalController {
     @GetMapping(value = { "/perusteet"})
     @ResponseBody
     @Operation(summary = "Perusteiden haku")
-    public ResponseEntity<Page<PerusteenJulkaisuData>> getPerusteet(
+    public SivutettuTulosDto<PerusteenJulkaisuData> getPerusteet(
             @Parameter(description = "Koulutustyypin arvot. "
                     + "Jos parametreja ei anneta, haetaan kaikista tunnetuista koulutustyypeistä. "
                     + "Jos perusteen tyyppi on digitaalinen_osaaminen, koulutustyyppisuodatusta ei sovelleta.")
@@ -109,7 +110,7 @@ public class ExternalController {
             @RequestParam(value = "sivu", defaultValue = "0", required = false) final Integer sivu,
             @Parameter(description = "Sivutus: yhdellä sivulla palautettavien tulosten määrä. Oletusarvo 10. Maksimi 50.")
             @RequestParam(value = "sivukoko", defaultValue = "10", required = false) final Integer sivukoko) {
-        return ResponseEntity.ok(julkaisutService.getJulkisetJulkaisut(
+        return SivutettuTulosDto.of(julkaisutService.getJulkisetJulkaisut(
                 koulutustyyppi, nimi, "", kieli, tyyppi, tulevat, voimassa, siirtyma, poistuneet, diaarinumero, koodi, JulkaisuSisaltoTyyppi.PERUSTE,
                 sivu, Math.min(sivukoko, 50)));
     }
