@@ -15,6 +15,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal laajuus;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -104,6 +108,7 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         }
 
         setKoodi(other.getKoodi());
+        setLaajuus(other.getLaajuus());
         setTeksti(other.getTeksti());
         setAikuistenOpetus(KevytTekstiKappale.getCopy(other.getAikuistenOpetus()));
         setYhteisetOpinnot(KevytTekstiKappale.getCopy(other.getYhteisetOpinnot()));
