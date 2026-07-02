@@ -11,10 +11,12 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     private Koodi koodi;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal laajuus;
 
     @ValidHtml
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
@@ -67,6 +72,12 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
     @OrderColumn(name = "kevyttekstikappaleet_order")
     private List<KevytTekstiKappale> vapaatTekstit;
 
+    @OrderColumn
+    @NotAudited
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "taiteenala_id")
+    private List<Taiteenosa> taiteenOsat = new ArrayList<>();
+
     public Taiteenala() {
 
     }
@@ -88,8 +99,8 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
     @Override
     public void mergeState(PerusteenOsa perusteenOsa) {
         super.mergeState(perusteenOsa);
-        if (perusteenOsa instanceof Taiteenala) {
-            copyState((Taiteenala) perusteenOsa);
+        if (perusteenOsa instanceof Taiteenala other) {
+            copyState(other);
         }
     }
 
@@ -104,6 +115,7 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         }
 
         setKoodi(other.getKoodi());
+        setLaajuus(other.getLaajuus());
         setTeksti(other.getTeksti());
         setAikuistenOpetus(KevytTekstiKappale.getCopy(other.getAikuistenOpetus()));
         setYhteisetOpinnot(KevytTekstiKappale.getCopy(other.getYhteisetOpinnot()));
@@ -113,9 +125,21 @@ public class Taiteenala extends PerusteenOsa implements Serializable {
         setOppimisenArviointiOpetuksessa(KevytTekstiKappale.getCopy(other.getOppimisenArviointiOpetuksessa()));
 
         if (other.getVapaatTekstit() != null) {
-            this.vapaatTekstit = new ArrayList<>();
+            if (this.vapaatTekstit == null) {
+                this.vapaatTekstit = new ArrayList<>();
+            }
+            this.vapaatTekstit.clear();
             for (KevytTekstiKappale vapaaTeksti : other.getVapaatTekstit()) {
                 this.vapaatTekstit.add(new KevytTekstiKappale(vapaaTeksti));
+            }
+        }
+
+        this.taiteenOsat.clear();
+        if (other.getTaiteenOsat() != null) {
+            for (Taiteenosa taiteenosa : other.getTaiteenOsat()) {
+                Taiteenosa newTaiteenosa = new Taiteenosa(taiteenosa);
+                newTaiteenosa.setTaiteenala(this);
+                this.taiteenOsat.add(newTaiteenosa);
             }
         }
     }
