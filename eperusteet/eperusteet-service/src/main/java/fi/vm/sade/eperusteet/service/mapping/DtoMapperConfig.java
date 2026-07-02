@@ -47,6 +47,7 @@ import fi.vm.sade.eperusteet.domain.yl.Oppiaine;
 import fi.vm.sade.eperusteet.domain.yl.OppiaineenVuosiluokkaKokonaisuus;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.Taiteenala;
+import fi.vm.sade.eperusteet.domain.yl.Taiteenosa;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
@@ -118,6 +119,7 @@ import fi.vm.sade.eperusteet.dto.yl.OppiaineSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.OppiaineenVuosiluokkaKokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.yl.PerusopetuksenPerusteenSisaltoDto;
 import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenosaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukioKurssiLuontiDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.LukiokurssiMuokkausDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.AihekokonaisuudetLaajaDto;
@@ -377,6 +379,10 @@ public class DtoMapperConfig {
 
         factory.classMap(TaiteenalaDto.class, Taiteenala.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
+                .byDefault()
+                .register();
+
+        factory.classMap(TaiteenosaDto.class, Taiteenosa.class)
                 .byDefault()
                 .register();
 
