@@ -5,7 +5,7 @@
     <parent>
         <groupId>fi.vm.sade.eperusteet</groupId>
         <artifactId>eperusteet-parent-pom</artifactId>
-        <version>3.5.16</version>
+        <version>3.5.16-5</version>
         <relativePath/>
     </parent>
 
@@ -14,7 +14,6 @@
     <version>3.0.0</version>
 
     <properties>
-        <eperusteet.backend-utils.version>2.17-SNAPSHOT</eperusteet.backend-utils.version>
         <springdoc.api.docs.url>http://localhost:8080/eperusteet-service/api-docs</springdoc.api.docs.url>
         <springdoc.output.file.name>eperusteet.spec.json</springdoc.output.file.name>
         <springdoc.api.docs.url.external>http://localhost:8080/eperusteet-service/api-docs/external</springdoc.api.docs.url.external>
@@ -60,8 +59,8 @@
 
     <repositories>
         <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
+            <id>github-eperusteet-backend-utils</id>
+            <name>GitHub Packages eperusteet-backend-utils-maven-repo</name>
             <url>https://maven.pkg.github.com/Opetushallitus/eperusteet-backend-utils</url>
         </repository>
     </repositories>

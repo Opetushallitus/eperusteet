@@ -80,6 +80,7 @@ jobs:
         env:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+          MAVEN_ARGS: -s ${{ github.workspace }}/.github/maven/settings.xml
         run: |
           cd eperusteet/eperusteet-service        
           mvn clean verify -B -Pit
