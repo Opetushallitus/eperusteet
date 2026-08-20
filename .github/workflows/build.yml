@@ -59,10 +59,6 @@ jobs:
   build-and-test-eperusteet-service:
     needs: [build-and-test-eperusteet-ui]
     runs-on: ubuntu-latest
-    #permissions:
-    #  contents: read
-    #  actions: write
-    #  packages: read
     steps:
       - name: Checkout source
         uses: actions/checkout@v6
@@ -73,8 +69,6 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      # setup-java cache: maven has no restore-keys, so any pom.xml change
-      # (or extra files matching **/pom.xml) causes a full Maven re-download.
       - name: Cache Maven repository
         uses: actions/cache@v6
         with:
