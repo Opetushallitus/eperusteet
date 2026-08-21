@@ -62,11 +62,21 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-for repo in "${repot[@]}"; do
-  trivy repo --branch "${haara}" "github.com/Opetushallitus/${repo}" --scanners vuln --cache-backend memory --severity ${vakavuudet} --output "results/${repo}_${haara}_$(date '+%Y-%m-%d').txt" &
-done
+mkdir -p results
 
-printf "\nOdotetaan taustatehtävien valmistumista...\n"
-wait
+printf "\nLadataan haavoittuvuustietokanta...\n"
+trivy image --download-db-only
+
+paiva="$(date '+%Y-%m-%d')"
+
+for repo in "${repot[@]}"; do
+  printf "\nSkannataan %s...\n" "${repo}"
+  trivy repo --branch "${haara}" "github.com/Opetushallitus/${repo}" \
+    --scanners vuln \
+    --skip-db-update \
+    --cache-backend memory \
+    --severity ${vakavuudet} \
+    --output "results/${repo}_${haara}_${paiva}.txt"
+done
 
 printf "\nKaikki valmista.\n\n"
