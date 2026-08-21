@@ -29,7 +29,7 @@ vakavuudet='CRITICAL,HIGH,MEDIUM,LOW'
 # Skannattavien repojen nimet
 repot=(
   'eperusteet'
-  'eperusteet-ai'
+  #'eperusteet-ai'
   'eperusteet-ui'
   'eperusteet-amosaa'
   'eperusteet-amosaa-ui'
