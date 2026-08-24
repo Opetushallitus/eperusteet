@@ -14,7 +14,7 @@ Opetushallituksen ePerusteet-palvelu tutkintojen ja yleissivistävän koulutukse
 Javalla ja Spring Boot -viitekehyksellä toteutettu REST API -palvelu (`eperusteet-service` kansio). 
 
 **Teknologiat:**
-- Spring Boot 3.x
+- Spring Boot 4.x
 - Hibernate JPA
 - PostgreSQL
 - Flyway migraatiot
@@ -37,7 +37,7 @@ Tässä repossa palvelun lähdekoodi on hakemistossa `eperusteet/eperusteet-serv
 
 Asenna haluamallasi tavalla
 
-- Amazon Corretto JDK 17 tai uudempi
+- Amazon Corretto JDK 21 tai uudempi
 - Maven 3.8 tai uudempi
 - Docker ja Docker Compose
 - luo [dev-settingsin](/dev-settings.md) mukaiset käyttäjäkohtaisten asetusten tiedostot annettuihin polkuihin ja täytä omilla tiedoilla

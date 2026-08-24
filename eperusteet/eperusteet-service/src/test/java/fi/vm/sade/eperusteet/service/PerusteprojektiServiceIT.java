@@ -33,8 +33,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 @Transactional
 @DirtiesContext
@@ -570,33 +568,51 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
 
     @Test
     @Rollback(true)
+    @DirtiesContext
     public void testPerustepohjaTilaJaNimi() {
+        startNewTransaction();
         PerusteprojektiDto ppdto = teePerusteprojekti(PerusteTyyppi.POHJA, KoulutusTyyppi.PERUSTUTKINTO.toString());
+        Long projektiId = ppdto.getId();
+        startNewTransaction();
 
-        Perusteprojekti pp = repository.findById(ppdto.getId()).orElseThrow();
+        Perusteprojekti pp = repository.findById(projektiId).orElseThrow();
+        Long perusteId = pp.getPeruste().getId();
         repository.save(pp);
         em.persist(pp);
+        startNewTransaction();
 
+        pp = repository.findById(projektiId).orElseThrow();
         pp.getPeruste().setKielet(EnumSet.of(Kieli.FI, Kieli.SV));
         perusteRepository.save(pp.getPeruste());
+        startNewTransaction();
 
+        pp = repository.findById(projektiId).orElseThrow();
         HashSet<Kieli> kielet = new HashSet<>();
         kielet.add(Kieli.FI);
         pp.getPeruste().setKielet(kielet);
         pp.getPeruste().setNimi(TekstiPalanen.of(Kieli.FI, "nimi"));
+        perusteRepository.save(pp.getPeruste());
+        startNewTransaction();
 
-        ppTestUtils.asetaMuodostumiset(pp.getPeruste().getId());
+        ppTestUtils.asetaMuodostumiset(perusteId);
+        startNewTransaction();
 
-        ppTestUtils.luoValidiKVLiite(pp.getPeruste().getId());
+        ppTestUtils.luoValidiKVLiite(perusteId);
+        startNewTransaction();
 
+        pp = repository.findById(projektiId).orElseThrow();
         repository.save(pp);
         em.persist(pp);
+        startNewTransaction();
 
-        TilaUpdateStatus status = service.updateTila(ppdto.getId(), ProjektiTila.VALMIS, null);
+        TilaUpdateStatus status = service.updateTila(projektiId, ProjektiTila.VALMIS, null);
+        startNewTransaction();
+        pp = repository.findById(projektiId).orElseThrow();
         Assert.assertTrue(status.isVaihtoOk());
         Assert.assertEquals(ProjektiTila.VALMIS, pp.getTila());
 
-        status = service.updateTila(ppdto.getId(), ProjektiTila.LAADINTA, null);
+        status = service.updateTila(projektiId, ProjektiTila.LAADINTA, null);
+        startNewTransaction();
         Assert.assertFalse(status.isVaihtoOk());
     }
 
@@ -694,6 +710,8 @@ public class PerusteprojektiServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Rollback(true)
+    @DirtiesContext
     public void test_perusteprojektihakuAjoilla() {
         PerusteDto tuleva = ppTestUtils.initPeruste(ppTestUtils.createPerusteprojekti().getPeruste().getIdLong(), (PerusteDto peruste) -> {
             peruste.setVoimassaoloAlkaa(DateTime.now().plusDays(1).toDate());

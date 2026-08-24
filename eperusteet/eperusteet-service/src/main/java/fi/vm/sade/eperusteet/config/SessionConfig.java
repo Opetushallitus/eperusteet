@@ -11,7 +11,7 @@ import org.springframework.session.SessionRepository;
 import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 
-@Profile("!test")
+@Profile("!test & !docker")
 @Configuration
 @EnableJdbcHttpSession(maxInactiveIntervalInSeconds = 7200)
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {

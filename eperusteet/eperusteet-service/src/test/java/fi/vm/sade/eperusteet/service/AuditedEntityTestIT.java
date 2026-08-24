@@ -15,11 +15,11 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.TestUser;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
@@ -212,7 +212,7 @@ public class AuditedEntityTestIT extends AbstractIntegrationTest {
 
     private void setUpSecurityContext(String username) {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken(username,"test"));
+        ctx.setAuthentication(TestUser.authenticated(username));
         SecurityContextHolder.setContext(ctx);
     }
 }

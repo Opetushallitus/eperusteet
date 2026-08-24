@@ -7,13 +7,15 @@
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:util="http://www.springframework.org/schema/util"
        xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
-       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd"
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd"
        default-lazy-init="true"
        profile="docker">
     <!-- Enables the caching through annotations -->
@@ -64,7 +66,11 @@
         <property name="password" value="test"/>
     </bean>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="entityManagerFactory" lazy-init="false" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" depends-on="flyway">
         <property name="persistenceUnitName" value="eperusteet"/>
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="fi.vm.sade.eperusteet.domain"/>
@@ -89,19 +95,29 @@
         <property name="entityManagerFactory" ref="entityManagerFactory"/>
     </bean>
 
+    <bean id="entityManager" primary="true" class="org.springframework.orm.jpa.support.SharedEntityManagerBean">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
     <jpa:repositories base-package="fi.vm.sade.eperusteet.repository" factory-class="fi.vm.sade.eperusteet.repository.version.JpaWithVersioningRepositoryFactoryBean"/>
 
     <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="testPermissionEvaluator"/>
     </bean>
 
-    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.AffirmativeBased">
-        <constructor-arg>
-            <list>
-                <bean class="org.springframework.security.access.vote.RoleVoter"/>
-            </list>
-        </constructor-arg>
-        <property name="allowIfAllAbstainDecisions" value="true"/>
-    </bean>
+    <security:method-security secured-enabled="true">
+        <security:expression-handler ref="expressionHandler"/>
+    </security:method-security>
+
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="test" password="{noop}test"
+                               authorities="ROLE_ADMIN, ROLE_USER, ROLE_APP_EPERUSTEET, ROLE_APP_EPERUSTEET_CRUD, ROLE_APP_EPERUSTEET_READ_UPDATE, ROLE_APP_EPERUSTEET_READ_UPDATE_1.2.246.562.10.00000000001 ,ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"/>
+                <security:user name="testOphAdmin" password="{noop}test"
+                               authorities="ROLE_ADMIN, ROLE_USER, ROLE_APP_EPERUSTEET, ROLE_APP_EPERUSTEET_ADMIN_1.2.246.562.10.00000000001, ROLE_APP_EPERUSTEET_CRUD, ROLE_APP_EPERUSTEET_READ_UPDATE, ROLE_APP_EPERUSTEET_READ_UPDATE_1.2.246.562.10.00000000001 ,ROLE_APP_EPERUSTEET_CRUD_1.2.246.562.10.00000000001"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
 
 </beans>

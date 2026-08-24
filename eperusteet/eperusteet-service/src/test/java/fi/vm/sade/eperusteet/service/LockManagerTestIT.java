@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.service.internal.LockManager;
 import fi.vm.sade.eperusteet.domain.Lukko;
 import fi.vm.sade.eperusteet.service.exception.LockingException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
+import fi.vm.sade.eperusteet.service.test.TestUser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -16,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.DirtiesContext;
@@ -64,7 +64,7 @@ public class LockManagerTestIT extends AbstractIntegrationTest {
                 public Lukko call() throws Exception {
                     latch.await();
                     SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-                    ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test" + (id+1), "test"));
+                    ctx.setAuthentication(TestUser.authenticated("test" + (id+1)));
                     SecurityContextHolder.setContext(ctx);
                     return lockManager.lock(42L);
                 }
@@ -101,7 +101,7 @@ public class LockManagerTestIT extends AbstractIntegrationTest {
 
         //poistetaan lukitus sinä käyttäjänä joka lukituksen teki.
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken(lockedBy, "test"));
+        ctx.setAuthentication(TestUser.authenticated(lockedBy));
         SecurityContextHolder.setContext(ctx);
         assertEquals(true,lockManager.unlock(42L));
     }

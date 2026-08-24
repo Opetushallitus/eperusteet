@@ -11,7 +11,7 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
-@Profile("!test")
+@Profile("!test & !docker")
 public class AsyncConfig  {
 
     @Bean(name = "julkaisuTaskExecutor")

@@ -5,10 +5,9 @@ import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiHakuDto;
 import fi.vm.sade.eperusteet.repository.TekstiPalanenRepositoryCustom;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
-import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
@@ -52,7 +51,7 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
             params.put("ids_"+i, ids);
             ++i;
         }
-        Query q = session.createNativeQuery("SELECT " +
+        NativeQuery<?> q = session.createNativeQuery("SELECT " +
                 "   t.tekstipalanen_id as id, " +
                 "   t.kieli as kieli, " +
                 "   t.teksti as teksti " +
@@ -66,7 +65,7 @@ public class TekstiPalanenRepositoryCustomImpl implements TekstiPalanenRepositor
         }
         
         @SuppressWarnings("unchecked")
-        List<Object[]> results = q.getResultList();
+        List<Object[]> results = (List<Object[]>) q.getResultList();
         List<LokalisoituTekstiHakuDto> dtos = new ArrayList<>();
         for (Object[] row : results) {
             Long id = (Long) row[0];
