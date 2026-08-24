@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -13,6 +14,7 @@ import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.internal.TransferManagerFactory;
 
 @Configuration
+@Profile("!test & !docker")
 public class LampiConfiguration {
 
     @Value("${eperusteet.export.lampi-role-arn:''}")

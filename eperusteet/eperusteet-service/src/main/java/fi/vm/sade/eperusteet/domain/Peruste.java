@@ -36,7 +36,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapKey;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
@@ -80,7 +79,7 @@ public class Peruste extends AbstractAuditedEntity
 
     @Getter
     @Setter
-    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    @NotAudited
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "peruste")
     private PerusteVersion globalVersion = new PerusteVersion(this);
 
@@ -177,7 +176,6 @@ public class Peruste extends AbstractAuditedEntity
     private Date paatospvm;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @MapKey(name = "suoritustapakoodi")
     @JoinTable(name = "peruste_suoritustapa",
                joinColumns = @JoinColumn(name = "peruste_id"),
                inverseJoinColumns = @JoinColumn(name = "suoritustapa_id"))

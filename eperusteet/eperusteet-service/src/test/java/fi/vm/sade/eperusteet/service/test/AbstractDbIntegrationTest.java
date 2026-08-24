@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.service.test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.annotation.IfProfileValue;
@@ -24,7 +23,7 @@ public class AbstractDbIntegrationTest {
     @Before
     public void setUpSecurityContext() {
         SecurityContext ctx = SecurityContextHolder.createEmptyContext();
-        ctx.setAuthentication(new UsernamePasswordAuthenticationToken("test","test"));
+        ctx.setAuthentication(TestUser.authenticated("test"));
         SecurityContextHolder.setContext(ctx);
 
         // PerusteUpdateStoreImpl @scope:n takia

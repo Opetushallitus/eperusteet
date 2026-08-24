@@ -3,18 +3,21 @@ package fi.vm.sade.eperusteet.config;
 import fi.vm.sade.eperusteet.resource.util.CacheHeaderInterceptor;
 import fi.vm.sade.eperusteet.resource.util.ProfilingInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverters;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.filter.UrlHandlerFilter;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,12 +29,6 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Autowired
     EntityManagerFactory emf;
-
-    @Override
-    public void configurePathMatch(PathMatchConfigurer matcher) {
-        matcher.setUseRegisteredSuffixPatternMatch(true);
-        matcher.setUseTrailingSlashMatch(true);
-    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -47,9 +44,9 @@ public class MvcConfiguration implements WebMvcConfigurer {
     }
 
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(byteArrayConverter());
-        converters.add(converter()); // keep last, will override any non-explicitely declared media types
+    public void configureMessageConverters(HttpMessageConverters.ServerBuilder builder) {
+        builder.addCustomConverter(byteArrayConverter());
+        builder.addCustomConverter(converter());
     }
 
     @Override
@@ -64,9 +61,10 @@ public class MvcConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     ByteArrayHttpMessageConverter byteArrayConverter() {
         ByteArrayHttpMessageConverter converter = new ByteArrayHttpMessageConverter();
-        converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/pdf"));
+        converter.setSupportedMediaTypes(List.of(MediaType.APPLICATION_PDF, MediaType.APPLICATION_JSON));
         return converter;
     }
 
@@ -80,6 +78,14 @@ public class MvcConfiguration implements WebMvcConfigurer {
         executor.afterPropertiesSet();
 
         configurer.setTaskExecutor(executor).setDefaultTimeout(120000);
+    }
+
+    @Bean
+    public FilterRegistrationBean<UrlHandlerFilter> trailingSlashUrlHandlerFilter() {
+        FilterRegistrationBean<UrlHandlerFilter> registration = new FilterRegistrationBean<>(
+                UrlHandlerFilter.trailingSlashHandler("/**").wrapRequest().build());
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return registration;
     }
 
 }

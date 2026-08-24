@@ -10,9 +10,7 @@ import java.sql.Blob;
 import java.util.UUID;
 import jakarta.persistence.EntityManager;
 import org.apache.commons.io.IOUtils;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.engine.jdbc.BlobProxy;
+import org.hibernate.engine.jdbc.proxy.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class LiiteRepositoryImpl implements LiiteRepositoryCustom {
