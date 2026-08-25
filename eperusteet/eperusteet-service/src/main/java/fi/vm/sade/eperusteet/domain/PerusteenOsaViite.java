@@ -21,6 +21,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -55,6 +56,7 @@ public class  PerusteenOsaViite implements
 
     @RelatesToPeruste
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vanhempi_id", insertable = false, updatable = false)
     @Getter
     @Setter
     private PerusteenOsaViite vanhempi;
@@ -149,8 +151,10 @@ public class  PerusteenOsaViite implements
     @Setter
     private PerusteenOsa perusteenOsa;
 
-    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OrderColumn
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vanhempi_id")
+    @OrderColumn(name = "lapset_order")
+    @NotAudited
     @Getter
     @Setter
     private List<PerusteenOsaViite> lapset = new ArrayList<>();

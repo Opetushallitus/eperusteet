@@ -21,8 +21,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +46,6 @@ public class OsaamiskokonaisuusPaaAlue extends PerusteenOsa {
     @OrderColumn
     private List<OsaamiskokonaisuusOsaAlue> osaAlueet = new ArrayList<>();
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date muokattu;
 
     public OsaamiskokonaisuusPaaAlue(OsaamiskokonaisuusPaaAlue other) {

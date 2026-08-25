@@ -21,7 +21,6 @@ public abstract class AbstractAuditedEntity implements Serializable {
 
     @Audited
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
     @Audited
@@ -32,7 +31,6 @@ public abstract class AbstractAuditedEntity implements Serializable {
     @Audited
     @Column
     @Setter
-    @Temporal(TemporalType.TIMESTAMP)
     private Date muokattu;
 
     @Audited

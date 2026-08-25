@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.repository.version;
 import fi.vm.sade.eperusteet.domain.RevisionInfo;
 import fi.vm.sade.eperusteet.domain.RevisionInfo_;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
+import fi.vm.sade.eperusteet.utils.revision.RevisioKommenttiHolder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;

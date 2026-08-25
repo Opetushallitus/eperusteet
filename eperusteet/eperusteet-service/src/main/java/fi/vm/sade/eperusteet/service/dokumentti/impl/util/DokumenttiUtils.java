@@ -2,7 +2,7 @@ package fi.vm.sade.eperusteet.service.dokumentti.impl.util;
 
 import fi.vm.sade.eperusteet.domain.Dokumentti;
 import fi.vm.sade.eperusteet.domain.DokumenttiTila;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.util.Date;
 

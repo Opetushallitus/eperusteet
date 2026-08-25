@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.service.impl;
 
 import fi.vm.sade.eperusteet.domain.RevisionInfo;
-import fi.vm.sade.eperusteet.repository.version.RevisioKommenttiHolder;
+import fi.vm.sade.eperusteet.utils.revision.RevisioKommenttiHolder;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

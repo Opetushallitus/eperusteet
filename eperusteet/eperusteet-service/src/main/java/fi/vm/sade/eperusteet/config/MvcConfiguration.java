@@ -32,8 +32,8 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/ui").setViewName("forward:/ui/index.html");
         registry.addViewController("/ui/").setViewName("forward:/ui/index.html");
-        registry.addRedirectViewController("/ui", "/ui/");
     }
 
     @Override
@@ -84,7 +84,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
     public FilterRegistrationBean<UrlHandlerFilter> trailingSlashUrlHandlerFilter() {
         FilterRegistrationBean<UrlHandlerFilter> registration = new FilterRegistrationBean<>(
                 UrlHandlerFilter.trailingSlashHandler("/**").wrapRequest().build());
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 1);
         return registration;
     }
 

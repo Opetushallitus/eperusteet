@@ -9,6 +9,7 @@ import org.hibernate.envers.NotAudited;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
@@ -26,7 +27,8 @@ public class KaantajaTodistusmalliTaitotasokuvaus extends AbstractAuditedReferen
 
     @OrderColumn
     @NotAudited
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTodistusmalliTaitotasokuvaus", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "kaantajaTodistusmalliTaitotasokuvaus_id")
     private List<KaantajaTodistusmalliTaitotaso> taitotasot = new ArrayList<>();
 
     public KaantajaTodistusmalliTaitotasokuvaus(KaantajaTodistusmalliTaitotasokuvaus other) {

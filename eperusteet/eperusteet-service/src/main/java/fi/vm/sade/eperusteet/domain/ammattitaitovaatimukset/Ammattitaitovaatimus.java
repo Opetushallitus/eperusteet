@@ -35,6 +35,7 @@ public class Ammattitaitovaatimus implements Serializable{
 
     @RelatesToPeruste
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "ammattitaitovaatimuksenkohde_id", insertable = false, updatable = false)
     @Getter
     @Setter
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)

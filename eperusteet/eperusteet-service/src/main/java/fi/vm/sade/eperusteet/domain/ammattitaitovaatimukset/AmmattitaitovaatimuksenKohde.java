@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
@@ -19,6 +20,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
@@ -52,10 +54,12 @@ public class AmmattitaitovaatimuksenKohde implements Serializable{
     @Setter
     private AmmattitaitovaatimuksenKohdealue ammattitaitovaatimuksenkohdealue;
 
-    @OneToMany(mappedBy = "ammattitaitovaatimuksenkohde", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "ammattitaitovaatimuksenkohde_id")
     @Getter
     @Setter
-    @OrderColumn (name="jarjestys")
+    @NotAudited
+    @OrderColumn(name = "jarjestys")
     private List<Ammattitaitovaatimus> vaatimukset = new ArrayList<>();
 
     public AmmattitaitovaatimuksenKohde() {

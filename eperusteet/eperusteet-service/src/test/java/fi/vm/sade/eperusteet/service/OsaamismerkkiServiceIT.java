@@ -8,7 +8,7 @@ import fi.vm.sade.eperusteet.dto.osaamismerkki.OsaamismerkkiQuery;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tika.mime.MimeTypeException;
 import org.junit.Rule;
 import org.junit.Test;

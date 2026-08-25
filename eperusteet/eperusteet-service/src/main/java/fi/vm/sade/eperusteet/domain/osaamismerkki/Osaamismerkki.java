@@ -22,8 +22,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
@@ -61,12 +59,10 @@ public class Osaamismerkki extends AbstractAuditedEntity {
     @Enumerated(EnumType.STRING)
     private OsaamismerkkiTila tila = OsaamismerkkiTila.LAADINTA;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "voimassaolo_alkaa")
     @NotNull
     private Date voimassaoloAlkaa;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "voimassaolo_loppuu")
     private Date voimassaoloLoppuu;
 

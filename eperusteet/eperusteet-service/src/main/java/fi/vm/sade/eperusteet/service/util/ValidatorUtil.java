@@ -3,7 +3,7 @@ package fi.vm.sade.eperusteet.service.util;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 

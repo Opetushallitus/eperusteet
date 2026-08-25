@@ -40,8 +40,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -151,26 +149,22 @@ public class Peruste extends AbstractAuditedEntity
     @Column(name = "osaamisala_id")
     private Set<Koodi> osaamisalat = new HashSet<>();
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name = "voimassaolo_alkaa")
     @NotNull(groups = { Valmis.class })
     private Date voimassaoloAlkaa;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name = "voimassaolo_loppuu")
     private Date voimassaoloLoppuu;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name = "siirtyma_paattyy")
     private Date siirtymaPaattyy;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     private Date paatospvm;

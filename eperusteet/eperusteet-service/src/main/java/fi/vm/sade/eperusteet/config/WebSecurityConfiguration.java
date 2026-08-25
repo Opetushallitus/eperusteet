@@ -1,7 +1,7 @@
 package fi.vm.sade.eperusteet.config;
 
 import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
-import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
+import fi.vm.sade.eperusteet.utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.http.auth.CasAuthenticator;
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
 
