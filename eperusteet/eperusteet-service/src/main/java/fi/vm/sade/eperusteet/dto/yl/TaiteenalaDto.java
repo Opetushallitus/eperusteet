@@ -8,11 +8,10 @@ import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TaiteenalaOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TaiteenalaTekstiOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
-import java.util.LinkedHashMap;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,6 +36,7 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
 
     private LokalisoituTekstiDto teksti;
     private KoodiDto koodi;
+    private BigDecimal laajuus;
     private KevytTekstiKappaleDto kasvatus;
     private KevytTekstiKappaleDto yhteisetOpinnot;
     private KevytTekstiKappaleDto teemaopinnot;
@@ -44,6 +44,7 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
     private KevytTekstiKappaleDto tyotavatOpetuksessa;
     private KevytTekstiKappaleDto oppimisenArviointiOpetuksessa;
     private List<KevytTekstiKappaleDto> vapaatTekstit;
+    private List<TaiteenosaDto> taiteenOsat;
     private Long viiteId;
 
     @Override
@@ -51,14 +52,14 @@ public class TaiteenalaDto extends PerusteenOsaDto.Laaja {
         return "taiteenala";
     }
 
-    public List<TaiteenalaOsaViiteDto> getTaiteenOsat() {
+    public List<TaiteenalaTekstiOsaViiteDto> getTaiteenTekstiOsat() {
         return Stream.of(
-                TaiteenalaOsaViiteDto.of("aikuistenOpetus", getAikuistenOpetus(), viiteId),
-                TaiteenalaOsaViiteDto.of("kasvatus", getKasvatus(), viiteId),
-                TaiteenalaOsaViiteDto.of("oppimisenArviointiOpetuksessa", getOppimisenArviointiOpetuksessa(), viiteId),
-                TaiteenalaOsaViiteDto.of("teemaopinnot", getTeemaopinnot(), viiteId),
-                TaiteenalaOsaViiteDto.of("tyotavatOpetuksessa", getTyotavatOpetuksessa(), viiteId),
-                TaiteenalaOsaViiteDto.of("yhteisetOpinnot", getYhteisetOpinnot(), viiteId)
+                TaiteenalaTekstiOsaViiteDto.of("aikuistenOpetus", getAikuistenOpetus(), viiteId),
+                TaiteenalaTekstiOsaViiteDto.of("kasvatus", getKasvatus(), viiteId),
+                TaiteenalaTekstiOsaViiteDto.of("oppimisenArviointiOpetuksessa", getOppimisenArviointiOpetuksessa(), viiteId),
+                TaiteenalaTekstiOsaViiteDto.of("teemaopinnot", getTeemaopinnot(), viiteId),
+                TaiteenalaTekstiOsaViiteDto.of("tyotavatOpetuksessa", getTyotavatOpetuksessa(), viiteId),
+                TaiteenalaTekstiOsaViiteDto.of("yhteisetOpinnot", getYhteisetOpinnot(), viiteId)
         ).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
