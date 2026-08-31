@@ -21,10 +21,8 @@ public class AIPEKurssiBaseDto implements AIPEHasId {
     private KoodiDto koodi;
 
     public Optional<LokalisoituTekstiDto> getNimi() {
-        if (getKoodi() != null) {
-            return Optional.of(getKoodi().getNimi());
-        }
-
-        return nimi;
+      return Optional.ofNullable(getKoodi())
+        .map(KoodiDto::getNimi)
+        .or(() -> nimi != null ? nimi : Optional.empty());
     }
 }
