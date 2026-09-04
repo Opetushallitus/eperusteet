@@ -11,8 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +25,7 @@ public class Suosikki implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "kayttajaprofiili_id")
+    @JoinColumn(name = "kayttajaprofiili_id", insertable = false, updatable = false)
     private Kayttajaprofiili kayttajaprofiili;
 
     @Column(name = "nimi")
@@ -36,7 +34,6 @@ public class Suosikki implements Serializable {
     @Column(name = "sisalto")
     private String sisalto;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name = "lisatty")

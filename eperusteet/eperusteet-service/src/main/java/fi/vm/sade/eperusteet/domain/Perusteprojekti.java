@@ -36,18 +36,15 @@ public class Perusteprojekti extends AbstractAuditedEntity {
     @Column(unique = true)
     private Diaarinumero diaarinumero;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     private Date paatosPvm;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name="toimikausi_alku")
     private Date toimikausiAlku;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Getter
     @Setter
     @Column(name="toimikausi_loppu")

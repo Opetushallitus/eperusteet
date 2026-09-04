@@ -23,6 +23,6 @@ public class AIPEKurssiDto extends AIPEKurssiSuppeaDto {
     private AIPEVaiheSuppeaDto vaihe;
 
     public PerusteRakenneOsa getPerusteenOsa() {
-        return new PerusteRakenneOsa("aipe_kurssi", getNimi().get());
+        return new PerusteRakenneOsa("aipe_kurssi", getNimi().orElse(null));
     }
 }

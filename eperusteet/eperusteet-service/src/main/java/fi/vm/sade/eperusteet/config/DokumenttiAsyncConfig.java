@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 
 @Configuration
 @EnableAsync
-@Profile("!test")
+@Profile("!test & !docker")
 public class DokumenttiAsyncConfig implements AsyncConfigurer {
 
     @Bean(value = "schedulingExecutor")

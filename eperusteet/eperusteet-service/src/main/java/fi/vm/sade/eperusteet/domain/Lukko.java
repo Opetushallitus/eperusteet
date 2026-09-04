@@ -6,8 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 import lombok.Getter;
 import org.joda.time.DateTime;
@@ -24,7 +22,6 @@ public class Lukko {
     @Getter
     private String haltijaOid;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
     @Transient

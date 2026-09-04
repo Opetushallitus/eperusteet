@@ -59,7 +59,6 @@ public class TutkinnonOsaViite implements ReferenceableEntity, Serializable, Sor
     @Column
     @Getter
     @Setter
-    @Temporal(TemporalType.TIMESTAMP)
     private Date muokattu;
 
     @Override

@@ -5,7 +5,7 @@
     <parent>
         <groupId>fi.vm.sade.eperusteet</groupId>
         <artifactId>eperusteet-parent-pom</artifactId>
-        <version>3.5.16-5</version>
+        <version>4.1.1-9</version>
         <relativePath/>
     </parent>
 
@@ -18,7 +18,7 @@
         <springdoc.output.file.name>eperusteet.spec.json</springdoc.output.file.name>
         <springdoc.api.docs.url.external>http://localhost:8080/eperusteet-service/api-docs/external</springdoc.api.docs.url.external>
         <springdoc.output.file.name.external>eperusteet-ext.spec.json</springdoc.output.file.name.external>
-        <aws.java.sdk.version>2.46.17</aws.java.sdk.version>
+        <aws.java.sdk.version>2.54.2</aws.java.sdk.version>
         <opencsv.version>5.12.0</opencsv.version>
     </properties>
 

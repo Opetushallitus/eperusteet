@@ -3,21 +3,23 @@ package fi.vm.sade.eperusteet.repository.version;
 import fi.vm.sade.eperusteet.domain.RevisionInfo;
 import fi.vm.sade.eperusteet.domain.RevisionInfo_;
 import fi.vm.sade.eperusteet.service.impl.PerusteenOsaServiceImpl;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import fi.vm.sade.eperusteet.utils.revision.RevisioKommenttiHolder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
 import org.hibernate.envers.query.AuditEntity;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID> implements
     JpaWithVersioningRepository<T, ID> {
@@ -98,8 +100,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
 
     @Override
     public void setRevisioKommentti(String kommentti) {
-        RevisionInfo currentRevision = AuditReaderFactory.get(entityManager).getCurrentRevision(RevisionInfo.class, false);
-        currentRevision.addKommentti(kommentti);
+        RevisioKommenttiHolder.set(kommentti);
     }
 
     /**
@@ -108,7 +109,7 @@ public class JpaWithVersioningRepositoryImpl<T, ID extends Serializable> extends
     @Override
     public int getLatestRevisionId() {
         //enverssissä ei ole suoraan suurimman revisionumeron palautusta, workaround
-        return AuditReaderFactory.get(entityManager).getRevisionNumberForDate(DateTime.now().plusDays(1).toDate()).intValue();
+        return AuditReaderFactory.get(entityManager).getRevisionNumberForDate(LocalDateTime.now().plusDays(1)).intValue();
     }
 
     @Override

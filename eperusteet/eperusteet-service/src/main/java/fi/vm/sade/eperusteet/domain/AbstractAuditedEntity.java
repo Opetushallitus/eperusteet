@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.security.Principal;
 import java.util.Date;
 
 /**
@@ -20,7 +21,6 @@ public abstract class AbstractAuditedEntity implements Serializable {
 
     @Audited
     @Column(updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
     @Audited
@@ -31,7 +31,6 @@ public abstract class AbstractAuditedEntity implements Serializable {
     @Audited
     @Column
     @Setter
-    @Temporal(TemporalType.TIMESTAMP)
     private Date muokattu;
 
     @Audited
@@ -54,13 +53,18 @@ public abstract class AbstractAuditedEntity implements Serializable {
     @PrePersist
     private void prepersist() {
         muokattu = luotu = new Date();
-        luoja = muokkaaja = SecurityUtil.getAuthenticatedPrincipal().getName();
+        luoja = muokkaaja = currentUsername();
     }
 
     @PreUpdate
     protected void preupdate() {
         muokattu = new Date();
-        muokkaaja = SecurityUtil.getAuthenticatedPrincipal().getName();
+        muokkaaja = currentUsername();
+    }
+
+    private static String currentUsername() {
+        Principal principal = SecurityUtil.getAuthenticatedPrincipal();
+        return principal != null ? principal.getName() : "tuntematon";
     }
 
 }

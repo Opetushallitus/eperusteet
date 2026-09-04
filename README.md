@@ -14,7 +14,7 @@ Opetushallituksen ePerusteet-palvelu tutkintojen ja yleissivistävän koulutukse
 Javalla ja Spring Boot -viitekehyksellä toteutettu REST API -palvelu (`eperusteet-service` kansio). 
 
 **Teknologiat:**
-- Spring Boot 3.x
+- Spring Boot 4.x
 - Hibernate JPA
 - PostgreSQL
 - Flyway migraatiot
@@ -26,6 +26,7 @@ Javalla ja Spring Boot -viitekehyksellä toteutettu REST API -palvelu (`eperuste
 - CAS-autentikaatio
 - Käyttäjähallinta ja organisaatiopalvelu
 - Koodistopalvelu
+- [ePerusteet-amosaa](https://github.com/Opetushallitus/eperusteet-amosaa), [ePerusteet-ylops](https://github.com/Opetushallitus/eperusteet-ylops) ja [ePerusteet-pdf](https://github.com/Opetushallitus/eperusteet-pdf)
 
 Tiedot tallennetaan PostgreSQL-tietokantaan.
 
@@ -37,10 +38,21 @@ Tässä repossa palvelun lähdekoodi on hakemistossa `eperusteet/eperusteet-serv
 
 Asenna haluamallasi tavalla
 
-- Amazon Corretto JDK 17 tai uudempi
+- Amazon Corretto JDK 21 tai uudempi
 - Maven 3.8 tai uudempi
 - Docker ja Docker Compose
+- konfiguroi Maven `~/.m2/settings.xml` GitHub Packages -kirjautumista varten (ks. alla)
 - luo [dev-settingsin](/dev-settings.md) mukaiset käyttäjäkohtaisten asetusten tiedostot annettuihin polkuihin ja täytä omilla tiedoilla
+
+**Maven ja GitHub Packages:**
+
+Riippuvuudet (mm. `eperusteet-parent-pom`, `eperusteet-backend-utils`, `java-utils`, `auditlogger`) haetaan GitHub Packagesista. Ilman autentikaatiota ensimmäinen `mvn`-ajo epäonnistuu.
+
+Lisää `~/.m2/settings.xml`-tiedostoon server-id:t, jotka vastaavat pom.xml:n repository-id:itä. Mallina voi käyttää repon [`.github/maven/settings.xml`](/.github/maven/settings.xml)-tiedostoa. Lokaalisti käytä GitHub-käyttäjätunnusta ja [personal access tokenia](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (`read:packages` -oikeus):
+
+- `github-eperusteet-backend-utils`
+- `github-java-utils`
+- `github-auditlogger`
 
 **Huomioitavaa riippuvuuksista:**
 
@@ -49,12 +61,13 @@ Ajoaikana palvelu riippuu seuraavista OPH-palveluista:
 - **Käyttäjähallinta** - käyttäjätietojen hallinta
 - **Organisaatiopalvelu** - organisaatiotietojen hallinta
 - **Koodistopalvelu** - koodistojen hallinta
+- **Amosaa, ylops ja pdf-palvelu** - lokaalissa `local`-profiilissa oletusosoitteet ovat `localhost:8081` (ylops), `localhost:8082` (amosaa) ja `localhost:8083` (pdf)
 
-Lokaalissa ajossa profiilit (esim. `local`, `qa` käynnistysohjeessa) ja `dev-settings.md`-mukaiset asetukset määrittävät, mihin OPH-palveluihin kulloinkin yhdistetään.
+Lokaalissa ajossa profiilit (esim. `local`, `qa` käynnistysohjeessa) ja `dev-settings.md`-mukaiset asetukset määrittävät, mihin OPH-palveluihin kulloinkin yhdistetään. `override.properties` on ajoaikainen asetus (CAS/palvelutunnukset), ei Maven-käännösasetus.
 
 ### 3.2. Testien ajaminen
 
-Integraatiotestit vaativat Docker-ympäristön (testit käynnistävät PostgreSQL-kontin automaattisesti).
+Integraatiotestit vaativat Docker-ympäristön (testit käynnistävät PostgreSQL-kontin automaattisesti Testcontainersilla).
 
 Aja testit komennolla:
 
@@ -77,8 +90,8 @@ Tietokantamigraatiot on toteutettu [Flyway](https://flywaydb.org/)-työkalulla j
 - Java-migraatiot: `eperusteet/eperusteet-service/src/main/java/db/migration`
 
 **Nimeämiskäytäntö:**
-- `V[versio]__[kuvaus].sql` (esim. `V1_0__initial_schema.sql`)
-- Java-migraatiot: `V[versio]__[Kuvaus].java`
+- `V0_[versio]__[kuvaus].sql` (esim. `V0_8__perusteKoodiUri.sql` tai aikaleimattu `V0_20260320120000__tekstikappale_koodi_sarake.sql`)
+- Java-migraatiot: `V0_[versio]__[Kuvaus].java`
 
 Migraatiohistoria tallennetaan `flyway_schema_history` -tauluun.
 
@@ -86,10 +99,11 @@ Migraatiohistoria tallennetaan `flyway_schema_history` -tauluun.
 
 #### 3.4.1. Tietokantojen käynnistys
 
-Tietokantojen lokaalia pyöritystä varten luo koneellesi tämän repon juureen `docker-compose.yml`-tiedosto, jonka sisältö on alla:
+Tietokantojen lokaalia pyöritystä varten luo koneellesi tämän repon juureen `docker-compose.yml`-tiedosto, jonka sisältö on alla.
+
+ePerusteet-service tarvitsee vain `eperusteet`-palvelun (portti 5432). `eperusteet-amosaa` ja `eperusteet-ylops` ovat valinnaisia ja tarkoitettu sisarpalveluiden lokaalia ajoa varten.
 
 ```yaml
-version: "3.1"
 services:
   eperusteet:
     image: postgres:15
@@ -143,13 +157,15 @@ cd eperusteet/eperusteet-service
 mvn spring-boot:run -Dspring-boot.run.profiles=default,local,qa
 ```
 
-Palvelu käynnistyy oletuksena porttiin 8080. API on käytettävissä osoitteessa `http://localhost:8080/eperusteet-service/api`
+Palvelu käynnistyy oletuksena porttiin 8080. API on käytettävissä osoitteessa `http://localhost:8080/eperusteet-service/api`. Swagger UI: `http://localhost:8080/eperusteet-service/swagger`.
 
 #### 3.4.3. API-dokumentaation generointi
 
 Jos muutat tietomallia tai rajapintoja, generoi OpenAPI-dokumentaatio uudelleen.
 
 Skripti `generate-openapi.sh` sijaitsee **repon juuressa**; aja komennot sieltä. Windowsissa käytä esimerkiksi Git Bashia tai WSL:ää.
+
+Generointi käynnistää palvelun profiileilla `default,local`, joten local-Postgresin (portti 5432) on oltava käynnissä.
 
 Päivitä OpenAPI-spesifikaatio:
 ```bash
@@ -170,13 +186,12 @@ joillakin on tullut IDE:n sekoilua koko repon avauksen tapauksessa.
 
 Suositeltavat asetukset:
 - Aseta Maven automaattinen import päälle
-- Käytä projektiin asetettua Java-versiota
-- Aseta koodiformatointi käyttämään projektin määrittelemiä sääntöjä
+- Käytä projektiin asetettua Java-versiota (21)
 
 ### 3.6. Versiohallinta
 
 Git käytäntönä projektissa on suosittu kehityshaaran squashausta päähaaraan
-mergettäessä. Pre-push hook löytyy kansiosta `tools/git-hooks/`.
+mergettäessä.
 
 ### 3.7. Yleisiä ongelmatilanteita
 
@@ -198,14 +213,15 @@ docker compose up -d
 ```
 
 **Maven build epäonnistuu:**
-- Varmista että override.properties on konfiguroitu oikein (dev-settings.md)
-- Tarkista internet-yhteys OPH:n repoihin
+- Varmista että `~/.m2/settings.xml` sisältää GitHub Packages -tunnukset (ks. kohta 3.1)
+- Tarkista internet-yhteys ja että personal access tokenilla on `read:packages` -oikeus
 - Tyhjennä Maven cache: `mvn dependency:purge-local-repository`
 
 **Palvelu ei käynnisty:**
 - Tarkista että portti 8080 on vapaana
 - Tarkista että tietokanta on käynnissä ja saavutettavissa
-- Tarkista lokitiedostosta (`app.log`) virheilmoitukset
+- Tarkista että `override.properties` on konfiguroitu (dev-settings.md)
+- Tarkista konsoliloki (local-profiili kirjoittaa stdoutiin; audit-loki: `~/logs/auditlog_eperusteet.log`)
 
 ## 4. Ympäristöt
 
@@ -228,10 +244,11 @@ Lokit löytyvät AWS:n CloudWatch-palvelusta.
 Buildipalveluna käytetään GitHub Actionsia ([build.yml](/.github/workflows/build.yml)). 
 
 Pushaaminen remoteen käynnistää:
-1. Testien ajamisen
-2. Sovelluksen buildauksen
-3. Kontti-imagen luonnin OPH:n deploytyökaluja varten
-4. Imagen pushaus AWS ECR:ään
+1. eperusteet-ui:n klonauksen ja buildauksen
+2. UI-artifactin kopioinnin palvelun `static/ui`-kansioon
+3. Testien ajamisen ja sovelluksen buildauksen (`mvn clean verify -B -Pit`)
+4. Kontti-imagen luonnin OPH:n deploytyökaluja varten
+5. Imagen pushauksen AWS ECR:ään
 
 ## 5. ePerusteet-projektit
 
@@ -257,7 +274,7 @@ Projektin `tools/` kansiosta löytyy useita hyödyllisiä työkaluja:
 
 - **kantaScriptit/** - Tietokantaan liittyviä apuskriptejä
 - **lokalisointi/** - Lokalisointityökaluja (käännösten hallinta)
-- **git-hooks/** - Git-hookit kehitykseen
+- **git-hooks/** - Vanha pre-push-hook; polku ei enää täsmää nykyiseen Maven-moduuliin (`eperusteet/eperusteet-service`), joten hookia ei kannata käyttää sellaisenaan
 
 ### 6.2. Dokumentaatio
 

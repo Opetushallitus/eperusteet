@@ -16,18 +16,16 @@ import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.ColumnResult;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedNativeQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
-import jakarta.persistence.SqlResultSetMapping;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,21 +42,6 @@ import java.util.stream.Collectors;
 @Entity
 @Audited
 @Table(name = "perusteenosaviite")
-@NamedNativeQuery(
-    name = "PerusteenOsaViite.findRootsByPerusteenOsaId",
-    resultSetMapping = "PerusteenOsaViite.rootId",
-    query
-    = "with recursive vanhemmat(id,vanhempi_id,perusteenosa_id) as "
-    + "(select pv.id, pv.vanhempi_id, pv.perusteenosa_id from perusteenosaviite pv "
-    + "where pv.perusteenosa_id = ?1  "
-    + "union all "
-    + "select pv.id, pv.vanhempi_id, v.perusteenosa_id "
-    + "from perusteenosaviite pv, vanhemmat v where pv.id = v.vanhempi_id) "
-    + "select id from vanhemmat where vanhempi_id is null")
-@SqlResultSetMapping(
-    name = "PerusteenOsaViite.rootId",
-    columns = {@ColumnResult(name="id", type=Long.class)}
-)
 public class  PerusteenOsaViite implements
         ReferenceableEntity,
         Serializable,
@@ -73,6 +56,7 @@ public class  PerusteenOsaViite implements
 
     @RelatesToPeruste
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vanhempi_id", insertable = false, updatable = false)
     @Getter
     @Setter
     private PerusteenOsaViite vanhempi;
@@ -167,8 +151,10 @@ public class  PerusteenOsaViite implements
     @Setter
     private PerusteenOsa perusteenOsa;
 
-    @OneToMany(mappedBy = "vanhempi", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OrderColumn
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vanhempi_id")
+    @OrderColumn(name = "lapset_order")
+    @NotAudited
     @Getter
     @Setter
     private List<PerusteenOsaViite> lapset = new ArrayList<>();

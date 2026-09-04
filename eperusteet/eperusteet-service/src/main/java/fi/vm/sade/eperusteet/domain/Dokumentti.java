@@ -30,11 +30,9 @@ public class Dokumentti implements Serializable {
     @NotNull
     private Kieli kieli;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date aloitusaika;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date valmistumisaika;
 
     @Enumerated(EnumType.STRING)

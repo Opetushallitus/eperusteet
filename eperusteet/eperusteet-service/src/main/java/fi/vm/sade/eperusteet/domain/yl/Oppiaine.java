@@ -118,9 +118,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @NotNull(groups = Strict.class)
     @Size(min = 1, groups = Strict.class)
-    @Valid
     @BatchSize(size = 3)
-    private Set<OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
+    private Set<@Valid OppiaineenVuosiluokkaKokonaisuus> vuosiluokkakokonaisuudet;
 
     @RelatesToPeruste
     @Getter

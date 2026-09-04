@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-@Profile("!test")
+@Profile("!test & !docker")
 @Configuration
 @ComponentScan(basePackages  = {"fi.vm.sade.eperusteet.utils"})
 @EnableAsync

@@ -41,7 +41,6 @@ public class Liite implements Serializable {
     @Size(max = 1024)
     private String nimi;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date luotu;
 
     @Getter

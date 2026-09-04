@@ -58,6 +58,7 @@ public class KaantajaTaitoKohdealue extends AbstractAuditedEntity {
     private List<TekstiPalanen> arviointikriteerit = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kaantajaTaito_id", insertable = false, updatable = false)
     private KaantajaTaito kaantajaTaito;
 
     public KaantajaTaitoKohdealue(KaantajaTaitoKohdealue other) {

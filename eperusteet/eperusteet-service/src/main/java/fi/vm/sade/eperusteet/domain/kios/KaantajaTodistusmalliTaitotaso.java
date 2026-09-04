@@ -16,6 +16,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -46,6 +47,7 @@ public class KaantajaTodistusmalliTaitotaso extends AbstractAuditedEntity {
     private TekstiPalanen kuvaus;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kaantajaTodistusmalliTaitotasokuvaus_id", insertable = false, updatable = false)
     private KaantajaTodistusmalliTaitotasokuvaus kaantajaTodistusmalliTaitotasokuvaus;
 
     public KaantajaTodistusmalliTaitotaso(KaantajaTodistusmalliTaitotaso other) {

@@ -17,6 +17,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
@@ -43,7 +44,8 @@ public class KaantajaTaitotasoasteikko extends PerusteenOsa implements Liitteell
 
     @OrderColumn
     @NotAudited
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTaitotasoasteikko", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "kaantajaTaitotasoasteikko_id")
     private List<TaitotasoasteikkoKategoria> taitotasoasteikkoKategoriat = new ArrayList<>();
 
     @Getter

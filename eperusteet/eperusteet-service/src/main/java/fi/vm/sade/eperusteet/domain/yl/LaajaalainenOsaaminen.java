@@ -52,7 +52,6 @@ public class LaajaalainenOsaaminen extends AbstractReferenceableEntity implement
     @Column
     @Getter
     @Setter
-    @Temporal(TemporalType.TIMESTAMP)
     private Date muokattu;
 
     @Getter

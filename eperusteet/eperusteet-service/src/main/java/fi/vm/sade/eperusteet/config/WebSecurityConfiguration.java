@@ -1,11 +1,9 @@
 package fi.vm.sade.eperusteet.config;
 
 import fi.vm.sade.eperusteet.repository.OphSessionMappingStorage;
-import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
+import fi.vm.sade.eperusteet.utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.http.auth.CasAuthenticator;
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
-
-import java.util.List;
 
 import org.apereo.cas.client.session.SingleSignOutFilter;
 import org.apereo.cas.client.validation.Cas20ProxyTicketValidator;
@@ -30,11 +28,10 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
-import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 
-@Profile({"!local & !test"})
+@Profile({"!local & !test & !docker"})
 @Configuration
 @EnableMethodSecurity(securedEnabled = true)
 @EnableWebSecurity

@@ -15,6 +15,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
@@ -42,10 +43,12 @@ public class TaitotasoasteikkoKategoria extends AbstractAuditedEntity {
 
     @OrderColumn
     @NotAudited
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "taitotasoasteikkoKategoria", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "taitotasoasteikkoKategoria_id")
     private List<TaitotasoasteikkoKategoriaTaitotaso> taitotasoasteikkoKategoriaTaitotasot = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "kaantajaTaitotasoasteikko_id", insertable = false, updatable = false)
     private KaantajaTaitotasoasteikko kaantajaTaitotasoasteikko;
 
     public TaitotasoasteikkoKategoria(TaitotasoasteikkoKategoria other) {

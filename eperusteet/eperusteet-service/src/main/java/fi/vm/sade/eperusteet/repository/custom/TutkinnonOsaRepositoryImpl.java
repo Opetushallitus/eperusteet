@@ -6,7 +6,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa_;
 import fi.vm.sade.eperusteet.dto.peruste.TutkinnonOsaQueryDto;
 import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;

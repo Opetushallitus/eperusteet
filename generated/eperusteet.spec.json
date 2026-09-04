@@ -10,8 +10,8 @@
     "version" : "v3.0.0"
   },
   "servers" : [ {
-    "url" : "https://virkailija.opintopolku.fi/eperusteet-service",
-    "description" : "ePerusteet API"
+    "url" : "https://localhost:8080/eperusteet-service",
+    "description" : "Generated server url"
   } ],
   "tags" : [ {
     "name" : "Perusteenosat",
@@ -663,7 +663,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Matala"
+                "$ref" : "#/components/schemas/PerusteenOsaViiteDto"
               }
             }
           },
@@ -705,7 +705,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Matala"
+                "$ref" : "#/components/schemas/PerusteenOsaViiteDto"
               }
             }
           }
@@ -757,51 +757,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "oneOf" : [ {
-                  "$ref" : "#/components/schemas/Laaja"
-                }, {
-                  "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaAihealueDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTaitoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
-                }, {
-                  "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
-                }, {
-                  "$ref" : "#/components/schemas/KotoOpintoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KoulutuksenOsaDto"
-                }, {
-                  "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-                }, {
-                  "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
-                }, {
-                  "$ref" : "#/components/schemas/OpintokokonaisuusDto"
-                }, {
-                  "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
-                }, {
-                  "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
-                }, {
-                  "$ref" : "#/components/schemas/TaiteenalaDto"
-                }, {
-                  "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
-                }, {
-                  "$ref" : "#/components/schemas/TekstiKappaleDto"
-                }, {
-                  "$ref" : "#/components/schemas/TutkinnonOsaDto"
-                }, {
-                  "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
-                } ]
+                "$ref" : "#/components/schemas/PuuPerusteenOsaDto"
               }
             }
           },
@@ -845,51 +801,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "oneOf" : [ {
-                  "$ref" : "#/components/schemas/Laaja"
-                }, {
-                  "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaAihealueDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTaitoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
-                }, {
-                  "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
-                }, {
-                  "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
-                }, {
-                  "$ref" : "#/components/schemas/KotoOpintoDto"
-                }, {
-                  "$ref" : "#/components/schemas/KoulutuksenOsaDto"
-                }, {
-                  "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-                }, {
-                  "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
-                }, {
-                  "$ref" : "#/components/schemas/OpintokokonaisuusDto"
-                }, {
-                  "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
-                }, {
-                  "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
-                }, {
-                  "$ref" : "#/components/schemas/TaiteenalaDto"
-                }, {
-                  "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
-                }, {
-                  "$ref" : "#/components/schemas/TekstiKappaleDto"
-                }, {
-                  "$ref" : "#/components/schemas/TutkinnonOsaDto"
-                }, {
-                  "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
-                } ]
+                "$ref" : "#/components/schemas/PuuPerusteenOsaDto"
               }
             }
           },
@@ -4313,7 +4225,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Matala"
+                "$ref" : "#/components/schemas/PerusteenOsaViiteDto"
               }
             }
           }
@@ -5026,7 +4938,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Matala"
+                "$ref" : "#/components/schemas/PerusteenOsaViiteDto"
               }
             }
           }
@@ -5070,7 +4982,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Suppea"
+                "$ref" : "#/components/schemas/PuuPerusteenOsaDto"
               }
             }
           },
@@ -5134,7 +5046,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Matala"
+                "$ref" : "#/components/schemas/PerusteenOsaViiteDto"
               }
             }
           }
@@ -6244,7 +6156,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/Matala"
+                "$ref" : "#/components/schemas/PerusteenOsaViiteDto"
               }
             }
           }
@@ -12493,8 +12405,6 @@
                   "oneOf" : [ {
                     "$ref" : "#/components/schemas/Laaja"
                   }, {
-                    "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
-                  }, {
                     "$ref" : "#/components/schemas/KaantajaAihealueDto"
                   }, {
                     "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
@@ -12513,11 +12423,7 @@
                   }, {
                     "$ref" : "#/components/schemas/KotoOpintoDto"
                   }, {
-                    "$ref" : "#/components/schemas/KoulutuksenOsaDto"
-                  }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-                  }, {
-                    "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
                     "$ref" : "#/components/schemas/OpintokokonaisuusDto"
                   }, {
@@ -12528,10 +12434,6 @@
                     "$ref" : "#/components/schemas/TaiteenalaDto"
                   }, {
                     "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
-                  }, {
-                    "$ref" : "#/components/schemas/TekstiKappaleDto"
-                  }, {
-                    "$ref" : "#/components/schemas/TutkinnonOsaDto"
                   }, {
                     "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
                   } ]
@@ -14234,6 +14136,7 @@
         "parameters" : [ {
           "name" : "koulutustyyppi",
           "in" : "query",
+          "description" : "Koulutustyypin arvot. Jos parametreja ei anneta, haetaan kaikista tunnetuista koulutustyypeistä. Jos perusteen tyyppi on digitaalinen_osaaminen, koulutustyyppisuodatusta ei sovelleta.",
           "required" : false,
           "schema" : {
             "type" : "array",
@@ -14244,6 +14147,7 @@
         }, {
           "name" : "nimi",
           "in" : "query",
+          "description" : "Osittainen tekstihaku perusteen nimeen sekä julkaisutietoihin tallennettuihin osaamisalan, tutkintonimikkeen ja tutkinnon osan nimiin valitulla kielellä.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -14252,6 +14156,7 @@
         }, {
           "name" : "kieli",
           "in" : "query",
+          "description" : "Kieli, jolla nimivertailu tehdään ja johon nimitieto näytetään tuloksissa (esim. fi, sv, en). Oletus fi.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -14260,6 +14165,7 @@
         }, {
           "name" : "tulevat",
           "in" : "query",
+          "description" : "Sisällytä perusteet, joiden voimaantuloajankohta on tulevaisuudessa suhteessa hakuhetkeen. Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -14268,6 +14174,7 @@
         }, {
           "name" : "voimassa",
           "in" : "query",
+          "description" : "Sisällytä voimassa olevat perusteet (voimaantulo mennyt ja voimassaolo ei ole päättynyt hakuhetkeen). Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -14276,6 +14183,7 @@
         }, {
           "name" : "siirtyma",
           "in" : "query",
+          "description" : "Sisällytä perusteet, jotka ovat siirtymäajalla: virallinen voimassaolo on päättynyt mutta siirtymäpäättymispäivä ei ole vielä mennyt. Oletus true.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -14284,6 +14192,7 @@
         }, {
           "name" : "poistuneet",
           "in" : "query",
+          "description" : "Sisällytä perusteet, joiden voimassaolo ja siirtymäaika ovat päättyneet hakuhetkeen mennessä. Oletus false.",
           "required" : false,
           "schema" : {
             "type" : "boolean",
@@ -14292,6 +14201,7 @@
         }, {
           "name" : "tyyppi",
           "in" : "query",
+          "description" : "Julkaistun perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen). Oletus normaali.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -14300,6 +14210,7 @@
         }, {
           "name" : "diaarinumero",
           "in" : "query",
+          "description" : "Osittainen, kirjainkoosta riippumaton haku Opetushallituksen antamaan diaarinumeroon.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -14308,6 +14219,7 @@
         }, {
           "name" : "koodi",
           "in" : "query",
+          "description" : "Rajaa tulokset annettuun koodiin (täsmäosuma perusteen julkaisudatassa oleviin kooditietoihin, esim. koulutus- tai muun koodin URI). Tyhjä arvo ei rajaa.",
           "required" : false,
           "schema" : {
             "type" : "string",
@@ -14316,6 +14228,7 @@
         }, {
           "name" : "sivu",
           "in" : "query",
+          "description" : "Sivutus: haettavan sivun numero (0-indeksoitu). Oletusarvo 0.",
           "required" : false,
           "schema" : {
             "type" : "integer",
@@ -14325,6 +14238,7 @@
         }, {
           "name" : "sivukoko",
           "in" : "query",
+          "description" : "Sivutus: yhdellä sivulla palautettavien tulosten määrä. Oletusarvo 10. Maksimi 50.",
           "required" : false,
           "schema" : {
             "type" : "integer",
@@ -14338,127 +14252,7 @@
             "content" : {
               "application/json;charset=UTF-8" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PagePerusteenJulkaisuData"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/external/perusteet/" : {
-      "get" : {
-        "tags" : [ "External" ],
-        "summary" : "Perusteiden haku",
-        "operationId" : "getPerusteet_1",
-        "parameters" : [ {
-          "name" : "koulutustyyppi",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }, {
-          "name" : "nimi",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "kieli",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "fi"
-          }
-        }, {
-          "name" : "tulevat",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean",
-            "default" : true
-          }
-        }, {
-          "name" : "voimassa",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean",
-            "default" : true
-          }
-        }, {
-          "name" : "siirtyma",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean",
-            "default" : true
-          }
-        }, {
-          "name" : "poistuneet",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "boolean",
-            "default" : false
-          }
-        }, {
-          "name" : "tyyppi",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : "normaali"
-          }
-        }, {
-          "name" : "diaarinumero",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "koodi",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "string",
-            "default" : ""
-          }
-        }, {
-          "name" : "sivu",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 0
-          }
-        }, {
-          "name" : "sivukoko",
-          "in" : "query",
-          "required" : false,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int32",
-            "default" : 10
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "application/json;charset=UTF-8" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/PagePerusteenJulkaisuData"
+                  "$ref" : "#/components/schemas/SivutettuTulosDtoPerusteenJulkaisuData"
                 }
               }
             }
@@ -14603,6 +14397,25 @@
         }
       }
     },
+    "/api/external/peruste/yto/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Yhteisien tutkinnon osien -perusteen(YTO) tietojen haku tarkalla sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'",
+        "operationId" : "getYtoPerusteDynamicQuery",
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PerusteKaikkiDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/external/peruste/tutkinnonosa/{tutkinnonOsaKoodiUri}" : {
       "get" : {
         "tags" : [ "External" ],
@@ -14623,6 +14436,35 @@
               "application/json" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/TutkinnonOsaKaikkiDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/external/peruste/koulutuskoodi/{koodi}/**" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen haku koulutuskoodilla ja sisältörakenteella. Kts 'Perusteen tietojen haku tarkalla sisältörakenteella'.",
+        "description" : "Statuskoodi 409 jos löytyy useampi peruste. Statuskoodi 204, jos haettu rakenne on tyhjä.",
+        "operationId" : "getPerusteWithKoodi",
+        "parameters" : [ {
+          "name" : "koodi",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PerusteKaikkiDto"
                 }
               }
             }
@@ -15646,7 +15488,8 @@
               "type" : "string"
             }
           }
-        }
+        },
+        "description" : "Perusteeseen liittyvät tutkintonimikkeet."
       },
       "KevytTekstiKappaleDto" : {
         "type" : "object",
@@ -16635,7 +16478,8 @@
           "osanTyyppi" : {
             "type" : "string"
           }
-        }
+        },
+        "description" : "Tutkintoon valmentavan koulutuksen (TUVA) koulutuksen osat."
       },
       "Laaja" : {
         "type" : "object",
@@ -16692,7 +16536,51 @@
           "lapset" : {
             "type" : "array",
             "items" : {
-              "$ref" : "#/components/schemas/Laaja"
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/Laaja"
+              }, {
+                "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaAihealueDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTaitoDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
+              }, {
+                "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
+              }, {
+                "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
+              }, {
+                "$ref" : "#/components/schemas/KotoOpintoDto"
+              }, {
+                "$ref" : "#/components/schemas/KoulutuksenOsaDto"
+              }, {
+                "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
+              }, {
+                "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
+              }, {
+                "$ref" : "#/components/schemas/OpintokokonaisuusDto"
+              }, {
+                "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
+              }, {
+                "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
+              }, {
+                "$ref" : "#/components/schemas/TaiteenalaDto"
+              }, {
+                "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
+              }, {
+                "$ref" : "#/components/schemas/TekstiKappaleDto"
+              }, {
+                "$ref" : "#/components/schemas/TutkinnonOsaDto"
+              }, {
+                "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
+              } ]
             }
           },
           "_perusteenOsa" : {
@@ -16705,69 +16593,6 @@
         "allOf" : [ {
           "$ref" : "#/components/schemas/Laaja"
         } ]
-      },
-      "Matala" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "perusteenOsa" : {
-            "oneOf" : [ {
-              "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/KaantajaAihealueDto"
-            }, {
-              "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
-            }, {
-              "$ref" : "#/components/schemas/KaantajaTaitoDto"
-            }, {
-              "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
-            }, {
-              "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
-            }, {
-              "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
-            }, {
-              "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
-            }, {
-              "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
-            }, {
-              "$ref" : "#/components/schemas/KotoOpintoDto"
-            }, {
-              "$ref" : "#/components/schemas/KoulutuksenOsaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/OpintokokonaisuusDto"
-            }, {
-              "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
-            }, {
-              "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
-            }, {
-              "$ref" : "#/components/schemas/TaiteenalaDto"
-            }, {
-              "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
-            }, {
-              "$ref" : "#/components/schemas/TekstiKappaleDto"
-            }, {
-              "$ref" : "#/components/schemas/TutkinnonOsaDto"
-            }, {
-              "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
-            } ]
-          },
-          "lapset" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object"
-            }
-          },
-          "_perusteenOsa" : {
-            "type" : "object"
-          }
-        }
       },
       "OpetuksenYleisetTavoitteetLaajaDto" : {
         "type" : "object",
@@ -17117,6 +16942,69 @@
           }
         }
       },
+      "PerusteenOsaViiteDto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "perusteenOsa" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaAihealueDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoOpintoDto"
+            }, {
+              "$ref" : "#/components/schemas/KoulutuksenOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpintokokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
+            }, {
+              "$ref" : "#/components/schemas/TaiteenalaDto"
+            }, {
+              "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
+            }, {
+              "$ref" : "#/components/schemas/TekstiKappaleDto"
+            }, {
+              "$ref" : "#/components/schemas/TutkinnonOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
+            } ]
+          },
+          "lapset" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object"
+            }
+          },
+          "_perusteenOsa" : {
+            "type" : "object"
+          }
+        }
+      },
       "SuoritustapaDto" : {
         "type" : "object",
         "properties" : {
@@ -17357,6 +17245,176 @@
             }
           }
         } ]
+      },
+      "Matala" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "perusteenOsa" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaAihealueDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoOpintoDto"
+            }, {
+              "$ref" : "#/components/schemas/KoulutuksenOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpintokokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
+            }, {
+              "$ref" : "#/components/schemas/TaiteenalaDto"
+            }, {
+              "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
+            }, {
+              "$ref" : "#/components/schemas/TekstiKappaleDto"
+            }, {
+              "$ref" : "#/components/schemas/TutkinnonOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
+            } ]
+          },
+          "lapset" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object"
+            }
+          },
+          "_perusteenOsa" : {
+            "type" : "object"
+          }
+        }
+      },
+      "PuuPerusteenOsaDto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "perusteenOsa" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaAihealueDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoOpintoDto"
+            }, {
+              "$ref" : "#/components/schemas/KoulutuksenOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpintokokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
+            }, {
+              "$ref" : "#/components/schemas/TaiteenalaDto"
+            }, {
+              "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
+            }, {
+              "$ref" : "#/components/schemas/TekstiKappaleDto"
+            }, {
+              "$ref" : "#/components/schemas/TutkinnonOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
+            } ]
+          },
+          "lapset" : {
+            "type" : "array",
+            "items" : {
+              "oneOf" : [ {
+                "$ref" : "#/components/schemas/Laaja"
+              }, {
+                "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaAihealueDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTaitoDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
+              }, {
+                "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
+              }, {
+                "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
+              }, {
+                "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
+              }, {
+                "$ref" : "#/components/schemas/KotoOpintoDto"
+              }, {
+                "$ref" : "#/components/schemas/KoulutuksenOsaDto"
+              }, {
+                "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
+              }, {
+                "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
+              }, {
+                "$ref" : "#/components/schemas/OpintokokonaisuusDto"
+              }, {
+                "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
+              }, {
+                "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
+              }, {
+                "$ref" : "#/components/schemas/TaiteenalaDto"
+              }, {
+                "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
+              }, {
+                "$ref" : "#/components/schemas/TekstiKappaleDto"
+              }, {
+                "$ref" : "#/components/schemas/TutkinnonOsaDto"
+              }, {
+                "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
+              } ]
+            }
+          },
+          "_perusteenOsa" : {
+            "type" : "object"
+          }
+        }
       },
       "TutkinnonOsaViiteDto" : {
         "type" : "object",
@@ -17891,8 +17949,20 @@
               "$ref" : "#/components/schemas/AIPEKurssiDto"
             }
           },
+          "oppimaarat" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AIPEOppiaineLaajaDto"
+            }
+          },
           "vaihe" : {
             "$ref" : "#/components/schemas/AIPEVaiheSuppeaDto"
+          },
+          "vapaatTekstit" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/KevytTekstiKappaleDto"
+            }
           },
           "perusteenOsa" : {
             "$ref" : "#/components/schemas/PerusteRakenneOsa"
@@ -18535,7 +18605,7 @@
             "type" : "boolean"
           }
         },
-        "description" : "Perusteprosessin päivämäärät"
+        "description" : "Perusteprosessin päivämäärät (esim. lausuntokierros, julkaisu)."
       },
       "TiedoteDto" : {
         "type" : "object",
@@ -19088,9 +19158,6 @@
               "$ref" : "#/components/schemas/Validointi"
             }
           },
-          "vaihtoOk" : {
-            "type" : "boolean"
-          },
           "virheet" : {
             "type" : "array",
             "items" : {
@@ -19102,6 +19169,9 @@
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
             }
+          },
+          "vaihtoOk" : {
+            "type" : "boolean"
           }
         }
       },
@@ -19245,7 +19315,8 @@
           "opintoalakoodi" : {
             "type" : "string"
           }
-        }
+        },
+        "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit."
       },
       "LiiteBaseDto" : {
         "type" : "object",
@@ -19331,13 +19402,15 @@
               "$ref" : "#/components/schemas/LiiteBaseDto"
             }
           }
-        }
+        },
+        "description" : "Perusteeseen liittyvät muutosmääräykset."
       },
       "PerusteBaseDto" : {
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Perusteen tunniste.",
             "format" : "int64"
           },
           "globalVersion" : {
@@ -19346,20 +19419,24 @@
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen nimi."
+            },
+            "description" : "Perusteen nimi."
           },
           "koulutustyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Perusteen koulutustyyppi."
           },
           "toteutus" : {
             "type" : "string",
-            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)",
+            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019).",
             "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO", "TUTKINTOONVALMENTAVA", "KOTOUTUMISKOULUTUS", "KIELITUTKINTO", "KAANTAJATUTKINTO" ]
           },
           "koulutukset" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutusDto"
             }
@@ -19367,82 +19444,92 @@
           "kielet" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen sisältökielet.",
             "items" : {
               "type" : "string",
+              "description" : "Perusteen sisältökielet.",
               "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
             }
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen kuvaus useilla kielillä."
+            },
+            "description" : "Perusteen kuvaus useilla kielillä."
           },
           "maarayskirje" : {
             "$ref" : "#/components/schemas/MaarayskirjeDto"
           },
           "muutosmaaraykset" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät muutosmääräykset.",
             "items" : {
               "$ref" : "#/components/schemas/MuutosmaaraysDto"
             }
           },
           "diaarinumero" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Opetushallituksen antama diaarinumero perusteelle."
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
-            "description" : "Perusteen alkuperäinen voimaantulon alkamispäivä.",
+            "description" : "Perusteen voimaantulon alkamispäivä.",
             "format" : "date-time"
           },
           "siirtymaPaattyy" : {
             "type" : "string",
-            "description" : "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.",
+            "description" : "Voimassaolon loppumisen jälkeinen siirtymäajan päättymispäivä. Peruste on siirtymäajalla, kun virallinen voimassaolo on päättynyt mutta tämä päivämäärä ei ole vielä mennyt.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Perusteen virallisen voimassaolon päättymispäivä.",
             "format" : "date-time"
           },
           "paatospvm" : {
             "type" : "string",
-            "description" : "Perusteen määräyksen päätöspäivämäärä",
+            "description" : "Perusteen määräyksen päätöspäivämäärä.",
             "format" : "date-time"
           },
           "viimeisinJulkaisuAika" : {
             "type" : "string",
+            "description" : "Viimeisimmän julkaisun ajankohta, jos peruste on julkaistu.",
             "format" : "date-time"
           },
           "luotu" : {
             "type" : "string",
+            "description" : "Perusteen luontiaika.",
             "format" : "date-time"
           },
           "tila" : {
             "type" : "string",
-            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen",
+            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen.",
             "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
           },
           "tyyppi" : {
             "type" : "string",
+            "description" : "Perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen, amosaayhteinen).",
             "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN", "KIELI_KAANTAJA_TUTKINTO" ]
           },
           "koulutusvienti" : {
             "type" : "boolean",
-            "description" : "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste"
+            "description" : "Ilmaisee, onko peruste EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu."
           },
           "korvattavatDiaarinumerot" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin",
+            "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin.",
             "items" : {
               "type" : "string",
-              "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin"
+              "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin."
             }
           },
           "osaamisalat" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteeseen liittyvät osaamisalakoodit",
+            "description" : "Perusteeseen liittyvät osaamisalakoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoodiDto"
             }
@@ -19451,20 +19538,21 @@
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
           },
           "suorittaneenOsaaminen" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
           },
           "tutkintonimikkeet" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät tutkintonimikkeet.",
             "items" : {
               "$ref" : "#/components/schemas/TutkintonimikeKoodiDto"
             }
@@ -19472,7 +19560,7 @@
           "oppaanPerusteet" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteet joihin opas liittyy",
+            "description" : "Perusteet, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "$ref" : "#/components/schemas/PerusteKevytDto"
             }
@@ -19480,17 +19568,17 @@
           "oppaanKoulutustyypit" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Koulutustyypit joihin opas liittyy",
+            "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "type" : "string",
-              "description" : "Koulutustyypit joihin opas liittyy",
+              "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
               "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteprosessin päivämäärät",
+            "description" : "Perusteprosessin päivämäärät (esim. lausuntokierros, julkaisu).",
             "items" : {
               "$ref" : "#/components/schemas/PerusteAikatauluDto"
             }
@@ -19498,24 +19586,31 @@
           "poikkeamismaaraysTarkennus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Poikkeamismääräyksen tarkentava teksti."
+            },
+            "description" : "Poikkeamismääräyksen tarkentava teksti."
           },
           "poikkeamismaaraysTyyppi" : {
             "type" : "string",
+            "description" : "Poikkeamismääräyksen tyyppi.",
             "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
           },
           "opasTyyppi" : {
             "type" : "string",
+            "description" : "Opas-perusteen tyyppi (esim. normaali, tietoapalvelusta).",
             "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
           },
           "tietoapalvelustaKuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
+            },
+            "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
           }
-        }
+        },
+        "description" : "Perusteen metatiedot ja yhteiset kentät. Yläluokka julkaistun perusteen täydelle sisällölle."
       },
       "PerusteVersionDto" : {
         "type" : "object",
@@ -19525,7 +19620,7 @@
             "format" : "date-time"
           }
         },
-        "description" : "Perusteen sisältöjen viimeisin päivitysaika"
+        "description" : "Perusteen sisältöjen viimeisin päivitysaika."
       },
       "KVLiiteDto" : {
         "type" : "object",
@@ -19635,6 +19730,7 @@
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Perusteen tunniste.",
             "format" : "int64"
           },
           "globalVersion" : {
@@ -19643,20 +19739,24 @@
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen nimi."
+            },
+            "description" : "Perusteen nimi."
           },
           "koulutustyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Perusteen koulutustyyppi."
           },
           "toteutus" : {
             "type" : "string",
-            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)",
+            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019).",
             "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO", "TUTKINTOONVALMENTAVA", "KOTOUTUMISKOULUTUS", "KIELITUTKINTO", "KAANTAJATUTKINTO" ]
           },
           "koulutukset" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutusDto"
             }
@@ -19664,82 +19764,92 @@
           "kielet" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen sisältökielet.",
             "items" : {
               "type" : "string",
+              "description" : "Perusteen sisältökielet.",
               "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
             }
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen kuvaus useilla kielillä."
+            },
+            "description" : "Perusteen kuvaus useilla kielillä."
           },
           "maarayskirje" : {
             "$ref" : "#/components/schemas/MaarayskirjeDto"
           },
           "muutosmaaraykset" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät muutosmääräykset.",
             "items" : {
               "$ref" : "#/components/schemas/MuutosmaaraysDto"
             }
           },
           "diaarinumero" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Opetushallituksen antama diaarinumero perusteelle."
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
-            "description" : "Perusteen alkuperäinen voimaantulon alkamispäivä.",
+            "description" : "Perusteen voimaantulon alkamispäivä.",
             "format" : "date-time"
           },
           "siirtymaPaattyy" : {
             "type" : "string",
-            "description" : "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.",
+            "description" : "Voimassaolon loppumisen jälkeinen siirtymäajan päättymispäivä. Peruste on siirtymäajalla, kun virallinen voimassaolo on päättynyt mutta tämä päivämäärä ei ole vielä mennyt.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Perusteen virallisen voimassaolon päättymispäivä.",
             "format" : "date-time"
           },
           "paatospvm" : {
             "type" : "string",
-            "description" : "Perusteen määräyksen päätöspäivämäärä",
+            "description" : "Perusteen määräyksen päätöspäivämäärä.",
             "format" : "date-time"
           },
           "viimeisinJulkaisuAika" : {
             "type" : "string",
+            "description" : "Viimeisimmän julkaisun ajankohta, jos peruste on julkaistu.",
             "format" : "date-time"
           },
           "luotu" : {
             "type" : "string",
+            "description" : "Perusteen luontiaika.",
             "format" : "date-time"
           },
           "tila" : {
             "type" : "string",
-            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen",
+            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen.",
             "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
           },
           "tyyppi" : {
             "type" : "string",
+            "description" : "Perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen, amosaayhteinen).",
             "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN", "KIELI_KAANTAJA_TUTKINTO" ]
           },
           "koulutusvienti" : {
             "type" : "boolean",
-            "description" : "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste"
+            "description" : "Ilmaisee, onko peruste EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu."
           },
           "korvattavatDiaarinumerot" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin",
+            "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin.",
             "items" : {
               "type" : "string",
-              "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin"
+              "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin."
             }
           },
           "osaamisalat" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteeseen liittyvät osaamisalakoodit",
+            "description" : "Perusteeseen liittyvät osaamisalakoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoodiDto"
             }
@@ -19748,20 +19858,21 @@
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
           },
           "suorittaneenOsaaminen" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
           },
           "tutkintonimikkeet" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät tutkintonimikkeet.",
             "items" : {
               "$ref" : "#/components/schemas/TutkintonimikeKoodiDto"
             }
@@ -19769,7 +19880,7 @@
           "oppaanPerusteet" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteet joihin opas liittyy",
+            "description" : "Perusteet, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "$ref" : "#/components/schemas/PerusteKevytDto"
             }
@@ -19777,17 +19888,17 @@
           "oppaanKoulutustyypit" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Koulutustyypit joihin opas liittyy",
+            "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "type" : "string",
-              "description" : "Koulutustyypit joihin opas liittyy",
+              "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
               "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteprosessin päivämäärät",
+            "description" : "Perusteprosessin päivämäärät (esim. lausuntokierros, julkaisu).",
             "items" : {
               "$ref" : "#/components/schemas/PerusteAikatauluDto"
             }
@@ -19795,22 +19906,28 @@
           "poikkeamismaaraysTarkennus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Poikkeamismääräyksen tarkentava teksti."
+            },
+            "description" : "Poikkeamismääräyksen tarkentava teksti."
           },
           "poikkeamismaaraysTyyppi" : {
             "type" : "string",
+            "description" : "Poikkeamismääräyksen tyyppi.",
             "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
           },
           "opasTyyppi" : {
             "type" : "string",
+            "description" : "Opas-perusteen tyyppi (esim. normaali, tietoapalvelusta).",
             "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
           },
           "tietoapalvelustaKuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
+            },
+            "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
           },
           "suoritustavat" : {
             "uniqueItems" : true,
@@ -19832,7 +19949,8 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "description" : "Perusteen metatiedot ja yhteiset kentät. Yläluokka julkaistun perusteen täydelle sisällölle."
       },
       "VapaasivistystyoSisaltoKevytDto" : {
         "type" : "object",
@@ -20276,12 +20394,6 @@
           "perusteenOsa" : {
             "$ref" : "#/components/schemas/Suppea"
           },
-          "lapset" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Suppea"
-            }
-          },
           "_perusteenOsa" : {
             "type" : "object"
           }
@@ -20386,6 +20498,12 @@
             "items" : {
               "$ref" : "#/components/schemas/KevytTekstiKappaleDto"
             }
+          },
+          "alkuperainenNimi" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -20468,6 +20586,12 @@
             }
           },
           "soveltavaKurssiKuvaus" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "alkuperainenNimi" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string"
@@ -20732,6 +20856,12 @@
               "$ref" : "#/components/schemas/KevytTekstiKappaleDto"
             }
           },
+          "alkuperainenNimi" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
           "metadata" : {
             "$ref" : "#/components/schemas/MetaData"
           }
@@ -20740,9 +20870,6 @@
       "Part" : {
         "type" : "object",
         "properties" : {
-          "contentType" : {
-            "type" : "string"
-          },
           "name" : {
             "type" : "string"
           },
@@ -20752,6 +20879,9 @@
           },
           "inputStream" : {
             "type" : "object"
+          },
+          "contentType" : {
+            "type" : "string"
           },
           "headerNames" : {
             "type" : "array",
@@ -21106,55 +21236,67 @@
               "type" : "string"
             }
           }
-        }
+        },
+        "description" : "Osaamismerkin arviointikriteerit."
       },
       "OsaamismerkkiDto" : {
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Osaamismerkin tunniste.",
             "format" : "int64"
           },
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Osaamismerkin nimi useilla kielillä."
+            },
+            "description" : "Osaamismerkin nimi useilla kielillä."
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Osaamismerkin kuvaus useilla kielillä."
+            },
+            "description" : "Osaamismerkin kuvaus useilla kielillä."
           },
           "tila" : {
             "type" : "string",
+            "description" : "Osaamismerkin tila (esim. LAADINTA, JULKAISTU). Julkisessa rajapinnassa palautetaan vain julkaistut.",
             "enum" : [ "LAADINTA", "JULKAISTU" ]
           },
           "kategoria" : {
             "$ref" : "#/components/schemas/OsaamismerkkiKategoriaDto"
           },
           "koodiUri" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Osaamismerkin koodin URI (esim. osaamismerkit_<koodi>). Käytetään yksittäisen merkin haussa polkuparametrina (/api/external/osaamismerkki/koodi/{uri})."
           },
           "osaamistavoitteet" : {
             "type" : "array",
+            "description" : "Osaamismerkin osaamistavoitteet.",
             "items" : {
               "$ref" : "#/components/schemas/OsaamismerkkiOsaamistavoiteDto"
             }
           },
           "arviointikriteerit" : {
             "type" : "array",
+            "description" : "Osaamismerkin arviointikriteerit.",
             "items" : {
               "$ref" : "#/components/schemas/OsaamismerkkiArviointikriteeriDto"
             }
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
+            "description" : "Osaamismerkin voimassaolon alkamispäivä.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Osaamismerkin voimassaolon päättymispäivä.",
             "format" : "date-time"
           },
           "muokattu" : {
@@ -21164,7 +21306,8 @@
           "muokkaaja" : {
             "type" : "string"
           }
-        }
+        },
+        "description" : "Osaamismerkin perustiedot, osaamistavoitteet ja arviointikriteerit."
       },
       "OsaamismerkkiKategoriaDto" : {
         "type" : "object",
@@ -21192,7 +21335,8 @@
             "type" : "string",
             "format" : "date-time"
           }
-        }
+        },
+        "description" : "Osaamismerkin kategoria."
       },
       "OsaamismerkkiKategoriaLiiteDto" : {
         "type" : "object",
@@ -21225,7 +21369,8 @@
               "type" : "string"
             }
           }
-        }
+        },
+        "description" : "Osaamismerkin osaamistavoitteet."
       },
       "OpasLuontiDto" : {
         "type" : "object",
@@ -21580,18 +21725,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -21608,9 +21753,6 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "unpaged" : {
-            "type" : "boolean"
-          },
           "paged" : {
             "type" : "boolean"
           },
@@ -21621,19 +21763,22 @@
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
+          },
+          "unpaged" : {
+            "type" : "boolean"
           }
         }
       },
       "SortObject" : {
         "type" : "object",
         "properties" : {
-          "unsorted" : {
-            "type" : "boolean"
-          },
           "empty" : {
             "type" : "boolean"
           },
           "sorted" : {
+            "type" : "boolean"
+          },
+          "unsorted" : {
             "type" : "boolean"
           }
         }
@@ -21666,18 +21811,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -22140,7 +22285,8 @@
           "perusteenOsa" : {
             "$ref" : "#/components/schemas/PerusteRakenneOsa"
           }
-        }
+        },
+        "description" : "Tutkinnon osien täydet tiedot. Laajuudet täydennetään suoritustapojen tutkinnon osaviitteistä vastauksessa."
       },
       "PageTutkinnonOsaViiteKontekstiDto" : {
         "type" : "object",
@@ -22170,18 +22316,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -22216,18 +22362,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -22390,18 +22536,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -22527,18 +22673,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -22550,6 +22696,7 @@
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Perusteen tunniste.",
             "format" : "int64"
           },
           "globalVersion" : {
@@ -22558,20 +22705,24 @@
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen nimi."
+            },
+            "description" : "Perusteen nimi."
           },
           "koulutustyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Perusteen koulutustyyppi."
           },
           "toteutus" : {
             "type" : "string",
-            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)",
+            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019).",
             "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO", "TUTKINTOONVALMENTAVA", "KOTOUTUMISKOULUTUS", "KIELITUTKINTO", "KAANTAJATUTKINTO" ]
           },
           "koulutukset" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutusDto"
             }
@@ -22579,82 +22730,92 @@
           "kielet" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen sisältökielet.",
             "items" : {
               "type" : "string",
+              "description" : "Perusteen sisältökielet.",
               "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
             }
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen kuvaus useilla kielillä."
+            },
+            "description" : "Perusteen kuvaus useilla kielillä."
           },
           "maarayskirje" : {
             "$ref" : "#/components/schemas/MaarayskirjeDto"
           },
           "muutosmaaraykset" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät muutosmääräykset.",
             "items" : {
               "$ref" : "#/components/schemas/MuutosmaaraysDto"
             }
           },
           "diaarinumero" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Opetushallituksen antama diaarinumero perusteelle."
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
-            "description" : "Perusteen alkuperäinen voimaantulon alkamispäivä.",
+            "description" : "Perusteen voimaantulon alkamispäivä.",
             "format" : "date-time"
           },
           "siirtymaPaattyy" : {
             "type" : "string",
-            "description" : "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.",
+            "description" : "Voimassaolon loppumisen jälkeinen siirtymäajan päättymispäivä. Peruste on siirtymäajalla, kun virallinen voimassaolo on päättynyt mutta tämä päivämäärä ei ole vielä mennyt.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Perusteen virallisen voimassaolon päättymispäivä.",
             "format" : "date-time"
           },
           "paatospvm" : {
             "type" : "string",
-            "description" : "Perusteen määräyksen päätöspäivämäärä",
+            "description" : "Perusteen määräyksen päätöspäivämäärä.",
             "format" : "date-time"
           },
           "viimeisinJulkaisuAika" : {
             "type" : "string",
+            "description" : "Viimeisimmän julkaisun ajankohta, jos peruste on julkaistu.",
             "format" : "date-time"
           },
           "luotu" : {
             "type" : "string",
+            "description" : "Perusteen luontiaika.",
             "format" : "date-time"
           },
           "tila" : {
             "type" : "string",
-            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen",
+            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen.",
             "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
           },
           "tyyppi" : {
             "type" : "string",
+            "description" : "Perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen, amosaayhteinen).",
             "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN", "KIELI_KAANTAJA_TUTKINTO" ]
           },
           "koulutusvienti" : {
             "type" : "boolean",
-            "description" : "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste"
+            "description" : "Ilmaisee, onko peruste EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu."
           },
           "korvattavatDiaarinumerot" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin",
+            "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin.",
             "items" : {
               "type" : "string",
-              "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin"
+              "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin."
             }
           },
           "osaamisalat" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteeseen liittyvät osaamisalakoodit",
+            "description" : "Perusteeseen liittyvät osaamisalakoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoodiDto"
             }
@@ -22663,20 +22824,21 @@
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
           },
           "suorittaneenOsaaminen" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
           },
           "tutkintonimikkeet" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät tutkintonimikkeet.",
             "items" : {
               "$ref" : "#/components/schemas/TutkintonimikeKoodiDto"
             }
@@ -22684,7 +22846,7 @@
           "oppaanPerusteet" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteet joihin opas liittyy",
+            "description" : "Perusteet, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "$ref" : "#/components/schemas/PerusteKevytDto"
             }
@@ -22692,17 +22854,17 @@
           "oppaanKoulutustyypit" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Koulutustyypit joihin opas liittyy",
+            "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "type" : "string",
-              "description" : "Koulutustyypit joihin opas liittyy",
+              "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
               "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteprosessin päivämäärät",
+            "description" : "Perusteprosessin päivämäärät (esim. lausuntokierros, julkaisu).",
             "items" : {
               "$ref" : "#/components/schemas/PerusteAikatauluDto"
             }
@@ -22710,22 +22872,28 @@
           "poikkeamismaaraysTarkennus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Poikkeamismääräyksen tarkentava teksti."
+            },
+            "description" : "Poikkeamismääräyksen tarkentava teksti."
           },
           "poikkeamismaaraysTyyppi" : {
             "type" : "string",
+            "description" : "Poikkeamismääräyksen tyyppi.",
             "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
           },
           "opasTyyppi" : {
             "type" : "string",
+            "description" : "Opas-perusteen tyyppi (esim. normaali, tietoapalvelusta).",
             "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
           },
           "tietoapalvelustaKuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
+            },
+            "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
           },
           "suoritustavat" : {
             "uniqueItems" : true,
@@ -22770,21 +22938,6 @@
             "items" : {
               "$ref" : "#/components/schemas/PerusteInfoDto"
             }
-          }
-        }
-      },
-      "PerusteenOsaViiteDto" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "perusteenOsa" : {
-            "type" : "object"
-          },
-          "_perusteenOsa" : {
-            "type" : "object"
           }
         }
       },
@@ -22895,6 +23048,12 @@
           },
           "tehtava" : {
             "$ref" : "#/components/schemas/LokalisoitavaOsaDto"
+          },
+          "oppimaarat" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/LukioOppiaineOppimaaraNodeDto"
+            }
           },
           "kurssit" : {
             "type" : "array",
@@ -23029,6 +23188,12 @@
               "$ref" : "#/components/schemas/Lops2019ModuuliDto"
             }
           },
+          "oppimaarat" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Lops2019OppiaineKaikkiDto"
+            }
+          },
           "perusteenOsa" : {
             "$ref" : "#/components/schemas/PerusteRakenneOsa"
           }
@@ -23096,7 +23261,8 @@
               "$ref" : "#/components/schemas/AIPEVaiheDto"
             }
           }
-        }
+        },
+        "description" : "Aikuisten perusopetuksen perusteen sisältörakenne."
       },
       "DigitaalisenOsaamisenSisaltoDto" : {
         "type" : "object",
@@ -23152,7 +23318,8 @@
               "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
             } ]
           }
-        }
+        },
+        "description" : "Digitaalisen osaamisen perusteen sisältörakenne."
       },
       "EsiopetuksenPerusteenSisaltoDto" : {
         "type" : "object",
@@ -23204,7 +23371,8 @@
               "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
             } ]
           }
-        }
+        },
+        "description" : "Esiopetuksen perusteen sisältörakenne."
       },
       "KVLiiteJulkinenDto" : {
         "type" : "object",
@@ -23320,7 +23488,7 @@
             "type" : "boolean"
           }
         },
-        "description" : "Perusteen kv-liite"
+        "description" : "Perusteen kansainvälisen tutkinnon viitekehyksen (KV) liite. Kenttä puuttuu, jos perusteella ei ole KV-liitettä."
       },
       "KieliJaKaantajaTutkintoSisaltoDto" : {
         "type" : "object",
@@ -23376,7 +23544,8 @@
               "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
             } ]
           }
-        }
+        },
+        "description" : "Kieli- ja kääntäjätutkinnon perusteen sisältörakenne."
       },
       "Lops2019SisaltoDto" : {
         "type" : "object",
@@ -23437,7 +23606,8 @@
               "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
             } ]
           }
-        }
+        },
+        "description" : "Uuden lukion (LOPS 2019) perusteen sisältörakenne."
       },
       "LukiokoulutuksenPerusteenSisaltoDto" : {
         "type" : "object",
@@ -23498,7 +23668,8 @@
           "rakenne" : {
             "$ref" : "#/components/schemas/LukioOppiainePuuDto"
           }
-        }
+        },
+        "description" : "Vanhan lukion (LOPS) perusteen sisältörakenne. Kenttä puuttuu, jos peruste käyttää LOPS 2019 -rakennetta."
       },
       "OpasSisaltoDto" : {
         "type" : "object",
@@ -23560,7 +23731,8 @@
               "$ref" : "#/components/schemas/OppaanKiinnitettyKoodiDto"
             }
           }
-        }
+        },
+        "description" : "Opas-perusteen sisältörakenne."
       },
       "OppiaineLaajaDto" : {
         "type" : "object",
@@ -23637,6 +23809,12 @@
           },
           "perusteenOsa" : {
             "$ref" : "#/components/schemas/PerusteRakenneOsa"
+          },
+          "alkuperainenNimi" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
           }
         }
       },
@@ -23710,13 +23888,15 @@
               "$ref" : "#/components/schemas/VuosiluokkaKokonaisuusDto"
             }
           }
-        }
+        },
+        "description" : "Perusopetuksen perusteen sisältörakenne. Kenttä puuttuu, jos peruste ei ole perusopetuksen peruste."
       },
       "PerusteKaikkiDto" : {
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Perusteen tunniste.",
             "format" : "int64"
           },
           "globalVersion" : {
@@ -23725,20 +23905,24 @@
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen nimi."
+            },
+            "description" : "Perusteen nimi."
           },
           "koulutustyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Perusteen koulutustyyppi."
           },
           "toteutus" : {
             "type" : "string",
-            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)",
+            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019).",
             "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO", "TUTKINTOONVALMENTAVA", "KOTOUTUMISKOULUTUS", "KIELITUTKINTO", "KAANTAJATUTKINTO" ]
           },
           "koulutukset" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutusDto"
             }
@@ -23746,82 +23930,92 @@
           "kielet" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen sisältökielet.",
             "items" : {
               "type" : "string",
+              "description" : "Perusteen sisältökielet.",
               "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
             }
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen kuvaus useilla kielillä."
+            },
+            "description" : "Perusteen kuvaus useilla kielillä."
           },
           "maarayskirje" : {
             "$ref" : "#/components/schemas/MaarayskirjeDto"
           },
           "muutosmaaraykset" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät muutosmääräykset.",
             "items" : {
               "$ref" : "#/components/schemas/MuutosmaaraysDto"
             }
           },
           "diaarinumero" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Opetushallituksen antama diaarinumero perusteelle."
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
-            "description" : "Perusteen alkuperäinen voimaantulon alkamispäivä.",
+            "description" : "Perusteen voimaantulon alkamispäivä.",
             "format" : "date-time"
           },
           "siirtymaPaattyy" : {
             "type" : "string",
-            "description" : "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.",
+            "description" : "Voimassaolon loppumisen jälkeinen siirtymäajan päättymispäivä. Peruste on siirtymäajalla, kun virallinen voimassaolo on päättynyt mutta tämä päivämäärä ei ole vielä mennyt.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Perusteen virallisen voimassaolon päättymispäivä.",
             "format" : "date-time"
           },
           "paatospvm" : {
             "type" : "string",
-            "description" : "Perusteen määräyksen päätöspäivämäärä",
+            "description" : "Perusteen määräyksen päätöspäivämäärä.",
             "format" : "date-time"
           },
           "viimeisinJulkaisuAika" : {
             "type" : "string",
+            "description" : "Viimeisimmän julkaisun ajankohta, jos peruste on julkaistu.",
             "format" : "date-time"
           },
           "luotu" : {
             "type" : "string",
+            "description" : "Perusteen luontiaika.",
             "format" : "date-time"
           },
           "tila" : {
             "type" : "string",
-            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen",
+            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen.",
             "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
           },
           "tyyppi" : {
             "type" : "string",
+            "description" : "Perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen, amosaayhteinen).",
             "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN", "KIELI_KAANTAJA_TUTKINTO" ]
           },
           "koulutusvienti" : {
             "type" : "boolean",
-            "description" : "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste"
+            "description" : "Ilmaisee, onko peruste EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu."
           },
           "korvattavatDiaarinumerot" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin",
+            "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin.",
             "items" : {
               "type" : "string",
-              "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin"
+              "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin."
             }
           },
           "osaamisalat" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteeseen liittyvät osaamisalakoodit",
+            "description" : "Perusteeseen liittyvät osaamisalakoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoodiDto"
             }
@@ -23830,20 +24024,21 @@
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
           },
           "suorittaneenOsaaminen" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
           },
           "tutkintonimikkeet" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät tutkintonimikkeet.",
             "items" : {
               "$ref" : "#/components/schemas/TutkintonimikeKoodiDto"
             }
@@ -23851,7 +24046,7 @@
           "oppaanPerusteet" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteet joihin opas liittyy",
+            "description" : "Perusteet, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "$ref" : "#/components/schemas/PerusteKevytDto"
             }
@@ -23859,17 +24054,17 @@
           "oppaanKoulutustyypit" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Koulutustyypit joihin opas liittyy",
+            "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "type" : "string",
-              "description" : "Koulutustyypit joihin opas liittyy",
+              "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
               "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteprosessin päivämäärät",
+            "description" : "Perusteprosessin päivämäärät (esim. lausuntokierros, julkaisu).",
             "items" : {
               "$ref" : "#/components/schemas/PerusteAikatauluDto"
             }
@@ -23877,45 +24072,54 @@
           "poikkeamismaaraysTarkennus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Poikkeamismääräyksen tarkentava teksti."
+            },
+            "description" : "Poikkeamismääräyksen tarkentava teksti."
           },
           "poikkeamismaaraysTyyppi" : {
             "type" : "string",
+            "description" : "Poikkeamismääräyksen tyyppi.",
             "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
           },
           "opasTyyppi" : {
             "type" : "string",
+            "description" : "Opas-perusteen tyyppi (esim. normaali, tietoapalvelusta).",
             "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
           },
           "tietoapalvelustaKuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
+            },
+            "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
           },
           "suoritustavat" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Ammatillisten perusteiden suoritustavat: tutkinnon muodostuminen, rakenne ja tutkinnon osaviitteet laajuuksineen.",
             "items" : {
               "$ref" : "#/components/schemas/SuoritustapaLaajaDto"
             }
           },
           "tutkinnonOsat" : {
             "type" : "array",
+            "description" : "Tutkinnon osien täydet tiedot. Laajuudet täydennetään suoritustapojen tutkinnon osaviitteistä vastauksessa.",
             "items" : {
               "$ref" : "#/components/schemas/TutkinnonOsaKaikkiDto"
             }
           },
           "koulutuksenOsat" : {
             "type" : "array",
+            "description" : "Tutkintoon valmentavan koulutuksen (TUVA) koulutuksen osat.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }
           },
           "muutosmaarayksenVoimassaoloAlkaa" : {
             "type" : "string",
-            "description" : "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä.",
+            "description" : "Perusteen viimeisimmän muutosmääräyksen voimaantulon alkamispäivä. Kenttä puuttuu, jos perusteella ei ole voimassa olevaa muutosmääräystä.",
             "format" : "date-time"
           },
           "kvLiite" : {
@@ -23954,7 +24158,8 @@
           "kielijakaantajatutkinto" : {
             "$ref" : "#/components/schemas/KieliJaKaantajaTutkintoSisaltoDto"
           }
-        }
+        },
+        "description" : "Julkaistun perusteen täydet sisältötiedot. Sisältää perusteen metatiedot sekä koulutustyypin mukaisen sisältörakenteen."
       },
       "SuoritustapaLaajaDto" : {
         "type" : "object",
@@ -24027,7 +24232,8 @@
               "$ref" : "#/components/schemas/TutkinnonOsaViiteSuppeaDto"
             }
           }
-        }
+        },
+        "description" : "Ammatillisten perusteiden suoritustavat: tutkinnon muodostuminen, rakenne ja tutkinnon osaviitteet laajuuksineen."
       },
       "TPOOpetuksenSisaltoDto" : {
         "type" : "object",
@@ -24079,7 +24285,8 @@
               "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
             } ]
           }
-        }
+        },
+        "description" : "Taiteen perusopetuksen perusteen sisältörakenne."
       },
       "TutkinnonOsaViiteSuppeaDto" : {
         "type" : "object",
@@ -24157,7 +24364,8 @@
               "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
             } ]
           }
-        }
+        },
+        "description" : "Tutkintoon valmentavan koulutuksen perusteen sisältörakenne."
       },
       "VapaasivistystyoSisaltoDto" : {
         "type" : "object",
@@ -24217,7 +24425,8 @@
             "type" : "integer",
             "format" : "int32"
           }
-        }
+        },
+        "description" : "Vapaan sivistystyön perusteen sisältörakenne."
       },
       "AIPEKurssiSuppeaDto" : {
         "type" : "object",
@@ -24261,12 +24470,12 @@
       "KoulutustyyppiLukumaara" : {
         "type" : "object",
         "properties" : {
+          "koulutustyyppi" : {
+            "type" : "string"
+          },
           "lukumaara" : {
             "type" : "integer",
             "format" : "int32"
-          },
-          "koulutustyyppi" : {
-            "type" : "string"
           }
         }
       },
@@ -24349,18 +24558,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -24372,55 +24581,68 @@
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Perusteen tai tutkinnon osan tunniste. Kun sisältötyyppi on peruste, kyseessä on perusteen id; kun sisältötyyppi on tutkinnonosa, kyseessä on tutkinnon osan id.",
             "format" : "int64"
           },
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen tai tutkinnon osan nimi kielikohtaisena karttana (avain on kielikoodi, esim. fi, sv, en). Haussa valittu kieli ohjaa, millä kielellä nimi näytetään ja millä kielellä nimivertailu tehdään."
+            },
+            "description" : "Perusteen tai tutkinnon osan nimi kielikohtaisena karttana (avain on kielikoodi, esim. fi, sv, en). Haussa valittu kieli ohjaa, millä kielellä nimi näytetään ja millä kielellä nimivertailu tehdään."
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
+            "description" : "Perusteen alkuperäinen voimaantulon alkamispäivä. Tulevat perusteet ovat sellaisia, joiden voimaantuloajankohta on hakuhetkeä myöhempi.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Perusteen virallisen voimassaolon päättymispäivä. Voimassaolon päättymisen jälkeen peruste voi olla vielä siirtymäajalla, kunnes siirtymäpäättymispäivä on mennyt.",
             "format" : "date-time"
           },
           "siirtymaPaattyy" : {
             "type" : "string",
+            "description" : "Voimassaolon loppumisen jälkeinen siirtymäajan päättymispäivä. Peruste on siirtymäajalla, kun virallinen voimassaolo on päättynyt mutta tämä päivämäärä ei ole vielä mennyt.",
             "format" : "date-time"
           },
           "paatospvm" : {
             "type" : "string",
+            "description" : "Perusteen määräyksen päätöspäivämäärä.",
             "format" : "date-time"
           },
           "diaarinumero" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Opetushallituksen antama diaarinumero perusteelle."
           },
           "osaamisalat" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteeseen liittyvät osaamisalakoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoodiDto"
             }
           },
           "tutkintonimikkeet" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät tutkintonimikkeet.",
             "items" : {
               "$ref" : "#/components/schemas/TutkintonimikeKoodiDto"
             }
           },
           "koulutustyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Perusteen koulutustyyppi (esim. ammatillinen, lukiokoulutus). Digitaalisen osaamisen perusteissa koulutustyyppisuodatusta ei sovelleta haussa."
           },
           "laajuus" : {
             "type" : "integer",
+            "description" : "Tutkinnon vähimmäislaajuus ensimmäisen suoritustavan muodostumissäännöstä.",
             "format" : "int32"
           },
           "koulutukset" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutusDto"
             }
@@ -24428,32 +24650,40 @@
           "suoritustavat" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen suoritustavat ja niihin liittyvät laajuusyksiköt.",
             "items" : {
               "$ref" : "#/components/schemas/SuoritustapaDto"
             }
           },
           "koodit" : {
             "type" : "array",
+            "description" : "Perusteeseen tai tutkinnon osaan liittyvien koodien URI:t (koulutus-, tutkinnon osa-, osaamisala- ja tutkintonimikekoodit). Käytetään koodi-hauparametrin täsmäosumalla suodatuksessa.",
             "items" : {
-              "type" : "string"
+              "type" : "string",
+              "description" : "Perusteeseen tai tutkinnon osaan liittyvien koodien URI:t (koulutus-, tutkinnon osa-, osaamisala- ja tutkintonimikekoodit). Käytetään koodi-hauparametrin täsmäosumalla suodatuksessa."
             }
           },
           "julkaistu" : {
             "type" : "string",
+            "description" : "Viimeisimmän julkaisun luontiaika.",
             "format" : "date-time"
           },
           "luotu" : {
             "type" : "integer",
+            "description" : "Perusteen luontiaika (epoch-millis).",
             "format" : "int64"
           },
           "tyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Julkaistun perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen, amosaayhteinen)."
           },
           "kielet" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen sisältökielet.",
             "items" : {
               "type" : "string",
+              "description" : "Perusteen sisältökielet.",
               "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
             }
           },
@@ -24462,14 +24692,17 @@
           },
           "perusteet" : {
             "type" : "array",
+            "description" : "Perusteet, joissa tutkinnon osa esiintyy. Täytetään tutkinnon osa -hakutuloksissa; muuten kenttä puuttuu vastauksesta.",
             "items" : {
               "$ref" : "#/components/schemas/PerusteenJulkaisuData"
             }
           },
           "sisaltotyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Palautetun tietueen tyyppi: peruste (kokonainen peruste) tai tutkinnonosa (yksittäinen tutkinnon osa)."
           }
-        }
+        },
+        "description" : "Julkaistun perusteen tai tutkinnon osan yhteenvetotiedot julkisesta perustehakurajapinnasta."
       },
       "PagePerusteHakuInternalDto" : {
         "type" : "object",
@@ -24499,18 +24732,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -24522,6 +24755,7 @@
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Perusteen tunniste.",
             "format" : "int64"
           },
           "globalVersion" : {
@@ -24530,20 +24764,24 @@
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen nimi."
+            },
+            "description" : "Perusteen nimi."
           },
           "koulutustyyppi" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Perusteen koulutustyyppi."
           },
           "toteutus" : {
             "type" : "string",
-            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019)",
+            "description" : "Perusteen sisäisen rakenteen toteutuksen ilmaiseva sisältö. Esimerkiksi vanhan ja uuden lukion toteutus (LOPS vs LOPS2019).",
             "enum" : [ "YKSINKERTAINEN", "PERUSOPETUS", "LOPS", "AMMATILLINEN", "TPO", "LOPS2019", "VAPAASIVISTYSTYO", "TUTKINTOONVALMENTAVA", "KOTOUTUMISKOULUTUS", "KIELITUTKINTO", "KAANTAJATUTKINTO" ]
           },
           "koulutukset" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteeseen liittyvät koulutukset ja niiden koulutuskoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoulutusDto"
             }
@@ -24551,82 +24789,92 @@
           "kielet" : {
             "uniqueItems" : true,
             "type" : "array",
+            "description" : "Perusteen sisältökielet.",
             "items" : {
               "type" : "string",
+              "description" : "Perusteen sisältökielet.",
               "enum" : [ "FI", "SV", "SE", "RU", "EN" ]
             }
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Perusteen kuvaus useilla kielillä."
+            },
+            "description" : "Perusteen kuvaus useilla kielillä."
           },
           "maarayskirje" : {
             "$ref" : "#/components/schemas/MaarayskirjeDto"
           },
           "muutosmaaraykset" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät muutosmääräykset.",
             "items" : {
               "$ref" : "#/components/schemas/MuutosmaaraysDto"
             }
           },
           "diaarinumero" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Opetushallituksen antama diaarinumero perusteelle."
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
-            "description" : "Perusteen alkuperäinen voimaantulon alkamispäivä.",
+            "description" : "Perusteen voimaantulon alkamispäivä.",
             "format" : "date-time"
           },
           "siirtymaPaattyy" : {
             "type" : "string",
-            "description" : "Voimassaolon loppumisen jälkeinen perusteen päättymispäivämäärä.",
+            "description" : "Voimassaolon loppumisen jälkeinen siirtymäajan päättymispäivä. Peruste on siirtymäajalla, kun virallinen voimassaolo on päättynyt mutta tämä päivämäärä ei ole vielä mennyt.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Perusteen virallisen voimassaolon päättymispäivä.",
             "format" : "date-time"
           },
           "paatospvm" : {
             "type" : "string",
-            "description" : "Perusteen määräyksen päätöspäivämäärä",
+            "description" : "Perusteen määräyksen päätöspäivämäärä.",
             "format" : "date-time"
           },
           "viimeisinJulkaisuAika" : {
             "type" : "string",
+            "description" : "Viimeisimmän julkaisun ajankohta, jos peruste on julkaistu.",
             "format" : "date-time"
           },
           "luotu" : {
             "type" : "string",
+            "description" : "Perusteen luontiaika.",
             "format" : "date-time"
           },
           "tila" : {
             "type" : "string",
-            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen",
+            "description" : "Perusteen sisäinen tila. Ei enää merkityksellinen julkaisujen käytönoton jälkeen.",
             "enum" : [ "LUONNOS", "VALMIS", "POISTETTU" ]
           },
           "tyyppi" : {
             "type" : "string",
+            "description" : "Perusteen tyyppi (esim. normaali, opas, digitaalinen_osaaminen, amosaayhteinen).",
             "enum" : [ "NORMAALI", "OPAS", "AMOSAA_YHTEINEN", "POHJA", "DIGITAALINEN_OSAAMINEN", "KIELI_KAANTAJA_TUTKINTO" ]
           },
           "koulutusvienti" : {
             "type" : "boolean",
-            "description" : "EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu peruste"
+            "description" : "Ilmaisee, onko peruste EU- ja ETA-maiden koulutusvientikokeiluun tarkoitettu."
           },
           "korvattavatDiaarinumerot" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin",
+            "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin.",
             "items" : {
               "type" : "string",
-              "description" : "Perusteen vanhemmat määräykset. Eivät välttämättä ole toteutettu ePerusteisiin"
+              "description" : "Perusteen vanhemmat määräykset diaarinumeroineen. Eivät välttämättä ole toteutettu ePerusteisiin."
             }
           },
           "osaamisalat" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteeseen liittyvät osaamisalakoodit",
+            "description" : "Perusteeseen liittyvät osaamisalakoodit.",
             "items" : {
               "$ref" : "#/components/schemas/KoodiDto"
             }
@@ -24635,20 +24883,21 @@
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus työtehtävistä, joissa tutkinnon suorittanut voi toimia."
           },
           "suorittaneenOsaaminen" : {
             "type" : "object",
             "additionalProperties" : {
               "type" : "string",
-              "description" : "kv-liitteen lisätieto"
+              "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
             },
-            "description" : "kv-liitteen lisätieto"
+            "description" : "KV-liitteestä tuotu kuvaus tutkinnon suorittaneen osaamisesta."
           },
           "tutkintonimikkeet" : {
             "type" : "array",
+            "description" : "Perusteeseen liittyvät tutkintonimikkeet.",
             "items" : {
               "$ref" : "#/components/schemas/TutkintonimikeKoodiDto"
             }
@@ -24656,7 +24905,7 @@
           "oppaanPerusteet" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteet joihin opas liittyy",
+            "description" : "Perusteet, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "$ref" : "#/components/schemas/PerusteKevytDto"
             }
@@ -24664,17 +24913,17 @@
           "oppaanKoulutustyypit" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Koulutustyypit joihin opas liittyy",
+            "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
             "items" : {
               "type" : "string",
-              "description" : "Koulutustyypit joihin opas liittyy",
+              "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
               "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
             "uniqueItems" : true,
             "type" : "array",
-            "description" : "Perusteprosessin päivämäärät",
+            "description" : "Perusteprosessin päivämäärät (esim. lausuntokierros, julkaisu).",
             "items" : {
               "$ref" : "#/components/schemas/PerusteAikatauluDto"
             }
@@ -24682,22 +24931,28 @@
           "poikkeamismaaraysTarkennus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Poikkeamismääräyksen tarkentava teksti."
+            },
+            "description" : "Poikkeamismääräyksen tarkentava teksti."
           },
           "poikkeamismaaraysTyyppi" : {
             "type" : "string",
+            "description" : "Poikkeamismääräyksen tyyppi.",
             "enum" : [ "EI_TARVITA_OHJETTA", "EI_VOI_POIKETA", "KOULUTUSVIENTILIITE" ]
           },
           "opasTyyppi" : {
             "type" : "string",
+            "description" : "Opas-perusteen tyyppi (esim. normaali, tietoapalvelusta).",
             "enum" : [ "NORMAALI", "TIETOAPALVELUSTA" ]
           },
           "tietoapalvelustaKuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
+            },
+            "description" : "Opas-perusteen kuvaus tietoapalvelusta-näkymää varten."
           },
           "suoritustavat" : {
             "uniqueItems" : true,
@@ -24896,18 +25151,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -24942,18 +25197,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -25036,98 +25291,68 @@
           }
         }
       },
-      "PuuPerusteenOsaDto" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "perusteenOsa" : {
-            "$ref" : "#/components/schemas/PerusteenOsaDto"
-          },
-          "lapset" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/PuuPerusteenOsaDtoPerusteenOsaDtoObject"
-            }
-          },
-          "_perusteenOsa" : {
-            "type" : "object"
-          }
-        }
-      },
-      "PuuPerusteenOsaDtoPerusteenOsaDtoObject" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "perusteenOsa" : {
-            "$ref" : "#/components/schemas/PerusteenOsaDto"
-          },
-          "lapset" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object"
-            }
-          },
-          "_perusteenOsa" : {
-            "type" : "object"
-          }
-        }
-      },
       "OsaamismerkkiBaseDto" : {
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Osaamismerkin tunniste.",
             "format" : "int64"
           },
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Osaamismerkin nimi useilla kielillä."
+            },
+            "description" : "Osaamismerkin nimi useilla kielillä."
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Osaamismerkin kuvaus useilla kielillä."
+            },
+            "description" : "Osaamismerkin kuvaus useilla kielillä."
           },
           "tila" : {
             "type" : "string",
+            "description" : "Osaamismerkin tila (esim. LAADINTA, JULKAISTU). Julkisessa rajapinnassa palautetaan vain julkaistut.",
             "enum" : [ "LAADINTA", "JULKAISTU" ]
           },
           "kategoria" : {
             "$ref" : "#/components/schemas/OsaamismerkkiKategoriaDto"
           },
           "koodiUri" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Osaamismerkin koodin URI (esim. osaamismerkit_<koodi>). Käytetään yksittäisen merkin haussa polkuparametrina (/api/external/osaamismerkki/koodi/{uri})."
           },
           "osaamistavoitteet" : {
             "type" : "array",
+            "description" : "Osaamismerkin osaamistavoitteet.",
             "items" : {
               "$ref" : "#/components/schemas/OsaamismerkkiOsaamistavoiteDto"
             }
           },
           "arviointikriteerit" : {
             "type" : "array",
+            "description" : "Osaamismerkin arviointikriteerit.",
             "items" : {
               "$ref" : "#/components/schemas/OsaamismerkkiArviointikriteeriDto"
             }
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
+            "description" : "Osaamismerkin voimassaolon alkamispäivä.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Osaamismerkin voimassaolon päättymispäivä.",
             "format" : "date-time"
           }
-        }
+        },
+        "description" : "Osaamismerkin perustiedot, osaamistavoitteet ja arviointikriteerit."
       },
       "PageOsaamismerkkiDto" : {
         "type" : "object",
@@ -25157,18 +25382,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -25404,18 +25629,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -25548,18 +25773,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "first" : {
-            "type" : "boolean"
-          },
-          "last" : {
-            "type" : "boolean"
+          "pageable" : {
+            "$ref" : "#/components/schemas/PageableObject"
           },
           "numberOfElements" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageable" : {
-            "$ref" : "#/components/schemas/PageableObject"
+          "first" : {
+            "type" : "boolean"
+          },
+          "last" : {
+            "type" : "boolean"
           },
           "empty" : {
             "type" : "boolean"
@@ -25583,56 +25808,101 @@
           }
         }
       },
+      "SivutettuTulosDtoPerusteenJulkaisuData" : {
+        "type" : "object",
+        "properties" : {
+          "data" : {
+            "type" : "array",
+            "description" : "Hakutulosten lista.",
+            "items" : {
+              "$ref" : "#/components/schemas/PerusteenJulkaisuData"
+            }
+          },
+          "sivu" : {
+            "type" : "integer",
+            "description" : "Nykyisen sivun numero (0-indeksoitu).",
+            "format" : "int32"
+          },
+          "sivuja" : {
+            "type" : "integer",
+            "description" : "Sivujen kokonaismäärä.",
+            "format" : "int32"
+          },
+          "sivukoko" : {
+            "type" : "integer",
+            "description" : "Yhdellä sivulla palautettavien tulosten määrä.",
+            "format" : "int32"
+          },
+          "kokonaismäärä" : {
+            "type" : "integer",
+            "description" : "Tulosten kokonaismäärä.",
+            "format" : "int64"
+          }
+        },
+        "description" : "Sivutettu hakutulos."
+      },
       "OsaamismerkkiExternalDto" : {
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "integer",
+            "description" : "Osaamismerkin tunniste.",
             "format" : "int64"
           },
           "nimi" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Osaamismerkin nimi useilla kielillä."
+            },
+            "description" : "Osaamismerkin nimi useilla kielillä."
           },
           "kuvaus" : {
             "type" : "object",
             "additionalProperties" : {
-              "type" : "string"
-            }
+              "type" : "string",
+              "description" : "Osaamismerkin kuvaus useilla kielillä."
+            },
+            "description" : "Osaamismerkin kuvaus useilla kielillä."
           },
           "tila" : {
             "type" : "string",
+            "description" : "Osaamismerkin tila (esim. LAADINTA, JULKAISTU). Julkisessa rajapinnassa palautetaan vain julkaistut.",
             "enum" : [ "LAADINTA", "JULKAISTU" ]
           },
           "kategoria" : {
             "$ref" : "#/components/schemas/OsaamismerkkiKategoriaDto"
           },
           "koodiUri" : {
-            "type" : "string"
+            "type" : "string",
+            "description" : "Osaamismerkin koodin URI (esim. osaamismerkit_<koodi>). Käytetään yksittäisen merkin haussa polkuparametrina (/api/external/osaamismerkki/koodi/{uri})."
           },
           "osaamistavoitteet" : {
             "type" : "array",
+            "description" : "Osaamismerkin osaamistavoitteet.",
             "items" : {
               "$ref" : "#/components/schemas/OsaamismerkkiOsaamistavoiteDto"
             }
           },
           "arviointikriteerit" : {
             "type" : "array",
+            "description" : "Osaamismerkin arviointikriteerit.",
             "items" : {
               "$ref" : "#/components/schemas/OsaamismerkkiArviointikriteeriDto"
             }
           },
           "voimassaoloAlkaa" : {
             "type" : "string",
+            "description" : "Osaamismerkin voimassaolon alkamispäivä.",
             "format" : "date-time"
           },
           "voimassaoloLoppuu" : {
             "type" : "string",
+            "description" : "Osaamismerkin voimassaolon päättymispäivä.",
             "format" : "date-time"
           }
-        }
+        },
+        "description" : "Julkaistun osaamismerkin tiedot julkisesta rajapinnasta (/api/external/osaamismerkit)."
       }
     }
   }

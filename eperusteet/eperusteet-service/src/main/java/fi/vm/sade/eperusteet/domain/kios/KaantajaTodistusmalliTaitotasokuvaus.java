@@ -9,9 +9,7 @@ import org.hibernate.envers.NotAudited;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
@@ -27,13 +25,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class KaantajaTodistusmalliTaitotasokuvaus extends AbstractAuditedReferenceableEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
-
     @OrderColumn
     @NotAudited
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "kaantajaTodistusmalliTaitotasokuvaus", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "kaantajaTodistusmalliTaitotasokuvaus_id")
     private List<KaantajaTodistusmalliTaitotaso> taitotasot = new ArrayList<>();
 
     public KaantajaTodistusmalliTaitotasokuvaus(KaantajaTodistusmalliTaitotasokuvaus other) {

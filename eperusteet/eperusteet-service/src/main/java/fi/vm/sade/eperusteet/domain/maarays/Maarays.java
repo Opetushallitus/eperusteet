@@ -27,8 +27,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapKeyEnumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
@@ -57,15 +55,12 @@ public class Maarays extends AbstractAuditedEntity {
 
     private String diaarinumero;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "voimassaolo_alkaa")
     private Date voimassaoloAlkaa;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "voimassaolo_loppuu")
     private Date voimassaoloLoppuu;
 
-    @Temporal(TemporalType.TIMESTAMP)
     private Date maarayspvm;
 
     @NotNull
