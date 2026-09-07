@@ -13,6 +13,7 @@ import org.hibernate.envers.Audited;
 
 import jakarta.persistence.*;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -47,7 +48,8 @@ public class LukioOpetussuunnitelmaRakenne extends PerusteenOsa {
     @JoinTable(name = "yl_lukio_opetussuunnitelma_rakenne_yl_oppiaine",
             joinColumns = @JoinColumn(name = "rakenne_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "oppiaine_id", nullable = false))
-    private Set<Oppiaine> oppiaineet = new HashSet<>(0);
+    @OrderBy("jnro, id")
+    private Set<Oppiaine> oppiaineet = new LinkedHashSet<>(0);
 
     @Getter
     @Audited

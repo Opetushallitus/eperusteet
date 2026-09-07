@@ -5,7 +5,7 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteenOsaViite;
 
 import jakarta.persistence.MappedSuperclass;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @MappedSuperclass
@@ -56,7 +56,7 @@ public abstract class AbstractOppiaineOpetuksenSisalto extends AbstractAuditedRe
     }
 
     public Set<Oppiaine> getOppiaineetCopy() {
-        return new HashSet<>(getOppiaineet());
+        return new LinkedHashSet<>(getOppiaineet());
     }
 
     public void removeOppiaine(Oppiaine aine) {

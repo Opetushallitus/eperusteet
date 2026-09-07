@@ -153,7 +153,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
 
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @BatchSize(size = 10)
-    private Set<Oppiaine> oppimaarat;
+    @OrderBy("jnro, id")
+    private Set<Oppiaine> oppimaarat = new LinkedHashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "yl_oppiaine_yl_kohdealue",
@@ -164,7 +165,8 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     @Getter
     @Audited
     @OneToMany(mappedBy = "oppiaine", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private Set<OppiaineLukiokurssi> lukiokurssit = new HashSet<>(0);
+    @OrderBy("jarjestys, id")
+    private Set<OppiaineLukiokurssi> lukiokurssit = new LinkedHashSet<>(0);
 
     @RelatesToPeruste
     @Getter
@@ -203,7 +205,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
         if (koosteinen == false) {
             return null;
         }
-        return oppimaarat == null ? new HashSet<>() : new HashSet<>(oppimaarat);
+        return oppimaarat == null ? new LinkedHashSet<>() : new LinkedHashSet<>(oppimaarat);
     }
 
     public Set<OppiaineenVuosiluokkaKokonaisuus> getVuosiluokkakokonaisuudet() {
@@ -233,7 +235,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
             throw new BusinessRuleViolationException("Oppiaine ei ole koosteinen eikä tue oppimääriä");
         }
         if (oppimaarat == null) {
-            oppimaarat = new HashSet<>();
+            oppimaarat = new LinkedHashSet<>();
         }
         oppimaara.setOppiaine(this);
         if (oppimaarat.add(oppimaara)) {
@@ -255,7 +257,7 @@ public class Oppiaine extends AbstractAuditedReferenceableEntity implements Nime
     //paivitetaan vain jarjestys
     public void setOppimaarat(final List<Oppiaine> oppimaarat) {
         if (this.oppimaarat == null) {
-            this.oppimaarat = new HashSet<>();
+            this.oppimaarat = new LinkedHashSet<>();
         }
 
         this.oppimaarat.forEach(nykyinenOppimaara -> {

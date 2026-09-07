@@ -14,6 +14,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -54,7 +55,7 @@ public class Suoritustapa implements Serializable, ReferenceableEntity, Perustee
     @Getter
     @OrderBy("jarjestys, id")
     @BatchSize(size = 10)
-    private Set<TutkinnonOsaViite> tutkinnonOsat = new HashSet<>();
+    private Set<TutkinnonOsaViite> tutkinnonOsat = new LinkedHashSet<>();
 
     @RelatesToPeruste
     @NotAudited

@@ -13,7 +13,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.envers.RelationTargetAuditMode;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -57,8 +57,8 @@ public class Aihekokonaisuudet extends PerusteenOsa {
 
     @Getter
     @OneToMany(mappedBy = "aihekokonaisuudet", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @OrderBy("jnro")
-    private Set<Aihekokonaisuus> aihekokonaisuudet = new HashSet<>(0);
+    @OrderBy("jnro, id")
+    private Set<Aihekokonaisuus> aihekokonaisuudet = new LinkedHashSet<>(0);
 
     public Aihekokonaisuudet kloonaa() {
         Aihekokonaisuudet klooni = new Aihekokonaisuudet();
