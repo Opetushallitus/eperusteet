@@ -12,6 +12,7 @@ import org.hibernate.envers.Audited;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -37,7 +38,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_laajaalainen_osaaminen",
             joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id"),
             inverseJoinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id"))
-    private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new HashSet<>();
+    @OrderBy("jarjestys, id")
+    private Set<LaajaalainenOsaaminen> laajaalaisetosaamiset = new LinkedHashSet<>();
 
     @Getter
     @OneToMany(fetch = FetchType.LAZY)
@@ -45,7 +47,8 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
     @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_oppiaine",
             inverseJoinColumns = @JoinColumn(name = "oppiaineet_id", nullable = false),
             joinColumns = @JoinColumn(name = "yl_perusop_perusteen_sisalto_id", nullable = false))
-    private Set<Oppiaine> oppiaineet = new HashSet<>();
+    @OrderBy("jnro, id")
+    private Set<Oppiaine> oppiaineet = new LinkedHashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "yl_perusop_perusteen_sisalto_yl_vlkokonaisuus",
@@ -88,7 +91,7 @@ public class PerusopetuksenPerusteenSisalto extends AbstractOppiaineOpetuksenSis
 
     //kopion palauttaminen on tarkoituksellista!
     public Set<LaajaalainenOsaaminen> getLaajaalaisetosaamiset() {
-        return new HashSet<>(laajaalaisetosaamiset);
+        return new LinkedHashSet<>(laajaalaisetosaamiset);
     }
 
     public void setLaajaalaisetosaamiset(Set<LaajaalainenOsaaminen> laajaalaisetOsaamiset) {

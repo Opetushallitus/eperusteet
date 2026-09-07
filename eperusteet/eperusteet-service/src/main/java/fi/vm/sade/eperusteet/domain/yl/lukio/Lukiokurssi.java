@@ -14,7 +14,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -80,7 +80,8 @@ public class Lukiokurssi extends Kurssi {
     @Getter
     @Audited
     @OneToMany(mappedBy = "kurssi", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OppiaineLukiokurssi> oppiaineet = new HashSet<>(0);
+    @OrderBy("jarjestys, id")
+    private Set<OppiaineLukiokurssi> oppiaineet = new LinkedHashSet<>(0);
 
     public Lukiokurssi kloonaa(LukioOpetussuunnitelmaRakenne rakenne) {
         Lukiokurssi kopio = new Lukiokurssi();
