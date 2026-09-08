@@ -5,7 +5,11 @@
   "java.test.config": [
     {
       "name": "eperusteet-service",
-      "vmArgs": ["--add-opens=java.base/java.lang=ALL-UNNAMED"]
+      "workingDirectory": "${workspaceFolder}",
+      "vmArgs": [
+        "-Dspring.profiles.active=test",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED"
+      ]
     }
   ],
   "editor.codeActionsOnSave": {

@@ -1,0 +1,3 @@
+ALTER TABLE taiteenala ADD COLUMN laajuus NUMERIC(10, 2);
+
+ALTER TABLE taiteenala_AUD ADD COLUMN laajuus NUMERIC(10, 2);

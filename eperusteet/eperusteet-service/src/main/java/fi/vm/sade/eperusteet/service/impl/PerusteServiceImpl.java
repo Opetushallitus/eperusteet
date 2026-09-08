@@ -981,9 +981,7 @@ public class PerusteServiceImpl implements PerusteService{
         }
 
         if (peruste.getTpoOpetuksenSisalto() != null) {
-            perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
-            perusteDto.getTpoOpetuksenSisalto().getSisalto().getLapset()
-                    .forEach(this::taiteenalaViiteSetterRecursive);
+            updateTpoKaikkiRakenne(perusteDto, peruste);
         }
 
         if (peruste.getLukiokoulutuksenPerusteenSisalto() != null) {
@@ -1040,6 +1038,11 @@ public class PerusteServiceImpl implements PerusteService{
         }
 
         return perusteDto;
+    }
+
+    private void updateTpoKaikkiRakenne(PerusteKaikkiDto perusteDto, Peruste peruste) {
+        perusteDto.setTpoOpetuksenSisalto(mapper.map(peruste.getTpoOpetuksenSisalto(), TPOOpetuksenSisaltoDto.class));
+        perusteDto.getTpoOpetuksenSisalto().getSisalto().getLapset().forEach(this::taiteenalaViiteSetterRecursive);
     }
 
     private void taiteenalaViiteSetterRecursive(PerusteenOsaViiteDto.Laaja viite) {
