@@ -94,7 +94,7 @@ public class PerusteenOsaController {
         return new ResponseEntity<>(t, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/peruste/{perusteId}/viite/{viiteId}/", method = GET)
+    @RequestMapping(value = "/peruste/{perusteId}/viite/{viiteId}", method = GET)
     @ResponseBody
     public ResponseEntity<PerusteenOsaViiteDto.Puu> getPerusteenOsaViiteLapsilla(@PathVariable("perusteId") final Long perusteId, @PathVariable("viiteId") final Long viiteId) {
         PerusteenOsaViiteDto.Puu t = perusteenOsaViiteService.getSisalto(perusteId, viiteId, PerusteenOsaViiteDto.Puu.class);
