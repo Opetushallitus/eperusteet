@@ -10,7 +10,7 @@
     "version" : "v3.0.0"
   },
   "servers" : [ {
-    "url" : "https://localhost:8080/eperusteet-service",
+    "url" : "http://localhost:8080/eperusteet-service",
     "description" : "Generated server url"
   } ],
   "tags" : [ {
@@ -10187,6 +10187,44 @@
         }
       }
     },
+    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot" : {
+      "get" : {
+        "tags" : [ "PerusopetuksenPerusteenSisalto" ],
+        "operationId" : "getOsaaminenVersiot",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/CombinedDtoRevisionHenkiloTietoDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot/{versioId}" : {
       "get" : {
         "tags" : [ "PerusopetuksenPerusteenSisalto" ],
@@ -10223,44 +10261,6 @@
               "*/*" : {
                 "schema" : {
                   "$ref" : "#/components/schemas/LaajaalainenOsaaminenDto"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/perusteet/{perusteId}/perusopetus/laajaalaisetosaamiset/{id}/versiot/" : {
-      "get" : {
-        "tags" : [ "PerusopetuksenPerusteenSisalto" ],
-        "operationId" : "getOsaaminenVersiot",
-        "parameters" : [ {
-          "name" : "perusteId",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        }, {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
-          "schema" : {
-            "type" : "integer",
-            "format" : "int64"
-          }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "OK",
-            "content" : {
-              "*/*" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/CombinedDtoRevisionHenkiloTietoDto"
-                  }
                 }
               }
             }
@@ -12509,7 +12509,7 @@
         }
       }
     },
-    "/api/perusteenosat/peruste/{perusteId}/viite/{viiteId}/" : {
+    "/api/perusteenosat/peruste/{perusteId}/viite/{viiteId}" : {
       "get" : {
         "tags" : [ "Perusteenosat" ],
         "operationId" : "getPerusteenOsaViiteLapsilla",
@@ -19164,14 +19164,14 @@
               "$ref" : "#/components/schemas/Virhe"
             }
           },
+          "vaihtoOk" : {
+            "type" : "boolean"
+          },
           "huomautukset" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
             }
-          },
-          "vaihtoOk" : {
-            "type" : "boolean"
           }
         }
       },
@@ -20870,6 +20870,9 @@
       "Part" : {
         "type" : "object",
         "properties" : {
+          "contentType" : {
+            "type" : "string"
+          },
           "name" : {
             "type" : "string"
           },
@@ -20879,9 +20882,6 @@
           },
           "inputStream" : {
             "type" : "object"
-          },
-          "contentType" : {
-            "type" : "string"
           },
           "headerNames" : {
             "type" : "array",
@@ -21753,18 +21753,18 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "paged" : {
+          "unpaged" : {
             "type" : "boolean"
-          },
-          "pageNumber" : {
-            "type" : "integer",
-            "format" : "int32"
           },
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "unpaged" : {
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "paged" : {
             "type" : "boolean"
           }
         }

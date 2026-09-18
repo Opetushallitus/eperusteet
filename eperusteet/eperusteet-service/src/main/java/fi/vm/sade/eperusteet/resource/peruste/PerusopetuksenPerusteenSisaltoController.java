@@ -347,7 +347,7 @@ public class PerusopetuksenPerusteenSisaltoController {
         return osaamiset.getLaajaalainenOsaaminen(perusteId, id, versioId);
     }
 
-    @RequestMapping(value = "/laajaalaisetosaamiset/{id}/versiot/", method = GET)
+    @RequestMapping(value = "/laajaalaisetosaamiset/{id}/versiot", method = GET)
     public List<CombinedDto<Revision, HenkiloTietoDto>> getOsaaminenVersiot(
         @PathVariable("perusteId") final Long perusteId,
         @PathVariable("id") final Long id) {
