@@ -97,60 +97,23 @@ Migraatiohistoria tallennetaan `flyway_schema_history` -tauluun.
 
 ### 3.4. Ajaminen lokaalisti
 
-#### 3.4.1. Tietokantojen käynnistys
+#### 3.4.1. Tietokanta
 
-Tietokantojen lokaalia pyöritystä varten luo koneellesi tämän repon juureen `docker-compose.yml`-tiedosto, jonka sisältö on alla.
+`local`-profiili käynnistää eperusteet-kannan Docker Composella, jos se ei ole jo päällä. Compose-tiedosto on [`eperusteet/eperusteet-service/db/compose.yaml`](eperusteet/eperusteet-service/db/compose.yaml) (PostgreSQL 15, portti 5432).
 
-ePerusteet-service tarvitsee vain `eperusteet`-palvelun (portti 5432). `eperusteet-amosaa` ja `eperusteet-ylops` ovat valinnaisia ja tarkoitettu sisarpalveluiden lokaalia ajoa varten.
+Docker Desktopin (tai vastaavan Docker-daemonin) on oltava käynnissä. Sovellus ei käynnistä daemonin GUI-prosessia.
 
-```yaml
-services:
-  eperusteet:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: oph
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: eperusteet
-    ports:
-      - "127.0.0.1:5432:5432"
-    volumes:
-      - eperusteet_data:/var/lib/postgresql/data
-  eperusteet-amosaa:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: oph
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: amosaa
-    ports:
-      - "127.0.0.1:5433:5432"
-    volumes:
-      - amosaa_data:/var/lib/postgresql/data
-  eperusteet-ylops:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: oph
-      POSTGRES_PASSWORD: test
-      POSTGRES_DB: ylops
-    ports:
-      - "127.0.0.1:5434:5432"
-    volumes:
-      - ylops_data:/var/lib/postgresql/data
+Amosaan ja ylopsin lokaalit kannat eivät kuulu tähän repositorioon; ne käynnistetään niissä palveluissa.
 
-volumes:
-  eperusteet_data:
-  amosaa_data:
-  ylops_data:
-```
-
-Käynnistä tietokannat komennolla:
+Kannan tyhjennys ja uudelleenluonti:
 
 ```bash
-docker compose up -d
+./eperusteet/eperusteet-service/db/db-reset.sh
 ```
 
-#### 3.4.2. Palvelun käynnistys
+Flyway-migraatiot ajetaan seuraavalla palvelun käynnistyksellä.
 
-Tämän jälkeen palvelun saa käyntiin seuraavilla komennoilla:
+#### 3.4.2. Palvelun käynnistys
 
 ```bash
 cd eperusteet/eperusteet-service
@@ -165,7 +128,7 @@ Jos muutat tietomallia tai rajapintoja, generoi OpenAPI-dokumentaatio uudelleen.
 
 Skripti `generate-openapi.sh` sijaitsee **repon juuressa**; aja komennot sieltä. Windowsissa käytä esimerkiksi Git Bashia tai WSL:ää.
 
-Generointi käynnistää palvelun profiileilla `default,local`, joten local-Postgresin (portti 5432) on oltava käynnissä.
+Generointi käynnistää palvelun profiileilla `default,local`. Docker Desktopin on oltava käynnissä, jotta local-Postgres (portti 5432) nousee.
 
 Päivitä OpenAPI-spesifikaatio:
 ```bash
@@ -196,20 +159,14 @@ mergettäessä.
 ### 3.7. Yleisiä ongelmatilanteita
 
 **Tietokanta ei käynnisty:**
-```bash
-# Tarkista Docker-konttien tila
-docker ps -a
-
-# Käynnistä kontit uudelleen
-docker compose restart
-```
+- Varmista että Docker Desktop on käynnissä (`docker info`)
+- Tarkista konttien tila: `docker ps -a`
 
 **Migraatiovirheet:**
 - Tarkista että tietokanta on tyhjä tai migraatiohistoria on oikein
-- Tarvittaessa poista tietokanta ja luo uudelleen:
+- Tarvittaessa nollaa eperusteet-kanta:
 ```bash
-docker compose down -v
-docker compose up -d
+./eperusteet/eperusteet-service/db/db-reset.sh
 ```
 
 **Maven build epäonnistuu:**
