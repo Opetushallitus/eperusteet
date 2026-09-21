@@ -30,7 +30,7 @@ Javalla ja Spring Boot -viitekehyksellä toteutettu REST API -palvelu (`eperuste
 
 Tiedot tallennetaan PostgreSQL-tietokantaan.
 
-Tässä repossa palvelun lähdekoodi on hakemistossa `eperusteet/eperusteet-service`. Repon juuressa on muun muassa `generate-openapi.sh`, `tools/` ja kehitysasetuksiin liittyvä dokumentaatio.
+Tässä repossa palvelun lähdekoodi on hakemistossa `eperusteet/eperusteet-service`. Repon juuressa on muun muassa `generate-openapi.sh` ja `tools/`.
 
 ## 3. Kehitysympäristö
 
@@ -42,17 +42,24 @@ Asenna haluamallasi tavalla
 - Maven 3.8 tai uudempi
 - Docker ja Docker Compose
 - konfiguroi Maven `~/.m2/settings.xml` GitHub Packages -kirjautumista varten (ks. alla)
-- luo [dev-settingsin](/dev-settings.md) mukaiset käyttäjäkohtaisten asetusten tiedostot annettuihin polkuihin ja täytä omilla tiedoilla
+- aseta testiopintopolku-tunnukset ympäristömuuttujiin (ks. alla)
 
 **Maven ja GitHub Packages:**
 
 Riippuvuudet (mm. `eperusteet-parent-pom`, `eperusteet-backend-utils`, `java-utils`, `auditlogger`) haetaan GitHub Packagesista. Ilman autentikaatiota ensimmäinen `mvn`-ajo epäonnistuu.
 
-Lisää `~/.m2/settings.xml`-tiedostoon server-id:t, jotka vastaavat pom.xml:n repository-id:itä. Mallina voi käyttää repon [`.github/maven/settings.xml`](/.github/maven/settings.xml)-tiedostoa. Lokaalisti käytä GitHub-käyttäjätunnusta ja [personal access tokenia](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (`read:packages` -oikeus):
+Pohjana voi käyttää repon [`.github/maven/settings.xml`](.github/maven/settings.xml)-tiedostoa. Kopioi se `~/.m2/settings.xml`-tiedostoksi ja korvaa ympäristömuuttujat GitHub-käyttäjätunnuksella ja [personal access tokenilla](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) (`read:packages` -oikeus).
 
-- `github-eperusteet-backend-utils`
-- `github-java-utils`
-- `github-auditlogger`
+Jos organisaatiossa on SSO, valtuuta token Opetushallitus-orgaan.
+
+**CAS/palvelutunnukset (local):**
+
+Aseta testiopintopolku-tunnukset ympäristömuuttujiin. Sama pari käy eperusteet-, amosaa- ja ylops-palveluille:
+
+- `EPERUSTEET_OPH_USERNAME`
+- `EPERUSTEET_OPH_PASSWORD`
+
+Ilman näitä palvelu käynnistyy, mutta kutsut muihin OPH-palveluihin (koodisto, käyttöoikeus, ym.) eivät autentikoidu.
 
 **Huomioitavaa riippuvuuksista:**
 
@@ -63,7 +70,7 @@ Ajoaikana palvelu riippuu seuraavista OPH-palveluista:
 - **Koodistopalvelu** - koodistojen hallinta
 - **Amosaa, ylops ja pdf-palvelu** - lokaalissa `local`-profiilissa oletusosoitteet ovat `localhost:8081` (ylops), `localhost:8082` (amosaa) ja `localhost:8083` (pdf)
 
-Lokaalissa ajossa profiilit (esim. `local`, `qa` käynnistysohjeessa) ja `dev-settings.md`-mukaiset asetukset määrittävät, mihin OPH-palveluihin kulloinkin yhdistetään. `override.properties` on ajoaikainen asetus (CAS/palvelutunnukset), ei Maven-käännösasetus.
+Lokaalissa ajossa profiilit (esim. `local`, `qa` käynnistysohjeessa) ja ympäristömuuttujat `EPERUSTEET_OPH_USERNAME` / `EPERUSTEET_OPH_PASSWORD` määrittävät, mihin OPH-palveluihin kulloinkin yhdistetään. Nämä ovat ajoaikaisia CAS/palvelutunnuksia, eivät Maven-käännösasetuksia.
 
 ### 3.2. Testien ajaminen
 
@@ -126,7 +133,7 @@ Palvelu käynnistyy oletuksena porttiin 8080. API on käytettävissä osoitteess
 
 Jos muutat tietomallia tai rajapintoja, generoi OpenAPI-dokumentaatio uudelleen.
 
-Skripti `generate-openapi.sh` sijaitsee **repon juuressa**; aja komennot sieltä. Windowsissa käytä esimerkiksi Git Bashia tai WSL:ää.
+Skripti `generate-openapi.sh` sijaitsee **repon juuressa**; aja komennot sieltä.
 
 Generointi käynnistää palvelun profiileilla `default,local`. Docker Desktopin on oltava käynnissä, jotta local-Postgres (portti 5432) nousee.
 
@@ -177,7 +184,7 @@ mergettäessä.
 **Palvelu ei käynnisty:**
 - Tarkista että portti 8080 on vapaana
 - Tarkista että tietokanta on käynnissä ja saavutettavissa
-- Tarkista että `override.properties` on konfiguroitu (dev-settings.md)
+- Tarkista että `EPERUSTEET_OPH_USERNAME` ja `EPERUSTEET_OPH_PASSWORD` on asetettu, jos tarvitset QA-integraatioita
 - Tarkista konsoliloki (local-profiili kirjoittaa stdoutiin; audit-loki: `~/logs/auditlog_eperusteet.log`)
 
 ## 4. Ympäristöt
