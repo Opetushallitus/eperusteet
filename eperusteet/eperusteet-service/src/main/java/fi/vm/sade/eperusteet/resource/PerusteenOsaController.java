@@ -333,7 +333,7 @@ public class PerusteenOsaController {
     @RequestMapping(value = "/{id}/lukko", method = GET)
     @ResponseBody
     public ResponseEntity<LukkoDto> checkPerusteenOsaLock(@PathVariable("id") final Long id,
-        @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+        @RequestHeader(value = "If-None-Match", required = false) String eTag,
         HttpServletResponse response) {
         LukkoDto lock = service.getLock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
@@ -344,7 +344,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<LukkoDto> lockPerusteenOsa(
             @PathVariable("id") final Long id,
-            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            @RequestHeader(value = "If-None-Match", required = false) String eTag,
             HttpServletResponse response) {
         LukkoDto lock = service.lock(id);
         response.addHeader("ETag", String.valueOf(service.getLatestRevision(id)));
@@ -356,7 +356,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<LukkoDto> lockPerusteenOsaPut(
             @PathVariable("id") final Long id,
-            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            @RequestHeader(value = "If-None-Match", required = false) String eTag,
             HttpServletResponse response) {
         return lockPerusteenOsa(id, eTag, response);
     }
@@ -371,7 +371,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<LukkoDto> checkLockByTutkinnonOsaViite(
             @PathVariable("viiteId") final Long viiteId,
-            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            @RequestHeader(value = "If-None-Match", required = false) String eTag,
             HttpServletResponse response) {
         LukkoDto lock = tutkinnonOsaViiteService.getPerusteenOsaLock(viiteId);
         response.addHeader("ETag", String.valueOf(tutkinnonOsaViiteService.getLatestRevision(viiteId)));
@@ -382,7 +382,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<LukkoDto> lockByTutkinnonOsaViite(
             @PathVariable("viiteId") final Long viiteId,
-            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            @RequestHeader(value = "If-None-Match", required = false) String eTag,
             HttpServletResponse response) {
         LukkoDto lock = tutkinnonOsaViiteService.lockPerusteenOsa(viiteId);
         response.addHeader("ETag", String.valueOf(tutkinnonOsaViiteService.getLatestRevision(viiteId)));
@@ -393,7 +393,7 @@ public class PerusteenOsaController {
     @ResponseBody
     public ResponseEntity<LukkoDto> lockByTutkinnonOsaViitePut(
             @PathVariable("viiteId") final Long viiteId,
-            @RequestHeader(value = "If-None-Match", required = false) Integer eTag,
+            @RequestHeader(value = "If-None-Match", required = false) String eTag,
             HttpServletResponse response) {
         return lockByTutkinnonOsaViite(viiteId, eTag, response);
     }
