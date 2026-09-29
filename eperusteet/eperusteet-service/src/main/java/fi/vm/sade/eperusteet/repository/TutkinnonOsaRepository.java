@@ -17,6 +17,13 @@ public interface TutkinnonOsaRepository extends JpaWithVersioningRepository<Tutk
 
     List<TutkinnonOsa> findByNimiTekstiTekstiContainingIgnoreCase(String teksti);
 
+    @Query("SELECT DISTINCT t FROM TutkinnonOsa t " +
+            "LEFT JOIN t.geneerinenArviointiasteikko ga " +
+            "LEFT JOIN t.osaAlueet oa " +
+            "LEFT JOIN oa.geneerinenArviointiasteikko oaga " +
+            "WHERE ga.id = :id OR oaga.id = :id")
+    List<TutkinnonOsa> findByGeneerinenArviointiasteikkoKaytossa(@Param("id") Long geneerinenArviointiasteikkoId);
+
     @Query("SELECT to FROM Peruste p JOIN p.suoritustavat s JOIN s.tutkinnonOsat t JOIN t.tutkinnonOsa to WHERE to.koodi.uri = :koodiUri AND p.tila = 'VALMIS' ")
     List<TutkinnonOsa> findByKoodiUriAndValmiitPerusteet(@Param("koodiUri") String koodiUri);
 }

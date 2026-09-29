@@ -5,9 +5,12 @@ import fi.vm.sade.eperusteet.domain.GeneerisenOsaamistasonKriteeri;
 import fi.vm.sade.eperusteet.domain.Osaamistaso;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
 import fi.vm.sade.eperusteet.domain.arviointi.ArviointiAsteikko;
+import fi.vm.sade.eperusteet.domain.tutkinnonosa.TutkinnonOsa;
 import fi.vm.sade.eperusteet.dto.GeneerinenArviointiasteikkoDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKevytDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.GeneerinenArviointiasteikkoRepository;
+import fi.vm.sade.eperusteet.repository.TutkinnonOsaRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.GeneerinenArviointiasteikkoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -37,6 +40,9 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Autowired
     private PermissionManager permissionManager;
+
+    @Autowired
+    private TutkinnonOsaRepository tutkinnonOsaRepository;
 
     @Override
     public List<GeneerinenArviointiasteikkoDto> getAll() {
@@ -133,8 +139,11 @@ public class GeneerinenArviointiasteikkoServiceImpl implements GeneerinenArvioin
 
     @Override
     public void remove(Long id) {
-        if (geneerinenArviointiJulkaistu(id)) {
-            throw new BusinessRuleViolationException("julkaistua-ei-voi-poistaa");
+        List<TutkinnonOsa> tutkinnonOsat = tutkinnonOsaRepository.findByGeneerinenArviointiasteikkoKaytossa(id);
+        if (!tutkinnonOsat.isEmpty()) {
+            throw new BusinessRuleViolationException(
+                    "geneerinen-arviointiasteikko-kaytossa-tutkinnon-osissa",
+                    mapper.mapAsList(tutkinnonOsat, TutkinnonOsaKevytDto.class));
         }
         geneerinenArviointiasteikkoRepository.deleteById(id);
     }

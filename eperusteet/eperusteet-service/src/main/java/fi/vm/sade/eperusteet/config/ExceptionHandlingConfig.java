@@ -187,6 +187,10 @@ public class ExceptionHandlingConfig extends ResponseEntityExceptionHandler {
         } else if (ex instanceof BusinessRuleViolationException) {
             suppresstrace = true;
             map.put("syy", ex.getLocalizedMessage());
+            Object data = ((BusinessRuleViolationException) ex).getData();
+            if (data != null) {
+                map.put("data", data);
+            }
         } else if (ex instanceof ServiceException) {
             map.put("syy", "jarjestelmavirhe-ohje");
         } else if (ex instanceof IllegalArgumentException) {
