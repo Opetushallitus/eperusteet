@@ -1,0 +1,1 @@
+ALTER TABLE tutkinnonosa_aud DROP CONSTRAINT IF EXISTS tutkinnonosa_aud_geneerinenarviointiasteikko_id_fkey;
