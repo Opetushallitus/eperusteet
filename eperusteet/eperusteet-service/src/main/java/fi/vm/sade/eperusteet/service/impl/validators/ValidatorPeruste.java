@@ -419,6 +419,13 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        // Lukutaitokoulutus
+        if (peruste.getLukutaitokoulutusSisalto() != null) {
+            for (PerusteenOsaViite lapsi : peruste.getLukutaitokoulutusSisalto().getSisalto().getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
+            }
+        }
+
         // Perusopetus
         if (peruste.getPerusopetuksenPerusteenSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getPerusopetuksenPerusteenSisalto().getSisalto().getLapset()) {
