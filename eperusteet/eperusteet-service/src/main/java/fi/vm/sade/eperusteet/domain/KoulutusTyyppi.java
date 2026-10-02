@@ -1,9 +1,9 @@
 package fi.vm.sade.eperusteet.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.util.Arrays;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum KoulutusTyyppi {
     PERUSTUTKINTO("koulutustyyppi_1"),
@@ -23,10 +23,11 @@ public enum KoulutusTyyppi {
     TPO("koulutustyyppi_999907"),
     VAPAASIVISTYSTYO("koulutustyyppi_10"),
     MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS("koulutustyyppi_30"),
+    LUKUTAITOKOULUTUS("koulutustyyppi_31"),
     VAPAASIVISTYSTYOLUKUTAITO("koulutustyyppi_35"),
     TUTKINTOONVALMENTAVA("koulutustyyppi_40"),
     KIELIKAANTAJATUTKINTO("koulutustyyppi_500"),
-    MUU_KOULUTUS("koulutustyyppi_muu");
+    MUU_KOULUTUS("koulutustyyppi_muu"); 
 
     private final String tyyppi;
 
@@ -91,6 +92,7 @@ public enum KoulutusTyyppi {
                 VALMA.toString(),
                 VAPAASIVISTYSTYO.toString(),
                 MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString(),
+                LUKUTAITOKOULUTUS.toString(),
                 VAPAASIVISTYSTYOLUKUTAITO.toString(),
                 TUTKINTOONVALMENTAVA.toString()
         );

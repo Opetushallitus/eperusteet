@@ -1,16 +1,36 @@
 package fi.vm.sade.eperusteet.domain;
 
+import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import fi.vm.sade.eperusteet.domain.annotation.Identifiable;
+import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
+import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
+import fi.vm.sade.eperusteet.domain.lukutaitokoulutus.LukutaitokoulutusSisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
-import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
-import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.EsiopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.PerusopetuksenPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.yl.TpoOpetuksenSisalto;
@@ -45,23 +65,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-import org.hibernate.envers.RelationTargetAuditMode;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import static fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus.LOPS2019;
 
 @Entity
 @Table(name = "peruste")
@@ -212,6 +215,10 @@ public class Peruste extends AbstractAuditedEntity
     @Getter
     @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private TutkintoonvalmentavaSisalto tuvasisalto;
+
+    @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private LukutaitokoulutusSisalto lukutaitokoulutusSisalto;
 
     @Getter
     @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -371,6 +378,8 @@ public class Peruste extends AbstractAuditedEntity
                 return Collections.singleton(this.getVstSisalto());
             } else if (this.getTuvasisalto() != null) {
                 return Collections.singleton(this.getTuvasisalto());
+            } else if (this.getLukutaitokoulutusSisalto() != null) {
+                return Collections.singleton(this.getLukutaitokoulutusSisalto());
             } else if (this.getDigitaalinenOsaaminenSisalto() != null) {
                 return Collections.singleton(this.getDigitaalinenOsaaminenSisalto());
             } else if (this.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {
@@ -538,6 +547,11 @@ public class Peruste extends AbstractAuditedEntity
                     return tuvaSisalto.getSisalto();
                 }
                 break;
+            case LUKUTAITOKOULUTUS:
+                if (this.lukutaitokoulutusSisalto != null) {
+                    return this.lukutaitokoulutusSisalto.getSisalto();
+                }
+                break;
         }
 
         return null;
@@ -597,6 +611,12 @@ public class Peruste extends AbstractAuditedEntity
     public void setSisalto(TutkintoonvalmentavaSisalto sisalto) {
         this.tuvasisalto = sisalto;
         this.tuvasisalto.setPeruste(this);
+    }
+
+    @JsonIgnore
+    public void setSisalto(LukutaitokoulutusSisalto sisalto) {
+        this.lukutaitokoulutusSisalto = sisalto;
+        this.lukutaitokoulutusSisalto.setPeruste(this);
     }
 
     @JsonIgnore
@@ -661,6 +681,10 @@ public class Peruste extends AbstractAuditedEntity
 
         if (this.tuvasisalto != null) {
             return this.tuvasisalto.containsViite(viite);
+        }
+
+        if (this.lukutaitokoulutusSisalto != null) {
+            return this.lukutaitokoulutusSisalto.containsViite(viite);
         }
 
         if (this.digitaalinenOsaaminenSisalto != null) {
