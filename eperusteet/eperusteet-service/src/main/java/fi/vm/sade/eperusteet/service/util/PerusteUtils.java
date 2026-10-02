@@ -1,15 +1,15 @@
 package fi.vm.sade.eperusteet.service.util;
 
+import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
+
+import java.util.Collection;
+import java.util.Iterator;
+
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.KoulutustyyppiToteutus;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.StructurallyComparable;
 import lombok.experimental.UtilityClass;
-
-import java.util.Collection;
-import java.util.Iterator;
-
-import static fi.vm.sade.eperusteet.service.util.Util.refXnor;
 
 @UtilityClass
 public class PerusteUtils {
@@ -71,7 +71,7 @@ public class PerusteUtils {
                     return KoulutustyyppiToteutus.VAPAASIVISTYSTYO;
                 } else if (kt == KoulutusTyyppi.TUTKINTOONVALMENTAVA) {
                     return KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA;
-                } else if (kt == KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS) {
+                } else if (kt.isOneOf(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS, KoulutusTyyppi.LUKUTAITOKOULUTUS)) {
                     return KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS;
                 }
 

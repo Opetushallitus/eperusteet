@@ -43,6 +43,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
+import fi.vm.sade.eperusteet.domain.lukutaitokoulutus.LukutaitokoulutusSisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
@@ -2302,6 +2303,8 @@ public class PerusteServiceImpl implements PerusteService{
         } else if (koulutustyyppi == KoulutusTyyppi.AIKUISTENPERUSOPETUS) {
             AIPEOpetuksenSisalto sisalto = new AIPEOpetuksenSisalto();
             peruste.setSisalto(sisalto);
+        } else if (koulutustyyppi == KoulutusTyyppi.LUKUTAITOKOULUTUS) {
+            peruste.setSisalto(new LukutaitokoulutusSisalto());
         } else if (koulutustyyppi.isVapaaSivistystyo() || koulutustyyppi == MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
         } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
@@ -2399,6 +2402,12 @@ public class PerusteServiceImpl implements PerusteService{
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
             peruste.setToteutus(vanha.getToteutus());
+            peruste = perusteRepository.save(peruste);
+        }
+        else if (vanha.getLukutaitokoulutusSisalto() != null) {
+            LukutaitokoulutusSisalto uusiSisalto = vanha.getLukutaitokoulutusSisalto().kloonaa(peruste);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setSisalto(uusiSisalto);
             peruste = perusteRepository.save(peruste);
         }
         else if (vanha.getToteutus().equals(KoulutustyyppiToteutus.VAPAASIVISTYSTYO) || vanha.getToteutus().equals(KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS)) {

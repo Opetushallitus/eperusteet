@@ -10,6 +10,7 @@ import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
+import fi.vm.sade.eperusteet.dto.lukutaitokoulutus.LukutaitokoulutusSisaltoDto;
 import fi.vm.sade.eperusteet.dto.tuva.TutkintoonvalmentavaSisaltoDto;
 import fi.vm.sade.eperusteet.dto.vst.VapaasivistystyoSisaltoDto;
 import fi.vm.sade.eperusteet.dto.kios.KieliJaKaantajaTutkintoSisaltoDto;
@@ -99,6 +100,11 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     private TutkintoonvalmentavaSisaltoDto tuvasisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("lukutaitokoulutus")
+    @Schema(description = "Lukutaitokoulutuksen perusteen sisältörakenne.")
+    private LukutaitokoulutusSisaltoDto lukutaitokoulutusSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("opas")
     @Schema(description = "Opas-perusteen sisältörakenne.")
     private OpasSisaltoDto oppaanSisalto;
@@ -146,6 +152,8 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
                 return Collections.singleton(this.getVstSisalto());
             } else if (this.getTuvasisalto() != null) {
                 return Collections.singleton(this.getTuvasisalto());
+            } else if (this.getLukutaitokoulutusSisalto() != null) {
+                return Collections.singleton(this.getLukutaitokoulutusSisalto());
             } else if (this.getDigitaalinenOsaaminenSisalto() != null) {
                 return Collections.singleton(this.getDigitaalinenOsaaminenSisalto());
             } else if (this.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {
