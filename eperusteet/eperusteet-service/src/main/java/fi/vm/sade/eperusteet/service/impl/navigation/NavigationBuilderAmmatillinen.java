@@ -58,11 +58,13 @@ public class NavigationBuilderAmmatillinen implements NavigationBuilder {
     }
 
     private NavigationNodeDto buildTutkinnonOsa(TutkinnonOsaViite tosa) {
+        KoodiDto koodi = mapper.map(tosa.getTutkinnonOsa().getKoodi(), KoodiDto.class);
+        LokalisoituTekstiDto tutkinnonosanNimi = mapper.map(tosa.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class);
         NavigationNodeDto result = NavigationNodeDto.of(
                 NavigationType.tutkinnonosaviite,
-                mapper.map(tosa.getTutkinnonOsa().getNimi(), LokalisoituTekstiDto.class),
+                koodi != null ? koodi.getNimi() : tutkinnonosanNimi,
                 tosa.getId())
-                .meta("koodi", mapper.map(tosa.getTutkinnonOsa().getKoodi(), KoodiDto.class))
+                .meta("koodi", koodi)
                 .meta("laajuus", tosa.getLaajuus());
         if (tosa.getTutkinnonOsa() != null && tosa.getTutkinnonOsa().getTyyppi() != TutkinnonOsaTyyppi.NORMAALI) {
             result.add(NavigationNodeDto.of(NavigationType.osaalueet)
