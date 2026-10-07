@@ -1,10 +1,10 @@
 package fi.vm.sade.eperusteet.repository;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
-import fi.vm.sade.eperusteet.domain.Peruste;
-import fi.vm.sade.eperusteet.domain.maarays.Maarays;
-import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,10 +12,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import fi.vm.sade.eperusteet.domain.Peruste;
+import fi.vm.sade.eperusteet.domain.maarays.Maarays;
+import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 
 @Repository
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {
@@ -211,7 +213,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                AND p.tila != 'POISTETTU'
                AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12',
                    'koulutustyyppi_5', 'koulutustyyppi_18',
-                   'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_40')
+                   'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_31', 'koulutustyyppi_40')
                AND (p.voimassaoloLoppuu IS NULL
                    OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP
                    OR (p.siirtymaPaattyy IS NOT NULL

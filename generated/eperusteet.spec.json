@@ -2474,8 +2474,7 @@
           "in" : "header",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -2507,8 +2506,7 @@
           "in" : "header",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -2540,8 +2538,7 @@
           "in" : "header",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -2593,8 +2590,7 @@
           "in" : "header",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -2626,8 +2622,7 @@
           "in" : "header",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -2659,8 +2654,7 @@
           "in" : "header",
           "required" : false,
           "schema" : {
-            "type" : "integer",
-            "format" : "int32"
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -11618,7 +11612,7 @@
                   "type" : "array",
                   "items" : {
                     "type" : "string",
-                    "enum" : [ "koulutustyyppi_1", "koulutustyyppi_2", "koulutustyyppi_5", "koulutustyyppi_6", "koulutustyyppi_11", "koulutustyyppi_12", "koulutustyyppi_14", "koulutustyyppi_15", "koulutustyyppi_16", "koulutustyyppi_17", "koulutustyyppi_18", "koulutustyyppi_20", "koulutustyyppi_22", "koulutustyyppi_23", "koulutustyyppi_999907", "koulutustyyppi_10", "koulutustyyppi_30", "koulutustyyppi_35", "koulutustyyppi_40", "koulutustyyppi_500", "koulutustyyppi_muu" ]
+                    "enum" : [ "koulutustyyppi_1", "koulutustyyppi_2", "koulutustyyppi_5", "koulutustyyppi_6", "koulutustyyppi_11", "koulutustyyppi_12", "koulutustyyppi_14", "koulutustyyppi_15", "koulutustyyppi_16", "koulutustyyppi_17", "koulutustyyppi_18", "koulutustyyppi_20", "koulutustyyppi_22", "koulutustyyppi_23", "koulutustyyppi_999907", "koulutustyyppi_10", "koulutustyyppi_30", "koulutustyyppi_31", "koulutustyyppi_35", "koulutustyyppi_40", "koulutustyyppi_500", "koulutustyyppi_muu" ]
                   }
                 }
               }
@@ -18548,7 +18542,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "osaamistasonKriteerit" : {
@@ -18651,7 +18645,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteet" : {
@@ -19158,7 +19152,7 @@
               "$ref" : "#/components/schemas/Validointi"
             }
           },
-          "virheet" : {
+          "huomautukset" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
@@ -19167,7 +19161,7 @@
           "vaihtoOk" : {
             "type" : "boolean"
           },
-          "huomautukset" : {
+          "virheet" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
@@ -19572,7 +19566,7 @@
             "items" : {
               "type" : "string",
               "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
@@ -19892,7 +19886,7 @@
             "items" : {
               "type" : "string",
               "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
@@ -20870,6 +20864,9 @@
       "Part" : {
         "type" : "object",
         "properties" : {
+          "submittedFileName" : {
+            "type" : "string"
+          },
           "contentType" : {
             "type" : "string"
           },
@@ -20888,9 +20885,6 @@
             "items" : {
               "type" : "string"
             }
-          },
-          "submittedFileName" : {
-            "type" : "string"
           }
         }
       },
@@ -21408,7 +21402,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "lokalisoituNimi" : {
@@ -21753,19 +21747,19 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "unpaged" : {
+          "paged" : {
             "type" : "boolean"
           },
-          "pageSize" : {
-            "type" : "integer",
-            "format" : "int32"
+          "unpaged" : {
+            "type" : "boolean"
           },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "paged" : {
-            "type" : "boolean"
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
           }
         }
       },
@@ -21775,10 +21769,10 @@
           "empty" : {
             "type" : "boolean"
           },
-          "sorted" : {
+          "unsorted" : {
             "type" : "boolean"
           },
-          "unsorted" : {
+          "sorted" : {
             "type" : "boolean"
           }
         }
@@ -22052,7 +22046,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "osaamistasonKriteerit" : {
@@ -22858,7 +22852,7 @@
             "items" : {
               "type" : "string",
               "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
@@ -23671,6 +23665,63 @@
         },
         "description" : "Vanhan lukion (LOPS) perusteen sisältörakenne. Kenttä puuttuu, jos peruste käyttää LOPS 2019 -rakennetta."
       },
+      "LukutaitokoulutusSisaltoDto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "sisalto" : {
+            "oneOf" : [ {
+              "$ref" : "#/components/schemas/Laaja"
+            }, {
+              "$ref" : "#/components/schemas/AihekokonaisuudetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaAihealueDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaKielitaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasoasteikkoDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTaitotasokuvausDto"
+            }, {
+              "$ref" : "#/components/schemas/KaantajaTodistusmalliDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoKielitaitotasoDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoLaajaAlainenOsaaminenDto"
+            }, {
+              "$ref" : "#/components/schemas/KotoOpintoDto"
+            }, {
+              "$ref" : "#/components/schemas/KoulutuksenOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
+            }, {
+              "$ref" : "#/components/schemas/OpintokokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusDto"
+            }, {
+              "$ref" : "#/components/schemas/OsaamiskokonaisuusPaaAlueDto"
+            }, {
+              "$ref" : "#/components/schemas/TaiteenalaDto"
+            }, {
+              "$ref" : "#/components/schemas/TavoitesisaltoalueDto"
+            }, {
+              "$ref" : "#/components/schemas/TekstiKappaleDto"
+            }, {
+              "$ref" : "#/components/schemas/TutkinnonOsaDto"
+            }, {
+              "$ref" : "#/components/schemas/TuvaLaajaAlainenOsaaminenDto"
+            } ]
+          }
+        },
+        "description" : "Lukutaitokoulutuksen perusteen sisältörakenne."
+      },
       "OpasSisaltoDto" : {
         "type" : "object",
         "properties" : {
@@ -24058,7 +24109,7 @@
             "items" : {
               "type" : "string",
               "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
@@ -24148,6 +24199,9 @@
           },
           "tutkintoonvalmentava" : {
             "$ref" : "#/components/schemas/TutkintoonvalmentavaSisaltoDto"
+          },
+          "lukutaitokoulutus" : {
+            "$ref" : "#/components/schemas/LukutaitokoulutusSisaltoDto"
           },
           "opas" : {
             "$ref" : "#/components/schemas/OpasSisaltoDto"
@@ -24917,7 +24971,7 @@
             "items" : {
               "type" : "string",
               "description" : "Koulutustyypit, joihin opas liittyy. Kenttä puuttuu, jos peruste ei ole opas.",
-              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
             }
           },
           "perusteenAikataulut" : {
