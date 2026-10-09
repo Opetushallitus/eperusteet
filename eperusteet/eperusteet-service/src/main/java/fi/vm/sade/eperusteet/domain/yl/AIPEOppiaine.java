@@ -253,12 +253,23 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
         TekstiOsa.validateChange(a.sisaltoalueinfo, b.sisaltoalueinfo);
 
         if (a.getKurssit() != null) {
-            if (!Objects.equals(a.getKurssit().size(), b.getKurssit().size())) {
+            if (b.getKurssit() == null || a.getKurssit().size() != b.getKurssit().size()) {
                 throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
             }
 
-            for (Integer idx = 0; idx < a.getKurssit().size(); ++idx) {
-                AIPEKurssi.validateChange(a.getKurssit().get(idx), b.getKurssit().get(idx));
+            Map<Long, AIPEKurssi> kurssitB = new HashMap<>();
+            for (AIPEKurssi kurssi : b.getKurssit()) {
+                if (kurssi.getId() == null || kurssitB.put(kurssi.getId(), kurssi) != null) {
+                    throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+                }
+            }
+
+            for (AIPEKurssi kurssi : a.getKurssit()) {
+                AIPEKurssi vastaava = kurssitB.get(kurssi.getId());
+                if (kurssi.getId() == null || vastaava == null) {
+                    throw new BusinessRuleViolationException("rakennetta-ei-voi-muuttaa");
+                }
+                AIPEKurssi.validateChange(kurssi, vastaava);
             }
         }
     }
