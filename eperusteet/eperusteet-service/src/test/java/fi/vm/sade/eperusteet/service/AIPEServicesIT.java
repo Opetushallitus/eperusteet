@@ -2,12 +2,15 @@ package fi.vm.sade.eperusteet.service;
 
 import com.google.common.collect.Sets;
 import fi.vm.sade.eperusteet.domain.*;
+import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
 import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
 import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
 import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
 import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.yl.*;
+import fi.vm.sade.eperusteet.repository.AIPEKurssiRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
@@ -22,7 +25,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +48,12 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Autowired
+    private AIPEKurssiRepository kurssiRepository;
+
+    @Autowired
+    private EntityManager em;
 
     @Dto
     @Autowired
@@ -203,6 +217,59 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
         assertThat(oppiaine.getTavoitteet()).hasSize(1);
         assertThat(oppiaine.getTavoitteet().get(0).getArvioinninkohteet()).hasSize(2);
 
+    }
+
+    @Test
+    public void testKurssienJarjestuksenMuutosSailyttääKoodin() {
+        List<AIPEVaiheSuppeaDto> vaiheet = sisalto.getVaiheet(perusteId);
+        Long vaiheId = vaiheet.get(0).getId();
+        Long oppiaineId = sisalto.getOppiaineet(perusteId, vaiheId).get(0).getId();
+
+        List<AIPEKurssiSuppeaDto> kurssit = sisalto.getKurssit(perusteId, vaiheId, oppiaineId);
+        assertThat(kurssit).hasSize(2);
+
+        Map<Long, String> urit = new LinkedHashMap<>();
+        int jarjestysnumero = 1;
+        for (AIPEKurssiSuppeaDto suppea : kurssit) {
+            AIPEKurssiDto kurssi = sisalto.getKurssi(perusteId, vaiheId, oppiaineId, suppea.getId(), null);
+            String arvo = "jarjestys" + jarjestysnumero++;
+            kurssi.setKoodi(KoodiDto.of("oppiaineetaipe", arvo));
+            sisalto.updateKurssi(perusteId, vaiheId, oppiaineId, kurssi.getId(), kurssi);
+            urit.put(kurssi.getId(), "oppiaineetaipe_" + arvo);
+        }
+
+        peruste.asetaTila(PerusteTila.VALMIS);
+        perusteRepository.flush();
+        em.clear();
+
+        List<AIPEKurssiBaseDto> jarjestys = new ArrayList<>(sisalto.getKurssit(perusteId, vaiheId, oppiaineId));
+        Collections.reverse(jarjestys);
+        sisalto.updateKurssitJarjestys(perusteId, vaiheId, oppiaineId, jarjestys);
+        em.flush();
+        em.clear();
+
+        assertThat(kurssiRepository.findOne(jarjestys.get(0).getId()).getJarjestys()).isEqualTo(0);
+        assertThat(kurssiRepository.findOne(jarjestys.get(1).getId()).getJarjestys()).isEqualTo(1);
+        assertKooditKannassa(urit);
+
+        AIPEOppiaineDto oppiaine = sisalto.getOppiaine(perusteId, vaiheId, oppiaineId, null);
+        assertThat(oppiaine.getKurssit()).extracting(AIPEKurssiDto::getId)
+                .containsExactly(jarjestys.get(0).getId(), jarjestys.get(1).getId());
+        Collections.reverse(oppiaine.getKurssit());
+        sisalto.updateOppiaine(perusteId, vaiheId, oppiaineId, oppiaine);
+
+        em.flush();
+        em.clear();
+        assertKooditKannassa(urit);
+    }
+
+    private void assertKooditKannassa(Map<Long, String> urit) {
+        for (Map.Entry<Long, String> uri : urit.entrySet()) {
+            AIPEKurssi kurssi = kurssiRepository.findOne(uri.getKey());
+            assertThat(kurssi.getKoodi()).isNotNull();
+            assertThat(kurssi.getKoodi().getUri()).isEqualTo(uri.getValue());
+            assertThat(kurssi.getKoodi().getKoodisto()).isEqualTo("oppiaineetaipe");
+        }
     }
 
     @Test
