@@ -6,5 +6,6 @@ import lombok.experimental.UtilityClass;
 public class CacheArvot {
     public static final String JULKINEN_PERUSTE_NAVIGOINTI = "julkinen_peruste_navigointi";
     public static final String PERUSTE_JULKAISU ="peruste_julkaisu";
+    public static final String VIIMEISIN_JULKAISU = "viimeisin_julkaisu";
     public static final String JULKINEN_ETUSIVU = "julkinenEtusivu";
 }

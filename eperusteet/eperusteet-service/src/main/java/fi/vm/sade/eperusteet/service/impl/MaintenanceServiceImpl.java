@@ -318,6 +318,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         });
 
         cacheManager.getCache(CacheArvot.PERUSTE_JULKAISU).evictIfPresent(perusteId);
+        cacheManager.getCache(CacheArvot.VIIMEISIN_JULKAISU).evictIfPresent(perusteId);
     }
 
     private Maarays perusteMaarays(Peruste peruste) {

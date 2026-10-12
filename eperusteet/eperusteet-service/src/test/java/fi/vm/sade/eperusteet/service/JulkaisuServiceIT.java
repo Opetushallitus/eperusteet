@@ -147,6 +147,33 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
     }
 
     @Test
+    public void testGetViimeisinJulkaistuPeruste() throws ExecutionException, InterruptedException {
+        julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste)).get();
+
+        Peruste perusteEntity = perusteRepository.findOne(peruste.getId());
+        JulkaistuPeruste julkaisu = julkaisutService.getViimeisinJulkaistuPeruste(perusteEntity);
+        JulkaistuPeruste valimuistista = julkaisutService.getViimeisinJulkaistuPeruste(perusteEntity);
+
+        assertThat(julkaisu.getRevision()).isEqualTo(1);
+        assertThat(julkaisu.getData().getData().get("diaarinumero").asText()).isEqualTo("OPH-12345-1234");
+        assertThat(julkaisu.getData().getData().get("nimi").get("fi").asText()).isEqualTo("ap_fi");
+        assertThat(valimuistista.getData().getData().get("nimi").get("fi").asText()).isEqualTo("ap_fi");
+        assertThat(valimuistista.getData().getData().get("diaarinumero").asText()).isEqualTo("OPH-12345-1234");
+
+        startNewTransaction();
+        peruste.setNimi(TestUtils.lt("updated_fi"));
+        perusteService.update(peruste.getId(), peruste);
+
+        startNewTransaction();
+        julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste)).get();
+
+        JulkaistuPeruste uusin = julkaisutService.getViimeisinJulkaistuPeruste(perusteRepository.findOne(peruste.getId()));
+        assertThat(uusin.getRevision()).isEqualTo(2);
+        assertThat(uusin.getData().getData().get("nimi").get("fi").asText()).isEqualTo("updated_fi");
+        assertThat(uusin.getData().getData().get("diaarinumero").asText()).isEqualTo("OPH-12345-1234");
+    }
+
+    @Test
     public void testJulkaiseUudelleen() throws ExecutionException, InterruptedException {
         startNewTransaction();
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
@@ -169,9 +196,10 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
 
-        Page<String> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
+        Page<String> idt = julkaisutRepository.findJulkisetPerusteIdt(
                 List.of("koulutustyyppi_15"),
-                "", "",
+                "",
+                "",
                 "fi",
                 0L,
                 true,
@@ -179,16 +207,19 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
                 true,
                 false,
                 "normaali",
-                "",
+                "OPH-12345-1234",
                 "",
                 "peruste",
                 PageRequest.of(0, 10));
 
+        assertThat(idt.getContent()).contains(String.valueOf(peruste.getId()));
+
+        List<String> julkaisut = julkaisutRepository.findJulkisetPerusteJsonByIdt(List.of(String.valueOf(peruste.getId())));
+
         Resource resource = new ClassPathResource("material/julkaisu.json");
         ObjectNode julkaisuFile = objectMapper.readValue(resource.getFile(), ObjectNode.class);
 
-        // verrataan relevanttia dataa tiedoston ja julkaistun datan välillä
-        assertTrue(JSONCompare.compareJSON(julkaisuFile.toString(), julkaisut.getContent().get(0), JSONCompareMode.LENIENT).passed());
+        assertTrue(JSONCompare.compareJSON(julkaisuFile.toString(), julkaisut.get(0), JSONCompareMode.LENIENT).passed());
     }
 
     @Test

@@ -190,4 +190,14 @@
         </resources>
     </cache>
 
+    <cache alias="viimeisin_julkaisu">
+        <expiry>
+            <ttl unit="seconds">86400</ttl>
+        </expiry>
+
+        <resources>
+            <heap unit="entries">100</heap>
+        </resources>
+    </cache>
+
 </config>

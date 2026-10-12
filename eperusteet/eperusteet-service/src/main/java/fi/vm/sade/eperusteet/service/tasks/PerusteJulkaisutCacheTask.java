@@ -31,6 +31,7 @@ public class PerusteJulkaisutCacheTask extends AbstractScheduledTask {
     @Override
     public void executeTask(Date viimeisinajoaika) {
         maintenanceService.clearCache(CacheArvot.PERUSTE_JULKAISU);
+        maintenanceService.clearCache(CacheArvot.VIIMEISIN_JULKAISU);
         maintenanceService.cacheJulkaistutPerusteet();
     }
 }

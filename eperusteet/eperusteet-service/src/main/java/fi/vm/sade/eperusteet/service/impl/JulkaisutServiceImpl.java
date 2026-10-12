@@ -47,6 +47,7 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
@@ -74,9 +75,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -515,28 +518,39 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         }
 
-        Page<PerusteenJulkaisuData> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
-                koulutustyyppi,
-                nimi,
-                nimiTaiKoodi,
-                kieli,
-                currentMillis,
-                tulevat,
-                voimassa,
-                siirtyma,
-                poistuneet,
-                tyyppi,
-                diaarinumero,
-                koodi,
-                sisaltotyyppi.name().toLowerCase(),
-                pageable)
-                .map(this::convertToPerusteData);
+        Page<PerusteenJulkaisuData> julkaisut = findJulkisetPerusteet(
+                koulutustyyppi, nimi, nimiTaiKoodi, kieli, currentMillis,
+                tulevat, voimassa, siirtyma, poistuneet, tyyppi, diaarinumero, koodi,
+                sisaltotyyppi.name().toLowerCase(), pageable);
 
-        if (!sisaltotyyppi.equals(JulkaisuSisaltoTyyppi.PERUSTE)) {
-            return taytaPerusteet(julkaisut, tulevat, voimassa, siirtyma, poistuneet);
+        if (JulkaisuSisaltoTyyppi.PERUSTE.equals(sisaltotyyppi)) {
+            return julkaisut;
         }
 
-        return julkaisut;
+        return taytaPerusteet(julkaisut, tulevat, voimassa, siirtyma, poistuneet);
+    }
+
+    private Page<PerusteenJulkaisuData> findJulkisetPerusteet(List<String> koulutustyyppi, String nimi, String nimiTaiKoodi, String kieli, Long nykyhetki,
+                                                              boolean tulevat, boolean voimassa, boolean siirtyma, boolean poistuneet, String tyyppi,
+                                                              String diaarinumero, String koodi, String sisaltotyyppi, Pageable pageable) {
+        Page<String> idSivu = julkaisutRepository.findJulkisetPerusteIdt(
+                koulutustyyppi, nimi, nimiTaiKoodi, kieli, nykyhetki,
+                tulevat, voimassa, siirtyma, poistuneet, tyyppi, diaarinumero, koodi, sisaltotyyppi, pageable);
+
+        if (idSivu.isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, idSivu.getTotalElements());
+        }
+
+        Map<String, PerusteenJulkaisuData> byId = julkaisutRepository.findJulkisetPerusteJsonByIdt(idSivu.getContent()).stream()
+                .map(this::convertToPerusteData)
+                .collect(Collectors.toMap(data -> String.valueOf(data.getId()), data -> data, (first, second) -> first));
+
+        List<PerusteenJulkaisuData> ordered = idSivu.getContent().stream()
+                .map(byId::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(ordered, pageable, idSivu.getTotalElements());
     }
 
     private Page<PerusteenJulkaisuData> taytaPerusteet(Page<PerusteenJulkaisuData> julkaisut, boolean tulevat,
@@ -601,6 +615,17 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = CacheArvot.VIIMEISIN_JULKAISU, key = "#peruste.id", unless = "#result == null")
+    public JulkaistuPeruste getViimeisinJulkaistuPeruste(Peruste peruste) {
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        if (julkaisu != null && julkaisu.getData() != null) {
+            julkaisu.getData().getData();
+        }
+        return julkaisu;
     }
 
     @Override
