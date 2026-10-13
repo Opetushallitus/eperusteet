@@ -212,7 +212,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     FROM julkaistu_peruste jp
                     INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id
                     WHERE jp.peruste_id = :perusteId
-                    ORDER BY jp.luotu DESC
+                    ORDER BY jp.revision DESC
                     LIMIT 1
             """)
     Optional<ObjectNode> findLatestJulkaistuDataByPerusteId(@Param("perusteId") Long perusteId);

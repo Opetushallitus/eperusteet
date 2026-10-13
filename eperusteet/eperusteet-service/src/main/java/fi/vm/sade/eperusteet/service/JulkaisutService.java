@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
@@ -54,6 +55,9 @@ public interface JulkaisutService {
 
     @PreAuthorize("permitAll()")
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
+
+    @PreAuthorize("permitAll()")
+    ObjectNode getViimeisinJulkaisuData(Long perusteId);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     boolean julkaisemattomiaMuutoksia(long perusteId);

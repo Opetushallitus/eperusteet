@@ -810,7 +810,7 @@ public class PerusteServiceImpl implements PerusteService{
             throw new NotExistsException("");
         }
 
-        ObjectNode data = julkaisutRepository.findLatestJulkaistuDataByPerusteId(id).orElse(null);
+        ObjectNode data = julkaisutService.getViimeisinJulkaisuData(id);
         if (data == null) {
             return null;
         }
@@ -829,12 +829,6 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     @Transactional(readOnly = true)
-
-    @Cacheable(
-            value= CacheArvot.PERUSTE_JULKAISU,
-            condition = "#useCurrentData == false && #julkaisuRevisio == null",
-            key = "#id"
-    )
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean nykyinendata) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
@@ -845,16 +839,16 @@ public class PerusteServiceImpl implements PerusteService{
         PerusteKaikkiDto perusteKaikkiDto = null;
 
         if (!nykyinendata) {
-            JulkaistuPeruste julkaisu;
+            ObjectNode data;
 
             if (julkaisuRevisio != null) {
-                julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+                JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+                data = julkaisu != null ? julkaisu.getData().getData() : null;
             } else {
-                julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+                data = julkaisutService.getViimeisinJulkaisuData(id);
             }
 
-            if (julkaisu != null) {
-                ObjectNode data = julkaisu.getData().getData();
+            if (data != null) {
                 try {
                     perusteKaikkiDto =  taytaSisaltohaunVaatimatDatat(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
                 } catch (JsonProcessingException e) {
