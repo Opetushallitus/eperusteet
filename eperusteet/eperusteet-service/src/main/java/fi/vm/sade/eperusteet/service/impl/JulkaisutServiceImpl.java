@@ -77,6 +77,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -515,7 +516,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         }
 
-        Page<PerusteenJulkaisuData> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
+        String sisaltotyyppiArvo = sisaltotyyppi.name().toLowerCase();
+        List<PerusteenJulkaisuData> sisalto = julkaisutRepository.findAllJulkisetJulkaisut(
                 koulutustyyppi,
                 nimi,
                 nimiTaiKoodi,
@@ -528,9 +530,29 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 tyyppi,
                 diaarinumero,
                 koodi,
-                sisaltotyyppi.name().toLowerCase(),
-                pageable)
-                .map(this::convertToPerusteData);
+                sisaltotyyppiArvo,
+                pageable.getPageSize(),
+                pageable.getOffset())
+                .stream()
+                .map(this::convertToPerusteData)
+                .collect(Collectors.toList());
+
+        long lukumaara = julkaisutRepository.countJulkisetJulkaisut(
+                koulutustyyppi,
+                nimi,
+                nimiTaiKoodi,
+                kieli,
+                currentMillis,
+                tulevat,
+                voimassa,
+                siirtyma,
+                poistuneet,
+                tyyppi,
+                diaarinumero,
+                koodi,
+                sisaltotyyppiArvo);
+
+        Page<PerusteenJulkaisuData> julkaisut = new PageImpl<>(sisalto, pageable, lukumaara);
 
         if (!sisaltotyyppi.equals(JulkaisuSisaltoTyyppi.PERUSTE)) {
             return taytaPerusteet(julkaisut, tulevat, voimassa, siirtyma, poistuneet);
