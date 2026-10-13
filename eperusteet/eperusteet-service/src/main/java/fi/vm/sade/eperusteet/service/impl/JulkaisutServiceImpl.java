@@ -47,6 +47,7 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
@@ -74,6 +75,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
@@ -623,6 +625,17 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = CacheArvot.PERUSTE_JULKAISU, key = "#peruste.id", unless = "#result == null")
+    public JulkaistuPeruste getViimeisinJulkaistuPeruste(Peruste peruste) {
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+        if (julkaisu != null && julkaisu.getData() != null) {
+            julkaisu.getData().getData();
+        }
+        return julkaisu;
     }
 
     @Override

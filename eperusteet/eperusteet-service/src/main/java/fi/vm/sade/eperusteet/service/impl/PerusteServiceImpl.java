@@ -810,10 +810,11 @@ public class PerusteServiceImpl implements PerusteService{
             throw new NotExistsException("");
         }
 
-        ObjectNode data = julkaisutRepository.findLatestJulkaistuDataByPerusteId(id).orElse(null);
-        if (data == null) {
+        JulkaistuPeruste julkaisu = julkaisutService.getViimeisinJulkaistuPeruste(peruste);
+        if (julkaisu == null || julkaisu.getData() == null || julkaisu.getData().getData() == null) {
             return null;
         }
+        ObjectNode data = julkaisu.getData().getData();
 
         try {
             JsonNode node = JulkaistuSisaltoDynamicPathResolver.resolve(data, segments);
@@ -829,12 +830,6 @@ public class PerusteServiceImpl implements PerusteService{
 
     @Override
     @Transactional(readOnly = true)
-
-    @Cacheable(
-            value= CacheArvot.PERUSTE_JULKAISU,
-            condition = "#useCurrentData == false && #julkaisuRevisio == null",
-            key = "#id"
-    )
     public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio, boolean nykyinendata) {
         Peruste peruste = perusteRepository.findById(id).orElse(null);
 
@@ -850,7 +845,7 @@ public class PerusteServiceImpl implements PerusteService{
             if (julkaisuRevisio != null) {
                 julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
             } else {
-                julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+                julkaisu = julkaisutService.getViimeisinJulkaistuPeruste(peruste);
             }
 
             if (julkaisu != null) {

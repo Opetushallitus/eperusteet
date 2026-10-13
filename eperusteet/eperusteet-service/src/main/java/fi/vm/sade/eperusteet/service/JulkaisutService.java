@@ -1,6 +1,8 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
+import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
@@ -54,6 +56,9 @@ public interface JulkaisutService {
 
     @PreAuthorize("permitAll()")
     Date viimeisinPerusteenJulkaisuaika(Long perusteId);
+
+    @PreAuthorize("permitAll()")
+    JulkaistuPeruste getViimeisinJulkaistuPeruste(Peruste peruste);
 
     @PreAuthorize("hasPermission(#perusteId, 'peruste', 'LUKU')")
     boolean julkaisemattomiaMuutoksia(long perusteId);
