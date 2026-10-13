@@ -21,9 +21,6 @@ create table tiedote_tiedote
 create index idx_tiedote_kohde
     on tiedote_tiedote (kohde_id);
 
-alter table tiedote_tiedote
-    owner to oph;
-
 
 create table tiedote_tiedote_aud
 (
@@ -44,6 +41,3 @@ create table tiedote_tiedote_aud
         foreign key (revend)
             references revinfo
 );
-
-alter table tiedote_tiedote_aud
-    owner to oph;
