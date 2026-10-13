@@ -43,6 +43,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
@@ -312,12 +314,26 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     @Override
     public void clearPerusteCaches(Long perusteId) {
         Peruste peruste = perusteRepository.findOne(perusteId);
+        Set<Kieli> kielet = new HashSet<>(peruste.getKielet());
 
-        peruste.getKielet().forEach(kieli -> {
-            cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI).evictIfPresent(perusteId + kieli.toString());
-        });
+        Runnable evict = () -> {
+            kielet.forEach(kieli -> {
+                cacheManager.getCache(CacheArvot.JULKINEN_PERUSTE_NAVIGOINTI).evictIfPresent(perusteId + kieli.toString());
+            });
+            cacheManager.getCache(CacheArvot.PERUSTE_JULKAISU).evictIfPresent(perusteId);
+        };
 
-        cacheManager.getCache(CacheArvot.PERUSTE_JULKAISU).evictIfPresent(perusteId);
+        // Evict ennen committia antaisi rinnakkaisen lukijan cachettaa vanhan julkaisun
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    evict.run();
+                }
+            });
+        } else {
+            evict.run();
+        }
     }
 
     private Maarays perusteMaarays(Peruste peruste) {

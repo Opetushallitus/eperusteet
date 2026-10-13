@@ -810,11 +810,10 @@ public class PerusteServiceImpl implements PerusteService{
             throw new NotExistsException("");
         }
 
-        JulkaistuPeruste julkaisu = julkaisutService.getViimeisinJulkaistuPeruste(peruste);
-        if (julkaisu == null || julkaisu.getData() == null || julkaisu.getData().getData() == null) {
+        ObjectNode data = julkaisutService.getViimeisinJulkaisuData(id);
+        if (data == null) {
             return null;
         }
-        ObjectNode data = julkaisu.getData().getData();
 
         try {
             JsonNode node = JulkaistuSisaltoDynamicPathResolver.resolve(data, segments);
@@ -840,16 +839,16 @@ public class PerusteServiceImpl implements PerusteService{
         PerusteKaikkiDto perusteKaikkiDto = null;
 
         if (!nykyinendata) {
-            JulkaistuPeruste julkaisu;
+            ObjectNode data;
 
             if (julkaisuRevisio != null) {
-                julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+                JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+                data = julkaisu != null ? julkaisu.getData().getData() : null;
             } else {
-                julkaisu = julkaisutService.getViimeisinJulkaistuPeruste(peruste);
+                data = julkaisutService.getViimeisinJulkaisuData(id);
             }
 
-            if (julkaisu != null) {
-                ObjectNode data = julkaisu.getData().getData();
+            if (data != null) {
                 try {
                     perusteKaikkiDto =  taytaSisaltohaunVaatimatDatat(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
                 } catch (JsonProcessingException e) {

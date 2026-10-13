@@ -1,6 +1,6 @@
 package fi.vm.sade.eperusteet.service.util;
 
-import fi.vm.sade.eperusteet.domain.JulkaistuPeruste;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -85,8 +85,8 @@ public class JulkaisutServiceMock implements JulkaisutService {
     }
 
     @Override
-    public JulkaistuPeruste getViimeisinJulkaistuPeruste(Peruste peruste) {
-        return julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
+    public ObjectNode getViimeisinJulkaisuData(Long perusteId) {
+        return julkaisutRepository.findLatestJulkaistuDataByPerusteId(perusteId).orElse(null);
     }
 
     @Override

@@ -629,13 +629,9 @@ public class JulkaisutServiceImpl implements JulkaisutService {
 
     @Override
     @Transactional(readOnly = true)
-    @Cacheable(value = CacheArvot.PERUSTE_JULKAISU, key = "#peruste.id", unless = "#result == null")
-    public JulkaistuPeruste getViimeisinJulkaistuPeruste(Peruste peruste) {
-        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteOrderByRevisionDesc(peruste);
-        if (julkaisu != null && julkaisu.getData() != null) {
-            julkaisu.getData().getData();
-        }
-        return julkaisu;
+    @Cacheable(value = CacheArvot.PERUSTE_JULKAISU, key = "#perusteId", unless = "#result == null")
+    public ObjectNode getViimeisinJulkaisuData(Long perusteId) {
+        return julkaisutRepository.findLatestJulkaistuDataByPerusteId(perusteId).orElse(null);
     }
 
     @Override
