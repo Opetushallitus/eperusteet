@@ -21,5 +21,6 @@ public enum NavigationType {
     koulutuksenosat, koulutuksenosa, laajaalainenosaaminen,
     osaamiskokonaisuus, osaamiskokonaisuus_paa_alue,
     aipe_laajaalaisetosaamiset, aipe_laajaalainenosaaminen,
-    kaantajataito, kaantajataitotasoasteikko, kaantajakielitaito, kaantajataitotasokuvaus, kaantajaaihealue, kaantajatodistusmalli;
+    kaantajataito, kaantajataitotasoasteikko, kaantajakielitaito, kaantajataitotasokuvaus, kaantajaaihealue, kaantajatodistusmalli,
+    lukutaitokoulutus_tavoitteetjasisaltoalueet;
 }
