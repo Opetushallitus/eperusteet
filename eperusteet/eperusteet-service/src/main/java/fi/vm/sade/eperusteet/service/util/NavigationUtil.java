@@ -27,7 +27,8 @@ public class NavigationUtil {
             NavigationType.kaantajakielitaito,
             NavigationType.kaantajataitotasokuvaus,
             NavigationType.kaantajaaihealue,
-            NavigationType.kaantajatodistusmalli);
+            NavigationType.kaantajatodistusmalli,
+            NavigationType.lukutaitokoulutus_tavoitteetjasisaltoalueet);
 
     private static final Set<PerusteTyyppi> NUMEROITAVAT_PERUSTE_TYYPIT = Set.of(
             PerusteTyyppi.NORMAALI,
