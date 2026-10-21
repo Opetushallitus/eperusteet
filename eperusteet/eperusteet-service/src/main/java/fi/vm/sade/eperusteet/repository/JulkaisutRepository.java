@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,11 +21,7 @@ import fi.vm.sade.eperusteet.dto.KoulutustyyppiLukumaara;
 public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Long> {
     List<JulkaistuPeruste> findAllByPeruste(Peruste peruste);
 
-    String julkaisutQuery = """
-            FROM (SELECT *
-              FROM (
-               SELECT ROW_NUMBER() OVER(partition by id) as rownumber, *
-               FROM julkaistu_peruste_data_store data
+    String julkaisutWhere = """
                WHERE (
                        COALESCE(:koulutustyypit, null) IS NULL
                        OR koulutustyyppi IN (:koulutustyypit)
@@ -64,17 +58,31 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                           )
                    )
                AND (:sisaltotyyppi = 'kaikki' OR sisaltotyyppi = :sisaltotyyppi)
-              ) subquery
-              WHERE subquery.rownumber = 1
-               order by nimi->>:kieli asc
-            ) t
             """;
 
     @Query(nativeQuery = true,
-            value = "SELECT CAST(row_to_json(t) as text) " + julkaisutQuery,
-            countQuery = "SELECT count(*) " + julkaisutQuery
+            value = """
+                    WITH sivu AS (
+                        SELECT perusteid, id, lajittelunimi
+                        FROM (
+                            SELECT DISTINCT ON (id) perusteid, id, nimi->>:kieli AS lajittelunimi
+                            FROM julkaistu_peruste_data_store data
+                    """ + julkaisutWhere + """
+                            ORDER BY id
+                        ) uniikit
+                        ORDER BY lajittelunimi, id
+                        LIMIT :sivukoko OFFSET :offset
+                    )
+                    SELECT CAST(row_to_json(t) as text)
+                    FROM (
+                        SELECT d.*
+                        FROM sivu s
+                        JOIN julkaistu_peruste_data_store d ON d.perusteid = s.perusteid AND d.id = s.id
+                        ORDER BY s.lajittelunimi, s.id
+                    ) t
+                    """
     )
-    Page<String> findAllJulkisetJulkaisut(
+    List<String> findAllJulkisetJulkaisut(
             @Param("koulutustyypit") List<String> koulutustyypit,
             @Param("nimi") String nimi,
             @Param("nimiTaiKoodi") String nimiTaiKoodi,
@@ -88,7 +96,29 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("diaarinumero") String diaarinumero,
             @Param("koodi") String koodi,
             @Param("sisaltotyyppi") String sisaltotyyppi,
-            Pageable pageable);
+            @Param("sivukoko") int sivukoko,
+            @Param("offset") long offset);
+
+    @Query(nativeQuery = true,
+            value = """
+                    SELECT count(DISTINCT id)
+                    FROM julkaistu_peruste_data_store data
+                    """ + julkaisutWhere
+    )
+    long countJulkisetJulkaisut(
+            @Param("koulutustyypit") List<String> koulutustyypit,
+            @Param("nimi") String nimi,
+            @Param("nimiTaiKoodi") String nimiTaiKoodi,
+            @Param("kieli") String kieli,
+            @Param("nykyhetki") Long nykyhetki,
+            @Param("tulevat") boolean tulevat,
+            @Param("voimassa") boolean voimassa,
+            @Param("siirtymat") boolean siirtymat,
+            @Param("poistuneet") boolean poistuneet,
+            @Param("tyyppi") String tyyppi,
+            @Param("diaarinumero") String diaarinumero,
+            @Param("koodi") String koodi,
+            @Param("sisaltotyyppi") String sisaltotyyppi);
 
     @Query(nativeQuery = true,
             value = """
@@ -182,7 +212,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                     FROM julkaistu_peruste jp
                     INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id
                     WHERE jp.peruste_id = :perusteId
-                    ORDER BY jp.luotu DESC
+                    ORDER BY jp.revision DESC
                     LIMIT 1
             """)
     Optional<ObjectNode> findLatestJulkaistuDataByPerusteId(@Param("perusteId") Long perusteId);

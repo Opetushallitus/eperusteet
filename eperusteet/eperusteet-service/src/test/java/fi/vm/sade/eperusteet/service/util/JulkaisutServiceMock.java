@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.util;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import fi.vm.sade.eperusteet.domain.JulkaisuPerusteTila;
 import fi.vm.sade.eperusteet.domain.JulkaisuTila;
 import fi.vm.sade.eperusteet.domain.Peruste;
@@ -7,6 +8,7 @@ import fi.vm.sade.eperusteet.dto.JulkaisuSisaltoTyyppi;
 import fi.vm.sade.eperusteet.dto.peruste.JulkaisuBaseDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
 
 import java.util.Date;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Profile("test")
 public class JulkaisutServiceMock implements JulkaisutService {
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
 
     @Override
     public List<JulkaisuBaseDto> getJulkaisutJaViimeisinStatus(long id) {
@@ -76,6 +82,11 @@ public class JulkaisutServiceMock implements JulkaisutService {
     @Override
     public Date viimeisinPerusteenJulkaisuaika(Long perusteId) {
         return null;
+    }
+
+    @Override
+    public ObjectNode getViimeisinJulkaisuData(Long perusteId) {
+        return julkaisutRepository.findLatestJulkaistuDataByPerusteId(perusteId).orElse(null);
     }
 
     @Override

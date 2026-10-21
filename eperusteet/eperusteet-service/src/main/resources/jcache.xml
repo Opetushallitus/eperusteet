@@ -186,7 +186,7 @@
         </expiry>
 
         <resources>
-            <heap unit="entries">9999</heap>
+            <heap unit="entries">400</heap>
         </resources>
     </cache>
 

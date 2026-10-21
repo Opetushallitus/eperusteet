@@ -27,6 +27,8 @@ import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusOsaAlueDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusOsaAlueTasoKuvausDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.lukutaitokoulutus.LukutaitokoulutusTavoitteetJaSisaltoalueetDto;
+import fi.vm.sade.eperusteet.dto.lukutaitokoulutus.LukutaitokoulutusTavoitealueDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -409,6 +411,34 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
 
         assertTavoitesisaltoalueData(tavoitesisaltoalueDto);
+    }
+
+    @Test
+    public void testLukutaitokoulutusTavoitteetJaSisaltoalueet() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.LUKUTAITOKOULUTUS.toString()));
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        PerusteenOsaViiteDto.Matala perusteViite = perusteService.addSisaltoUUSI(perusteDto.getId(), null, new PerusteenOsaViiteDto.Matala(new LukutaitokoulutusTavoitteetJaSisaltoalueetDto()));
+        LukutaitokoulutusTavoitteetJaSisaltoalueetDto tjs = (LukutaitokoulutusTavoitteetJaSisaltoalueetDto) perusteenOsaService.get(perusteViite.getPerusteenOsa().getId());
+        perusteenOsaService.lock(tjs.getId());
+
+        assertThat(tjs.getId()).isNotNull();
+
+        tjs.setNimi(LokalisoituTekstiDto.of("nimi"));
+        tjs.setTavoitealueet(Arrays.asList(
+                LukutaitokoulutusTavoitealueDto.builder()
+                        .nimi(LokalisoituTekstiDto.of("tavoitealue1"))
+                        .tavoitteet(Arrays.asList(LokalisoituTekstiDto.of("tavoite1"), LokalisoituTekstiDto.of("tavoite2")))
+                        .build(),
+                LukutaitokoulutusTavoitealueDto.builder()
+                        .nimi(LokalisoituTekstiDto.of("tavoitealue2"))
+                        .build()));
+        tjs = perusteenOsaService.update(tjs);
+
+        assertThat(tjs.getNimi().get(Kieli.FI)).isEqualTo("nimi");
+        assertThat(tjs.getTavoitealueet()).extracting(t -> t.getNimi().get(Kieli.FI)).containsExactly("tavoitealue1", "tavoitealue2");
+        assertThat(tjs.getTavoitealueet().get(0).getTavoitteet()).extracting(t -> t.get(Kieli.FI)).containsExactly("tavoite1", "tavoite2");
+        assertThat(tjs.getTavoitealueet().get(1).getTavoitteet()).isEmpty();
     }
 
     @Test

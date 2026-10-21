@@ -38,8 +38,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -169,7 +167,7 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
         CompletableFuture<Void> asyncResult = julkaisutService.teeJulkaisu(projekti.getId(), createJulkaisu(peruste));
         asyncResult.get();
 
-        Page<String> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
+        List<String> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
                 List.of("koulutustyyppi_15"),
                 "", "",
                 "fi",
@@ -182,13 +180,14 @@ public class JulkaisuServiceIT extends AbstractDockerIntegrationTest {
                 "",
                 "",
                 "peruste",
-                PageRequest.of(0, 10));
+                10,
+                0);
 
         Resource resource = new ClassPathResource("material/julkaisu.json");
         ObjectNode julkaisuFile = objectMapper.readValue(resource.getFile(), ObjectNode.class);
 
         // verrataan relevanttia dataa tiedoston ja julkaistun datan välillä
-        assertTrue(JSONCompare.compareJSON(julkaisuFile.toString(), julkaisut.getContent().get(0), JSONCompareMode.LENIENT).passed());
+        assertTrue(JSONCompare.compareJSON(julkaisuFile.toString(), julkaisut.get(0), JSONCompareMode.LENIENT).passed());
     }
 
     @Test

@@ -47,6 +47,7 @@ import fi.vm.sade.eperusteet.dto.peruste.SuoritustapaLaajaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TutkintonimikeKoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.KoodiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.util.CacheArvot;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
 import fi.vm.sade.eperusteet.repository.JulkaistuPerusteDataStoreRepository;
 import fi.vm.sade.eperusteet.repository.JulkaisuPerusteTilaRepository;
@@ -74,9 +75,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -515,7 +518,8 @@ public class JulkaisutServiceImpl implements JulkaisutService {
             koulutustyyppi = Arrays.stream(KoulutusTyyppi.values()).map(KoulutusTyyppi::toString).collect(Collectors.toList());
         }
 
-        Page<PerusteenJulkaisuData> julkaisut = julkaisutRepository.findAllJulkisetJulkaisut(
+        String sisaltotyyppiArvo = sisaltotyyppi.name().toLowerCase();
+        List<PerusteenJulkaisuData> sisalto = julkaisutRepository.findAllJulkisetJulkaisut(
                 koulutustyyppi,
                 nimi,
                 nimiTaiKoodi,
@@ -528,9 +532,29 @@ public class JulkaisutServiceImpl implements JulkaisutService {
                 tyyppi,
                 diaarinumero,
                 koodi,
-                sisaltotyyppi.name().toLowerCase(),
-                pageable)
-                .map(this::convertToPerusteData);
+                sisaltotyyppiArvo,
+                pageable.getPageSize(),
+                pageable.getOffset())
+                .stream()
+                .map(this::convertToPerusteData)
+                .collect(Collectors.toList());
+
+        long lukumaara = julkaisutRepository.countJulkisetJulkaisut(
+                koulutustyyppi,
+                nimi,
+                nimiTaiKoodi,
+                kieli,
+                currentMillis,
+                tulevat,
+                voimassa,
+                siirtyma,
+                poistuneet,
+                tyyppi,
+                diaarinumero,
+                koodi,
+                sisaltotyyppiArvo);
+
+        Page<PerusteenJulkaisuData> julkaisut = new PageImpl<>(sisalto, pageable, lukumaara);
 
         if (!sisaltotyyppi.equals(JulkaisuSisaltoTyyppi.PERUSTE)) {
             return taytaPerusteet(julkaisut, tulevat, voimassa, siirtyma, poistuneet);
@@ -601,6 +625,13 @@ public class JulkaisutServiceImpl implements JulkaisutService {
         }
 
         return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = CacheArvot.PERUSTE_JULKAISU, key = "#perusteId", unless = "#result == null")
+    public ObjectNode getViimeisinJulkaisuData(Long perusteId) {
+        return julkaisutRepository.findLatestJulkaistuDataByPerusteId(perusteId).orElse(null);
     }
 
     @Override
