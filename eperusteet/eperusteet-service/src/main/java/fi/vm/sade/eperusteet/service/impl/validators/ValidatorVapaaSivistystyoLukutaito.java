@@ -62,12 +62,13 @@ public class ValidatorVapaaSivistystyoLukutaito implements Validator {
     }
 
     private void tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste, Validointi validointi) {
-        if (peruste.getVstSisalto() == null || peruste.getVstSisalto().getSisalto() == null) {
+        PerusteenOsaViite sisalto = peruste.getSisallot(null);
+        if (sisalto == null) {
             return;
         }
 
         Set<Kieli> vaaditutKielet = peruste.getKielet();
-        for (PerusteenOsaViite lapsi : peruste.getVstSisalto().getSisalto().getLapset()) {
+        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             tarkistaSisalto(lapsi, vaaditutKielet, validointi);
         }
     }
@@ -127,7 +128,8 @@ public class ValidatorVapaaSivistystyoLukutaito implements Validator {
 
     @Override
     public boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi) {
-        return KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO.equals(tyyppi);
+        return KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO.equals(tyyppi)
+                || KoulutusTyyppi.LUKUTAITOKOULUTUS.equals(tyyppi);
     }
 
     @Override

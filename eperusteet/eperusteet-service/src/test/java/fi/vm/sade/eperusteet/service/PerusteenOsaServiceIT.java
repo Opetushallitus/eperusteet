@@ -412,6 +412,18 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testLukutaitokoulutus_Tavoitesisaltoalue() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> {
+            ppl.setKoulutustyyppi(KoulutusTyyppi.LUKUTAITOKOULUTUS.toString());
+        });
+        TavoitesisaltoalueDto tavoitesisaltoalueDto = createPerusteWithTavoitesisaltoalue(pp);
+
+        tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
+
+        assertTavoitesisaltoalueData(tavoitesisaltoalueDto);
+    }
+
+    @Test
     public void testKotoKielitaitotaso() {
         PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString()));
 
