@@ -6930,8 +6930,6 @@
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
                   }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-                  }, {
                     "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
                     "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -7008,8 +7006,6 @@
                     "$ref" : "#/components/schemas/KoulutuksenOsaDto"
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-                  }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
                   }, {
                     "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
@@ -7124,8 +7120,6 @@
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
                   }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-                  }, {
                     "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
                     "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -7202,8 +7196,6 @@
                     "$ref" : "#/components/schemas/KoulutuksenOsaDto"
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-                  }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
                   }, {
                     "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
@@ -12154,8 +12146,6 @@
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
                   }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-                  }, {
                     "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
                     "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -12362,8 +12352,6 @@
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
                   }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-                  }, {
                     "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
                   }, {
                     "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -12430,8 +12418,6 @@
                     "$ref" : "#/components/schemas/KotoOpintoDto"
                   }, {
                     "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-                  }, {
-                    "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
                   }, {
                     "$ref" : "#/components/schemas/OpintokokonaisuusDto"
                   }, {
@@ -16522,8 +16508,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -16573,8 +16557,6 @@
               }, {
                 "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
               }, {
-                "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-              }, {
                 "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
               }, {
                 "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -16604,46 +16586,6 @@
         "type" : "object",
         "allOf" : [ {
           "$ref" : "#/components/schemas/Laaja"
-        } ]
-      },
-      "LukutaitokoulutusTavoitealueDto" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "nimi" : {
-            "type" : "object",
-            "additionalProperties" : {
-              "type" : "string"
-            }
-          },
-          "tavoitteet" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object",
-              "additionalProperties" : {
-                "type" : "string"
-              }
-            }
-          }
-        }
-      },
-      "LukutaitokoulutusTavoitteetJaSisaltoalueetDto" : {
-        "type" : "object",
-        "allOf" : [ {
-          "$ref" : "#/components/schemas/Laaja"
-        }, {
-          "type" : "object",
-          "properties" : {
-            "tavoitealueet" : {
-              "type" : "array",
-              "items" : {
-                "$ref" : "#/components/schemas/LukutaitokoulutusTavoitealueDto"
-              }
-            }
-          }
         } ]
       },
       "OpetuksenYleisetTavoitteetLaajaDto" : {
@@ -17027,8 +16969,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -17333,8 +17273,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -17398,8 +17336,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -17448,8 +17384,6 @@
                 "$ref" : "#/components/schemas/KoulutuksenOsaDto"
               }, {
                 "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-              }, {
-                "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
               }, {
                 "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
               }, {
@@ -19187,7 +19121,7 @@
           },
           "type" : {
             "type" : "string",
-            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli", "lukutaitokoulutus_tavoitteetjasisaltoalueet" ]
+            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli" ]
           },
           "koodi" : {
             "$ref" : "#/components/schemas/KoodiDto"
@@ -19218,14 +19152,14 @@
               "$ref" : "#/components/schemas/Validointi"
             }
           },
-          "vaihtoOk" : {
-            "type" : "boolean"
-          },
           "huomautukset" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
             }
+          },
+          "vaihtoOk" : {
+            "type" : "boolean"
           },
           "virheet" : {
             "type" : "array",
@@ -21813,6 +21747,12 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
+          "paged" : {
+            "type" : "boolean"
+          },
+          "unpaged" : {
+            "type" : "boolean"
+          },
           "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
@@ -21820,12 +21760,6 @@
           "pageSize" : {
             "type" : "integer",
             "format" : "int32"
-          },
-          "unpaged" : {
-            "type" : "boolean"
-          },
-          "paged" : {
-            "type" : "boolean"
           }
         }
       },
@@ -23290,8 +23224,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -23361,8 +23293,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -23415,8 +23345,6 @@
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
             }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
@@ -23591,8 +23519,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -23655,8 +23581,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -23709,8 +23633,6 @@
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
             }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
@@ -23778,8 +23700,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -23836,8 +23756,6 @@
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
             }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
@@ -23981,8 +23899,6 @@
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
             }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
@@ -24341,8 +24257,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -24405,8 +24319,6 @@
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
             }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
@@ -24487,8 +24399,6 @@
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
             }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
-            }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
               "$ref" : "#/components/schemas/OpintokokonaisuusDto"
@@ -24545,8 +24455,6 @@
               "$ref" : "#/components/schemas/KoulutuksenOsaDto"
             }, {
               "$ref" : "#/components/schemas/LukioOpetussuunnitelmaRakenneLaajaDto"
-            }, {
-              "$ref" : "#/components/schemas/LukutaitokoulutusTavoitteetJaSisaltoalueetDto"
             }, {
               "$ref" : "#/components/schemas/OpetuksenYleisetTavoitteetLaajaDto"
             }, {
@@ -25587,7 +25495,7 @@
           },
           "kohde" : {
             "type" : "string",
-            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli", "lukutaitokoulutus_tavoitteetjasisaltoalueet" ]
+            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli" ]
           },
           "luotu" : {
             "type" : "string",
@@ -25619,7 +25527,7 @@
         "properties" : {
           "kohde" : {
             "type" : "string",
-            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli", "lukutaitokoulutus_tavoitteetjasisaltoalueet" ]
+            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli" ]
           },
           "kohdeId" : {
             "type" : "integer",
@@ -25669,7 +25577,7 @@
           },
           "kohde" : {
             "type" : "string",
-            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli", "lukutaitokoulutus_tavoitteetjasisaltoalueet" ]
+            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli" ]
           },
           "luotu" : {
             "type" : "string",
@@ -25698,7 +25606,7 @@
         "properties" : {
           "kohde" : {
             "type" : "string",
-            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli", "lukutaitokoulutus_tavoitteetjasisaltoalueet" ]
+            "enum" : [ "root", "tiedot", "viite", "liitteet", "kvliite", "laajaalaiset", "laajaalainen", "oppiaineet", "oppimaarat", "oppiaine", "oppimaara", "lukiooppiaineet_2015", "lukiooppimaarat_2015", "lukiooppiaine_2015", "lukiokurssit", "lukiokurssi", "moduulit", "moduuli", "muodostuminen", "tutkinnonosat", "tutkinnonosa", "tutkinnonosaviite", "osaalue", "osaalueet", "tutkinnon_muodostuminen", "peruste", "lukiorakenne", "aihekokonaisuudet", "opetuksenyleisettavoitteet", "tekstikappale", "taiteenala", "perusopetusoppiaineet", "perusopetusoppiaine", "vuosiluokkakokonaisuus", "vuosiluokkakokonaisuudet", "perusopetuslaajaalaisetosaamiset", "perusopetuslaajaalainenosaaminen", "aipevaihe", "aipekurssi", "aipeoppiaine", "kurssit", "taiteenosa", "termi", "opintokokonaisuus", "tavoitesisaltoalue", "koto_kielitaitotaso", "koto_opinto", "koto_laajaalainenosaaminen", "linkkisivu", "koulutuksenosat", "koulutuksenosa", "laajaalainenosaaminen", "osaamiskokonaisuus", "osaamiskokonaisuus_paa_alue", "aipe_laajaalaisetosaamiset", "aipe_laajaalainenosaaminen", "kaantajataito", "kaantajataitotasoasteikko", "kaantajakielitaito", "kaantajataitotasokuvaus", "kaantajaaihealue", "kaantajatodistusmalli" ]
           },
           "tapahtumat" : {
             "type" : "array",
