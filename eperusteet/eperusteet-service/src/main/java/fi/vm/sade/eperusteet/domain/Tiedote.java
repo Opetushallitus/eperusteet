@@ -3,6 +3,8 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 
@@ -88,6 +90,37 @@ public class Tiedote extends AbstractAuditedEntity {
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ValidKoodisto(koodisto = KoodistoUriArvo.OSAAMISALA)
     private Set<Koodi> osaamisalat;
+
+    @Getter
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "tiedote_tiedote",
+            joinColumns = @JoinColumn(name = "lahde_id"),
+            inverseJoinColumns = @JoinColumn(name = "kohde_id"),
+            uniqueConstraints = @UniqueConstraint(
+                    columnNames = {"lahde_id", "kohde_id"}
+            )
+    )
+    private Set<Tiedote> tiedotteet = new HashSet<>();
+
+    public void lisaaTiedote(Tiedote other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Tiedote puuttuu");
+        }
+        if (other == this || (id != null && id.equals(other.getId()))) {
+            throw new IllegalArgumentException("Tiedotetta ei voi liittää itseensä");
+        }
+        tiedotteet.add(other);
+        other.tiedotteet.add(this);
+    }
+
+    public void poistaTiedote(Tiedote other) {
+        if (other == null) {
+            return;
+        }
+        tiedotteet.remove(other);
+        other.tiedotteet.remove(this);
+    }
 
     @PrePersist
     void onPersist() {
