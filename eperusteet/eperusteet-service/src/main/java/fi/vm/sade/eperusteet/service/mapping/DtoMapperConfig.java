@@ -22,7 +22,6 @@ import fi.vm.sade.eperusteet.domain.digi.Osaamiskokonaisuus;
 import fi.vm.sade.eperusteet.domain.digi.OsaamiskokonaisuusPaaAlue;
 import fi.vm.sade.eperusteet.domain.kios.*;
 import fi.vm.sade.eperusteet.domain.liite.Liite;
-import fi.vm.sade.eperusteet.domain.lukutaitokoulutus.LukutaitokoulutusTavoitteetJaSisaltoalueet;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.Lops2019Oppiaine;
 import fi.vm.sade.eperusteet.domain.lops2019.oppiaineet.moduuli.Lops2019Moduuli;
 import fi.vm.sade.eperusteet.domain.maarays.Maarays;
@@ -68,7 +67,6 @@ import fi.vm.sade.eperusteet.dto.julkinen.OpetussuunnitelmaEtusivuDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.kios.*;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019OppiaineKaikkiDto;
-import fi.vm.sade.eperusteet.dto.lukutaitokoulutus.LukutaitokoulutusTavoitteetJaSisaltoalueetDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.Lops2019OppiaineDto;
 import fi.vm.sade.eperusteet.dto.lops2019.oppiaineet.moduuli.Lops2019ModuuliBaseDto;
@@ -782,11 +780,6 @@ public class DtoMapperConfig {
                 .register();
 
         factory.classMap(KaantajaTodistusmalliDto.class, KaantajaTodistusmalli.class)
-                .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
-                .byDefault()
-                .register();
-
-        factory.classMap(LukutaitokoulutusTavoitteetJaSisaltoalueetDto.class, LukutaitokoulutusTavoitteetJaSisaltoalueet.class)
                 .use(PerusteenOsaDto.Laaja.class, PerusteenOsa.class)
                 .byDefault()
                 .register();
