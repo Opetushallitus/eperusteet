@@ -19158,14 +19158,14 @@
               "$ref" : "#/components/schemas/Virhe"
             }
           },
-          "vaihtoOk" : {
-            "type" : "boolean"
-          },
           "virheet" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
             }
+          },
+          "vaihtoOk" : {
+            "type" : "boolean"
           }
         }
       },
@@ -20864,12 +20864,6 @@
       "Part" : {
         "type" : "object",
         "properties" : {
-          "submittedFileName" : {
-            "type" : "string"
-          },
-          "contentType" : {
-            "type" : "string"
-          },
           "name" : {
             "type" : "string"
           },
@@ -20880,11 +20874,17 @@
           "inputStream" : {
             "type" : "object"
           },
+          "contentType" : {
+            "type" : "string"
+          },
           "headerNames" : {
             "type" : "array",
             "items" : {
               "type" : "string"
             }
+          },
+          "submittedFileName" : {
+            "type" : "string"
           }
         }
       },
@@ -21747,17 +21747,17 @@
           "sort" : {
             "$ref" : "#/components/schemas/SortObject"
           },
-          "paged" : {
-            "type" : "boolean"
-          },
           "unpaged" : {
             "type" : "boolean"
           },
-          "pageNumber" : {
+          "paged" : {
+            "type" : "boolean"
+          },
+          "pageSize" : {
             "type" : "integer",
             "format" : "int32"
           },
-          "pageSize" : {
+          "pageNumber" : {
             "type" : "integer",
             "format" : "int32"
           }
