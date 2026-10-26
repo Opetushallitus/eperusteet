@@ -11,7 +11,6 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -73,6 +72,20 @@ public class ExternalController {
     public ResponseEntity<PerusteKaikkiDto> getPeruste(
             @PathVariable("perusteId") final long id) {
         PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(id);
+        if (peruste == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(peruste);
+    }
+
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/v{julkaisuRevisio:\\d+}")
+    @ResponseBody
+    @Operation(summary = "Perusteen tietyn julkaisuversion tietojen haku")
+    public ResponseEntity<PerusteKaikkiDto> getPerusteJulkaisuRevisio(
+            @PathVariable("perusteId") final long id,
+            @Parameter(description = "Perusteen julkaisun revisio")
+            @PathVariable("julkaisuRevisio") final Integer julkaisuRevisio) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(id, julkaisuRevisio);
         if (peruste == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

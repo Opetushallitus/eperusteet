@@ -206,16 +206,20 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
             @Param("nykyhetki") Long nykyhetki
     );
 
+    @Query("SELECT MAX(jp.revision) FROM JulkaistuPeruste jp WHERE jp.peruste.id = :perusteId")
+    Integer findLatestRevisionByPerusteId(@Param("perusteId") Long perusteId);
+
     @Query(nativeQuery = true,
             value = """
-                    SELECT jpd.data 
+                    SELECT jpd.data
                     FROM julkaistu_peruste jp
                     INNER JOIN julkaistu_peruste_data jpd ON jp.data_id = jpd.id
                     WHERE jp.peruste_id = :perusteId
-                    ORDER BY jp.revision DESC
+                    AND jp.revision = :revision
+                    ORDER BY jp.id DESC
                     LIMIT 1
             """)
-    Optional<ObjectNode> findLatestJulkaistuDataByPerusteId(@Param("perusteId") Long perusteId);
+    Optional<ObjectNode> findJulkaistuDataByPerusteIdAndRevision(@Param("perusteId") Long perusteId, @Param("revision") Integer revision);
 
     List<JulkaistuPeruste> findAllByPerusteId(Long id);
 

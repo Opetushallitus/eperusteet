@@ -129,6 +129,11 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
             + "Kenttä puuttuu, jos perusteella ei ole KV-liitettä.")
     private KVLiiteJulkinenDto kvLiite;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Schema(description = "Palautetun perusteen julkaisun versionumero. "
+            + "Kenttä puuttuu, jos palautettu sisältö ei ole julkaisu (esim. esikatselu).")
+    private Integer julkaisuRevisio;
+
     @JsonIgnore
     public Set<PerusteenSisaltoDto> getSisallot() {
         if (PerusteTyyppi.OPAS.equals(this.getTyyppi())) {

@@ -86,7 +86,14 @@ public class JulkaisutServiceMock implements JulkaisutService {
 
     @Override
     public ObjectNode getViimeisinJulkaisuData(Long perusteId) {
-        return julkaisutRepository.findLatestJulkaistuDataByPerusteId(perusteId).orElse(null);
+        Integer revisio = julkaisutRepository.findLatestRevisionByPerusteId(perusteId);
+        if (revisio == null) {
+            return null;
+        }
+
+        return julkaisutRepository.findJulkaistuDataByPerusteIdAndRevision(perusteId, revisio)
+                .map(data -> data.put("julkaisuRevisio", revisio))
+                .orElse(null);
     }
 
     @Override
