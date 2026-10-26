@@ -839,21 +839,20 @@ public class PerusteServiceImpl implements PerusteService{
         PerusteKaikkiDto perusteKaikkiDto = null;
 
         if (!nykyinendata) {
-            ObjectNode data;
-
             if (julkaisuRevisio != null) {
                 JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
-                data = julkaisu != null ? julkaisu.getData().getData() : null;
+                if (julkaisu != null) {
+                    perusteKaikkiDto = julkaisunSisalto(julkaisu);
+                }
             } else {
-                data = julkaisutService.getViimeisinJulkaisuData(id);
-            }
-
-            if (data != null) {
-                try {
-                    perusteKaikkiDto =  taytaSisaltohaunVaatimatDatat(objectMapper.treeToValue(data, PerusteKaikkiDto.class));
-                } catch (JsonProcessingException e) {
-                    log.error(Throwables.getStackTraceAsString(e));
-                    throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+                ObjectNode data = julkaisutService.getViimeisinJulkaisuData(id);
+                if (data != null) {
+                    try {
+                        perusteKaikkiDto = objectMapper.treeToValue(data, PerusteKaikkiDto.class);
+                    } catch (JsonProcessingException e) {
+                        log.error(Throwables.getStackTraceAsString(e));
+                        throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+                    }
                 }
             }
         }
@@ -867,6 +866,33 @@ public class PerusteServiceImpl implements PerusteService{
         }
 
         return taytaSisaltohaunVaatimatDatat(perusteKaikkiDto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio) {
+        Peruste peruste = perusteRepository.findById(id).orElse(null);
+        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU) || julkaisuRevisio == null) {
+            return null;
+        }
+
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+        if (julkaisu == null) {
+            return null;
+        }
+
+        return taytaSisaltohaunVaatimatDatat(julkaisunSisalto(julkaisu));
+    }
+
+    private PerusteKaikkiDto julkaisunSisalto(JulkaistuPeruste julkaisu) {
+        try {
+            PerusteKaikkiDto perusteKaikkiDto = objectMapper.treeToValue(julkaisu.getData().getData(), PerusteKaikkiDto.class);
+            perusteKaikkiDto.setJulkaisuRevisio(julkaisu.getRevision());
+            return perusteKaikkiDto;
+        } catch (JsonProcessingException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+        }
     }
 
     private PerusteKaikkiDto taytaSisaltohaunVaatimatDatat(PerusteKaikkiDto perusteKaikkiDto) {
