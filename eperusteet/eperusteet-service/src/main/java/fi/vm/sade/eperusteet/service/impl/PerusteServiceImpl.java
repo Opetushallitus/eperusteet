@@ -869,6 +869,27 @@ public class PerusteServiceImpl implements PerusteService{
         return taytaSisaltohaunVaatimatDatat(perusteKaikkiDto);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PerusteKaikkiDto getJulkaistuSisalto(final Long id, Integer julkaisuRevisio) {
+        Peruste peruste = perusteRepository.findById(id).orElse(null);
+        if (peruste == null || peruste.getTila().equals(PerusteTila.POISTETTU) || julkaisuRevisio == null) {
+            return null;
+        }
+
+        JulkaistuPeruste julkaisu = julkaisutRepository.findFirstByPerusteAndRevisionOrderByIdDesc(peruste, julkaisuRevisio);
+        if (julkaisu == null) {
+            return null;
+        }
+
+        try {
+            return taytaSisaltohaunVaatimatDatat(objectMapper.treeToValue(julkaisu.getData().getData(), PerusteKaikkiDto.class));
+        } catch (JsonProcessingException e) {
+            log.error(Throwables.getStackTraceAsString(e));
+            throw new BusinessRuleViolationException("perusteen-haku-epaonnistui");
+        }
+    }
+
     private PerusteKaikkiDto taytaSisaltohaunVaatimatDatat(PerusteKaikkiDto perusteKaikkiDto) {
         if (perusteKaikkiDto == null) {
             return null;

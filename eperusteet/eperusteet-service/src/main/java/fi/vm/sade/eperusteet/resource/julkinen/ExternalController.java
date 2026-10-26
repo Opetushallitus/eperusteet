@@ -11,7 +11,6 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteKaikkiDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
 import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
-import fi.vm.sade.eperusteet.dto.tutkinnonosa.OsaAlueKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -79,6 +78,20 @@ public class ExternalController {
         return ResponseEntity.ok(peruste);
     }
 
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/{julkaisuRevisio:\\d+}")
+    @ResponseBody
+    @Operation(summary = "Perusteen tietyn julkaisuversion tietojen haku")
+    public ResponseEntity<PerusteKaikkiDto> getPerusteJulkaisuRevisio(
+            @PathVariable("perusteId") final long id,
+            @Parameter(description = "Perusteen julkaisun revisio")
+            @PathVariable("julkaisuRevisio") final Integer julkaisuRevisio) {
+        PerusteKaikkiDto peruste = perusteService.getJulkaistuSisalto(id, julkaisuRevisio);
+        if (peruste == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(peruste);
+    }
+
     @GetMapping(value = { "/perusteet"})
     @ResponseBody
     @Operation(summary = "Perusteiden haku")
@@ -136,7 +149,7 @@ public class ExternalController {
         return ResponseEntity.ok(perusteService.getJulkaistutOsaamisalaKuvaukset(perusteId));
     }
 
-    @GetMapping(value = "/peruste/{perusteId:\\d+}/{custompath}")
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/{custompath:.*\\D.*}")
     @ResponseBody
     @Operation(
             summary = "Perusteen tietojen haku tarkalla sisältörakenteella",
@@ -151,7 +164,7 @@ public class ExternalController {
 
     @Hidden
     // Springdoc ei generoi rajapintoja /** poluille, joten tämä on tehty erikseen
-    @GetMapping(value = "/peruste/{perusteId:\\d+}/{custompath}/**")
+    @GetMapping(value = "/peruste/{perusteId:\\d+}/{custompath:.*\\D.*}/**")
     public ResponseEntity<Object> getPerusteDynamicQueryHidden(HttpServletRequest req, @PathVariable("perusteId") final long id) {
         return getJulkaistuSisaltoObjectNodeWithQuery(id, requestToQueries(req, DEFAULT_PATH_SKIP_VALUE));
     }
