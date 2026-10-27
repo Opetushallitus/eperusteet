@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Sets;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +104,7 @@ public class ValidatorVapaaSivistystyoLukutaito implements Validator {
             if (TavoiteAlueTyyppi.TAVOITESISALTOALUE.equals(tavoitealue.getTavoiteAlueTyyppi())) {
                 for (Koodi tavoite : tavoitealue.getTavoitteet()) {
                     tarkistaTekstipalanen("peruste-validointi-tavoitesisaltoalue-tavoitteet",
-                            koodinNimi(tavoite), pakolliset, virheellisetKielet, true);
+                            koodinNimi(tavoite), Sets.newHashSet(Kieli.FI, Kieli.SV), virheellisetKielet, true);
                 }
 
                 for (TekstiPalanen keskeinenSisaltoalue : tavoitealue.getKeskeisetSisaltoalueet()) {
