@@ -125,6 +125,7 @@ import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.LukioOpetussuunnitelmaRake
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetLaajaDto;
 import fi.vm.sade.eperusteet.dto.yl.lukio.osaviitteet.OpetuksenYleisetTavoitteetSuppeaDto;
 import fi.vm.sade.eperusteet.repository.MaaraysRepository;
+import fi.vm.sade.eperusteet.repository.TiedoteRepository;
 import fi.vm.sade.eperusteet.repository.liite.LiiteRepository;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.KoodistoClient;
@@ -161,6 +162,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
 
 @Slf4j
@@ -180,6 +182,9 @@ public class DtoMapperConfig {
 
     @Autowired
     private MaaraysRepository maaraysRepository;
+
+    @Autowired
+    private TiedoteRepository tiedoteRepository;
 
     @Lazy
     @Autowired
@@ -512,8 +517,24 @@ public class DtoMapperConfig {
 
         factory.classMap(Tiedote.class, TiedoteDto.class)
                 .fieldAToB("perusteprojekti.peruste", "peruste")
-                .fieldAToB("tiedotteet", "tiedotteet")
                 .byDefault()
+                .customize(new CustomMapper<Tiedote, TiedoteDto>() {
+                    @Override
+                    public void mapAtoB(Tiedote source, TiedoteDto target, MappingContext context) {
+                        super.mapAtoB(source, target, context);
+                        if (source.getId() != null) {
+                            target.setLiittyvatTiedotteet(new HashSet<>(mapper.mapAsList(tiedoteRepository.findByTiedotteetId(source.getId()), TiedoteKevytDto.class)));
+                        }
+                    }
+
+                    @Override
+                    public void mapBtoA(TiedoteDto source, Tiedote target, MappingContext context) {
+                        super.mapBtoA(source, target, context);
+                        if (source.getTiedotteet() == null) {
+                            target.setTiedotteet(null);
+                        }
+                    }
+                })
                 .register();
 
         factory.classMap(Tiedote.class, TiedoteKevytDto.class)

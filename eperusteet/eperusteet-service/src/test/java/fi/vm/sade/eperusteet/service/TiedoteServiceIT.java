@@ -23,7 +23,6 @@ import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
-import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
@@ -31,9 +30,11 @@ import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 
 import java.util.*;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -313,7 +314,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
     @Test
     @Transactional
-    public void testLisaaTiedoteUseallaVastavuoroisellaTiedotteella() {
+    public void testLisaaTiedoteUseallaLiitetyllaTiedotteella() {
         TiedoteDto b = luoTestiTiedote("Tiedote B");
         TiedoteDto c = luoTestiTiedote("Tiedote C");
 
@@ -326,12 +327,17 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         TiedoteDto tallennettuA = tiedoteService.getTiedote(a.getId());
         assertTiedotteet(tallennettuA, b.getId(), c.getId());
-        assertTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
-        assertTiedotteet(tiedoteService.getTiedote(c.getId()), a.getId());
+        assertLiittyvatTiedotteet(tallennettuA);
+
+        TiedoteDto tallennettuB = tiedoteService.getTiedote(b.getId());
+        assertTiedotteet(tallennettuB);
+        assertLiittyvatTiedotteet(tallennettuB, a.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(c.getId()), a.getId());
 
         assertThat(tallennettuA.getTiedotteet())
                 .extracting(tiedote -> tiedote.getOtsikko().get(Kieli.FI))
                 .containsExactlyInAnyOrder("Tiedote B", "Tiedote C");
+        assertThat(liitosrivit(a.getId())).hasSize(2);
     }
 
     @Test
@@ -347,7 +353,8 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         tallennaJaTyhjennaValimuisti();
 
         assertTiedotteet(tiedoteService.getTiedote(a.getId()), b.getId(), c.getId());
-        assertTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId(), d.getId());
+        assertTiedotteet(tiedoteService.getTiedote(b.getId()), d.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
 
         // A-B poistuu, A-C säilyy, A-D lisätään ja B-D säilyy.
         TiedoteDto paivitetty = asetaTiedotteet(a.getId(), c, d);
@@ -356,47 +363,65 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         assertTiedotteet(tiedoteService.getTiedote(a.getId()), c.getId(), d.getId());
         assertTiedotteet(tiedoteService.getTiedote(b.getId()), d.getId());
-        assertTiedotteet(tiedoteService.getTiedote(c.getId()), a.getId());
-        assertTiedotteet(tiedoteService.getTiedote(d.getId()), a.getId(), b.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()));
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(c.getId()), a.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(d.getId()), a.getId(), b.getId());
     }
 
     @Test
     @Transactional
-    public void testTyhjaTiedotevalintaPoistaaMolemmatSuunnat() {
+    public void testLiittyviaTiedotteitaEiTallennetaKohteesta() {
         TiedoteDto a = luoTestiTiedote("Tiedote A");
         TiedoteDto b = luoTestiTiedote("Tiedote B");
         asetaTiedotteet(a.getId(), b);
         tallennaJaTyhjennaValimuisti();
 
-        assertTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
+        TiedoteDto paivitettava = tiedoteService.getTiedote(b.getId());
+        paivitettava.setLiittyvatTiedotteet(new HashSet<>());
+        tiedoteService.updateTiedote(paivitettava);
+        tallennaJaTyhjennaValimuisti();
+
+        assertTiedotteet(tiedoteService.getTiedote(a.getId()), b.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
+    }
+
+    @Test
+    @Transactional
+    public void testTyhjaTiedotevalintaPoistaaLiitoksen() {
+        TiedoteDto a = luoTestiTiedote("Tiedote A");
+        TiedoteDto b = luoTestiTiedote("Tiedote B");
+        asetaTiedotteet(a.getId(), b);
+        tallennaJaTyhjennaValimuisti();
+
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
         asetaTiedotteet(a.getId());
         tallennaJaTyhjennaValimuisti();
 
         assertTiedotteet(tiedoteService.getTiedote(a.getId()));
-        assertTiedotteet(tiedoteService.getTiedote(b.getId()));
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()));
     }
 
     @Test
     @Transactional
-    public void testNullTiedotevalintaPoistaaMolemmatSuunnat() {
+    public void testNullTiedotevalintaPoistaaLiitoksen() {
         TiedoteDto a = luoTestiTiedote("Tiedote A");
         TiedoteDto b = luoTestiTiedote("Tiedote B");
         asetaTiedotteet(a.getId(), b);
         tallennaJaTyhjennaValimuisti();
 
-        assertTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()), a.getId());
         TiedoteDto paivitettava = tiedoteService.getTiedote(a.getId());
         paivitettava.setTiedotteet(null);
         tiedoteService.updateTiedote(paivitettava);
         tallennaJaTyhjennaValimuisti();
 
         assertTiedotteet(tiedoteService.getTiedote(a.getId()));
-        assertTiedotteet(tiedoteService.getTiedote(b.getId()));
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()));
     }
 
     @Test
     @Transactional
-    public void testPoistaTiedotePoistaaSuhteetMuttaSailyttaaMuutTiedotteet() {
+    public void testPoistaLahdeTiedotePoistaaSuhteetMuttaSailyttaaMuutTiedotteet() {
         TiedoteDto a = luoTestiTiedote("Tiedote A");
         TiedoteDto b = luoTestiTiedote("Tiedote B");
         TiedoteDto c = luoTestiTiedote("Tiedote C");
@@ -410,12 +435,27 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
         assertThat(entityManager.find(Tiedote.class, a.getId())).isNull();
         assertTiedotteet(tiedoteService.getTiedote(b.getId()), c.getId());
-        assertTiedotteet(tiedoteService.getTiedote(c.getId()), b.getId());
-        assertThat(entityManager.createNativeQuery(
-                        "SELECT lahde_id, kohde_id FROM tiedote_tiedote "
-                                + "WHERE lahde_id = :id OR kohde_id = :id")
-                .setParameter("id", a.getId())
-                .getResultList()).isEmpty();
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(b.getId()));
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(c.getId()), b.getId());
+        assertThat(liitosrivit(a.getId())).isEmpty();
+    }
+
+    @Test
+    @Transactional
+    public void testPoistaKohdeTiedotePoistaaSuhteetMuttaSailyttaaMuutTiedotteet() {
+        TiedoteDto a = luoTestiTiedote("Tiedote A");
+        TiedoteDto b = luoTestiTiedote("Tiedote B");
+        TiedoteDto c = luoTestiTiedote("Tiedote C");
+        asetaTiedotteet(a.getId(), b, c);
+        tallennaJaTyhjennaValimuisti();
+
+        tiedoteService.removeTiedote(b.getId());
+        tallennaJaTyhjennaValimuisti();
+
+        assertThat(entityManager.find(Tiedote.class, b.getId())).isNull();
+        assertTiedotteet(tiedoteService.getTiedote(a.getId()), c.getId());
+        assertLiittyvatTiedotteet(tiedoteService.getTiedote(c.getId()), a.getId());
+        assertThat(liitosrivit(b.getId())).isEmpty();
     }
 
     @Test
@@ -442,8 +482,10 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         TiedoteDto paivitettava = tiedoteService.getTiedote(a.getId());
         paivitettava.setTiedotteet(Sets.newHashSet(puuttuva));
 
-        assertThatThrownBy(() -> tiedoteService.updateTiedote(paivitettava))
-                .isInstanceOf(NotExistsException.class);
+        assertThatThrownBy(() -> {
+            tiedoteService.updateTiedote(paivitettava);
+            entityManager.flush();
+        }).isInstanceOfAny(PersistenceException.class, DataAccessException.class);
     }
 
     private TiedoteDto uusiTestiTiedote(String otsikko) {
@@ -482,6 +524,22 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         assertThat(tiedote.getTiedotteet())
                 .extracting(TiedoteKevytDto::getId)
                 .containsExactlyInAnyOrder(odotetutIdt);
+    }
+
+    private void assertLiittyvatTiedotteet(TiedoteDto tiedote, Long... odotetutIdt) {
+        assertThat(tiedote).isNotNull();
+        assertThat(tiedote.getLiittyvatTiedotteet()).isNotNull();
+        assertThat(tiedote.getLiittyvatTiedotteet())
+                .extracting(TiedoteKevytDto::getId)
+                .containsExactlyInAnyOrder(odotetutIdt);
+    }
+
+    private List<?> liitosrivit(Long id) {
+        return entityManager.createNativeQuery(
+                        "SELECT lahde_id, kohde_id FROM tiedote_tiedote "
+                                + "WHERE lahde_id = :id OR kohde_id = :id")
+                .setParameter("id", id)
+                .getResultList();
     }
 
     private void tallennaJaTyhjennaValimuisti() {

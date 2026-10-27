@@ -4,7 +4,6 @@ import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.Perusteprojekti;
 import fi.vm.sade.eperusteet.domain.Tiedote;
 import fi.vm.sade.eperusteet.dto.TiedoteDto;
-import fi.vm.sade.eperusteet.dto.TiedoteKevytDto;
 import fi.vm.sade.eperusteet.dto.kayttaja.KayttajanTietoDto;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.dto.util.PageDto;
@@ -13,7 +12,6 @@ import fi.vm.sade.eperusteet.repository.TiedoteRepository;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
 import fi.vm.sade.eperusteet.service.KayttajanTietoService;
 import fi.vm.sade.eperusteet.service.TiedoteService;
-import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
@@ -25,7 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -115,7 +114,6 @@ public class TiedoteServiceImpl implements TiedoteService {
     public TiedoteDto addTiedote(TiedoteDto tiedoteDto) {
         Tiedote tiedote = mapper.map(tiedoteDto, Tiedote.class);
         tiedote = repository.save(tiedote);
-        paivitaTiedotteet(tiedote, tiedoteDto.getTiedotteet());
         return mapper.map(tiedote, TiedoteDto.class);
     }
 
@@ -124,8 +122,6 @@ public class TiedoteServiceImpl implements TiedoteService {
         Tiedote tiedote = repository.findById(tiedoteDto.getId()).orElse(null);
         assertExists(tiedote, "Päivitettävää tietoa ei ole olemassa");
         mapper.map(tiedoteDto, tiedote);
-        paivitaTiedotteet(tiedote, tiedoteDto.getTiedotteet());
-
         tiedote.preupdate();
         tiedote = repository.save(tiedote);
         return mapper.map(tiedote, TiedoteDto.class);
@@ -135,12 +131,7 @@ public class TiedoteServiceImpl implements TiedoteService {
     public void removeTiedote(Long tiedoteId) {
         Tiedote tiedote = repository.findById(tiedoteId).orElse(null);
         assertExists(tiedote, "Poistettavaa tiedotetta ei ole olemassa");
-
-        for (Tiedote other : new HashSet<>(tiedote.getTiedotteet())) {
-            tiedote.poistaTiedote(other);
-        }
-
-        repository.flush();
+        repository.findByTiedotteetId(tiedoteId).forEach(lahde -> lahde.getTiedotteet().remove(tiedote));
         repository.delete(tiedote);
     }
 
@@ -149,43 +140,4 @@ public class TiedoteServiceImpl implements TiedoteService {
             throw new NotExistsException(msg);
         }
     }
-
-    private void paivitaTiedotteet(Tiedote lahdeTiedote, Set<TiedoteKevytDto> kohdeTiedotteet) {
-        if (kohdeTiedotteet == null) {
-            kohdeTiedotteet = Collections.emptySet();
-        }
-
-        Set<Long> tiedoteIdt = new HashSet<>();
-        Set<Tiedote> liitetytTiedotteet = new HashSet<>();
-
-        // Validate and load all selected notices before changing collections.
-        for (TiedoteKevytDto kohde : kohdeTiedotteet) {
-            if (kohde == null || kohde.getId() == null) {
-                throw new IllegalArgumentException("Liitetyn tiedotteen id puuttuu");
-            }
-
-            Long id = kohde.getId();
-
-            if (Objects.equals(lahdeTiedote.getId(), id)) {
-                throw new BusinessRuleViolationException("Tiedotetta ei voi liittää itseensä");
-            }
-
-            if (tiedoteIdt.add(id)) {
-                Tiedote liitetty = repository.findById(id).orElse(null);
-                assertExists(liitetty, "Liitettävää tiedotetta ei ole olemassa");
-                liitetytTiedotteet.add(liitetty);
-            }
-        }
-
-        for (Tiedote current : new HashSet<>(lahdeTiedote.getTiedotteet())) {
-            if (!tiedoteIdt.contains(current.getId())) {
-                lahdeTiedote.poistaTiedote(current);
-            }
-        }
-
-        for (Tiedote other : liitetytTiedotteet) {
-            lahdeTiedote.lisaaTiedote(other);
-        }
-    }
-
 }

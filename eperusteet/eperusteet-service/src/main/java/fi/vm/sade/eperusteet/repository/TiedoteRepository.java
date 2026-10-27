@@ -19,4 +19,6 @@ public interface TiedoteRepository extends JpaRepository<Tiedote, Long> {
     @Query("SELECT t FROM Tiedote t WHERE (t.julkinen = ?1 OR t.julkinen = TRUE) AND (t.perusteprojekti = ?3) AND t.muokattu >= ?2 " +
            "ORDER BY t.muokattu DESC")
     List<Tiedote> findAllByPerusteprojekti(boolean vainJulkiset, Date alkaen, Perusteprojekti perusteprojekti);
+
+    List<Tiedote> findByTiedotteetId(Long tiedoteId);
 }

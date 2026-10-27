@@ -34,6 +34,7 @@ public class TiedoteDto {
     private Set<KoodiDto> tutkinnonosat;
     private Set<KoodiDto> osaamisalat;
     private Set<TiedoteKevytDto> tiedotteet;
+    private Set<TiedoteKevytDto> liittyvatTiedotteet;
     private Date luotu;
     private String luoja;
     @JsonInclude(JsonInclude.Include.NON_NULL)

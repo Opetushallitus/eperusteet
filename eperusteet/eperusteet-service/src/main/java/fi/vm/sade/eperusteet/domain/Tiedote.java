@@ -3,6 +3,7 @@ package fi.vm.sade.eperusteet.domain;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidKoodisto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -96,30 +97,18 @@ public class Tiedote extends AbstractAuditedEntity {
     @JoinTable(
             name = "tiedote_tiedote",
             joinColumns = @JoinColumn(name = "lahde_id"),
-            inverseJoinColumns = @JoinColumn(name = "kohde_id"),
-            uniqueConstraints = @UniqueConstraint(
-                    columnNames = {"lahde_id", "kohde_id"}
-            )
+            inverseJoinColumns = @JoinColumn(name = "kohde_id")
     )
     private Set<Tiedote> tiedotteet = new HashSet<>();
 
-    public void lisaaTiedote(Tiedote other) {
-        if (other == null) {
-            throw new IllegalArgumentException("Tiedote puuttuu");
+    public void setTiedotteet(Set<Tiedote> tiedotteet) {
+        if (tiedotteet != null && tiedotteet.stream().anyMatch(t -> t == this || (id != null && id.equals(t.getId())))) {
+            throw new BusinessRuleViolationException("Tiedotetta ei voi liittää itseensä");
         }
-        if (other == this || (id != null && id.equals(other.getId()))) {
-            throw new IllegalArgumentException("Tiedotetta ei voi liittää itseensä");
+        this.tiedotteet.clear();
+        if (tiedotteet != null) {
+            this.tiedotteet.addAll(tiedotteet);
         }
-        tiedotteet.add(other);
-        other.tiedotteet.add(this);
-    }
-
-    public void poistaTiedote(Tiedote other) {
-        if (other == null) {
-            return;
-        }
-        tiedotteet.remove(other);
-        other.tiedotteet.remove(this);
     }
 
     @PrePersist
