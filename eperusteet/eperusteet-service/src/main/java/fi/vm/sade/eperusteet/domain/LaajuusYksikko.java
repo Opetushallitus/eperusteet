@@ -4,5 +4,6 @@ public enum LaajuusYksikko {
     OPINTOVIIKKO,
     OSAAMISPISTE,
     KURSSI,
-    OPINTOPISTE
+    OPINTOPISTE,
+    TUNTI
 }

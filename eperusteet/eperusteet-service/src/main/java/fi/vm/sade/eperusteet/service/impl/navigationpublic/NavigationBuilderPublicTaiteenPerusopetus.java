@@ -36,7 +36,7 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
 
     @Override
     public Set<KoulutustyyppiToteutus> getTyypit() {
-        return Sets.newHashSet(KoulutustyyppiToteutus.TPO);
+        return Sets.newHashSet(KoulutustyyppiToteutus.TPO, KoulutustyyppiToteutus.TPO2026);
     }
 
 
@@ -47,12 +47,18 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
         NavigationNodeDto basicNavigation = basicBuilder.buildNavigation(perusteId, kieli, esikatselu, julkaisuRevisio);
 
         List<PerusteenOsaViiteDto.Laaja> viitteet = getLapsiViitteet(peruste.getTpoOpetuksenSisalto().getSisalto().getLapset());
+        boolean vapaatTekstitAlasivuina = !KoulutustyyppiToteutus.TPO2026.equals(peruste.getToteutus());
 
         basicNavigation.getChildren().forEach(navigationNodeDto -> {
             Optional<PerusteenOsaViiteDto.Laaja> viite = viitteet.stream().filter(filteredViite -> filteredViite.getId().equals(navigationNodeDto.getId())).findFirst();
 
             if (viite.isPresent() && viite.get().getPerusteenOsa() instanceof TaiteenalaDto) {
                 TaiteenalaDto taiteenaladto = (TaiteenalaDto) viite.get().getPerusteenOsa();
+                if (!vapaatTekstitAlasivuina) {
+                    navigationNodeDto.setType(NavigationType.taiteenala2026);
+                }
+                List<NavigationNodeDto> lapsiviitteet = new ArrayList<>(navigationNodeDto.getChildren());
+                navigationNodeDto.getChildren().clear();
 
                 navigationNodeDto.addAll(taiteenaladto.getTaiteenOsat().stream().map(alaosa -> {
                     if (alaosa.getNimi() != null) {
@@ -65,12 +71,14 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
                     }
                 }).filter(Objects::nonNull));
 
-                if (!CollectionUtils.isEmpty(taiteenaladto.getVapaatTekstit())) {
+                if (vapaatTekstitAlasivuina && !CollectionUtils.isEmpty(taiteenaladto.getVapaatTekstit())) {
                     navigationNodeDto.addAll(taiteenaladto.getVapaatTekstit().stream().map(vapaateksti -> NavigationNodeDto.of(NavigationType.taiteenosa,
                                     vapaateksti.getNimi())
                             .meta("vapaateksti_id", vapaateksti.getId())
                             .meta("viiteId", navigationNodeDto.getId())));
                 }
+
+                navigationNodeDto.addAll(lapsiviitteet);
             }
         });
 
@@ -86,7 +94,7 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList()));
         }
-        return viitteet;
+        return lapsiviitteet;
     }
 
 }

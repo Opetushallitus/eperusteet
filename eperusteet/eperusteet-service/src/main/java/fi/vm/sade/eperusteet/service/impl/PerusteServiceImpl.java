@@ -2296,6 +2296,7 @@ public class PerusteServiceImpl implements PerusteService{
         } else if (koulutustyyppi.isOneOf(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.TELMA, KoulutusTyyppi.VALMA)) {
             st = suoritustapaService.createSuoritustapaWithSisaltoAndRakenneRoots(Suoritustapakoodi.OPS, yksikko);
         } else if (koulutustyyppi == KoulutusTyyppi.TPO) {
+            peruste.setToteutus(KoulutustyyppiToteutus.TPO2026);
             peruste.setSisalto(new TpoOpetuksenSisalto());
         } else if (koulutustyyppi == KoulutusTyyppi.PERUSOPETUS) {
             peruste.setSisalto(new PerusopetuksenPerusteenSisalto());
@@ -2393,6 +2394,9 @@ public class PerusteServiceImpl implements PerusteService{
         peruste.setKuvaus(vanha.getKuvaus());
         peruste.setNimi(vanha.getNimi());
         peruste.setKoulutustyyppi(vanha.getKoulutustyyppi());
+        if (KoulutusTyyppi.TPO.toString().equalsIgnoreCase(vanha.getKoulutustyyppi())) {
+            peruste.setToteutus(KoulutustyyppiToteutus.TPO2026);
+        }
 
         // Osaamisalat
         if (vanha.getOsaamisalat() != null) {

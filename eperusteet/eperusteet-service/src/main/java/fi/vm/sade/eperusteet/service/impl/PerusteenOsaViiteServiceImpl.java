@@ -7,6 +7,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.dto.Sortable;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaViiteDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenalaVaiheDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -172,6 +173,11 @@ public class PerusteenOsaViiteServiceImpl implements PerusteenOsaViiteService {
 
         if (peruste == null || !peruste.containsViite(viite)) {
             throw new BusinessRuleViolationException("Sisältö ei kuulu tähän perusteeseen");
+        }
+
+        if (viiteDto != null && viiteDto.getPerusteenOsa() instanceof TaiteenalaVaiheDto
+                && !KoulutustyyppiToteutus.TPO2026.equals(peruste.getToteutus())) {
+            throw new BusinessRuleViolationException("taiteenalavaihe-vain-tpo2026");
         }
 
         PerusteenOsaViite uusiViite = new PerusteenOsaViite();

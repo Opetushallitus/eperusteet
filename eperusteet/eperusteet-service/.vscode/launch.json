@@ -12,6 +12,16 @@
     },
     {
       "type": "java",
+      "name": "eperusteet-service qa",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "fi.vm.sade.eperusteet.EperusteetApplication",
+      "projectName": "eperusteet-service",
+      "vmArgs": "-Dfile.encoding=UTF-8 -Dspring.profiles.active=default,qa,local --add-opens=java.base/java.lang=ALL-UNNAMED",
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
       "name": "eperusteet-service loqsql",
       "request": "launch",
       "cwd": "${workspaceFolder}",
