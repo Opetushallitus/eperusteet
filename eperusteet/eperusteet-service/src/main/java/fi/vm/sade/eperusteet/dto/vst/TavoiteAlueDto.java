@@ -19,6 +19,7 @@ public class TavoiteAlueDto {
     private Long id;
     private TavoiteAlueTyyppi tavoiteAlueTyyppi;
     private KoodiDto otsikko;
+    private LokalisoituTekstiDto tavoitteidenJohdanto;
     private List<KoodiDto> tavoitteet = new ArrayList<>();
     private List<LokalisoituTekstiDto> keskeisetSisaltoalueet = new ArrayList<>();
 }

@@ -47,11 +47,16 @@ public class TavoiteAlue extends AbstractAuditedEntity {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-    @ValidKoodisto(koodisto = KoodistoUriArvo.TAVOITEALUEET)
+    @ValidKoodisto(koodisto = {KoodistoUriArvo.TAVOITEALUEET, KoodistoUriArvo.TPO_TAVOITEALUE})
     private Koodi otsikko;
 
+    @ValidHtml(whitelist = ValidHtml.WhitelistType.MINIMAL)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+    private TekstiPalanen tavoitteidenJohdanto;
+
     @OrderColumn
-    @ValidKoodisto(koodisto = {KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, KoodistoUriArvo.TAVOITTEETLUKUTAITO2027})
+    @ValidKoodisto(koodisto = {KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, KoodistoUriArvo.TAVOITTEETLUKUTAITO2027, KoodistoUriArvo.TPO_TAVOITE})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "tavoitealue_tavoitteet",
@@ -73,6 +78,7 @@ public class TavoiteAlue extends AbstractAuditedEntity {
         if (other.getOtsikko() != null) {
             this.otsikko = new Koodi(other.getOtsikko().getUri());
         }
+        this.tavoitteidenJohdanto = TekstiPalanen.of(other.getTavoitteidenJohdanto());
         this.tavoitteet = other.getTavoitteet().stream().map(tavoite -> new Koodi(tavoite.getUri())).collect(Collectors.toList());
         this.keskeisetSisaltoalueet = other.getKeskeisetSisaltoalueet().stream().map(k -> TekstiPalanen.of(k)).collect(Collectors.toList());
     }

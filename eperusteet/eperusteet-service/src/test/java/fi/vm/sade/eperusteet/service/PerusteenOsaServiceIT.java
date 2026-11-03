@@ -27,6 +27,8 @@ import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusOsaAlueDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusOsaAlueTasoKuvausDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusPaaAlueDto;
 import fi.vm.sade.eperusteet.dto.koodisto.KoodistoUriArvo;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationNodeDto;
+import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteKevytDto;
 import fi.vm.sade.eperusteet.dto.peruste.PerusteenOsaDto;
@@ -52,6 +54,9 @@ import fi.vm.sade.eperusteet.dto.vst.KotoTaitotasoDto;
 import fi.vm.sade.eperusteet.dto.vst.OpintokokonaisuusDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoiteAlueDto;
 import fi.vm.sade.eperusteet.dto.vst.TavoitesisaltoalueDto;
+import fi.vm.sade.eperusteet.dto.KevytTekstiKappaleDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenalaDto;
+import fi.vm.sade.eperusteet.dto.yl.TaiteenalaVaiheDto;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaRepository;
 import fi.vm.sade.eperusteet.repository.PerusteenOsaViiteRepository;
@@ -421,6 +426,74 @@ public class PerusteenOsaServiceIT extends AbstractIntegrationTest {
         tavoitesisaltoalueDto = perusteenOsaService.update(tavoitesisaltoalueDto);
 
         assertTavoitesisaltoalueData(tavoitesisaltoalueDto);
+    }
+
+    @Test
+    public void testTaiteenalaVaihe() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.TPO.toString()));
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        TaiteenalaDto taiteenalaDto = new TaiteenalaDto();
+        taiteenalaDto.setKoodi(KoodiDto.of("taiteenalat", "x"));
+        PerusteenOsaViiteDto.Matala taiteenalaViite = perusteService.addSisaltoUUSI(perusteDto.getId(), Suoritustapakoodi.TPO, new PerusteenOsaViiteDto.Matala(taiteenalaDto));
+
+        PerusteenOsaViiteDto.Matala vaiheViite = perusteService.addSisaltoLapsi(perusteDto.getId(), taiteenalaViite.getId(), new PerusteenOsaViiteDto.Matala(new TaiteenalaVaiheDto()));
+        assertThat(perusteenOsaViiteRepository.findOne(vaiheViite.getId()).getVanhempi().getId()).isEqualTo(taiteenalaViite.getId());
+
+        TaiteenalaVaiheDto vaiheDto = (TaiteenalaVaiheDto) perusteenOsaService.get(vaiheViite.getPerusteenOsa().getId());
+        assertThat(vaiheDto.getId()).isNotNull();
+        perusteenOsaService.lock(vaiheDto.getId());
+
+        vaiheDto.setKoodi(KoodiDto.of(KoodistoUriArvo.TPO_VAIHE, "1"));
+        vaiheDto.setLaajuus(300);
+        vaiheDto.setKuvaus(LokalisoituTekstiDto.of("kuvaus1"));
+        vaiheDto.setVapaatTekstit(Arrays.asList(KevytTekstiKappaleDto.of("vapaa nimi", "vapaa teksti")));
+        vaiheDto.setTavoitealueet(Arrays.asList(
+                TavoiteAlueDto.builder()
+                        .tavoiteAlueTyyppi(TavoiteAlueTyyppi.OTSIKKO)
+                        .otsikko(KoodiDto.of(KoodistoUriArvo.TPO_TAVOITEALUE, "otsikko1"))
+                        .build(),
+                TavoiteAlueDto.builder()
+                        .tavoiteAlueTyyppi(TavoiteAlueTyyppi.TAVOITESISALTOALUE)
+                        .tavoitteet(Arrays.asList(KoodiDto.of(KoodistoUriArvo.TPO_TAVOITE, "tavoite1")))
+                        .keskeisetSisaltoalueet(Arrays.asList(LokalisoituTekstiDto.of("keskeinen1")))
+                        .build()
+        ));
+
+        vaiheDto = perusteenOsaService.update(vaiheDto);
+
+        assertThat(vaiheDto.getKoodi()).isEqualTo(KoodiDto.of(KoodistoUriArvo.TPO_VAIHE, "1"));
+        assertThat(vaiheDto.getLaajuus()).isEqualTo(300);
+        assertThat(vaiheDto.getKuvaus().get(Kieli.FI)).isEqualTo("kuvaus1");
+        assertThat(vaiheDto.getVapaatTekstit()).extracting(vt -> vt.getNimi().get(Kieli.FI), vt -> vt.getTeksti().get(Kieli.FI))
+                .containsExactly(org.assertj.core.groups.Tuple.tuple("vapaa nimi", "vapaa teksti"));
+        assertThat(vaiheDto.getTavoitealueet()).extracting("tavoiteAlueTyyppi").containsExactly(TavoiteAlueTyyppi.OTSIKKO, TavoiteAlueTyyppi.TAVOITESISALTOALUE);
+        assertThat(vaiheDto.getTavoitealueet().get(0)).extracting("otsikko").isEqualTo(KoodiDto.of(KoodistoUriArvo.TPO_TAVOITEALUE, "otsikko1"));
+        assertThat(vaiheDto.getTavoitealueet())
+                .flatExtracting("tavoitteet").containsExactly(KoodiDto.of(KoodistoUriArvo.TPO_TAVOITE, "tavoite1"));
+        assertThat(vaiheDto.getTavoitealueet())
+                .flatExtracting("keskeisetSisaltoalueet").extracting("tekstit").containsExactly(Maps.newHashMap(Kieli.FI, "keskeinen1"));
+
+        NavigationNodeDto taiteenalaNode = perusteService.buildNavigation(perusteDto.getId(), "fi").getChildren().stream()
+                .filter(node -> NavigationType.taiteenala.equals(node.getType()))
+                .findFirst().orElseThrow();
+        assertThat(taiteenalaNode.getChildren())
+                .extracting(NavigationNodeDto::getType, NavigationNodeDto::getId, node -> node.getMeta().get("taiteenalaId"))
+                .containsExactly(org.assertj.core.groups.Tuple.tuple(NavigationType.taiteenalavaihe, vaiheViite.getId(), taiteenalaViite.getId()));
+    }
+
+    @Test
+    public void testTaiteenalaVaihe_vaaraKoodisto() {
+        PerusteprojektiDto pp = ppTestUtils.createPerusteprojekti(ppl -> ppl.setKoulutustyyppi(KoulutusTyyppi.TPO.toString()));
+        PerusteDto perusteDto = ppTestUtils.initPeruste(pp.getPeruste().getIdLong());
+
+        TaiteenalaVaiheDto vaiheDto = new TaiteenalaVaiheDto();
+        vaiheDto.setKoodi(KoodiDto.of(KoodistoUriArvo.TAVOITEALUEET, "1"));
+
+        assertThatThrownBy(() -> {
+            perusteService.addSisaltoUUSI(perusteDto.getId(), Suoritustapakoodi.TPO, new PerusteenOsaViiteDto.Matala(vaiheDto));
+            em.flush();
+        }).isInstanceOf(ConstraintViolationException.class);
     }
 
     @Test

@@ -53,6 +53,8 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
 
             if (viite.isPresent() && viite.get().getPerusteenOsa() instanceof TaiteenalaDto) {
                 TaiteenalaDto taiteenaladto = (TaiteenalaDto) viite.get().getPerusteenOsa();
+                List<NavigationNodeDto> lapsiviitteet = new ArrayList<>(navigationNodeDto.getChildren());
+                navigationNodeDto.getChildren().clear();
 
                 navigationNodeDto.addAll(taiteenaladto.getTaiteenOsat().stream().map(alaosa -> {
                     if (alaosa.getNimi() != null) {
@@ -71,6 +73,8 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
                             .meta("vapaateksti_id", vapaateksti.getId())
                             .meta("viiteId", navigationNodeDto.getId())));
                 }
+
+                navigationNodeDto.addAll(lapsiviitteet);
             }
         });
 
@@ -86,7 +90,7 @@ public class NavigationBuilderPublicTaiteenPerusopetus implements NavigationBuil
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList()));
         }
-        return viitteet;
+        return lapsiviitteet;
     }
 
 }
