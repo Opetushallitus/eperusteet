@@ -14,7 +14,7 @@ public enum NavigationType {
     perusopetusoppiaineet, perusopetusoppiaine, vuosiluokkakokonaisuus, vuosiluokkakokonaisuudet, perusopetuslaajaalaisetosaamiset, perusopetuslaajaalainenosaaminen,
     aipevaihe, aipekurssi, aipeoppiaine,
     kurssit,
-    taiteenosa,
+    taiteenosa, taiteenalavaihe,
     termi,
     opintokokonaisuus, tavoitesisaltoalue, koto_kielitaitotaso, koto_opinto, koto_laajaalainenosaaminen,
     linkkisivu,
