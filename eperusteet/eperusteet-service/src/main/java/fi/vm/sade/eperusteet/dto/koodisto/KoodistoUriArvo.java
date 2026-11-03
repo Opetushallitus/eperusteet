@@ -31,6 +31,10 @@ public class KoodistoUriArvo {
     public static final String TAVOITTEETLUKUTAITO2027 = "tavoitteetlukutaito2027";
     public static final String KOTOUTUMISKOULUTUSTAVOITTEET = "kotoutumiskoulutustavoitteet";
 
+    public static final String TPO_VAIHE = "tpovaihe";
+    public static final String TPO_TAVOITEALUE = "tpotavoitealue";
+    public static final String TPO_TAVOITE = "tpotavoite";
+
     public static final String TUTKINTOKOULUTUKSEEN_VALMENTAVAKOULUTUS_LAAJAALAINENOSAAMINEN = "tutkintokoulutukseenvalmentavakoulutuslaajaalainenosaaminen";
     public static final String KOULUTUKSENOSATTUVA = "koulutuksenosattuva";
 
