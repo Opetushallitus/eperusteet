@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.collect.Sets;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,12 +64,13 @@ public class ValidatorVapaaSivistystyoLukutaito implements Validator {
     }
 
     private void tarkistaPerusteenSisaltoTekstipalaset(Peruste peruste, Validointi validointi) {
-        if (peruste.getVstSisalto() == null || peruste.getVstSisalto().getSisalto() == null) {
+        PerusteenOsaViite sisalto = peruste.getSisallot(null);
+        if (sisalto == null) {
             return;
         }
 
         Set<Kieli> vaaditutKielet = peruste.getKielet();
-        for (PerusteenOsaViite lapsi : peruste.getVstSisalto().getSisalto().getLapset()) {
+        for (PerusteenOsaViite lapsi : sisalto.getLapset()) {
             tarkistaSisalto(lapsi, vaaditutKielet, validointi);
         }
     }
@@ -101,7 +104,7 @@ public class ValidatorVapaaSivistystyoLukutaito implements Validator {
             if (TavoiteAlueTyyppi.TAVOITESISALTOALUE.equals(tavoitealue.getTavoiteAlueTyyppi())) {
                 for (Koodi tavoite : tavoitealue.getTavoitteet()) {
                     tarkistaTekstipalanen("peruste-validointi-tavoitesisaltoalue-tavoitteet",
-                            koodinNimi(tavoite), pakolliset, virheellisetKielet, true);
+                            koodinNimi(tavoite), Sets.newHashSet(Kieli.FI, Kieli.SV), virheellisetKielet, true);
                 }
 
                 for (TekstiPalanen keskeinenSisaltoalue : tavoitealue.getKeskeisetSisaltoalueet()) {
@@ -127,7 +130,8 @@ public class ValidatorVapaaSivistystyoLukutaito implements Validator {
 
     @Override
     public boolean applicableKoulutustyyppi(KoulutusTyyppi tyyppi) {
-        return KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO.equals(tyyppi);
+        return KoulutusTyyppi.VAPAASIVISTYSTYOLUKUTAITO.equals(tyyppi)
+                || KoulutusTyyppi.LUKUTAITOKOULUTUS.equals(tyyppi);
     }
 
     @Override

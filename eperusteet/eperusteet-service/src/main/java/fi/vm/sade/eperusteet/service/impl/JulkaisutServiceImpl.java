@@ -631,7 +631,14 @@ public class JulkaisutServiceImpl implements JulkaisutService {
     @Transactional(readOnly = true)
     @Cacheable(value = CacheArvot.PERUSTE_JULKAISU, key = "#perusteId", unless = "#result == null")
     public ObjectNode getViimeisinJulkaisuData(Long perusteId) {
-        return julkaisutRepository.findLatestJulkaistuDataByPerusteId(perusteId).orElse(null);
+        Integer revisio = julkaisutRepository.findLatestRevisionByPerusteId(perusteId);
+        if (revisio == null) {
+            return null;
+        }
+
+        return julkaisutRepository.findJulkaistuDataByPerusteIdAndRevision(perusteId, revisio)
+                .map(data -> data.put("julkaisuRevisio", revisio))
+                .orElse(null);
     }
 
     @Override

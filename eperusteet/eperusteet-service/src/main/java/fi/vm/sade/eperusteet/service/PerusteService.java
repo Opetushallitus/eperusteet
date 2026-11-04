@@ -78,6 +78,9 @@ public interface PerusteService {
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, boolean useCurrentData);
 
     @PreAuthorize("permitAll()")
+    PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer julkaisuRevisio);
+
+    @PreAuthorize("permitAll()")
     PerusteKaikkiDto getJulkaistuSisalto(@P("perusteId") final Long id, Integer julkaisuRevisio, boolean useCurrentData);
 
     @PreAuthorize("permitAll")

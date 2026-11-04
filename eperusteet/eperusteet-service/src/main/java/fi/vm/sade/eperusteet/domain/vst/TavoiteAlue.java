@@ -51,7 +51,7 @@ public class TavoiteAlue extends AbstractAuditedEntity {
     private Koodi otsikko;
 
     @OrderColumn
-    @ValidKoodisto(koodisto = KoodistoUriArvo.TAVOITTEETLUKUTAIDOT)
+    @ValidKoodisto(koodisto = {KoodistoUriArvo.TAVOITTEETLUKUTAIDOT, KoodistoUriArvo.TAVOITTEETLUKUTAITO2027})
     @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "tavoitealue_tavoitteet",

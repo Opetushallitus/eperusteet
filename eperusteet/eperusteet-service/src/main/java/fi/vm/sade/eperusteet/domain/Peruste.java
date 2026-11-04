@@ -714,6 +714,10 @@ public class Peruste extends AbstractAuditedEntity
             koodit.addAll(getVstSisalto().getKoodit());
         }
 
+        if (getLukutaitokoulutusSisalto() != null) {
+            koodit.addAll(getLukutaitokoulutusSisalto().getKoodit());
+        }
+
         return koodit;
     }
 

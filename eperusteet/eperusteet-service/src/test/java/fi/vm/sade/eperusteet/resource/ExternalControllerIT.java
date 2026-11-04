@@ -15,6 +15,7 @@ import fi.vm.sade.eperusteet.dto.peruste.PerusteenJulkaisuData;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiDto;
 import fi.vm.sade.eperusteet.dto.perusteprojekti.PerusteprojektiLuontiDto;
 import fi.vm.sade.eperusteet.dto.util.LokalisoituTekstiDto;
+import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.resource.julkinen.ExternalController;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
@@ -28,10 +29,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -62,6 +70,12 @@ public class ExternalControllerIT extends AbstractDockerIntegrationTest {
     @Autowired
     private PerusteprojektiTestUtils perusteprojektiTestUtils;
 
+    @Autowired
+    private WebApplicationContext webApplicationContext;
+
+    @Autowired
+    private JulkaisutRepository julkaisutRepository;
+
     @Test
     public void testPerusteLoytyy() throws ExecutionException, InterruptedException {
         PerusteDto peruste1 = creatPerusteJaJulkaise("peruste1");
@@ -69,6 +83,59 @@ public class ExternalControllerIT extends AbstractDockerIntegrationTest {
         PerusteKaikkiDto perusteKaikkiDto = externalController.getPeruste(peruste1.getId()).getBody();
         Assertions.assertThat(perusteKaikkiDto).isNotNull();
         Assertions.assertThat(perusteKaikkiDto.getId()).isEqualTo(peruste1.getId());
+
+        int revisio = julkaisutService.getJulkaisut(peruste1.getId()).get(0).getRevision();
+        Assertions.assertThat(perusteKaikkiDto.getJulkaisuRevisio()).isEqualTo(revisio);
+        Assertions.assertThat(julkaisutService.getViimeisinJulkaisuData(peruste1.getId()).get("julkaisuRevisio").asInt()).isEqualTo(revisio);
+
+        startNewTransaction();
+        Assertions.assertThat(julkaisutRepository.findFirstByPerusteIdOrderByRevisionDesc(peruste1.getId()).getData().getData().has("julkaisuRevisio")).isFalse();
+        endTransaction();
+    }
+
+    @Test
+    public void testPerusteRevisioLoytyy() throws ExecutionException, InterruptedException {
+        PerusteDto peruste = creatPerusteJaJulkaise("peruste1");
+        int revisio = julkaisutService.getJulkaisut(peruste.getId()).get(0).getRevision();
+
+        ResponseEntity<PerusteKaikkiDto> response = externalController.getPerusteJulkaisuRevisio(peruste.getId(), revisio);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(response.getBody()).isNotNull();
+        Assertions.assertThat(response.getBody().getId()).isEqualTo(peruste.getId());
+        Assertions.assertThat(response.getBody().getJulkaisuRevisio()).isEqualTo(revisio);
+    }
+
+    @Test
+    public void testPerusteRevisioEiLoydy() throws ExecutionException, InterruptedException {
+        PerusteDto peruste = creatPerusteJaJulkaise("peruste1");
+
+        startNewTransaction();
+        perusteRepository.findOne(peruste.getId()).getPerusteprojekti().setEsikatseltavissa(true);
+        endTransaction();
+
+        ResponseEntity<PerusteKaikkiDto> response = externalController.getPerusteJulkaisuRevisio(peruste.getId(), 999);
+        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        Assertions.assertThat(response.getBody()).isNull();
+    }
+
+    @Test
+    public void testPerusteRevisioReititys() throws Exception {
+        PerusteDto peruste = creatPerusteJaJulkaise("peruste1");
+        int revisio = julkaisutService.getJulkaisut(peruste.getId()).get(0).getRevision();
+        MockMvc mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+
+        mvc.perform(MockMvcRequestBuilders.get("/api/external/peruste/" + peruste.getId() + "/v" + revisio))
+                .andExpect(MockMvcResultMatchers.handler().methodName("getPerusteJulkaisuRevisio"));
+
+        mvc.perform(MockMvcRequestBuilders.get("/api/external/peruste/" + peruste.getId() + "/v999"))
+                .andExpect(MockMvcResultMatchers.handler().methodName("getPerusteJulkaisuRevisio"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+        mvc.perform(MockMvcRequestBuilders.get("/api/external/peruste/" + peruste.getId() + "/id"))
+                .andExpect(MockMvcResultMatchers.handler().methodName("getPerusteDynamicQuery"));
+
+        mvc.perform(MockMvcRequestBuilders.get("/api/external/peruste/" + peruste.getId() + "/nimi/fi"))
+                .andExpect(MockMvcResultMatchers.handler().methodName("getPerusteDynamicQueryHidden"));
     }
 
     @Test
