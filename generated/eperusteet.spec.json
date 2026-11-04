@@ -18735,6 +18735,13 @@
               "$ref" : "#/components/schemas/KoodiDto"
             }
           },
+          "tiedotteet" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TiedoteKevytDto"
+            }
+          },
           "luotu" : {
             "type" : "string",
             "format" : "date-time"
@@ -18751,6 +18758,37 @@
           },
           "muokkaaja" : {
             "type" : "string"
+          }
+        }
+      },
+      "TiedoteKevytDto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "otsikko" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "julkaisupaikat" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "OPINTOPOLKU", "OPINTOPOLKU_ETUSIVU", "OPS", "LOPS", "AMOSAA", "VST", "TUVA", "KOTO" ]
+            }
+          },
+          "luotu" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "muokattu" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -19218,8 +19256,11 @@
               "$ref" : "#/components/schemas/Validointi"
             }
           },
-          "vaihtoOk" : {
-            "type" : "boolean"
+          "virheet" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Virhe"
+            }
           },
           "huomautukset" : {
             "type" : "array",
@@ -19227,11 +19268,8 @@
               "$ref" : "#/components/schemas/Virhe"
             }
           },
-          "virheet" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Virhe"
-            }
+          "vaihtoOk" : {
+            "type" : "boolean"
           }
         }
       },
@@ -20930,9 +20968,6 @@
       "Part" : {
         "type" : "object",
         "properties" : {
-          "submittedFileName" : {
-            "type" : "string"
-          },
           "contentType" : {
             "type" : "string"
           },
@@ -20951,6 +20986,9 @@
             "items" : {
               "type" : "string"
             }
+          },
+          "submittedFileName" : {
+            "type" : "string"
           }
         }
       },
@@ -21806,12 +21844,8 @@
       "PageableObject" : {
         "type" : "object",
         "properties" : {
-          "offset" : {
-            "type" : "integer",
-            "format" : "int64"
-          },
-          "sort" : {
-            "$ref" : "#/components/schemas/SortObject"
+          "paged" : {
+            "type" : "boolean"
           },
           "pageNumber" : {
             "type" : "integer",
@@ -21821,10 +21855,14 @@
             "type" : "integer",
             "format" : "int32"
           },
-          "unpaged" : {
-            "type" : "boolean"
+          "offset" : {
+            "type" : "integer",
+            "format" : "int64"
           },
-          "paged" : {
+          "sort" : {
+            "$ref" : "#/components/schemas/SortObject"
+          },
+          "unpaged" : {
             "type" : "boolean"
           }
         }
@@ -21832,13 +21870,13 @@
       "SortObject" : {
         "type" : "object",
         "properties" : {
+          "sorted" : {
+            "type" : "boolean"
+          },
           "empty" : {
             "type" : "boolean"
           },
           "unsorted" : {
-            "type" : "boolean"
-          },
-          "sorted" : {
             "type" : "boolean"
           }
         }
