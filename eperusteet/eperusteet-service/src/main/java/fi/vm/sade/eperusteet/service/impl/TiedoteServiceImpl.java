@@ -158,7 +158,6 @@ public class TiedoteServiceImpl implements TiedoteService {
         Set<Long> tiedoteIdt = new HashSet<>();
         Set<Tiedote> liitetytTiedotteet = new HashSet<>();
 
-        // Validate and load all selected notices before changing collections.
         for (TiedoteKevytDto kohde : kohdeTiedotteet) {
             if (kohde == null || kohde.getId() == null) {
                 throw new IllegalArgumentException("Liitetyn tiedotteen id puuttuu");
