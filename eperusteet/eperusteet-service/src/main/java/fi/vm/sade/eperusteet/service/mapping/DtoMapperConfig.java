@@ -512,6 +512,7 @@ public class DtoMapperConfig {
 
         factory.classMap(Tiedote.class, TiedoteDto.class)
                 .fieldAToB("perusteprojekti.peruste", "peruste")
+                .fieldAToB("tiedotteet", "tiedotteet")
                 .byDefault()
                 .register();
 
