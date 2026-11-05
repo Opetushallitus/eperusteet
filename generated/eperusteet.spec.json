@@ -18753,6 +18753,21 @@
               "enum" : [ "OPINTOPOLKU", "OPINTOPOLKU_ETUSIVU", "OPS", "LOPS", "AMOSAA", "VST", "TUVA", "KOTO" ]
             }
           },
+          "koulutustyypit" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+            }
+          },
+          "perusteet" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PerusteKevytDto"
+            }
+          },
           "luotu" : {
             "type" : "string",
             "format" : "date-time"
