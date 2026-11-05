@@ -33,6 +33,7 @@ public class TiedoteDto {
     private Set<PerusteKevytDto> perusteet;
     private Set<KoodiDto> tutkinnonosat;
     private Set<KoodiDto> osaamisalat;
+    private Set<TiedoteKevytDto> tiedotteet;
     private Date luotu;
     private String luoja;
     @JsonInclude(JsonInclude.Include.NON_NULL)

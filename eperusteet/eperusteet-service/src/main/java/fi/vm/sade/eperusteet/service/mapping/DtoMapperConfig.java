@@ -51,11 +51,7 @@ import fi.vm.sade.eperusteet.domain.yl.lukio.Aihekokonaisuudet;
 import fi.vm.sade.eperusteet.domain.yl.lukio.LukioOpetussuunnitelmaRakenne;
 import fi.vm.sade.eperusteet.domain.yl.lukio.Lukiokurssi;
 import fi.vm.sade.eperusteet.domain.yl.lukio.OpetuksenYleisetTavoitteet;
-import fi.vm.sade.eperusteet.dto.KoulutusDto;
-import fi.vm.sade.eperusteet.dto.OsaamistasoDto;
-import fi.vm.sade.eperusteet.dto.OsaamistasonKriteeriDto;
-import fi.vm.sade.eperusteet.dto.Reference;
-import fi.vm.sade.eperusteet.dto.TiedoteDto;
+import fi.vm.sade.eperusteet.dto.*;
 import fi.vm.sade.eperusteet.dto.arviointi.ArvioinninKohdeDto;
 import fi.vm.sade.eperusteet.dto.arviointi.ArviointiAsteikkoDto;
 import fi.vm.sade.eperusteet.dto.digi.OsaamiskokonaisuusDto;
@@ -514,6 +510,11 @@ public class DtoMapperConfig {
 
         factory.classMap(Tiedote.class, TiedoteDto.class)
                 .fieldAToB("perusteprojekti.peruste", "peruste")
+                .fieldAToB("tiedotteet", "tiedotteet")
+                .byDefault()
+                .register();
+
+        factory.classMap(Tiedote.class, TiedoteKevytDto.class)
                 .byDefault()
                 .register();
 

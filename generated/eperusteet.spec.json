@@ -14318,6 +14318,43 @@
         }
       }
     },
+    "/api/external/peruste/{perusteId}/v{julkaisuRevisio}" : {
+      "get" : {
+        "tags" : [ "External" ],
+        "summary" : "Perusteen tietyn julkaisuversion tietojen haku",
+        "operationId" : "getPerusteJulkaisuRevisio",
+        "parameters" : [ {
+          "name" : "perusteId",
+          "in" : "path",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int64"
+          }
+        }, {
+          "name" : "julkaisuRevisio",
+          "in" : "path",
+          "description" : "Perusteen julkaisun revisio",
+          "required" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "content" : {
+              "application/json;charset=UTF-8" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PerusteKaikkiDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/external/peruste/{perusteId}/perusteenosa/{perusteenOsaId}" : {
       "get" : {
         "tags" : [ "External" ],
@@ -18669,6 +18706,13 @@
               "$ref" : "#/components/schemas/KoodiDto"
             }
           },
+          "tiedotteet" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TiedoteKevytDto"
+            }
+          },
           "luotu" : {
             "type" : "string",
             "format" : "date-time"
@@ -18685,6 +18729,52 @@
           },
           "muokkaaja" : {
             "type" : "string"
+          }
+        }
+      },
+      "TiedoteKevytDto" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "integer",
+            "format" : "int64"
+          },
+          "otsikko" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "string"
+            }
+          },
+          "julkaisupaikat" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "OPINTOPOLKU", "OPINTOPOLKU_ETUSIVU", "OPS", "LOPS", "AMOSAA", "VST", "TUVA", "KOTO" ]
+            }
+          },
+          "koulutustyypit" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "PERUSTUTKINTO", "LUKIOKOULUTUS", "TELMA", "LISAOPETUS", "AMMATTITUTKINTO", "ERIKOISAMMATTITUTKINTO", "AIKUISTENLUKIOKOULUTUS", "ESIOPETUS", "PERUSOPETUS", "AIKUISTENPERUSOPETUS", "VALMA", "VARHAISKASVATUS", "PERUSOPETUSVALMISTAVA", "LUKIOVALMISTAVAKOULUTUS", "TPO", "VAPAASIVISTYSTYO", "MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS", "LUKUTAITOKOULUTUS", "VAPAASIVISTYSTYOLUKUTAITO", "TUTKINTOONVALMENTAVA", "KIELIKAANTAJATUTKINTO", "MUU_KOULUTUS" ]
+            }
+          },
+          "perusteet" : {
+            "uniqueItems" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PerusteKevytDto"
+            }
+          },
+          "luotu" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "muokattu" : {
+            "type" : "string",
+            "format" : "date-time"
           }
         }
       },
@@ -19152,13 +19242,13 @@
               "$ref" : "#/components/schemas/Validointi"
             }
           },
-          "huomautukset" : {
+          "virheet" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
             }
           },
-          "virheet" : {
+          "huomautukset" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/Virhe"
@@ -20864,6 +20954,9 @@
       "Part" : {
         "type" : "object",
         "properties" : {
+          "contentType" : {
+            "type" : "string"
+          },
           "name" : {
             "type" : "string"
           },
@@ -20873,9 +20966,6 @@
           },
           "inputStream" : {
             "type" : "object"
-          },
-          "contentType" : {
-            "type" : "string"
           },
           "headerNames" : {
             "type" : "array",
@@ -21740,6 +21830,17 @@
       "PageableObject" : {
         "type" : "object",
         "properties" : {
+          "paged" : {
+            "type" : "boolean"
+          },
+          "pageNumber" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "pageSize" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
           "offset" : {
             "type" : "integer",
             "format" : "int64"
@@ -21749,30 +21850,19 @@
           },
           "unpaged" : {
             "type" : "boolean"
-          },
-          "paged" : {
-            "type" : "boolean"
-          },
-          "pageSize" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "pageNumber" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         }
       },
       "SortObject" : {
         "type" : "object",
         "properties" : {
+          "sorted" : {
+            "type" : "boolean"
+          },
           "empty" : {
             "type" : "boolean"
           },
           "unsorted" : {
-            "type" : "boolean"
-          },
-          "sorted" : {
             "type" : "boolean"
           }
         }
@@ -24175,6 +24265,11 @@
           },
           "kvLiite" : {
             "$ref" : "#/components/schemas/KVLiiteJulkinenDto"
+          },
+          "julkaisuRevisio" : {
+            "type" : "integer",
+            "description" : "Palautetun perusteen julkaisun versionumero. Kenttä puuttuu, jos palautettu sisältö ei ole julkaisu (esim. esikatselu).",
+            "format" : "int32"
           },
           "perusopetus" : {
             "$ref" : "#/components/schemas/PerusopetuksenPerusteenSisaltoDto"
