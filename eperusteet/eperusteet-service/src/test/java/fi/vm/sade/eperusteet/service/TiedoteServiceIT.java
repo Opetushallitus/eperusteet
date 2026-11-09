@@ -30,10 +30,13 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 
 import java.util.*;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import jakarta.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,6 +71,9 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Value("${fi.vm.sade.eperusteet.tiedote.vanhenemisraja-kuukausina}")
+    private int vanhenemisraja;
 
     @Before
     public void setUp()
@@ -132,6 +138,42 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         assertThat(tiedote1.getJulkaisupaikat()).containsExactlyInAnyOrder(TiedoteJulkaisuPaikka.AMOSAA, TiedoteJulkaisuPaikka.OPINTOPOLKU);
         assertThat(tiedote1.getKoulutustyypit()).containsExactlyInAnyOrder(KoulutusTyyppi.PERUSTUTKINTO, KoulutusTyyppi.ERIKOISAMMATTITUTKINTO);
         assertThat(tiedote1.getPerusteet().stream().map(PerusteKevytDto::getId)).containsExactlyInAnyOrderElementsOf(perusteIds);
+    }
+
+    @Test
+    @Transactional
+    public void testTiedotteenVanheneminen() {
+        TiedoteDto expired = luoTestiTiedote("Vanhenemistesti: vanhentunut");
+        TiedoteDto current = luoTestiTiedote("Vanhenemistesti: voimassa");
+        ZonedDateTime cutoff = ZonedDateTime.now(ZoneId.of("Europe/Helsinki")).minusMonths(vanhenemisraja);
+
+        entityManager.flush();
+        entityManager.createNativeQuery("UPDATE tiedote SET luotu = :luotu WHERE id = :id")
+                .setParameter("luotu", Date.from(cutoff.minusDays(1).toInstant()))
+                .setParameter("id", expired.getId())
+                .executeUpdate();
+        entityManager.createNativeQuery("UPDATE tiedote SET luotu = :luotu WHERE id = :id")
+                .setParameter("luotu", Date.from(cutoff.plusDays(1).toInstant()))
+                .setParameter("id", current.getId())
+                .executeUpdate();
+        entityManager.clear();
+
+        assertThat(tiedoteService.getAll(false, 0L)).extracting(TiedoteDto::getId)
+                .contains(current.getId()).doesNotContain(expired.getId());
+        assertThat(tiedoteService.getAll(false, 0L, null, true)).extracting(TiedoteDto::getId)
+                .contains(current.getId(), expired.getId());
+
+        TiedoteQuery query = new TiedoteQuery();
+        query.setNimi("Vanhenemistesti");
+        Page<TiedoteDto> result = tiedoteService.findBy(query);
+        assertEquals(1, result.getTotalElements());
+        assertThat(result.getContent()).extracting(TiedoteDto::getId).containsExactly(current.getId());
+
+        query.setHaeVanhentuneet(true);
+        result = tiedoteService.findBy(query);
+        assertEquals(2, result.getTotalElements());
+        assertThat(result.getContent()).extracting(TiedoteDto::getId)
+                .containsExactlyInAnyOrder(current.getId(), expired.getId());
     }
 
     @Test

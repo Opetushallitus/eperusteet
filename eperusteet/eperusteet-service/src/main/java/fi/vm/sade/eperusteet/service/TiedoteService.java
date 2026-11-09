@@ -21,6 +21,10 @@ public interface TiedoteService {
 
     @PreAuthorize("permitAll()")
     @PostFilter("filterObject.julkinen or filterObject.perusteprojekti == null or hasPermission(filterObject.perusteprojekti.id, 'perusteprojekti', 'LUKU')")
+    List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteprojektiId, boolean haeVanhentuneet);
+
+    @PreAuthorize("permitAll()")
+    @PostFilter("filterObject.julkinen or filterObject.perusteprojekti == null or hasPermission(filterObject.perusteprojekti.id, 'perusteprojekti', 'LUKU')")
     List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen);
 
     @PostAuthorize("returnObject == null or returnObject.julkinen or isAuthenticated() or returnObject.julkaisupaikat.size() > 0 or returnObject.koulutustyypit.size() > 0 or returnObject.perusteet.size() > 0")

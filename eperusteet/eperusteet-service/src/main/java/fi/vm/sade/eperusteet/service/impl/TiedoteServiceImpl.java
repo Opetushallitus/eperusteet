@@ -19,6 +19,7 @@ import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Service
 @Transactional
@@ -46,6 +49,9 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Autowired
     private PerusteRepository perusteRepository;
+
+    @Value("${fi.vm.sade.eperusteet.tiedote.vanhenemisraja-kuukausina}")
+    private int vanhenemisraja;
 
     @Override
     public Page<TiedoteDto> findBy(TiedoteQuery tquery) {
@@ -80,18 +86,25 @@ public class TiedoteServiceImpl implements TiedoteService {
     @Override
     @Transactional(readOnly = true)
     public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteId) {
+        return getAll(vainJulkiset, alkaen, perusteId, false);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteId, boolean haeVanhentuneet) {
         if (!SecurityUtil.isAuthenticated()) {
             vainJulkiset = true;
         }
 
         List<Tiedote> tiedotteet;
+        Date vanhenemispaiva = Date.from(ZonedDateTime.now(ZoneId.of("Europe/Helsinki")).minusMonths(vanhenemisraja).toInstant());
         if (perusteId == null) {
-            tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
+            tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen), haeVanhentuneet, vanhenemispaiva);
         }
         else {
             Peruste peruste = perusteRepository.findOne(perusteId);
             Perusteprojekti perusteprojekti = peruste.getPerusteprojekti();
-            tiedotteet = repository.findAllByPerusteprojekti(vainJulkiset, new Date(alkaen), perusteprojekti);
+            tiedotteet = repository.findAllByPerusteprojekti(vainJulkiset, new Date(alkaen), perusteprojekti, haeVanhentuneet, vanhenemispaiva);
 
         }
         return mapper.mapAsList(tiedotteet, TiedoteDto.class);

@@ -32,9 +32,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +48,9 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
 
     @PersistenceContext
     private EntityManager em;
+
+    @Value("${fi.vm.sade.eperusteet.tiedote.vanhenemisraja-kuukausina}")
+    private int vanhenemisraja;
 
     @Override
     public Page<Tiedote> findBy(PageRequest page, TiedoteQuery tquery) {
@@ -112,6 +119,10 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             TiedoteQuery tq
     ) {
         Predicate pred = cb.conjunction();
+
+        if (!tq.isHaeVanhentuneet()) {
+            pred = cb.and(pred, cb.greaterThanOrEqualTo(root.get(Tiedote_.luotu), Date.from(ZonedDateTime.now(ZoneId.of("Europe/Helsinki")).minusMonths(vanhenemisraja).toInstant())));
+        }
 
         if (!ObjectUtils.isEmpty(tq.getKieli())) {
             Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Tiedote_.otsikko).join(TekstiPalanen_.teksti);
