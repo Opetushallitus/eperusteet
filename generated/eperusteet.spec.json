@@ -3105,6 +3105,14 @@
             "format" : "int64",
             "default" : 0
           }
+        }, {
+          "name" : "haeVanhentuneet",
+          "in" : "query",
+          "required" : false,
+          "schema" : {
+            "type" : "boolean",
+            "default" : false
+          }
         } ],
         "responses" : {
           "200" : {
@@ -8910,6 +8918,13 @@
           "name" : "koulutustyypiton",
           "in" : "query",
           "description" : "koulutustyypiton tiedote",
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "haeVanhentuneet",
+          "in" : "query",
+          "description" : "hae myös vanhentuneet tiedotteet",
           "schema" : {
             "type" : "boolean"
           }

@@ -18,6 +18,7 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.util.SecurityUtil;
+import fi.vm.sade.eperusteet.service.util.TiedoteUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -73,25 +74,19 @@ public class TiedoteServiceImpl implements TiedoteService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen) {
-        return getAll(vainJulkiset, alkaen, null);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteId) {
+    public List<TiedoteDto> getAll(boolean vainJulkiset, Long alkaen, Long perusteId, boolean haeVanhentuneet) {
         if (!SecurityUtil.isAuthenticated()) {
             vainJulkiset = true;
         }
 
         List<Tiedote> tiedotteet;
         if (perusteId == null) {
-            tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen));
+            tiedotteet = repository.findAll(vainJulkiset, new Date(alkaen), haeVanhentuneet, TiedoteUtil.vanhenemispaiva());
         }
         else {
             Peruste peruste = perusteRepository.findOne(perusteId);
             Perusteprojekti perusteprojekti = peruste.getPerusteprojekti();
-            tiedotteet = repository.findAllByPerusteprojekti(vainJulkiset, new Date(alkaen), perusteprojekti);
+            tiedotteet = repository.findAllByPerusteprojekti(vainJulkiset, new Date(alkaen), perusteprojekti, haeVanhentuneet, TiedoteUtil.vanhenemispaiva());
 
         }
         return mapper.mapAsList(tiedotteet, TiedoteDto.class);

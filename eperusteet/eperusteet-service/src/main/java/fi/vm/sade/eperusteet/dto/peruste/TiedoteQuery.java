@@ -25,4 +25,5 @@ public class TiedoteQuery {
     private String jarjestys;
     private Boolean jarjestysNouseva;
     private Boolean koulutustyypiton;
+    private boolean haeVanhentuneet;
 }

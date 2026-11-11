@@ -60,6 +60,7 @@ public class TiedoteController {
             @Parameter(name = "jarjestys", schema = @Schema(implementation = String.class), in = ParameterIn.QUERY, description = "tiedotteen jarjestys"),
             @Parameter(name = "jarjestysNouseva", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "tiedotteen jarjestyksen suunta"),
             @Parameter(name = "koulutustyypiton", schema = @Schema(implementation = Boolean.class), in = ParameterIn.QUERY, description = "koulutustyypiton tiedote"),
+            @Parameter(name = "haeVanhentuneet", schema = @Schema(implementation = Boolean.class, defaultValue = "false"), in = ParameterIn.QUERY, description = "hae myös vanhentuneet tiedotteet"),
     })
     @RequestMapping(value = "/haku", method = GET)
     public Page<TiedoteDto> findTiedotteetBy(@Parameter(hidden = true) TiedoteQuery tquery) {
@@ -70,9 +71,10 @@ public class TiedoteController {
     public List<TiedoteDto> getAllTiedotteet(
             @RequestParam(value = "vainJulkiset", required = false, defaultValue = "false") boolean vainJulkiset,
             @RequestParam(value = "perusteId", required = false) Long perusteId,
-            @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen
+            @RequestParam(value = "alkaen", required = false, defaultValue = "0") Long alkaen,
+            @RequestParam(value = "haeVanhentuneet", required = false, defaultValue = "false") boolean haeVanhentuneet
     ) {
-        return tiedoteService.getAll(vainJulkiset, alkaen, perusteId);
+        return tiedoteService.getAll(vainJulkiset, alkaen, perusteId, haeVanhentuneet);
     }
 
     @RequestMapping(value = "/{id}", method = GET)

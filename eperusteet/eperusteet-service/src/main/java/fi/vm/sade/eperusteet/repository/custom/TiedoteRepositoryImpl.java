@@ -14,6 +14,7 @@ import fi.vm.sade.eperusteet.domain.TiedoteJulkaisuPaikka;
 import fi.vm.sade.eperusteet.domain.Tiedote_;
 import fi.vm.sade.eperusteet.dto.peruste.TiedoteQuery;
 import fi.vm.sade.eperusteet.repository.TiedoteRepositoryCustom;
+import fi.vm.sade.eperusteet.service.util.TiedoteUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
@@ -35,6 +36,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -112,6 +114,10 @@ public class TiedoteRepositoryImpl implements TiedoteRepositoryCustom {
             TiedoteQuery tq
     ) {
         Predicate pred = cb.conjunction();
+
+        if (!tq.isHaeVanhentuneet()) {
+            pred = cb.and(pred, cb.greaterThanOrEqualTo(root.get(Tiedote_.luotu), Timestamp.valueOf(TiedoteUtil.vanhenemispaiva())));
+        }
 
         if (!ObjectUtils.isEmpty(tq.getKieli())) {
             Join<TekstiPalanen, LokalisoituTeksti> teksti = root.join(Tiedote_.otsikko).join(TekstiPalanen_.teksti);

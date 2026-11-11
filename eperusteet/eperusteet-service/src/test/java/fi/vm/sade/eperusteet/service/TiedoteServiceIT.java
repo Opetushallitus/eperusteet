@@ -30,6 +30,8 @@ import fi.vm.sade.eperusteet.service.test.util.PerusteprojektiTestUtils;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
 
 import java.util.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import jakarta.persistence.EntityManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,17 +112,17 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     public void testGetAll() {
         // Back to the near future
         Date alkaen = new Date((new Date()).getTime() + 1000);
-        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, alkaen.getTime());
+        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, alkaen.getTime(), null, false);
         assertEquals(0, tiedotteet.size());
 
-        tiedotteet = tiedoteService.getAll(true, 0L);
+        tiedotteet = tiedoteService.getAll(true, 0L, null, false);
         assertEquals(1, tiedotteet.size());
         assertThat(tiedotteet.get(0).getTutkinnonosat()).hasSize(1);
         assertThat(tiedotteet.get(0).getTutkinnonosat()).extracting("uri").containsExactlyInAnyOrder(KoodistoUriArvo.TUTKINNONOSAT + "_1");
         assertThat(tiedotteet.get(0).getOsaamisalat()).hasSize(1);
         assertThat(tiedotteet.get(0).getOsaamisalat()).extracting("uri").containsExactlyInAnyOrder(KoodistoUriArvo.OSAAMISALA + "_1");
 
-        tiedotteet = tiedoteService.getAll(false, 0L);
+        tiedotteet = tiedoteService.getAll(false, 0L, null, false);
         assertEquals(2, tiedotteet.size());
 
         TiedoteDto tiedote1 = tiedotteet.get(0);
@@ -135,8 +137,44 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
     }
 
     @Test
+    @Transactional
+    public void testTiedotteenVanheneminen() {
+        TiedoteDto expired = luoTestiTiedote("Vanhenemistesti: vanhentunut");
+        TiedoteDto current = luoTestiTiedote("Vanhenemistesti: voimassa");
+        LocalDateTime cutoff = LocalDateTime.now().minusYears(2);
+
+        entityManager.flush();
+        entityManager.createNativeQuery("UPDATE tiedote SET luotu = :luotu WHERE id = :id")
+                .setParameter("luotu", Timestamp.valueOf(cutoff.minusDays(1)))
+                .setParameter("id", expired.getId())
+                .executeUpdate();
+        entityManager.createNativeQuery("UPDATE tiedote SET luotu = :luotu WHERE id = :id")
+                .setParameter("luotu", Timestamp.valueOf(cutoff.plusDays(1)))
+                .setParameter("id", current.getId())
+                .executeUpdate();
+        entityManager.clear();
+
+        assertThat(tiedoteService.getAll(false, 0L, null, false)).extracting(TiedoteDto::getId)
+                .contains(current.getId()).doesNotContain(expired.getId());
+        assertThat(tiedoteService.getAll(false, 0L, null, true)).extracting(TiedoteDto::getId)
+                .contains(current.getId(), expired.getId());
+
+        TiedoteQuery query = new TiedoteQuery();
+        query.setNimi("Vanhenemistesti");
+        Page<TiedoteDto> result = tiedoteService.findBy(query);
+        assertEquals(1, result.getTotalElements());
+        assertThat(result.getContent()).extracting(TiedoteDto::getId).containsExactly(current.getId());
+
+        query.setHaeVanhentuneet(true);
+        result = tiedoteService.findBy(query);
+        assertEquals(2, result.getTotalElements());
+        assertThat(result.getContent()).extracting(TiedoteDto::getId)
+                .containsExactlyInAnyOrder(current.getId(), expired.getId());
+    }
+
+    @Test
     public void testGetById() {
-        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L);
+        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L, null, false);
         assertEquals(2, tiedotteet.size());
 
         Long id = tiedotteet.get(0).getId();
@@ -148,7 +186,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testUpdate() {
-        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L);
+        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L, null, false);
         assertEquals(2, tiedotteet.size());
 
         Long id = tiedotteet.get(0).getId();
@@ -171,7 +209,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testDelete() {
-        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L);
+        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L, null, false);
         assertEquals(2, tiedotteet.size());
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_julkaisupaikka").getResultList()).isNotEmpty();
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_koulutustyyppi").getResultList()).isNotEmpty();
@@ -180,7 +218,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
         tiedoteService.removeTiedote(tiedotteet.get(0).getId());
         tiedoteService.removeTiedote(tiedotteet.get(1).getId());
 
-        assertEquals(0, tiedoteService.getAll(false, 0L).size());
+        assertEquals(0, tiedoteService.getAll(false, 0L, null, false).size());
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_julkaisupaikka").getResultList()).isEmpty();
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_koulutustyyppi").getResultList()).isEmpty();
         assertThat(entityManager.createNativeQuery("SELECT * FROM tiedote_peruste").getResultList()).isEmpty();
@@ -285,7 +323,7 @@ public class TiedoteServiceIT extends AbstractIntegrationTest {
 
     @Test
     public void testDtoConversion() {
-        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L);
+        List<TiedoteDto> tiedotteet = tiedoteService.getAll(false, 0L, null, false);
         assertEquals(2, tiedotteet.size());
 
         PerusteprojektiDto projekti = ppTestUtils.createPerusteprojekti(dto -> dto.setKoulutustyyppi(KoulutusTyyppi.AMMATTITUTKINTO.toString()));
