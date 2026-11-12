@@ -1,5 +1,9 @@
 package fi.vm.sade.eperusteet.resource.julkinen;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.vm.sade.eperusteet.config.InitJacksonConverter;
 import fi.vm.sade.eperusteet.domain.Kieli;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
 import fi.vm.sade.eperusteet.domain.Suoritustapakoodi;
@@ -14,6 +18,7 @@ import fi.vm.sade.eperusteet.dto.peruste.TekstiKappaleDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.repository.JulkaisutRepository;
 import fi.vm.sade.eperusteet.service.JulkaisutService;
+import fi.vm.sade.eperusteet.service.exception.ServiceException;
 import fi.vm.sade.eperusteet.service.OsaamismerkkiService;
 import fi.vm.sade.eperusteet.service.PerusteService;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -63,6 +68,8 @@ public class ExternalController {
     private OsaamismerkkiService osaamismerkkiService;
 
     private static final int DEFAULT_PATH_SKIP_VALUE = 5;
+    private final ObjectMapper objectMapper = InitJacksonConverter.createMapper();
+    
     @Autowired
     private JulkaisutRepository julkaisutRepository;
 
@@ -260,10 +267,18 @@ public class ExternalController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = TutkinnonOsaKaikkiDto.class))}),
     })
-    public ResponseEntity<Object> getTutkinnonOsaByKoodi(
+    public ResponseEntity<JsonNode> getTutkinnonOsaByKoodi(
             HttpServletRequest req,
             @PathVariable("tutkinnonOsaKoodiUri") final String tutkinnonOsaKoodiUri) {
-        return ResponseEntity.ofNullable(julkaisutRepository.findTutkinnonOsaByTutkinnonOsaKoodi(tutkinnonOsaKoodiUri));
+        String json = julkaisutRepository.findTutkinnonOsaByTutkinnonOsaKoodi(tutkinnonOsaKoodiUri);
+        if (json == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            return ResponseEntity.ok(objectMapper.readTree(json));
+        } catch (JsonProcessingException e) {
+            throw new ServiceException(e);
+        }
     }
 
     private List<String> requestToQueries(HttpServletRequest req, int skipCount) {

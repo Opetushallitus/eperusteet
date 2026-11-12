@@ -263,18 +263,16 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
     @Query(
             nativeQuery = true,
             value = """
-                    SELECT jsonb_path_query(data,concat('$.tutkinnonOsat[*] ? (@.koodi.uri == "', :tutkinnonOsaKoodiUri, '")')::jsonpath)
-                    FROM julkaistu_peruste jp
-                    INNER JOIN julkaistu_peruste_data d ON d.id = jp.data_id
-                    INNER JOIN peruste p ON p.id = jp.peruste_id
-                    WHERE jsonb_path_exists(
-                        data,
-                        concat('$.tutkinnonOsat[*].koodi ? (@.uri == "', :tutkinnonOsaKoodiUri, '")')::jsonpath
-                    )
-                    AND p.tyyppi = 'NORMAALI'
-                    ORDER BY jp.luotu DESC
-                    limit 1
+                    SELECT CAST(tutkinnonosa.tutkinnonosa AS text)
+                    FROM julkaistu_peruste_data_store tutkinnonosa
+                    INNER JOIN julkaistu_peruste_data_store perusteenJulkaisu
+                        ON perusteenJulkaisu.perusteid = tutkinnonosa.perusteid
+                        AND perusteenJulkaisu.sisaltotyyppi = 'peruste'
+                    WHERE tutkinnonosa.sisaltotyyppi = 'tutkinnonosa'
+                      AND tutkinnonosa.koodit ->> 0 = :tutkinnonOsaKoodiUri
+                    ORDER BY perusteenJulkaisu.julkaistu DESC
+                    LIMIT 1
                     """
     )
-    Object findTutkinnonOsaByTutkinnonOsaKoodi(@Param("tutkinnonOsaKoodiUri") String tutkinnonOsaKoodiUri);
+    String findTutkinnonOsaByTutkinnonOsaKoodi(@Param("tutkinnonOsaKoodiUri") String tutkinnonOsaKoodiUri);
 }
