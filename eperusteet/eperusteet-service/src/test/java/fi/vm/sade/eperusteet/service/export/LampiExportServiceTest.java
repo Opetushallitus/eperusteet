@@ -1,6 +1,5 @@
 package fi.vm.sade.eperusteet.service.export;
 
-import org.json.JSONException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -93,7 +92,7 @@ class LampiExportServiceTest {
     }
 
     @Test
-    void testExport_WhenDisabled_DoesNothing() throws IOException, JSONException {
+    void testExport_WhenDisabled_DoesNothing() throws IOException {
         ReflectionTestUtils.setField(lampiExportService, "enabled", false);
 
         lampiExportService.export();

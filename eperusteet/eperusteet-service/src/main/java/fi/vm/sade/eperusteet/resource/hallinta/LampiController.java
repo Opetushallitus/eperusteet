@@ -2,7 +2,6 @@ package fi.vm.sade.eperusteet.resource.hallinta;
 
 import fi.vm.sade.eperusteet.config.InternalApi;
 import fi.vm.sade.eperusteet.service.export.LampiExportService;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
@@ -29,7 +28,7 @@ public class LampiController {
 
     @GetMapping(value = "/export")
     @ResponseStatus(HttpStatus.CREATED)
-    public void exportLampi() throws JSONException, IOException {
+    public void exportLampi() throws IOException {
         lampiExportService.export();
     }
 
