@@ -120,7 +120,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @JoinTable(name = "aipeoppiaine_aipekurssi",
                joinColumns = { @JoinColumn(name = "oppiaine_id") },
                inverseJoinColumns = { @JoinColumn(name = "kurssi_id") })
-    @OrderBy("jarjestys, id")
+    @OrderBy("jarjestys")
     private List<AIPEKurssi> kurssit = new ArrayList<>();
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
@@ -153,7 +153,7 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
                joinColumns = {@JoinColumn(name = "oppiaine_id")},
                inverseJoinColumns = {@JoinColumn(name = "oppimaara_id")})
-    @OrderBy("jarjestys, id")
+    @OrderBy("jarjestys")
     private List<AIPEOppiaine> oppimaarat = new ArrayList<>();
 
     @ValidHtml(whitelist = WhitelistType.NORMAL)
@@ -168,8 +168,8 @@ public class AIPEOppiaine extends AbstractAuditedReferenceableEntity implements 
     @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "aipeoppiaine_aipeoppiaine",
-               joinColumns = {@JoinColumn(name = "oppimaara_id")},
-               inverseJoinColumns = {@JoinColumn(name = "oppiaine_id")})
+               joinColumns = @JoinColumn(name = "oppimaara_id", insertable = false, updatable = false),
+               inverseJoinColumns = @JoinColumn(name = "oppiaine_id", insertable = false, updatable = false))
     private AIPEOppiaine oppiaine;
 
     @Override
