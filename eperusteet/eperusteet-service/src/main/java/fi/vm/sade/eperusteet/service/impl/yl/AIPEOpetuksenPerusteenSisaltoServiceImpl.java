@@ -1,16 +1,52 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.google.common.collect.Sets;
+
 import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.HistoriaTapahtuma;
 import fi.vm.sade.eperusteet.domain.MuokkausTapahtuma;
 import fi.vm.sade.eperusteet.domain.Peruste;
 import fi.vm.sade.eperusteet.domain.PerusteTila;
 import fi.vm.sade.eperusteet.domain.TekstiPalanen;
-import fi.vm.sade.eperusteet.domain.yl.*;
+import fi.vm.sade.eperusteet.domain.yl.AIPEJarjestettava;
+import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
+import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite;
+import fi.vm.sade.eperusteet.domain.yl.PerusteenMuokkaustietoLisaparametrit;
+import fi.vm.sade.eperusteet.domain.yl.TavoitteenArviointi;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.dto.peruste.NavigationType;
-import fi.vm.sade.eperusteet.dto.yl.*;
-import fi.vm.sade.eperusteet.repository.*;
+import fi.vm.sade.eperusteet.dto.yl.AIPEHasId;
+import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiBaseDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineBaseDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineLaajaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheBaseDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheDto;
+import fi.vm.sade.eperusteet.dto.yl.AIPEVaiheSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.LaajaalainenOsaaminenDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenKohdealueDto;
+import fi.vm.sade.eperusteet.repository.AIPEKurssiRepository;
+import fi.vm.sade.eperusteet.repository.AIPEOppiaineRepository;
+import fi.vm.sade.eperusteet.repository.AIPEVaiheRepository;
+import fi.vm.sade.eperusteet.repository.LaajaalainenOsaaminenRepository;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.PerusteenMuokkaustietoService;
 import fi.vm.sade.eperusteet.service.exception.BusinessRuleViolationException;
@@ -18,13 +54,7 @@ import fi.vm.sade.eperusteet.service.exception.NotExistsException;
 import fi.vm.sade.eperusteet.service.mapping.Dto;
 import fi.vm.sade.eperusteet.service.mapping.DtoMapper;
 import fi.vm.sade.eperusteet.service.yl.AIPEOpetuksenPerusteenSisaltoService;
-
-import java.util.*;
-import java.util.stream.Collectors;
 import jakarta.persistence.EntityManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -222,7 +252,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEKurssiDto updateKurssi(Long perusteId, Long vaiheId, Long oppiaineId, Long kurssiId, AIPEKurssiDto kurssiDto) {
+        AIPEKurssi nykyinen = getKurssiImpl(perusteId, vaiheId, oppiaineId, kurssiId);
         AIPEKurssi kurssi = mapper.map(kurssiDto, AIPEKurssi.class);
+        kurssi.setJarjestys(nykyinen.getJarjestys());
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId, kurssi, MuokkausTapahtuma.PAIVITYS,
                 Sets.newHashSet(
                         new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipeoppiaine, oppiaineId),
@@ -259,8 +291,16 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     @Override
     public AIPEOppiaineDto getOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
-        AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId, rev);
-        return  mapper.map(oppiaine, AIPEOppiaineDto.class);
+        AIPEOppiaine current = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
+        AIPEOppiaine oppiaine = rev != null ? oppiaineRepository.findRevision(oppiaineId, rev) : current;
+        if (oppiaine == null) {
+            throw new NotExistsException("oppiainetta-ei-olemassa");
+        }
+        AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+        if (rev != null) {
+            dto.setOppiaine(current.getOppiaine() == null ? null : new Reference(current.getOppiaine().getId()));
+        }
+        return dto;
     }
 
     @Override
@@ -274,6 +314,9 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEOppiaine oppiaine = getOppiaineImpl(perusteId, vaiheId, oppiaineId);
         Peruste peruste = getPeruste(perusteId);
         AIPEOppiaine uusioppiaine = mapper.map(oppiaineDto, AIPEOppiaine.class);
+        uusioppiaine.setJarjestys(oppiaine.getJarjestys());
+        uusioppiaine.getOppimaarat().clear();
+        uusioppiaine.getOppimaarat().addAll(oppiaine.getOppimaarat());
 
         if (PerusteTila.VALMIS.equals(peruste.getTila())) {
             AIPEOppiaine.validateChange(oppiaine, uusioppiaine);
@@ -392,6 +435,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
         vaiheDto.setId(vaiheId);
         AIPEVaihe uusivaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+        uusivaihe.setJarjestys(vaihe.getJarjestys());
         uusivaihe.getOppiaineet().clear();
         uusivaihe.getOppiaineet().addAll(vaihe.getOppiaineet());
 
@@ -507,27 +551,64 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public AIPEOppiaineDto revertOppiaine(Long perusteId, Long vaiheId, Long oppiaineId, Integer rev) {
         // Todo: Tarkista, että ei ole uusin
         AIPEVaihe vaihe = getVaiheImpl(perusteId, vaiheId, null);
-        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+        AIPEOppiaine current = vaihe.getOppiaine(oppiaineId);
 
-        if (oppiaine == null) {
+        if (current == null) {
             throw new NotExistsException("oppiainetta-ei-olemassa");
         }
 
-        oppiaine = oppiaineRepository.findRevision(oppiaineId, rev);
+        AIPEOppiaine oppiaine = oppiaineRepository.findRevision(oppiaineId, rev);
 
         if (oppiaine == null) {
             throw new NotExistsException("oppiainetta-ei-olemassa");
         }
 
         AIPEOppiaineDto dto = mapper.map(oppiaine, AIPEOppiaineDto.class);
+        dto.setOppiaine(current.getOppiaine() == null ? null : new Reference(current.getOppiaine().getId()));
 
         // Todo: Miksi ei voi käyttää updateOppiaine metodia?
         // PersistentObjectException: detached entity passed to persist: fi.vm.sade.eperusteet.domain.yl.OpetuksenTavoite
         // return updateOppiaine(perusteId, vaiheId, oppiaineId, dto);
 
         AIPEOppiaine palautettu = mapper.map(dto, AIPEOppiaine.class);
+        palautettu.setJarjestys(current.getJarjestys());
+        palautettu.getOppimaarat().clear();
+        palautettu.getOppimaarat().addAll(current.getOppimaarat());
+
+        for (AIPEKurssi kurssi : palautettu.getKurssit()) {
+            if (onPoistettu(AIPEKurssi.class, kurssi.getId())) {
+                kurssi.setId(null);
+            }
+        }
+        palautettu.setTavoitteet(palautettu.getTavoitteet().stream()
+                .map(this::palautettavaTavoite)
+                .collect(Collectors.toList()));
         oppiaineRepository.save(palautettu);
 
         return dto;
+    }
+
+    // AbstractReferenceableEntity.setId ei salli id:n nollaamista, joten poistetut korvataan klooneilla
+    private OpetuksenTavoite palautettavaTavoite(OpetuksenTavoite tavoite) {
+        if (onPoistettu(OpetuksenTavoite.class, tavoite.getId())) {
+            OpetuksenTavoite klooni = tavoite.kloonaa(
+                    identiteetti(tavoite.getSisaltoalueet()),
+                    identiteetti(tavoite.getLaajattavoitteet()),
+                    identiteetti(tavoite.getKohdealueet()));
+            klooni.setTavoitteistaJohdetutOppimisenTavoitteet(tavoite.getTavoitteistaJohdetutOppimisenTavoitteet());
+            return klooni;
+        }
+        tavoite.setArvioinninkohteet(tavoite.getArvioinninkohteet().stream()
+                .map(kohde -> onPoistettu(TavoitteenArviointi.class, kohde.getId()) ? kohde.kloonaa() : kohde)
+                .collect(Collectors.toSet()));
+        return tavoite;
+    }
+
+    private static <T> Map<T, T> identiteetti(Set<T> joukko) {
+        return joukko.stream().collect(Collectors.toMap(Function.identity(), Function.identity()));
+    }
+
+    private boolean onPoistettu(Class<?> clazz, Long id) {
+        return id != null && em.find(clazz, id) == null;
     }
 }

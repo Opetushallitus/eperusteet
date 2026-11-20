@@ -59,8 +59,8 @@ public class AIPEKurssi extends AbstractAuditedReferenceableEntity implements AI
     @ManyToOne(fetch = FetchType.LAZY)
     @NotAudited
     @JoinTable(name = "aipeoppiaine_aipekurssi",
-            joinColumns = { @JoinColumn(name = "kurssi_id")},
-            inverseJoinColumns = { @JoinColumn(name = "oppiaine_id")})
+            joinColumns = @JoinColumn(name = "kurssi_id", insertable = false, updatable = false),
+            inverseJoinColumns = @JoinColumn(name = "oppiaine_id", insertable = false, updatable = false))
     private AIPEOppiaine oppiaine;
 
     @ManyToMany

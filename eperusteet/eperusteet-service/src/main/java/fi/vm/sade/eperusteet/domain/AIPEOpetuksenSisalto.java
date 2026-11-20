@@ -36,7 +36,7 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto imple
     @JoinTable(name = "yl_aipe_opetuksensisalto_yl_laajaalainen_osaaminen",
             joinColumns = @JoinColumn(name = "yl_aipe_opetuksensisalto_id"),
             inverseJoinColumns = @JoinColumn(name = "laajaalaisetosaamiset_id"))
-    @OrderBy("jarjestys, id")
+    @OrderBy("jarjestys")
     private List<LaajaalainenOsaaminen> laajaalaisetosaamiset = new ArrayList<>();
 
     @Getter
@@ -45,7 +45,7 @@ public class AIPEOpetuksenSisalto extends AbstractOppiaineOpetuksenSisalto imple
     @JoinTable(name = "aipe_opetuksensisalto_vaihe",
                joinColumns = @JoinColumn(name = "opetus_id"),
                inverseJoinColumns = @JoinColumn(name = "vaihe_id"))
-    @OrderBy("jarjestys, id")
+    @OrderBy("jarjestys")
     private List<AIPEVaihe> vaiheet = new ArrayList<>();
 
     public Optional<AIPEVaihe> getVaihe(Long vaiheId) {
