@@ -21,7 +21,7 @@ public class AIPEOppiaineSuppeaDto extends AIPEOppiaineBaseDto {
     private Optional<KoodiDto> koodi;
 
     public Optional<LokalisoituTekstiDto> getNimi() {
-        if (koodi != null && koodi.isPresent()) {
+        if (koodi != null && koodi.isPresent() && koodi.get().getNimi() != null) {
             return Optional.of(koodi.get().getNimi());
         }
 
