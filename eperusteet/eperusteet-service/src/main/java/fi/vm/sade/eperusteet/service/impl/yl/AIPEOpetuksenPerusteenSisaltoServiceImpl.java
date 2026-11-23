@@ -2,6 +2,7 @@ package fi.vm.sade.eperusteet.service.impl.yl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -181,6 +182,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         }
         oppiaineDto.setId(null);
         AIPEOppiaine oppimaara = mapper.map(oppiaineDto, AIPEOppiaine.class);
+        oppimaara.setJarjestys(seuraavaJarjestys(parent.getOppimaarat()));
         oppimaara = oppiaineRepository.save(oppimaara);
         parent.getOppimaarat().add(oppimaara);
         perusteenMuokkaustietoService.addMuokkaustieto(
@@ -200,8 +202,10 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
     public LaajaalainenOsaaminenDto addLaajaalainen(Long perusteId, LaajaalainenOsaaminenDto laajaalainenDto) {
         laajaalainenDto.setId(null);
         LaajaalainenOsaaminen lo = mapper.map(laajaalainenDto, LaajaalainenOsaaminen.class);
+        List<LaajaalainenOsaaminen> laajaalaiset = getPerusteSisalto(perusteId).getLaajaalaisetosaamiset();
+        lo.setJarjestys(seuraavaJarjestys(laajaalaiset));
         lo = laajaalainenOsaaminenRepository.save(lo);
-        getPerusteSisalto(perusteId).getLaajaalaisetosaamiset().add(lo);
+        laajaalaiset.add(lo);
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId, lo, MuokkausTapahtuma.LUONTI);
         return mapper.map(lo, LaajaalainenOsaaminenDto.class);
     }
@@ -240,6 +244,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         }
         kurssiDto.setId(null);
         AIPEKurssi kurssi = mapper.map(kurssiDto, AIPEKurssi.class);
+        kurssi.setJarjestys(seuraavaJarjestys(oppiaine.getKurssit()));
         kurssi = kurssiRepository.save(kurssi);
         oppiaine.getKurssit().add(kurssi);
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId, kurssi, MuokkausTapahtuma.LUONTI,
@@ -354,6 +359,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         AIPEVaihe vaihe = vaiheRepository.findOne(vaiheId);
         oppiaineDto.setId(null);
         AIPEOppiaine oa = mapper.map(oppiaineDto, AIPEOppiaine.class);
+        oa.setJarjestys(seuraavaJarjestys(vaihe.getOppiaineet()));
         oa = oppiaineRepository.save(oa);
         vaihe.getOppiaineet().add(oa);
         perusteenMuokkaustietoService.addMuokkaustieto(perusteId, oa, MuokkausTapahtuma.LUONTI, Sets.newHashSet(new PerusteenMuokkaustietoLisaparametrit(NavigationType.aipevaihe, vaiheId)));
@@ -422,6 +428,7 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         Peruste peruste = getPeruste(perusteId);
         AIPEOpetuksenSisalto sisalto = peruste.getAipeOpetuksenPerusteenSisalto();
         AIPEVaihe vaihe = mapper.map(vaiheDto, AIPEVaihe.class);
+        vaihe.setJarjestys(seuraavaJarjestys(sisalto.getVaiheet()));
         vaihe = vaiheRepository.save(vaihe);
         sisalto.getVaiheet().add(vaihe);
 
@@ -588,7 +595,6 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
         return dto;
     }
 
-    // AbstractReferenceableEntity.setId ei salli id:n nollaamista, joten poistetut korvataan klooneilla
     private OpetuksenTavoite palautettavaTavoite(OpetuksenTavoite tavoite) {
         if (onPoistettu(OpetuksenTavoite.class, tavoite.getId())) {
             OpetuksenTavoite klooni = tavoite.kloonaa(
@@ -606,6 +612,15 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
 
     private static <T> Map<T, T> identiteetti(Set<T> joukko) {
         return joukko.stream().collect(Collectors.toMap(Function.identity(), Function.identity()));
+    }
+
+    private static Integer seuraavaJarjestys(List<? extends AIPEJarjestettava> lista) {
+        return lista.stream()
+                .map(AIPEJarjestettava::getJarjestys)
+                .filter(Objects::nonNull)
+                .max(Integer::compare)
+                .map(jarjestys -> jarjestys + 1)
+                .orElse(0);
     }
 
     private boolean onPoistettu(Class<?> clazz, Long id) {

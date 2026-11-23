@@ -1,6 +1,12 @@
 package fi.vm.sade.eperusteet.service;
 
+import fi.vm.sade.eperusteet.domain.AIPEOpetuksenSisalto;
 import fi.vm.sade.eperusteet.domain.Kieli;
+import fi.vm.sade.eperusteet.domain.yl.AIPEKurssi;
+import fi.vm.sade.eperusteet.domain.yl.AIPEOppiaine;
+import fi.vm.sade.eperusteet.domain.yl.AIPEVaihe;
+import fi.vm.sade.eperusteet.domain.yl.LaajaalainenOsaaminen;
+import fi.vm.sade.eperusteet.repository.PerusteRepository;
 import fi.vm.sade.eperusteet.domain.KoulutusTyyppi;
 import fi.vm.sade.eperusteet.domain.LaajuusYksikko;
 import fi.vm.sade.eperusteet.domain.PerusteTyyppi;
@@ -38,6 +44,9 @@ public class AIPERevisionIT extends AbstractIntegrationTest {
 
     @Autowired
     private PerusteService perusteService;
+
+    @Autowired
+    private PerusteRepository perusteRepository;
 
     private Long perusteId;
     private Long vaiheId;
@@ -92,6 +101,25 @@ public class AIPERevisionIT extends AbstractIntegrationTest {
         assertThat(sisalto.getKurssit(perusteId, vaiheId, oppimaara2Id)).hasSize(1);
         assertThat(sisalto.getOppiaine(perusteId, vaiheId, oppimaara1Id, null).getOppiaine().getIdLong()).isEqualTo(oppiaineId);
         assertThat(sisalto.getOppiaine(perusteId, vaiheId, oppimaara2Id, null).getOppiaine().getIdLong()).isEqualTo(oppiaineId);
+    }
+
+    @Test
+    public void lisatyilleAsetetaanJarjestys() {
+        sisalto.addVaihe(perusteId, TestUtils.createVaihe());
+        sisalto.addLaajaalainen(perusteId, TestUtils.createLaajaalainen());
+        sisalto.addLaajaalainen(perusteId, TestUtils.createLaajaalainen());
+        sisalto.addOppiaine(perusteId, vaiheId, TestUtils.createAIPEOppiaine());
+        commit();
+
+        AIPEOpetuksenSisalto aipe = perusteRepository.findOne(perusteId).getAipeOpetuksenPerusteenSisalto();
+        AIPEVaihe vaihe = aipe.getVaihe(vaiheId).orElseThrow();
+        AIPEOppiaine oppiaine = vaihe.getOppiaine(oppiaineId);
+
+        assertThat(aipe.getVaiheet()).extracting(AIPEVaihe::getJarjestys).containsExactly(0, 1);
+        assertThat(aipe.getLaajaalaisetosaamiset()).extracting(LaajaalainenOsaaminen::getJarjestys).containsExactly(0, 1);
+        assertThat(vaihe.getOppiaineet()).extracting(AIPEOppiaine::getJarjestys).containsExactly(0, 1);
+        assertThat(oppiaine.getOppimaarat()).extracting(AIPEOppiaine::getJarjestys).containsExactly(0, 1);
+        assertThat(vaihe.getOppiaine(oppimaara1Id).getKurssit()).extracting(AIPEKurssi::getJarjestys).containsExactly(0, 1);
     }
 
     @Test
