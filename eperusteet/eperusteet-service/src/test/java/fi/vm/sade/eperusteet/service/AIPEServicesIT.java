@@ -263,6 +263,53 @@ public class AIPEServicesIT extends AbstractIntegrationTest {
         assertKooditKannassa(urit);
     }
 
+    @Test
+    public void testOppimaarienJarjestuksenMuutosSailyttaaKurssit() {
+        Long vaiheId = sisalto.getVaiheet(perusteId).get(0).getId();
+        Long oppiaineId = sisalto.getOppiaineet(perusteId, vaiheId).get(1).getId();
+
+        AIPEOppiaineDto toinen = sisalto.addOppimaara(perusteId, vaiheId, oppiaineId, TestUtils.createAIPEOppiaine());
+        sisalto.addKurssi(perusteId, vaiheId, toinen.getId(), TestUtils.createAIPEKurssi());
+        em.flush();
+        em.clear();
+
+        List<AIPEOppiaineSuppeaDto> oppimaarat = sisalto.getOppimaarat(perusteId, vaiheId, oppiaineId, null);
+        assertThat(oppimaarat).hasSize(2);
+        for (AIPEOppiaineSuppeaDto om : oppimaarat) {
+            assertThat(sisalto.getKurssit(perusteId, vaiheId, om.getId())).hasSize(1);
+        }
+        em.clear();
+
+        List<AIPEOppiaineBaseDto> jarjestys = new ArrayList<>(oppimaarat);
+        Collections.reverse(jarjestys);
+        sisalto.updateOppimaaratJarjestys(perusteId, vaiheId, oppiaineId, jarjestys);
+        em.flush();
+        em.clear();
+
+        assertThat(sisalto.getOppimaarat(perusteId, vaiheId, oppiaineId, null))
+                .extracting(AIPEOppiaineSuppeaDto::getId)
+                .containsExactly(jarjestys.get(0).getId(), jarjestys.get(1).getId());
+        for (AIPEOppiaineBaseDto om : jarjestys) {
+            assertThat(sisalto.getKurssit(perusteId, vaiheId, om.getId())).hasSize(1);
+        }
+    }
+
+    @Test
+    public void testOppiaineenPaivitysSailyttaaOppimaarienKurssit() {
+        Long vaiheId = sisalto.getVaiheet(perusteId).get(0).getId();
+        Long oppiaineId = sisalto.getOppiaineet(perusteId, vaiheId).get(1).getId();
+        Long oppimaaraId = sisalto.getOppimaarat(perusteId, vaiheId, oppiaineId, null).get(0).getId();
+        assertThat(sisalto.getKurssit(perusteId, vaiheId, oppimaaraId)).hasSize(1);
+        em.clear();
+
+        AIPEOppiaineDto oppiaine = sisalto.getOppiaine(perusteId, vaiheId, oppiaineId, null);
+        sisalto.updateOppiaine(perusteId, vaiheId, oppiaineId, oppiaine);
+        em.flush();
+        em.clear();
+
+        assertThat(sisalto.getKurssit(perusteId, vaiheId, oppimaaraId)).hasSize(1);
+    }
+
     private void assertKooditKannassa(Map<Long, String> urit) {
         for (Map.Entry<Long, String> uri : urit.entrySet()) {
             AIPEKurssi kurssi = kurssiRepository.findOne(uri.getKey());

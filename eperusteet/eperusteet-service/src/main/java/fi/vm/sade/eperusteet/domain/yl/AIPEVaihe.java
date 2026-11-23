@@ -84,7 +84,7 @@ public class AIPEVaihe extends AbstractAuditedReferenceableEntity implements Klo
                    @JoinColumn(name = "vaihe_id")},
                inverseJoinColumns = {
                    @JoinColumn(name = "oppiaine_id")})
-    @OrderBy("jarjestys, id")
+    @OrderBy("jarjestys")
     private List<AIPEOppiaine> oppiaineet = new ArrayList<>(0);
 
     public List<OpetuksenKohdealue> getOpetuksenKohdealueet() {
