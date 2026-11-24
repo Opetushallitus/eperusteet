@@ -1,5 +1,6 @@
 package fi.vm.sade.eperusteet.service.impl.yl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -587,10 +588,45 @@ public class AIPEOpetuksenPerusteenSisaltoServiceImpl implements AIPEOpetuksenPe
                 kurssi.setId(null);
             }
         }
-        palautettu.setTavoitteet(palautettu.getTavoitteet().stream()
+        List<OpetuksenTavoite> tavoitteet = palautettu.getTavoitteet();
+        Map<Long, Integer> tavoitteenIndeksi = new HashMap<>();
+        for (int i = 0; i < tavoitteet.size(); i++) {
+            if (tavoitteet.get(i).getId() != null) {
+                tavoitteenIndeksi.put(tavoitteet.get(i).getId(), i);
+            }
+        }
+
+        // Poistettuihin tavoitteisiin viittaavat kurssit liitetään tallennuksen jälkeen tavoitteiden klooneihin
+        Map<Integer, Set<Integer>> kurssienPoistetutTavoitteet = new HashMap<>();
+        List<AIPEKurssi> kurssit = palautettu.getKurssit();
+        for (int i = 0; i < kurssit.size(); i++) {
+            Set<OpetuksenTavoite> kurssinTavoitteet = kurssit.get(i).getTavoitteet();
+            if (kurssinTavoitteet == null) {
+                continue;
+            }
+            Set<OpetuksenTavoite> poistetut = kurssinTavoitteet.stream()
+                    .filter(tavoite -> onPoistettu(OpetuksenTavoite.class, tavoite.getId()))
+                    .collect(Collectors.toSet());
+            kurssinTavoitteet.removeAll(poistetut);
+            Set<Integer> indeksit = poistetut.stream()
+                    .map(tavoite -> tavoitteenIndeksi.get(tavoite.getId()))
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+            if (!indeksit.isEmpty()) {
+                kurssienPoistetutTavoitteet.put(i, indeksit);
+            }
+        }
+
+        palautettu.setTavoitteet(tavoitteet.stream()
                 .map(this::palautettavaTavoite)
                 .collect(Collectors.toList()));
-        oppiaineRepository.save(palautettu);
+        AIPEOppiaine tallennettu = oppiaineRepository.save(palautettu);
+
+        List<OpetuksenTavoite> tallennetutTavoitteet = tallennettu.getTavoitteet();
+        kurssienPoistetutTavoitteet.forEach((kurssiIndeksi, indeksit) -> {
+            AIPEKurssi kurssi = tallennettu.getKurssit().get(kurssiIndeksi);
+            indeksit.forEach(indeksi -> kurssi.getTavoitteet().add(tallennetutTavoitteet.get(indeksi)));
+        });
 
         return dto;
     }

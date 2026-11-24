@@ -16,6 +16,8 @@ import fi.vm.sade.eperusteet.dto.yl.AIPEKurssiSuppeaDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineBaseDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineDto;
 import fi.vm.sade.eperusteet.dto.yl.AIPEOppiaineSuppeaDto;
+import fi.vm.sade.eperusteet.dto.yl.OpetuksenTavoiteDto;
+import fi.vm.sade.eperusteet.dto.Reference;
 import fi.vm.sade.eperusteet.repository.version.Revision;
 import fi.vm.sade.eperusteet.service.test.AbstractIntegrationTest;
 import fi.vm.sade.eperusteet.service.test.util.TestUtils;
@@ -31,7 +33,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -253,6 +257,39 @@ public class AIPERevisionIT extends AbstractIntegrationTest {
         commit();
 
         assertThat(sisalto.getOppiaine(perusteId, vaiheId, oppimaara1Id, null).getTavoitteet()).hasSize(1);
+        assertRakenneEhja();
+    }
+
+    @Test
+    public void oppimaaranPalautusPoistetunKurssiinLiitetynTavoitteenJalkeen() {
+        AIPEOppiaineDto dto = sisalto.getOppiaine(perusteId, vaiheId, oppimaara1Id, null);
+        Long tavoiteId = dto.getTavoitteet().get(0).getId();
+        Long kurssiId = dto.getKurssit().get(0).getId();
+        AIPEKurssiDto kurssi = sisalto.getKurssi(perusteId, vaiheId, oppimaara1Id, kurssiId, null);
+        kurssi.setTavoitteet(Set.of(new Reference(tavoiteId)));
+        sisalto.updateKurssi(perusteId, vaiheId, oppimaara1Id, kurssiId, kurssi);
+        commit();
+        muutaTehtava(oppimaara1Id, "uusi");
+        Integer rev = sisalto.getOppiaineRevisions(perusteId, vaiheId, oppimaara1Id).stream()
+                .map(Revision::getNumero)
+                .max(Comparator.naturalOrder())
+                .orElseThrow();
+
+        dto = sisalto.getOppiaine(perusteId, vaiheId, oppimaara1Id, null);
+        dto.setTavoitteet(new ArrayList<>());
+        dto.getKurssit().forEach(k -> k.setTavoitteet(new HashSet<>()));
+        sisalto.updateOppiaine(perusteId, vaiheId, oppimaara1Id, dto);
+        commit();
+
+        sisalto.revertOppiaine(perusteId, vaiheId, oppimaara1Id, rev);
+        commit();
+
+        List<OpetuksenTavoiteDto> tavoitteet = sisalto.getOppiaine(perusteId, vaiheId, oppimaara1Id, null).getTavoitteet();
+        assertThat(tavoitteet).hasSize(1);
+        assertThat(tavoitteet.get(0).getId()).isNotEqualTo(tavoiteId);
+        assertThat(sisalto.getKurssi(perusteId, vaiheId, oppimaara1Id, kurssiId, null).getTavoitteet())
+                .extracting(Reference::getIdLong)
+                .containsExactly(tavoitteet.get(0).getId());
         assertRakenneEhja();
     }
 }
