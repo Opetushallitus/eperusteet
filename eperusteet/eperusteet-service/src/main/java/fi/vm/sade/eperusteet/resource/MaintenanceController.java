@@ -11,7 +11,6 @@ import fi.vm.sade.eperusteet.service.PerusteService;
 import fi.vm.sade.eperusteet.service.export.LampiExportService;
 import fi.vm.sade.eperusteet.service.security.PermissionManager;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;

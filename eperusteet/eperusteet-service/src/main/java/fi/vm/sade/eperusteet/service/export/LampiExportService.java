@@ -3,7 +3,6 @@ package fi.vm.sade.eperusteet.service.export;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import lombok.extern.slf4j.Slf4j;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -91,7 +90,7 @@ public class LampiExportService {
     }
 
     @PreAuthorize("hasPermission(null, 'pohja', 'LUONTI')")
-    public void export() throws IOException, JSONException {
+    public void export() throws IOException {
         log.info("Exporting data to S3 bucket: {}", bucketName);
         if (!enabled) {
             log.info("Lampi export is disabled");
