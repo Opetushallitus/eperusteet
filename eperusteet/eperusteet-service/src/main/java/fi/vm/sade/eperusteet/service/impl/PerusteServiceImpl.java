@@ -186,7 +186,6 @@ import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS;
-import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 
 @Slf4j
 @Service
@@ -2327,7 +2326,7 @@ public class PerusteServiceImpl implements PerusteService{
             peruste.setSisalto(new LukutaitokoulutusSisalto());
         } else if (koulutustyyppi.isVapaaSivistystyo() || koulutustyyppi == MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
-        } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
+        } else if (koulutustyyppi.isTutkintoonvalmentava()) {
             peruste.setSisalto(new TutkintoonvalmentavaSisalto());
         }
 

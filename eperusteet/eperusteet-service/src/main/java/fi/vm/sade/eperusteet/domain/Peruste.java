@@ -542,6 +542,7 @@ public class Peruste extends AbstractAuditedEntity
                 }
                 break;
             case TUTKINTOONVALMENTAVA:
+            case TELMA_VALMENTAVA:
                 TutkintoonvalmentavaSisalto tuvaSisalto = this.getTuvasisalto();
                 if (tuvaSisalto != null) {
                     return tuvaSisalto.getSisalto();

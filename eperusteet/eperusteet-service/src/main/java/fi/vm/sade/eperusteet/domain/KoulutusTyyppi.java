@@ -26,6 +26,7 @@ public enum KoulutusTyyppi {
     LUKUTAITOKOULUTUS("koulutustyyppi_31"),
     VAPAASIVISTYSTYOLUKUTAITO("koulutustyyppi_35"),
     TUTKINTOONVALMENTAVA("koulutustyyppi_40"),
+    TELMA_VALMENTAVA("koulutustyyppi_32"),
     KIELIKAANTAJATUTKINTO("koulutustyyppi_500"),
     MUU_KOULUTUS("koulutustyyppi_muu"); 
 
@@ -61,6 +62,10 @@ public enum KoulutusTyyppi {
 
     public boolean isValmaTelma() {
         return isOneOf(VALMA, TELMA);
+    }
+
+    public boolean isTutkintoonvalmentava() {
+        return isOneOf(TUTKINTOONVALMENTAVA, TELMA_VALMENTAVA);
     }
 
     public boolean isYksinkertainen() {
