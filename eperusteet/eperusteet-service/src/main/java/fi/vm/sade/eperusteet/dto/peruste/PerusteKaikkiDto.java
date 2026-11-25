@@ -9,6 +9,7 @@ import fi.vm.sade.eperusteet.dto.KVLiiteJulkinenDto;
 import fi.vm.sade.eperusteet.dto.lops2019.Lops2019SisaltoDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonosa.TutkinnonOsaKaikkiDto;
 import fi.vm.sade.eperusteet.dto.tutkinnonrakenne.TutkinnonOsaViiteSuppeaDto;
+import fi.vm.sade.eperusteet.dto.telmavalmentava.TelmaValmentavaSisaltoDto;
 import fi.vm.sade.eperusteet.dto.tuva.KoulutuksenOsaDto;
 import fi.vm.sade.eperusteet.dto.lukutaitokoulutus.LukutaitokoulutusSisaltoDto;
 import fi.vm.sade.eperusteet.dto.tuva.TutkintoonvalmentavaSisaltoDto;
@@ -105,6 +106,11 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
     private LukutaitokoulutusSisaltoDto lukutaitokoulutusSisalto;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("telmavalmentava")
+    @Schema(description = "Telma valmentavan koulutuksen perusteen sisältörakenne.")
+    private TelmaValmentavaSisaltoDto telmaValmentavaSisalto;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @JsonProperty("opas")
     @Schema(description = "Opas-perusteen sisältörakenne.")
     private OpasSisaltoDto oppaanSisalto;
@@ -159,6 +165,8 @@ public class PerusteKaikkiDto extends PerusteBaseDto {
                 return Collections.singleton(this.getTuvasisalto());
             } else if (this.getLukutaitokoulutusSisalto() != null) {
                 return Collections.singleton(this.getLukutaitokoulutusSisalto());
+            } else if (this.getTelmaValmentavaSisalto() != null) {
+                return Collections.singleton(this.getTelmaValmentavaSisalto());
             } else if (this.getDigitaalinenOsaaminenSisalto() != null) {
                 return Collections.singleton(this.getDigitaalinenOsaaminenSisalto());
             } else if (this.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {

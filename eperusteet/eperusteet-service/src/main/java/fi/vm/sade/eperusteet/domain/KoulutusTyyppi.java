@@ -64,10 +64,6 @@ public enum KoulutusTyyppi {
         return isOneOf(VALMA, TELMA);
     }
 
-    public boolean isTutkintoonvalmentava() {
-        return isOneOf(TUTKINTOONVALMENTAVA, TELMA_VALMENTAVA);
-    }
-
     public boolean isYksinkertainen() {
         return isOneOf(LISAOPETUS, ESIOPETUS, VARHAISKASVATUS, PERUSOPETUSVALMISTAVA);
     }
@@ -99,7 +95,8 @@ public enum KoulutusTyyppi {
                 MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString(),
                 LUKUTAITOKOULUTUS.toString(),
                 VAPAASIVISTYSTYOLUKUTAITO.toString(),
-                TUTKINTOONVALMENTAVA.toString()
+                TUTKINTOONVALMENTAVA.toString(),
+                TELMA_VALMENTAVA.toString()
         );
     }
 

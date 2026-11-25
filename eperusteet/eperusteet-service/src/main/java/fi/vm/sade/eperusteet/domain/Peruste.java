@@ -26,6 +26,7 @@ import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto
 import fi.vm.sade.eperusteet.domain.liite.Liite;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lukutaitokoulutus.LukutaitokoulutusSisalto;
+import fi.vm.sade.eperusteet.domain.telmavalmentava.TelmaValmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml;
 import fi.vm.sade.eperusteet.domain.validation.ValidHtml.WhitelistType;
@@ -222,6 +223,10 @@ public class Peruste extends AbstractAuditedEntity
 
     @Getter
     @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private TelmaValmentavaSisalto telmaValmentavaSisalto;
+
+    @Getter
+    @OneToOne(mappedBy = "peruste", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private DigitaalisenOsaamisenPerusteenSisalto digitaalinenOsaaminenSisalto;
 
     @Getter
@@ -380,6 +385,8 @@ public class Peruste extends AbstractAuditedEntity
                 return Collections.singleton(this.getTuvasisalto());
             } else if (this.getLukutaitokoulutusSisalto() != null) {
                 return Collections.singleton(this.getLukutaitokoulutusSisalto());
+            } else if (this.getTelmaValmentavaSisalto() != null) {
+                return Collections.singleton(this.getTelmaValmentavaSisalto());
             } else if (this.getDigitaalinenOsaaminenSisalto() != null) {
                 return Collections.singleton(this.getDigitaalinenOsaaminenSisalto());
             } else if (this.getKieliJaKaantajaTutkintoPerusteenSisalto() != null) {
@@ -542,10 +549,14 @@ public class Peruste extends AbstractAuditedEntity
                 }
                 break;
             case TUTKINTOONVALMENTAVA:
-            case TELMA_VALMENTAVA:
                 TutkintoonvalmentavaSisalto tuvaSisalto = this.getTuvasisalto();
                 if (tuvaSisalto != null) {
                     return tuvaSisalto.getSisalto();
+                }
+                break;
+            case TELMA_VALMENTAVA:
+                if (this.telmaValmentavaSisalto != null) {
+                    return this.telmaValmentavaSisalto.getSisalto();
                 }
                 break;
             case LUKUTAITOKOULUTUS:
@@ -621,6 +632,12 @@ public class Peruste extends AbstractAuditedEntity
     }
 
     @JsonIgnore
+    public void setSisalto(TelmaValmentavaSisalto sisalto) {
+        this.telmaValmentavaSisalto = sisalto;
+        this.telmaValmentavaSisalto.setPeruste(this);
+    }
+
+    @JsonIgnore
     public void setSisalto(DigitaalisenOsaamisenPerusteenSisalto sisalto) {
         this.digitaalinenOsaaminenSisalto = sisalto;
         this.digitaalinenOsaaminenSisalto.setPeruste(this);
@@ -686,6 +703,10 @@ public class Peruste extends AbstractAuditedEntity
 
         if (this.lukutaitokoulutusSisalto != null) {
             return this.lukutaitokoulutusSisalto.containsViite(viite);
+        }
+
+        if (this.telmaValmentavaSisalto != null) {
+            return this.telmaValmentavaSisalto.containsViite(viite);
         }
 
         if (this.digitaalinenOsaaminenSisalto != null) {
