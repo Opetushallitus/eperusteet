@@ -69,7 +69,7 @@ public class PerusteUtils {
                     return KoulutustyyppiToteutus.TPO;
                 } else if (kt.isVapaaSivistystyo()) {
                     return KoulutustyyppiToteutus.VAPAASIVISTYSTYO;
-                } else if (kt == KoulutusTyyppi.TUTKINTOONVALMENTAVA) {
+                } else if (kt.isOneOf(KoulutusTyyppi.TUTKINTOONVALMENTAVA, KoulutusTyyppi.TELMA_VALMENTAVA)) {
                     return KoulutustyyppiToteutus.TUTKINTOONVALMENTAVA;
                 } else if (kt.isOneOf(KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS, KoulutusTyyppi.LUKUTAITOKOULUTUS)) {
                     return KoulutustyyppiToteutus.KOTOUTUMISKOULUTUS;

@@ -247,7 +247,7 @@ public interface JulkaisutRepository extends JpaRepository<JulkaistuPeruste, Lon
                AND p.tila != 'POISTETTU'
                AND p.koulutustyyppi IN ('koulutustyyppi_1', 'koulutustyyppi_11', 'koulutustyyppi_12',
                    'koulutustyyppi_5', 'koulutustyyppi_18',
-                   'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_31', 'koulutustyyppi_40')
+                   'koulutustyyppi_10', 'koulutustyyppi_30', 'koulutustyyppi_31', 'koulutustyyppi_32', 'koulutustyyppi_40')
                AND (p.voimassaoloLoppuu IS NULL
                    OR p.voimassaoloLoppuu > CURRENT_TIMESTAMP
                    OR (p.siirtymaPaattyy IS NOT NULL

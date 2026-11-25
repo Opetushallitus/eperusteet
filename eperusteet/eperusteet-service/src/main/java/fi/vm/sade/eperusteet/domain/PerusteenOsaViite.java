@@ -4,6 +4,7 @@ import fi.vm.sade.eperusteet.domain.annotation.RelatesToPeruste;
 import fi.vm.sade.eperusteet.domain.kios.KieliJaKaantajaTutkintoPerusteenSisalto;
 import fi.vm.sade.eperusteet.domain.lops2019.Lops2019Sisalto;
 import fi.vm.sade.eperusteet.domain.lukutaitokoulutus.LukutaitokoulutusSisalto;
+import fi.vm.sade.eperusteet.domain.telmavalmentava.TelmaValmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
@@ -145,6 +146,13 @@ public class  PerusteenOsaViite implements
     @Getter
     @Setter
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
+    private TelmaValmentavaSisalto telmaValmentavaSisalto;
+
+    @RelatesToPeruste
+    @NotAudited
+    @Getter
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "sisalto")
     private DigitaalisenOsaamisenPerusteenSisalto digitaalinenOsaaminenSisalto;
 
     @RelatesToPeruste
@@ -212,6 +220,10 @@ public class  PerusteenOsaViite implements
 
     public PerusteenOsaViite(final LukutaitokoulutusSisalto sisalto) {
         this.lukutaitokoulutusSisalto = sisalto;
+    }
+
+    public PerusteenOsaViite(final TelmaValmentavaSisalto sisalto) {
+        this.telmaValmentavaSisalto = sisalto;
     }
 
     public PerusteenOsaViite(final DigitaalisenOsaamisenPerusteenSisalto sisalto) {
@@ -331,6 +343,10 @@ public class  PerusteenOsaViite implements
 
         if (lukutaitokoulutusSisalto != null) {
             return lukutaitokoulutusSisalto.getPeruste();
+        }
+
+        if (telmaValmentavaSisalto != null) {
+            return telmaValmentavaSisalto.getPeruste();
         }
 
         if (digitaalinenOsaaminenSisalto != null) {

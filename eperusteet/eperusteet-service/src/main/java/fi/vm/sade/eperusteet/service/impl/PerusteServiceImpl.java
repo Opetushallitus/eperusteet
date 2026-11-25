@@ -44,6 +44,7 @@ import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.RakenneModuuliRooli;
 import fi.vm.sade.eperusteet.domain.tutkinnonrakenne.TutkinnonOsaViite;
 import fi.vm.sade.eperusteet.domain.tuva.KoulutuksenOsa;
 import fi.vm.sade.eperusteet.domain.lukutaitokoulutus.LukutaitokoulutusSisalto;
+import fi.vm.sade.eperusteet.domain.telmavalmentava.TelmaValmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.tuva.TutkintoonvalmentavaSisalto;
 import fi.vm.sade.eperusteet.domain.vst.VapaasivistystyoSisalto;
 import fi.vm.sade.eperusteet.domain.digi.DigitaalisenOsaamisenPerusteenSisalto;
@@ -186,7 +187,6 @@ import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.AIKUISTENLUKIOKOULUTUS
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.LUKIOVALMISTAVAKOULUTUS;
 import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS;
-import static fi.vm.sade.eperusteet.domain.KoulutusTyyppi.TUTKINTOONVALMENTAVA;
 
 @Slf4j
 @Service
@@ -1045,15 +1045,11 @@ public class PerusteServiceImpl implements PerusteService{
         }
 
         if (peruste.getTuvasisalto() != null) {
-            perusteDto.setKoulutuksenOsat(
-                    CollectionUtil.treeToStream(peruste.getTuvasisalto().getSisalto(), PerusteenOsaViite::getLapset)
-                            .filter(viite -> viite.getPerusteenOsa() != null && viite.getPerusteenOsa() instanceof KoulutuksenOsa)
-                            .map(viite -> {
-                                KoulutuksenOsaDto dto = mapper.map(viite.getPerusteenOsa(), KoulutuksenOsaDto.class);
-                                dto.setViiteId(viite.getId());
-                                return dto;
-                            })
-                            .collect(Collectors.toList()));
+            perusteDto.setKoulutuksenOsat(mapKoulutuksenOsat(peruste.getTuvasisalto().getSisalto()));
+        }
+
+        if (peruste.getTelmaValmentavaSisalto() != null) {
+            perusteDto.setKoulutuksenOsat(mapKoulutuksenOsat(peruste.getTelmaValmentavaSisalto().getSisalto()));
         }
 
         if (KoulutusTyyppi.ammatilliset().contains(peruste.getKoulutustyyppi()) || KoulutusTyyppi.valmaTelma().contains(peruste.getKoulutustyyppi())) {
@@ -2327,8 +2323,10 @@ public class PerusteServiceImpl implements PerusteService{
             peruste.setSisalto(new LukutaitokoulutusSisalto());
         } else if (koulutustyyppi.isVapaaSivistystyo() || koulutustyyppi == MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS) {
             peruste.setSisalto(new VapaasivistystyoSisalto());
-        } else if (koulutustyyppi == TUTKINTOONVALMENTAVA) {
+        } else if (koulutustyyppi == KoulutusTyyppi.TUTKINTOONVALMENTAVA) {
             peruste.setSisalto(new TutkintoonvalmentavaSisalto());
+        } else if (koulutustyyppi == KoulutusTyyppi.TELMA_VALMENTAVA) {
+            peruste.setSisalto(new TelmaValmentavaSisalto());
         }
 
         if (st != null) {
@@ -2342,6 +2340,17 @@ public class PerusteServiceImpl implements PerusteService{
         perusteRepository.saveAndFlush(peruste);
         lisaaTutkinnonMuodostuminen(peruste);
         return peruste;
+    }
+
+    private List<KoulutuksenOsaDto> mapKoulutuksenOsat(PerusteenOsaViite sisalto) {
+        return CollectionUtil.treeToStream(sisalto, PerusteenOsaViite::getLapset)
+                .filter(viite -> viite.getPerusteenOsa() != null && viite.getPerusteenOsa() instanceof KoulutuksenOsa)
+                .map(viite -> {
+                    KoulutuksenOsaDto dto = mapper.map(viite.getPerusteenOsa(), KoulutuksenOsaDto.class);
+                    dto.setViiteId(viite.getId());
+                    return dto;
+                })
+                .collect(Collectors.toList());
     }
 
     private void initLukioOpetussuunitelmaRakenne(Peruste peruste, LukiokoulutuksenPerusteenSisalto sisalto) {
@@ -2426,6 +2435,12 @@ public class PerusteServiceImpl implements PerusteService{
         }
         else if (vanha.getLukutaitokoulutusSisalto() != null) {
             LukutaitokoulutusSisalto uusiSisalto = vanha.getLukutaitokoulutusSisalto().kloonaa(peruste);
+            uusiSisalto.setPeruste(peruste);
+            peruste.setSisalto(uusiSisalto);
+            peruste = perusteRepository.save(peruste);
+        }
+        else if (vanha.getTelmaValmentavaSisalto() != null) {
+            TelmaValmentavaSisalto uusiSisalto = vanha.getTelmaValmentavaSisalto().kloonaa(peruste);
             uusiSisalto.setPeruste(peruste);
             peruste.setSisalto(uusiSisalto);
             peruste = perusteRepository.save(peruste);

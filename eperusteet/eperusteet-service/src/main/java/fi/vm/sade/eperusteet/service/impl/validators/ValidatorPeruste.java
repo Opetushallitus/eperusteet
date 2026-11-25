@@ -419,6 +419,13 @@ public class ValidatorPeruste implements Validator {
             }
         }
 
+        // Telma valmentava
+        if (peruste.getTelmaValmentavaSisalto() != null) {
+            for (PerusteenOsaViite lapsi : peruste.getTelmaValmentavaSisalto().getSisalto().getLapset()) {
+                tarkistaSisalto(lapsi, vaaditutKielet, validointi);
+            }
+        }
+
         // Lukutaitokoulutus
         if (peruste.getLukutaitokoulutusSisalto() != null) {
             for (PerusteenOsaViite lapsi : peruste.getLukutaitokoulutusSisalto().getSisalto().getLapset()) {

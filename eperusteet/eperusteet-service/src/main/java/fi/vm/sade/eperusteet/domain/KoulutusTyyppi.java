@@ -26,6 +26,7 @@ public enum KoulutusTyyppi {
     LUKUTAITOKOULUTUS("koulutustyyppi_31"),
     VAPAASIVISTYSTYOLUKUTAITO("koulutustyyppi_35"),
     TUTKINTOONVALMENTAVA("koulutustyyppi_40"),
+    TELMA_VALMENTAVA("koulutustyyppi_32"),
     KIELIKAANTAJATUTKINTO("koulutustyyppi_500"),
     MUU_KOULUTUS("koulutustyyppi_muu"); 
 
@@ -94,7 +95,8 @@ public enum KoulutusTyyppi {
                 MAAHANMUUTTAJIENKOTOUTUMISKOULUTUS.toString(),
                 LUKUTAITOKOULUTUS.toString(),
                 VAPAASIVISTYSTYOLUKUTAITO.toString(),
-                TUTKINTOONVALMENTAVA.toString()
+                TUTKINTOONVALMENTAVA.toString(),
+                TELMA_VALMENTAVA.toString()
         );
     }
 
